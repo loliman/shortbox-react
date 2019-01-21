@@ -1,0 +1,224 @@
+.root {
+    display: flex !important;
+    padding: 10px !important;
+}
+
+.appBar {
+    z-index: 1201 !important;
+}
+
+.MuiDrawer-paperAnchorDockedLeft-174 {
+    width: 25% !important;
+    flex-shrink: 0 !important;
+    padding: 5px !important;
+}
+
+.content {
+    flex-grow: 1 !important;
+    margin-left: 25%;
+    margin-top: 3.5%;
+    transition: ease-in 75ms;
+}
+
+.contentShift {
+    flex-grow: 1 !important;
+    margin-left: 0;
+    margin-top: 3.5%;
+    transition: ease-out 200ms;
+}
+
+@media (min-width: 600px) {
+    .toolbar {
+        min-height: 72px;
+    }
+}
+
+@media (min-width: 0px) and (orientation: landscape) {
+    .toolbar {
+        min-height: 56px;
+    }
+}
+
+.toolbar {
+    min-height: 64px;
+}
+
+.grow {
+    flex-grow: 1;
+}
+
+.switch span {
+    font-weight: 500;
+    color: white;
+}
+
+.gridList {
+    flex-wrap: nowrap !important;
+    transform: translateZ(0) !important;
+    overflow: auto;
+}
+
+.titleBar {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 70%, rgba(0, 0, 0, 0) 100%) !important;
+}
+
+.coverGallery {
+    flex-wrap: nowrap !important;
+    overflow: hidden !important;
+    padding-bottom: 2% !important;
+}
+
+.coverGalleryHeader {
+    color: rgba(0, 0, 0, 0.54);
+    margin-bottom: 0 !important;
+}
+
+.tile {
+    width: 25% !important;
+    height: 140px !important;
+}
+
+.tile:hover {
+    cursor: pointer;
+}
+
+.navArrow {
+    margin-bottom: -5px !important;
+}
+
+.table {
+    align-self: center !important;
+}
+
+.details {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding-bottom: 2% !important;
+}
+
+.media {
+    height: 400px !important;
+    width: 25.5% !important;
+    background-size: contain !important;
+    background-position: center !important;
+    background-color: rgba(0, 0, 0, 0.1) !important;
+    border-width: 1px !important;
+    border-color: darkgray !important;
+    border-style: solid !important;
+    margin-left: 5px;
+    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12);
+}
+
+.media:hover {
+    cursor: pointer;
+}
+
+.detailsPaper {
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+    display: flex;
+    margin-right: 5px;
+    padding: 5px;
+    border-radius: 0 !important;
+}
+
+.stories {
+    width: 100%;
+}
+
+.story {
+    border-radius: 0 !important;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+}
+
+.storyTitle {
+    justify-content: space-between;
+    display: flex;
+    flex-grow: 1;
+}
+
+.chip {
+    height: 29px !important;
+    margin-right: 5px !important;
+    align-self: center;
+}
+
+.heading {
+    align-self: center;
+}
+
+.chips {
+    display: flex !important;
+}
+
+div[class^="MuiExpansionPanelSummary-content-"] {
+    margin: 4px 0 !important;
+}
+
+.loading {
+    width: 50px !important;
+}
+
+.queryResult {
+    padding: 15px;
+    display: flex;
+}
+
+.queryResultText {
+    padding-left: 10px;
+    align-self: center;
+}
+
+.issueStoryIssue {
+    font-size: 0.875rem;
+}
+
+.issueStoryIssueItem {
+    justify-content: space-between !important;
+    padding: 6px !important;
+}
+
+.issueStoryIssueButton {
+    justify-self: end;
+}
+
+.issueStoryIssuePublisher {
+    color: rgba(0, 0, 0, 0.54) !important;
+}
+
+.issueStoryIssueList {
+    width: 100% !important;
+}
+
+.itemMenuButton {
+    padding: 0 10px 0 10px !important;
+}
+
+.itemContainer {
+    display: flex !important;
+}
+
+.speedDialContainer {
+    float: right;
+}
+
+.speedDial {
+    bottom: 15px;
+    right: 15px;
+    position: fixed;
+    align-self: end;
+}
+
+#form-delete-dialog-title > h2 {
+    display: flex !important;
+}
+
+.deleteTitleIcon {
+    padding-right: 5px;
+    align-self: center;
+    padding-bottom: 2px;
+}
+
+.field {
+    width: 100%;
+}
