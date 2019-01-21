@@ -53,7 +53,8 @@ class ListContainer extends React.Component {
         else
             return nextProps.context.selected !== this.props.context.selected ||
                 nextProps.context.us !== this.props.context.us ||
-                nextProps.context.drawerOpen !== this.props.context.drawerOpen;
+                nextProps.context.drawerOpen !== this.props.context.drawerOpen ||
+                nextProps.context.edit !== this.props.context.edit;
     }
 
     componentDidUpdate() {
@@ -73,7 +74,7 @@ class ListContainer extends React.Component {
     }
 
     render() {
-        const {selected, us, drawerOpen} = this.props.context;
+        const {selected, us, drawerOpen, edit} = this.props.context;
 
         let id = selected ? (selected.series ? parseInt(selected.series.id) : parseInt(selected.id)) : null;
 
@@ -91,7 +92,7 @@ class ListContainer extends React.Component {
                                publisher_id: id,
                                series_id: id
                            }}>
-                        {({loading, error, data, networkStatus}) => {
+                        {({loading, error, data}) => {
                             if (loading || error)
                                 return <QueryResult loading={loading} error={error}/>;
 
@@ -112,9 +113,11 @@ class ListContainer extends React.Component {
 
                             let list = data[level].map((i) => {
                                 let selectedProp;
-                                if(this.state.scrollToId && this.state.scrollToId !== 0)
+                                if(edit)
+                                    selectedProp = edit.id === i.id;
+                                if(!selectedProp && this.state.scrollToId && this.state.scrollToId !== 0)
                                     selectedProp = this.state.scrollToId === i.id;
-                                if(!selected && selected)
+                                if(!selectedProp && selected)
                                     selectedProp = selected.id === i.id;
 
                                 return <TypeListEntry anchorEl={this.props.anchorEl}
@@ -148,7 +151,7 @@ class ListContainer extends React.Component {
         this.props.onNavigation(e);
     };
 
-    handleBack = (e) => {;
+    handleBack = (e) => {
         let level = getHierarchyLevel(this.props.context.selected);
         this.setState({
             scrollToId: level.indexOf("issue_details") !== -1 ?
