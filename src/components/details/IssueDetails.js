@@ -1,9 +1,9 @@
 import React from "react";
 import {Query} from "react-apollo";
-import {issue} from "../queries";
-import {QueryResult} from "./QueryResult";
+import {issue} from "../../graphql/queries";
+import {QueryResult} from "../generic/QueryResult";
 import CardHeader from "@material-ui/core/CardHeader/CardHeader";
-import {generateIssueSubHeader, generateLabel, generateStoryTitle} from "../util";
+import {generateIssueSubHeader, generateLabel, generateStoryTitle} from "../../util/util";
 import CardContent from "@material-ui/core/CardContent/CardContent";
 import Typography from "@material-ui/core/Typography/Typography";
 import GridList from "@material-ui/core/GridList/GridList";
@@ -27,15 +27,9 @@ import Chip from "@material-ui/core/Chip/Chip";
 import Tooltip from "@material-ui/core/es/Tooltip/Tooltip";
 import List from "@material-ui/core/List/List";
 import ListItem from "@material-ui/core/ListItem/ListItem";
-import {AppContext} from "./AppContext";
+import {AppContext} from "../generic/AppContext";
 
 export class IssueDetails extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.handleVariantSelection = this.handleVariantSelection.bind(this);
-    }
-
     render() {
         return (
             <AppContext.Consumer>
@@ -73,7 +67,7 @@ export class IssueDetails extends React.Component {
         );
     }
 
-    handleVariantSelection(e, context, handleNavigation) {
+    handleVariantSelection = (e, context, handleNavigation) => {
         let issue = context.selected;
         issue.format = e.format;
         issue.variant = e.variant;
@@ -84,7 +78,7 @@ export class IssueDetails extends React.Component {
         issue.limitation = e.limitation;
 
         handleNavigation(issue);
-    }
+    };
 }
 
 function IssueStories(props) {

@@ -1,5 +1,5 @@
 import gql from "graphql-tag";
-import {HierarchyLevel} from "./util";
+import {HierarchyLevel} from "../util/util";
 
 const login = gql`mutation Login($name: String!, $password: String!){
     login(name: $name, password: $password) {
@@ -26,7 +26,16 @@ const deleteIssues = gql`mutation DeleteIssues($id: Int!){
 
 const createPublisher = gql`mutation CreatePublisher($name: String!, $original: Boolean!){
    createPublisher(name: $name, original: $original) {
-        id
+        id,
+        name
+   }
+}`;
+
+const editPublisher = gql`mutation EditPublisher($id: Int!, $name: String!, $original: Boolean!){
+   editPublisher(id: $id, name: $name, original: $original) {
+        id,
+        name,
+        original
    }
 }`;
 
@@ -41,4 +50,4 @@ function getDeleteMutation(l) {
     }
 }
 
-export {login, logout, getDeleteMutation, createPublisher}
+export {login, logout, getDeleteMutation, createPublisher, editPublisher}

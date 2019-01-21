@@ -1,13 +1,12 @@
 import React from "react";
 import CssBaseline from "@material-ui/core/CssBaseline/CssBaseline";
 import TopBar from "./TopBar";
-import {TypeList} from "./TypeList";
-import {Details} from "./Details";
+import {List} from "./List";
 import {instanceOf} from 'prop-types';
 import {Cookies, withCookies} from 'react-cookie';
-import {AddFab, EditMenu} from "./Admin";
-import AppContext from "./AppContext";
-import PublisherEdit from "./Edit";
+import {AddFab, EditMenu} from "./admin/Admin";
+import AppContext from "./generic/AppContext";
+import Content from "./Content";
 
 class App extends React.Component {
     static propTypes = {
@@ -16,9 +15,6 @@ class App extends React.Component {
 
     constructor(props) {
         super(props);
-
-        this.handleEditMenuOpen = this.handleEditMenuOpen.bind(this);
-        this.handleEditMenuClose = this.handleEditMenuClose.bind(this);
 
         this.state = {
             openSpeedDial: false,
@@ -37,14 +33,12 @@ class App extends React.Component {
 
                     <TopBar/>
 
-                    <TypeList handleMenuOpen={this.handleEditMenuOpen}
-                              anchorEl={this.state.editMenu.anchorEl}/>
+                    <List handleMenuOpen={this.handleEditMenuOpen}
+                          anchorEl={this.state.editMenu.anchorEl}/>
 
                     <div className="toolbar"/>
 
-                    <Details drawerOpen={this.state.drawerOpen}/>
-
-                    <PublisherEdit/>
+                    <Content drawerOpen={this.state.drawerOpen}/>
 
                     <AddFab/>
                     <EditMenu editMenu={this.state.editMenu}
@@ -55,7 +49,7 @@ class App extends React.Component {
         );
     }
 
-    handleEditMenuOpen(e, item) {
+    handleEditMenuOpen = (e, item) => {
         this.setState({
             editMenu: {
                 anchorEl: e.currentTarget,
@@ -64,14 +58,14 @@ class App extends React.Component {
         });
     };
 
-    handleEditMenuClose() {
+    handleEditMenuClose = () => {
         this.setState({
             editMenu: {
                 anchorEl: null,
                 item: this.state.editMenu.item
             }
         });
-    }
+    };
 }
 
 export default withCookies(App);

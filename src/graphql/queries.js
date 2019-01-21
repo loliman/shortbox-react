@@ -1,5 +1,5 @@
 import gql from "graphql-tag";
-import {HierarchyLevel} from "./util";
+import {HierarchyLevel} from "../util/util";
 
 const publishers = gql`query Publishers($us: Boolean!){
     publishers(us: $us) {
@@ -138,4 +138,4 @@ const issue = gql`query Issue($id: Int!){
     }
 }`;
 
-export {getListQuery, issue};
+export {getListQuery, issue, publishers};

@@ -5,13 +5,13 @@ import DialogContent from "@material-ui/core/DialogContent/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions/DialogActions";
 import Button from "@material-ui/core/Button/Button";
 import WarningIcon from "@material-ui/icons/Warning";
-import {getDeleteMutation} from "../mutations";
+import {getDeleteMutation} from "../../graphql/mutations";
 import {Mutation} from "react-apollo";
 import Typography from "@material-ui/core/es/Typography/Typography";
-import {capitalize, generateLabel, getHierarchyLevel, HierarchyLevel} from "../util";
-import {AppContext} from "./AppContext";
+import {capitalize, generateLabel, getHierarchyLevel, HierarchyLevel} from "../../util/util";
+import {AppContext} from "../generic/AppContext";
 import {withSnackbar} from 'notistack';
-import {getListQuery} from "../queries";
+import {getListQuery} from "../../graphql/queries";
 
 function DeletionDialog(props) {
     let deleteMutation = getDeleteMutation(getHierarchyLevel(props.context.selected));
@@ -26,7 +26,7 @@ function DeletionDialog(props) {
 
     return (
         <AppContext.Consumer>
-            {({handleNavigation, forceRerender}) => (
+            {({handleNavigation}) => (
                 <Dialog open={props.open}
                         onClose={props.handleClose}
                         aria-labelledby="form-delete-dialog-title">
@@ -42,10 +42,7 @@ function DeletionDialog(props) {
                         </Button>
 
                         <Mutation mutation={deleteMutation}
-                                  update={async (cache, result) => {
-                                      if (!result.data.deletePublishers)
-                                          return;
-
+                                  update={async (cache) => {
                                       let data = cache.readQuery({query: getQuery, variables: variables});
                                       let updated = data[getHierarchyLevel(props.context.selected)];
                                       updated = updated.filter((e) => e.id !== props.item.id);

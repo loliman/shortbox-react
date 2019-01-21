@@ -1,31 +1,32 @@
 import React from 'react';
-import List from '@material-ui/core/List';
+import MuiList from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText'
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import {Query} from "react-apollo";
-import {generateLabel, getHierarchyLevel, HierarchyLevel} from "../util";
-import {getListQuery} from '../queries'
-import {QueryResult} from './QueryResult';
+import {generateLabel, getHierarchyLevel, HierarchyLevel} from "../util/util";
+import {getListQuery} from '../graphql/queries'
+import {QueryResult} from './generic/QueryResult';
 import Drawer from "@material-ui/core/Drawer/Drawer";
-import {EditButton} from "./Admin";
-import {AppContext} from "./AppContext";
+import {EditButton} from "./admin/Admin";
+import {AppContext} from "./generic/AppContext";
+import Typography from "@material-ui/core/es/Typography/Typography";
 
-export function TypeList(props) {
+export function List(props) {
     return (
         <AppContext.Consumer>
             {({context, handleNavigation}) => (
-                <TypeListMain context={context}
-                              onNavigation={handleNavigation}
-                              handleMenuOpen={props.handleMenuOpen}
-                              anchorEl={props.editMenuAnchorEl}/>
+                <ListContainer context={context}
+                               onNavigation={handleNavigation}
+                               handleMenuOpen={props.handleMenuOpen}
+                               anchorEl={props.editMenuAnchorEl}/>
             )}
         </AppContext.Consumer>
     )
 }
 
-class TypeListMain extends React.Component {
+class ListContainer extends React.Component {
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         let beforeLevel = getHierarchyLevel(this.props.context.selected);
         let afterLevel = getHierarchyLevel(nextProps.context.selected);
@@ -59,7 +60,7 @@ class TypeListMain extends React.Component {
                 className="drawer">
                 <div className="toolbar"/>
 
-                <List>
+                <MuiList>
                     <Query query={getListQuery(getHierarchyLevel(selected))}
                            variables={{
                                us: (!us ? false : true),
@@ -73,6 +74,17 @@ class TypeListMain extends React.Component {
                             let level = getHierarchyLevel(selected);
                             if (level.indexOf("issue_details") !== -1)
                                 level = HierarchyLevel.ISSUE;
+
+                            if (data[level].length === 0)
+                                return (
+                                    <React.Fragment>
+                                        <TypeListBack key="0"
+                                                      item={selected.series ? selected.series.publisher : selected.publisher}
+                                                      onClick={this.props.onNavigation}/>
+                                        <div className="queryResult">
+                                            <Typography className="queryResultText">Keine Einträge</Typography>
+                                        </div>
+                                    </React.Fragment>);
 
                             let list = data[level].map((i) =>
                                 <TypeListEntry anchorEl={this.props.anchorEl}
@@ -92,7 +104,7 @@ class TypeListMain extends React.Component {
                             return list;
                         }}
                     </Query>
-                </List>
+                </MuiList>
             </Drawer>
         );
     }

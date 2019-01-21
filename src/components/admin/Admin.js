@@ -14,7 +14,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon/ListItemIcon";
 import Typography from "@material-ui/core/es/Typography/Typography";
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-import {AppContext} from "./AppContext";
+import {AppContext} from "../generic/AppContext";
 import DeletionDialog from "./DeletionDialog";
 
 class AddFab extends React.Component {
@@ -29,7 +29,7 @@ class AddFab extends React.Component {
     render() {
         return (
             <AppContext.Consumer>
-                {({context}) => {
+                {({context, handleAdd}) => {
                     if (context.session)
                         return (
                             <ClickAwayListener onClickAway={this.handleClose}>
@@ -38,9 +38,8 @@ class AddFab extends React.Component {
                                         ariaLabel="Anlegen"
                                         className="speedDial"
                                         icon={<SpeedDialIcon/>}
-                                        onBlur={this.handleClose}
                                         onClick={this.handleClick}
-                                        onClose={this.handleClose}
+
                                         open={this.state.open}
                                     >
                                         <SpeedDialAction
@@ -48,21 +47,24 @@ class AddFab extends React.Component {
                                             icon={<AccountBalanceIcon/>}
                                             tooltipTitle="Verlag"
                                             tooltipOpen
-                                            onClick={this.handleClick}
+                                            onClick={() => {
+                                                handleAdd({name: "", original: false});
+                                                this.handleClick();
+                                            }}
                                         />
                                         <SpeedDialAction
                                             key="series"
                                             icon={<ListIcon/>}
                                             tooltipTitle="Serie"
                                             tooltipOpen
-                                            onClick={this.handleClick}
+                                            onClick={this.handleAdd}
                                         />
                                         <SpeedDialAction
                                             key="issue"
                                             icon={<BookIcon/>}
                                             tooltipTitle="Ausgabe"
                                             tooltipOpen
-                                            onClick={this.handleClick}
+                                            onClick={this.handleAdd}
                                         />
                                     </SpeedDial>
                                 </div>
@@ -109,10 +111,6 @@ function EditButton(props) {
 class EditMenu extends React.Component {
     constructor(props) {
         super(props);
-
-        this.handleDelete = this.handleDelete.bind(this);
-        this.handleEdit = this.handleEdit.bind(this);
-        this.handleDeletionClose = this.handleDeletionClose.bind(this);
 
         this.state = {
             deletionOpen: false
@@ -169,19 +167,19 @@ class EditMenu extends React.Component {
         );
     }
 
-    handleDelete() {
+    handleDelete = () => {
         this.setState({
             deletionOpen: true
         });
 
         this.props.handleClose();
-    }
+    };
 
-    handleEdit() {
+    handleEdit = () => {
         this.props.handleClose();
-    }
+    };
 
-    handleDeletionClose() {
+    handleDeletionClose = () => {
         this.setState({
             deletionOpen: false
         })

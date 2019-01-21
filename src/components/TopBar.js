@@ -6,12 +6,12 @@ import AppBar from "@material-ui/core/AppBar/AppBar";
 import React from "react";
 import Tooltip from "@material-ui/core/es/Tooltip/Tooltip";
 import Button from "@material-ui/core/es/Button/Button";
-import LoginDialog from "./LoginDialog";
+import LoginDialog from "./admin/LoginDialog";
 import {Mutation} from "react-apollo";
-import {logout} from "../mutations";
-import {generateLabel, getHierarchyLevel, HierarchyLevel} from "../util";
+import {logout} from "../graphql/mutations";
+import {generateLabel, getHierarchyLevel, HierarchyLevel} from "../util/util";
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
-import {AppContext} from "./AppContext";
+import {AppContext} from "./generic/AppContext";
 import {withSnackbar} from "notistack";
 import IconButton from "@material-ui/core/IconButton/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -23,10 +23,6 @@ class TopBar extends React.Component {
         this.state = {
             loginOpen: false
         };
-
-        this.handleLogin = this.handleLogin.bind(this);
-        this.handleLoginClose = this.handleLoginClose.bind(this);
-        this.handleLoginOpen = this.handleLoginOpen.bind(this);
     }
 
     render() {
@@ -44,7 +40,7 @@ class TopBar extends React.Component {
                                 <MenuIcon/>
                             </IconButton>
 
-                            <Typography variant="h6" color="inherit" noWrap>
+                            <Typography variant="h6" color="inherit" className="appTitle" noWrap>
                                 {this.generateHeader(context)}
                             </Typography>
                             <div className="grow"/>
@@ -104,7 +100,7 @@ class TopBar extends React.Component {
         );
     }
 
-    handleLogin(user, handleLogin) {
+    handleLogin = (user, handleLogin) => {
         this.setState({
             loginOpen: false
         });
@@ -112,13 +108,13 @@ class TopBar extends React.Component {
         handleLogin(user);
     };
 
-    handleLoginOpen() {
+    handleLoginOpen = () => {
         this.setState({
             loginOpen: true
         })
     };
 
-    handleLoginClose() {
+    handleLoginClose = () => {
         this.setState({
             loginOpen: false
         })

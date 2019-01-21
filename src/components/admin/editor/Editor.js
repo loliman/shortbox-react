@@ -1,6 +1,6 @@
 import React from 'react';
 import Button from "@material-ui/core/Button/Button";
-import {createPublisher} from "../mutations";
+import {createPublisher} from "../../../graphql/mutations";
 import {Mutation} from "react-apollo";
 import * as Yup from 'yup';
 import {Field, Form, Formik} from 'formik';
@@ -9,16 +9,35 @@ import CardHeader from "@material-ui/core/CardHeader/CardHeader";
 import CardContent from "@material-ui/core/CardContent/CardContent";
 import Card from "@material-ui/core/Card/Card";
 import {withSnackbar} from "notistack";
+import {publishers} from "../../../graphql/queries";
 
 const PublisherSchema = Yup.object().shape({
     name: Yup.string()
         .required('Required')
 });
 
-function PublisherEdit(props) {
+function Editor(props) {
     return (
         <Mutation mutation={createPublisher}
-                  onCompleted={(data) => {
+                  update={async (cache, result) => {
+                      let data = cache.readQuery({
+                          query: publishers, variables: {
+                              us: (!props.context.us ? false : true)
+                          }
+                      });
+                      let updated = data.publishers.concat(result.data.createPublisher);
+                      let newData = {};
+
+                      newData.publishers = updated.sort((a, b) => a.name.localeCompare(b.name));
+                      cache.writeQuery({
+                          query: publishers,
+                          variables: {
+                              us: (!props.context.us ? false : true)
+                          },
+                          data: newData,
+                      });
+                  }}
+                  onCompleted={() => {
                       props.enqueueSnackbar("Verlag erfolgreich erstellt", {variant: 'success'});
                   }}
                   onError={() => {
@@ -82,4 +101,4 @@ function PublisherEdit(props) {
     );
 }
 
-export default withSnackbar(PublisherEdit);
+export default withSnackbar(Editor);

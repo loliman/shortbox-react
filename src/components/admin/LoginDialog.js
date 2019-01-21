@@ -5,10 +5,10 @@ import DialogContentText from "@material-ui/core/DialogContentText/DialogContent
 import DialogContent from "@material-ui/core/DialogContent/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions/DialogActions";
 import Button from "@material-ui/core/Button/Button";
-import {login} from "../mutations";
+import {login} from "../../graphql/mutations";
 import {Mutation} from "react-apollo";
 import {sha256} from 'js-sha256';
-import {AppContext} from "./AppContext";
+import {AppContext} from "../generic/AppContext";
 import {withSnackbar} from "notistack";
 import * as Yup from 'yup';
 import {Field, Form, Formik} from 'formik';
