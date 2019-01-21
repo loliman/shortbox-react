@@ -41,8 +41,7 @@ const issues = gql`query Issues($series_id: Int!){
             volume,
             publisher {
                 id,
-                name,
-                us
+                name
             }
         }
     }

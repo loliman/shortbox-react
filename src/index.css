@@ -11,87 +11,72 @@
     flex-grow: 1 !important;
     margin-left: 25%;
     transition: ease-in 75ms;
-}
-
-@media (min-width: 600px) {
-    content {
-        margin-top: 72px;
-    }
-}
-
-@media (min-width: 0px) and (orientation: landscape) {
-    .content {
-        margin-top: 56px;
-    }
-}
-
-.content {
     margin-top: 64px;
+}
+
+.MuiDrawer-paperAnchorDockedLeft-454 {
+    flex-shrink: 0 !important;
+    padding: 5px !important;
+    width: 25%;
 }
 
 .contentShift {
     flex-grow: 1 !important;
     margin-left: 0;
     transition: ease-out 200ms;
-}
-
-@media (min-width: 600px) {
-    contentShift {
-        margin-top: 72px;
-    }
-}
-
-@media (min-width: 0px) and (orientation: landscape) {
-    .contentShift {
-        margin-top: 56px;
-    }
-}
-
-.contentShift {
     margin-top: 64px;
 }
 
-.MuiDrawer-paperAnchorDockedLeft-174 {
-    flex-shrink: 0 !important;
-    padding: 5px !important;
+.toolbar {
+    min-height: 64px !important;
+}
+
+.appTitle {
+    max-width: 80%;
 }
 
 @media (max-width: 600px) {
-    .MuiDrawer-paperAnchorDockedLeft-174 {
+    .content {
+        margin-top: 56px;
+    }
+
+    .toolbar {
+        min-height: 56px !important;
+    }
+
+    .contentShift {
+        margin-top: 56px !important;
+    }
+
+    .MuiDrawer-paperAnchorDockedLeft-454 {
         width: 100% !important;
     }
-}
 
-@media (min-width: 0px) and (orientation: landscape) {
-    .MuiDrawer-paperAnchorDockedLeft-174 {
-        width: 25% !important;
-    }
-}
-
-@media (min-width: 600px) {
-    .toolbar {
-        min-height: 72px;
-    }
-}
-
-@media (min-width: 0px) and (orientation: landscape) {
-    .toolbar {
-        min-height: 56px;
-    }
-}
-
-.toolbar {
-    min-height: 64px;
-}
-
-@media (max-width: 600px) {
     .appTitle {
         width: 40%;
     }
 }
 
-.appTitle {
-    max-width: 80%;
+@media (min-width: 0px) and (orientation: landscape) {
+    .content {
+        margin-top: 64px;
+    }
+
+    .contentShift {
+        margin-top: 64px !important;
+    }
+
+    .toolbar {
+        min-height: 56px !important;
+    }
+
+    .MuiDrawer-paperAnchorDockedLeft-454 {
+        width: 25% !important;
+    }
+
+    .appTitle {
+        max-width: 72%;
+    }
 }
 
 .grow {
@@ -247,6 +232,7 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 
 .itemContainer {
     display: flex !important;
+    justify-content: space-between;
 }
 
 .speedDialContainer {
@@ -272,4 +258,12 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 
 .field {
     width: 100%;
+}
+
+.itemText {
+    white-space: normal;
+}
+
+.selected > span {
+    font-weight:bold;
 }

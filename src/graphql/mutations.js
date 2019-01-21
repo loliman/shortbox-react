@@ -24,18 +24,10 @@ const deleteIssues = gql`mutation DeleteIssues($id: Int!){
     deleteIssues(id: $id)
 }`;
 
-const createPublisher = gql`mutation CreatePublisher($name: String!, $original: Boolean!){
-   createPublisher(name: $name, original: $original) {
+const editPublisher = gql`mutation EditPublisher($id: Int!, $name: String!){
+   editPublisher(id: $id, name: $name) {
         id,
         name
-   }
-}`;
-
-const editPublisher = gql`mutation EditPublisher($id: Int!, $name: String!, $original: Boolean!){
-   editPublisher(id: $id, name: $name, original: $original) {
-        id,
-        name,
-        original
    }
 }`;
 
@@ -50,4 +42,4 @@ function getDeleteMutation(l) {
     }
 }
 
-export {login, logout, getDeleteMutation, createPublisher, editPublisher}
+export {login, logout, getDeleteMutation, editPublisher}

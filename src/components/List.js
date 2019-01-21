@@ -27,6 +27,14 @@ export function List(props) {
 }
 
 class ListContainer extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            scrollToId: 0
+        }
+    }
+
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         let beforeLevel = getHierarchyLevel(this.props.context.selected);
         let afterLevel = getHierarchyLevel(nextProps.context.selected);
@@ -48,6 +56,22 @@ class ListContainer extends React.Component {
                 nextProps.context.drawerOpen !== this.props.context.drawerOpen;
     }
 
+    componentDidUpdate() {
+        if(this.state.scrollToId && this.state.scrollToId > 0) {
+            //daaaaaamn this is ugly
+            let el = document.getElementById(this.state.scrollToId);
+
+            if(el && el.previousSibling && el.previousSibling.previousSibling) {
+                el = el.previousSibling.previousSibling;
+                el.scrollIntoView();
+            }
+
+            this.setState(() => ({
+                scrollToId: 0
+            }));
+        }
+    }
+
     render() {
         const {selected, us, drawerOpen} = this.props.context;
 
@@ -67,7 +91,7 @@ class ListContainer extends React.Component {
                                publisher_id: id,
                                series_id: id
                            }}>
-                        {({loading, error, data}) => {
+                        {({loading, error, data, networkStatus}) => {
                             if (loading || error)
                                 return <QueryResult loading={loading} error={error}/>;
 
@@ -86,18 +110,25 @@ class ListContainer extends React.Component {
                                         </div>
                                     </React.Fragment>);
 
-                            let list = data[level].map((i) =>
-                                <TypeListEntry anchorEl={this.props.anchorEl}
-                                               handleMenuOpen={this.props.handleMenuOpen}
-                                               key={i.id} item={i}
-                                               onClick={this.props.onNavigation}/>
-                            );
+                            let list = data[level].map((i) => {
+                                let selectedProp;
+                                if(this.state.scrollToId && this.state.scrollToId !== 0)
+                                    selectedProp = this.state.scrollToId === i.id;
+                                if(!selected && selected)
+                                    selectedProp = selected.id === i.id;
+
+                                return <TypeListEntry anchorEl={this.props.anchorEl}
+                                                      handleMenuOpen={this.props.handleMenuOpen}
+                                                      key={i.id} item={i}
+                                                      onClick={this.handleNavigation}
+                                                      selected={selectedProp} />
+                            });
 
                             if (getHierarchyLevel(selected) !== HierarchyLevel.PUBLISHER)
                                 list.unshift(
                                     <TypeListBack key="0"
                                                   item={selected.series ? selected.series.publisher : selected.publisher}
-                                                  onClick={this.props.onNavigation}/>
+                                                  onClick={this.handleBack}/>
                                 );
 
 
@@ -108,14 +139,33 @@ class ListContainer extends React.Component {
             </Drawer>
         );
     }
+
+    handleNavigation = (e) => {
+        this.setState({
+            scrollToId: e.id
+        });
+
+        this.props.onNavigation(e);
+    };
+
+    handleBack = (e) => {;
+        let level = getHierarchyLevel(this.props.context.selected);
+        this.setState({
+            scrollToId: level.indexOf("issue_details") !== -1 ?
+                this.props.context.selected.series.id :
+                this.props.context.selected.id
+        });
+
+        this.props.onNavigation(e);
+    }
 }
 
 function TypeListEntry(props) {
     return (
-        <div className="itemContainer">
+        <div id={props.item.id} className="itemContainer">
             <ListItem button
                       onClick={() => props.onClick(props.item)}>
-                <ListItemText
+                <ListItemText className={props.selected ? "itemText selected" : "itemText"}
                     primary={generateLabel(props.item)}
                 />
             </ListItem>
@@ -127,11 +177,13 @@ function TypeListEntry(props) {
 
 function TypeListBack(props) {
     return (
+        <div className="itemContainer">
         <ListItem button divider
                   onClick={() => props.onClick(props.item)}>
             <ListItemIcon>
                 <ArrowBackIcon/>
             </ListItemIcon>
         </ListItem>
+        </div>
     );
 }

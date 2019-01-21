@@ -7,11 +7,13 @@ import Editor from "./admin/editor/Editor";
 export default function Content(props) {
     return (
         <AppContext.Consumer>
-            {({context}) => (
+            {({context, handleEdit}) => (
                 <main className={!context.drawerOpen ? 'content contentShift' : 'content'}>
                     <Card>
                         {
-                            context.edit ? <Editor context={context}/> : <Details context={context}/>
+                            context.edit ?
+                                <Editor context={context} handleEdit={handleEdit} /> :
+                                <Details context={context}/>
                         }
                     </Card>
                 </main>

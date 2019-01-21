@@ -120,7 +120,7 @@ class EditMenu extends React.Component {
     render(props) {
         return (
             <AppContext.Consumer>
-                {({context}) => {
+                {({context, handleEdit}) => {
                     if (context.session)
                         return (
                             <ClickAwayListener onClickAway={this.props.handleClose}>
@@ -137,7 +137,10 @@ class EditMenu extends React.Component {
                                             },
                                         }}
                                     >
-                                        <MenuItem key="edit" onClick={() => this.handleEdit()}>
+                                        <MenuItem key="edit" onClick={() => {
+                                            handleEdit(this.props.editMenu.item);
+                                            this.handleEdit();
+                                        }}>
                                             <ListItemIcon>
                                                 <EditIcon/>
                                             </ListItemIcon>

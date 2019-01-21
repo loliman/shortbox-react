@@ -1,4 +1,5 @@
 import React from 'react'
+import {getHierarchyLevel} from "../../util/util";
 
 export const AppContext = React.createContext();
 
@@ -11,7 +12,7 @@ class AppContextProvider extends React.Component {
             edit: null,
             us: false,
             session: props.cookies.get('session'),
-            drawerOpen: true
+            drawerOpen: window.innerWidth > 600
         };
     }
 
@@ -24,7 +25,8 @@ class AppContextProvider extends React.Component {
                 handleLogout: this.handleLogout,
                 handleNavigation: this.handleNavigation,
                 handleDrawerOpen: this.handleDrawerOpen,
-                handleAdd: this.handleAdd
+                handleAdd: this.handleAdd,
+                handleEdit: this.handleEdit
             }}>
                 {this.props.children}
             </AppContext.Provider>
@@ -56,7 +58,10 @@ class AppContextProvider extends React.Component {
         this.setState(() => ({
             us: e && e.series ? e.series.publisher.us : this.state.us,
             selected: e,
-            edit: null
+            edit: null,
+            drawerOpen: (window.innerWidth <= 600 && getHierarchyLevel(e).indexOf("issue_details") !== -1) ?
+                false :
+                this.state.drawerOpen
         }));
     };
 
@@ -66,11 +71,18 @@ class AppContextProvider extends React.Component {
         })
     };
 
+    handleEdit = (e) => {
+        this.setState(() => ({
+            edit: e,
+            drawerOpen: window.innerWidth > 600 ? this.state.drawerOpen : !this.state.drawerOpen
+        }));
+    };
+
     handleAdd = (e) => {
         this.setState(() => ({
             edit: e
         }));
-    }
+    };
 }
 
 export default AppContextProvider
