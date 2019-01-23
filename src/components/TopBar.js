@@ -13,8 +13,7 @@ import {generateLabel, getHierarchyLevel, HierarchyLevel} from "../util/util";
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import {AppContext} from "./generic/AppContext";
 import {withSnackbar} from "notistack";
-import IconButton from "@material-ui/core/IconButton/IconButton";
-import MenuIcon from "@material-ui/icons/Menu";
+import Hamburger from 'react-hamburgers';
 
 class TopBar extends React.Component {
     constructor(props) {
@@ -31,15 +30,10 @@ class TopBar extends React.Component {
                 {({context, handleLogout, toogleUs, handleDrawerOpen}) => (
                     <AppBar position="fixed" className="appBar">
                         <Toolbar>
-                            <IconButton
-                                color="inherit"
-                                aria-label="Open drawer"
-                                onClick={() => handleDrawerOpen()}
-                                className={context.drawerOpen ? 'menuButton' : 'hide'}
-                            >
-                                <MenuIcon/>
-                            </IconButton>
-
+                            <Hamburger
+                                active={context.drawerOpen}
+                                type="slider"
+                                onClick={() => handleDrawerOpen()}/>
                             <Typography variant="h6" color="inherit" className="appTitle" noWrap>
                                 {this.generateHeader(context)}
                             </Typography>

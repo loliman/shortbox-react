@@ -158,15 +158,20 @@ function IssueStoryTitle(props) {
                     extended = (
                         <div className="chips">
                             {
-                                props.story.parent && props.story.parent.children.length <= 2 ?
-                                    <Chip className="chip" label="Einzige Ausgabe" color="secondary"
-                                          icon={<PriorityHighIcon/>}/>
+                                props.story.parent && props.story.parent.children.length < 2 ?
+                                    Math.max(document.documentElement.clientWidth, window.innerWidth || 0) > 600 ?
+                                        <Chip className="chip" label="Einzige Ausgabe" color="secondary"
+                                              icon={<PriorityHighIcon/>}/>
+                                        : <Chip className="chip" label={<PriorityHighIcon className="mobileChip"/>}
+                                                color="secondary"/>
                                     : null
                             }
 
                             {
                                 props.story.firstapp && props.story.parent ?
-                                    <Chip className="chip" label="Erstausgabe" color="primary"/>
+                                    <Chip className="chip"
+                                          label={Math.max(document.documentElement.clientWidth, window.innerWidth || 0) > 600 ? "Erstausgabe" : "1."}
+                                          color="primary"/>
                                     : null
                             }
 

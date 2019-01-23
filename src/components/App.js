@@ -36,8 +36,6 @@ class App extends React.Component {
                     <List handleMenuOpen={this.handleEditMenuOpen}
                           anchorEl={this.state.editMenu.anchorEl}/>
 
-                    <div className="toolbar"/>
-
                     <Content drawerOpen={this.state.drawerOpen}/>
 
                     <AddFab/>

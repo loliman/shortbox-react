@@ -8,7 +8,7 @@ import {Query} from "react-apollo";
 import {generateLabel, getHierarchyLevel, HierarchyLevel} from "../util/util";
 import {getListQuery} from '../graphql/queries'
 import {QueryResult} from './generic/QueryResult';
-import Drawer from "@material-ui/core/Drawer/Drawer";
+import SwipeableDrawer from "@material-ui/core/SwipeableDrawer/SwipeableDrawer";
 import {EditButton} from "./admin/Admin";
 import {AppContext} from "./generic/AppContext";
 import Typography from "@material-ui/core/es/Typography/Typography";
@@ -16,11 +16,13 @@ import Typography from "@material-ui/core/es/Typography/Typography";
 export function List(props) {
     return (
         <AppContext.Consumer>
-            {({context, handleNavigation}) => (
+            {({context, handleNavigation, handleScroll, handleDrawerOpen}) => (
                 <ListContainer context={context}
                                onNavigation={handleNavigation}
+                               handleScroll={handleScroll}
                                handleMenuOpen={props.handleMenuOpen}
-                               anchorEl={props.editMenuAnchorEl}/>
+                               anchorEl={props.editMenuAnchorEl}
+                               handleDrawerOpen={handleDrawerOpen}/>
             )}
         </AppContext.Consumer>
     )
@@ -31,7 +33,7 @@ class ListContainer extends React.Component {
         super(props);
 
         this.state = {
-            scrollToId: 0
+            highlight: -1
         }
     }
 
@@ -54,38 +56,46 @@ class ListContainer extends React.Component {
             return nextProps.context.selected !== this.props.context.selected ||
                 nextProps.context.us !== this.props.context.us ||
                 nextProps.context.drawerOpen !== this.props.context.drawerOpen ||
-                nextProps.context.edit !== this.props.context.edit;
+                nextProps.context.edit !== this.props.context.edit ||
+                nextState.highlight !== this.state.highlight;
     }
 
-    componentDidUpdate() {
-        if(this.state.scrollToId && this.state.scrollToId > 0) {
-            //daaaaaamn this is ugly
-            let el = document.getElementById(this.state.scrollToId);
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevState.highlight !== this.state.highlight)
+            return;
 
-            if(el && el.previousSibling && el.previousSibling.previousSibling) {
-                el = el.previousSibling.previousSibling;
-                el.scrollIntoView();
-            }
+        let back = prevProps.context.lastSelected.length > this.props.context.lastSelected.length;
+        let drawer = document.getElementById("drawer");
 
-            this.setState(() => ({
-                scrollToId: 0
-            }));
+        if (drawer) {
+            let drawerScrollEl = drawer.children[1];
+
+            if (back) {
+                let el = prevProps.context.lastSelected[prevProps.context.lastSelected.length - 1];
+                drawerScrollEl.scrollTop = el.drawerScrollTop;
+                this.setState(() => ({
+                    highlight: el.highlight
+                }));
+            } else if (getHierarchyLevel(this.props.context.selected).indexOf("issue_details") === -1 && !this.props.context.edit)
+                drawerScrollEl.scrollTop = 0;
         }
     }
 
     render() {
         const {selected, us, drawerOpen, edit} = this.props.context;
-
         let id = selected ? (selected.series ? parseInt(selected.series.id) : parseInt(selected.id)) : null;
+        const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
 
         return (
-            <Drawer
+            <SwipeableDrawer
+                disableBackdropTransition={true} disableDiscovery={iOS}
                 open={drawerOpen}
-                variant="persistent"
-                className="drawer">
-                <div className="toolbar"/>
+                onClose={() => this.props.handleDrawerOpen()}
+                onOpen={() => this.props.handleDrawerOpen()}
+                className="drawer"
+                id="drawer">
 
-                <MuiList>
+                <MuiList id="list">
                     <Query query={getListQuery(getHierarchyLevel(selected))}
                            variables={{
                                us: (!us ? false : true),
@@ -115,15 +125,15 @@ class ListContainer extends React.Component {
                                 let selectedProp;
                                 if(edit)
                                     selectedProp = edit.id === i.id;
-                                if(!selectedProp && this.state.scrollToId && this.state.scrollToId !== 0)
-                                    selectedProp = this.state.scrollToId === i.id;
-                                if(!selectedProp && selected)
+                                if (!selectedProp && this.state.highlight && this.state.highlight !== -1)
+                                    selectedProp = this.state.highlight === i.id;
+                                if (!selectedProp && selected && selected.series)
                                     selectedProp = selected.id === i.id;
 
                                 return <TypeListEntry anchorEl={this.props.anchorEl}
                                                       handleMenuOpen={this.props.handleMenuOpen}
                                                       key={i.id} item={i}
-                                                      onClick={this.handleNavigation}
+                                                      onClick={this.props.onNavigation}
                                                       selected={selectedProp} />
                             });
 
@@ -131,35 +141,15 @@ class ListContainer extends React.Component {
                                 list.unshift(
                                     <TypeListBack key="0"
                                                   item={selected.series ? selected.series.publisher : selected.publisher}
-                                                  onClick={this.handleBack}/>
+                                                  onClick={(e) => this.props.onNavigation(e, true)}/>
                                 );
-
 
                             return list;
                         }}
                     </Query>
                 </MuiList>
-            </Drawer>
+            </SwipeableDrawer>
         );
-    }
-
-    handleNavigation = (e) => {
-        this.setState({
-            scrollToId: e.id
-        });
-
-        this.props.onNavigation(e);
-    };
-
-    handleBack = (e) => {
-        let level = getHierarchyLevel(this.props.context.selected);
-        this.setState({
-            scrollToId: level.indexOf("issue_details") !== -1 ?
-                this.props.context.selected.series.id :
-                this.props.context.selected.id
-        });
-
-        this.props.onNavigation(e);
     }
 }
 
@@ -180,13 +170,11 @@ function TypeListEntry(props) {
 
 function TypeListBack(props) {
     return (
-        <div className="itemContainer">
-        <ListItem button divider
-                  onClick={() => props.onClick(props.item)}>
-            <ListItemIcon>
-                <ArrowBackIcon/>
-            </ListItemIcon>
-        </ListItem>
+        <div className="itemContainer sticky">
+            <ListItem button divider
+                      onClick={() => props.onClick(props.item)}>
+                <ListItemIcon><ArrowBackIcon/></ListItemIcon>
+            </ListItem>
         </div>
     );
 }

@@ -12,12 +12,32 @@
     margin-left: 25%;
     transition: ease-in 75ms;
     margin-top: 64px;
+    z-index: 1000 !important;
 }
 
-.MuiDrawer-paperAnchorDockedLeft-454 {
+#drawer {
+    z-index: 999 !important;
+}
+
+#drawer > div {
     flex-shrink: 0 !important;
-    padding: 5px !important;
+    padding: 0 !important;
     width: 25%;
+    margin-top: 64px !important;
+    height: -moz-calc(100% - 59px);
+    height: -webkit-calc(100% - 59px);
+    height: -o-calc(100% - 59px);
+    height: calc(100% - 59px);
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+.content > div {
+    overflow: auto;
+    height: calc(100vh - 84px);
+    margin-left: 3px;
 }
 
 .contentShift {
@@ -27,29 +47,57 @@
     margin-top: 64px;
 }
 
-.toolbar {
-    min-height: 64px !important;
-}
-
 .appTitle {
+    margin-top: -1px;
     max-width: 80%;
 }
 
 @media (max-width: 600px) {
-    .content {
-        margin-top: 56px;
+    .content > div {
+        width: 102.5%;
+        height: 93vh;
+        margin-left: -10px;
     }
 
-    .toolbar {
-        min-height: 56px !important;
+    .content {
+        width: 102.5%;
+        margin-top: 48px;
+        z-index: 1000 !important;
+        margin-bottom: -10px;
     }
 
     .contentShift {
-        margin-top: 56px !important;
+        margin-top: 48px !important;
     }
 
-    .MuiDrawer-paperAnchorDockedLeft-454 {
+    #drawer {
+        z-index: 1200 !important;
+    }
+
+    #drawer > div {
         width: 100% !important;
+        margin-top: 56px !important;
+        height: -moz-calc(100% - 51px);
+        height: -webkit-calc(100% - 51px);
+        height: -o-calc(100% - 51px);
+        height: calc(100% - 51px);
+    }
+
+    .details {
+        flex-direction: column-reverse !important;
+        justify-items: center;
+        align-items: center;
+    }
+
+    .media {
+        margin-bottom: 10px !important;
+        height: 200px !important;
+        width: 99% !important;
+    }
+
+    .detailsPaper {
+        margin-right: -3px !important;
+        width: 98.5% !important;
     }
 
     .appTitle {
@@ -60,18 +108,29 @@
 @media (min-width: 0px) and (orientation: landscape) {
     .content {
         margin-top: 64px;
+        z-index: 1000 !important;
     }
 
     .contentShift {
         margin-top: 64px !important;
     }
 
-    .toolbar {
-        min-height: 56px !important;
+    .media {
+        height: 400px !important;
+        width: 25% !important;
     }
 
-    .MuiDrawer-paperAnchorDockedLeft-454 {
+    #drawer {
+        z-index: 999 !important;
+    }
+
+    #drawer > div {
         width: 25% !important;
+        margin-top: 64px !important;
+        height: -moz-calc(100% - 59px);
+        height: -webkit-calc(100% - 59px);
+        height: -o-calc(100% - 59px);
+        height: calc(100% - 59px);
     }
 
     .appTitle {
@@ -134,8 +193,6 @@
 }
 
 .media {
-    height: 400px !important;
-    width: 25.5% !important;
     background-size: contain !important;
     background-position: center !important;
     background-color: rgba(0, 0, 0, 0.1) !important;
@@ -266,4 +323,131 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 
 .selected > span {
     font-weight:bold;
+}
+
+.sticky {
+    position: sticky !important;
+    background-color: #ffffff;
+    z-index: 1;
+    top: 0;
+}
+
+#list {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.mobileChip {
+    width: 15.5px !important;
+}
+
+/*!
+ * Hamburgers
+ * @description Tasty CSS-animated hamburgers
+ * @author Jonathan Suh @jonsuh
+ * @site https://jonsuh.com/hamburgers
+ * @link https://github.com/jonsuh/hamburgers
+ */
+.hamburger {
+    padding-top: 11px;
+    padding-right: 15px;
+    display: inline-block;
+    cursor: pointer;
+    transition-property: opacity, filter;
+    transition-duration: 0.15s;
+    transition-timing-function: linear;
+    font: inherit;
+    color: inherit;
+    text-transform: none;
+    background-color: transparent;
+    border: 0;
+    margin: 0;
+    margin-top: 6px;
+    overflow: visible;
+}
+
+.hamburger:hover {
+    opacity: 0.7;
+}
+
+.hamburger:focus {
+    outline: none;
+}
+
+.hamburger.is-active:hover {
+    opacity: 0.7;
+}
+
+.hamburger.is-active .hamburger-inner,
+.hamburger.is-active .hamburger-inner::before,
+.hamburger.is-active .hamburger-inner::after {
+    background-color: #fff;
+}
+
+.hamburger-box {
+    width: 20px;
+    height: 30px;
+    display: inline-block;
+    position: relative;
+}
+
+.hamburger-inner {
+    display: block;
+    top: 50%;
+    margin-top: -2px;
+}
+
+.hamburger-inner, .hamburger-inner::before, .hamburger-inner::after {
+    width: 22px;
+    height: 2px;
+    background-color: #fff;
+    border-radius: 4px;
+    position: absolute;
+    transition-property: transform;
+    transition-duration: 0.15s;
+    transition-timing-function: ease;
+}
+
+.hamburger-inner::before, .hamburger-inner::after {
+    content: "";
+    display: block;
+}
+
+.hamburger-inner::before {
+    top: -10px;
+}
+
+.hamburger-inner::after {
+    bottom: -10px;
+}
+
+/*
+   * Slider
+   */
+.hamburger--slider .hamburger-inner {
+    top: 2px;
+}
+
+.hamburger--slider .hamburger-inner::before {
+    top: 7px;
+    transition-property: transform, opacity;
+    transition-timing-function: ease;
+    transition-duration: 0.15s;
+}
+
+.hamburger--slider .hamburger-inner::after {
+    top: 14px;
+}
+
+.hamburger--slider.is-active .hamburger-inner {
+    transform: translate3d(0, 8px, 0) rotate(45deg);
+}
+
+.hamburger--slider.is-active .hamburger-inner::before {
+    transform: rotate(-45deg) translate3d(-5.71429px, -6px, 0);
+    opacity: 0;
+}
+
+.hamburger--slider.is-active .hamburger-inner::after {
+    transform: translate3d(0, -14px, 0) rotate(-90deg);
 }
