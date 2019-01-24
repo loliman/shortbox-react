@@ -23,9 +23,13 @@ function generateLabel(o) {
         return "Shortbox";
     else if (o.name)
         return o.name;
-    else if (o.publisher) {
-        let endyear = (o.endyear === 0) ? '...' : o.endyear;
-        return o.title + ' (Vol. ' + romanize(o.volume) + ') (' + o.startyear + ' - ' + endyear + ')';
+    else if (o.volume) {
+        let year;
+
+        if (o.endyear)
+            year = ' (' + o.startyear + ' - ' + ((o.endyear === 0) ? '...' : o.endyear) + ')';
+
+        return o.title + ' (Vol. ' + romanize(o.volume) + ')' + (year ? year : "");
     } else if (o.series)
         return o.series.title + ' #' + o.number;
 }
@@ -77,36 +81,42 @@ function getHierarchyLevelFromUrl(url) {
         return HierarchyLevel.SERIES;
     else if (url.length === 2)
         return HierarchyLevel.ISSUE;
+    else return HierarchyLevel.ISSUE_DETAILS;
 }
 
 function getSelected(url) {
     if(url.startsWith("/"))
         url = url.substring(1, url.length);
-
+    if (url.startsWith("us/"))
+        url = url.substring(3, url.length);
+    if (url.startsWith("us"))
+        url = url.substring(2, url.length);
     if(url.endsWith("/"))
         url = url.substring(0, url.length-1);
-
     let urls = [];
     if(url === "")
         return urls;
 
     url.split("/").forEach((u) => urls.push(decodeURIComponent(u)));
-
     return urls;
 }
 
-function generateUrl(item) {
-    if(item.name)
-        return encodeURIComponent(item.name);
+function generateUrl(item, us) {
+    if (item.name || item.name === "")
+        return (us ? "/us/" : "/") + encodeURIComponent(item.name);
 
     if(item.publisher)
-        return encodeURIComponent(item.publisher.name)
+        return (us ? "/us/" : "/")
+            + encodeURIComponent(item.publisher.name.replace(/%/g, '%25'))
             + "/"
-            + encodeURIComponent(item.title + "_Vol_" + item.volume);
+            + encodeURIComponent(item.title.replace(/%/g, '%25') + "_Vol_" + item.volume);
 
-    return encodeURIComponent(item.series.title + "_Vol_" + item.series.volume)
+    return (us ? "/us/" : "/")
+        + encodeURIComponent(item.series.publisher.name.replace(/%/g, '%25'))
         + "/"
-        + encodeURIComponent(item.number);
+        + encodeURIComponent(item.series.title.replace(/%/g, '%25') + "_Vol_" + item.series.volume)
+        + "/"
+        + encodeURIComponent(item.number.replace(/%/g, '%25'));
 }
 
 export {generateLabel, getHierarchyLevel, generateIssueSubHeader, generateStoryTitle, HierarchyLevel, capitalize,

@@ -1,10 +1,10 @@
 import gql from "graphql-tag";
-import {HierarchyLevel} from "../util/util";
 
 const publishers = gql`query Publishers($us: Boolean!){
     publishers(us: $us) {
         id,
-        name
+        name,
+        us
     }
 }`;
 
@@ -23,7 +23,7 @@ const series = gql`query Series($publisher_name: String!){
 }`;
 
 const issues = gql`query Issues($series_title: String!, $series_volume: Int!, $publisher_name: String!){
-    issues(series_title: $series_title, series_volume: $series_volume, publisher_name: $publisher_name, ) {
+    issues(series_title: $series_title, series_volume: $series_volume, publisher_name: $publisher_name) {
         id,
         title,
         number,
@@ -59,8 +59,8 @@ function getListQuery(s) {
     }
 }
 
-const issue = gql`query Issue($id: Int!){
-    issue(id: $id) {
+const issue = gql`query Issue($issue_number: String!, $series_title: String!, $series_volume: Int!, $publisher_name: String!){
+    issue(issue_number: $issue_number, series_title: $series_title, series_volume: $series_volume, publisher_name: $publisher_name) {
         id,
         title,
         number,

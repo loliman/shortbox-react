@@ -11,6 +11,7 @@ import {createHttpLink} from "apollo-link-http";
 import {InMemoryCache} from 'apollo-cache-inmemory';
 import {setContext} from 'apollo-link-context';
 import {BrowserRouter, Route} from "react-router-dom";
+import {ScrollContext} from 'react-router-scroll-4';
 
 const httpLink = createHttpLink({
     uri: 'https://localhost:4000/graphql',
@@ -39,19 +40,19 @@ const client = new ApolloClient({
 
 ReactDOM.render(
     <BrowserRouter>
-        <SnackbarProvider maxSnack={3}
-                          anchorOrigin={{
-                              vertical: 'top',
-                              horizontal: 'right',
-                          }}>
-            <CookiesProvider>
-                <ApolloProvider client={client}>
-                    <Route exact path="/" component={App} />
-                    <Route exact path="/*/" component={App} />
-                    <Route exact path="/us/" component={App} />
-                </ApolloProvider>
-            </CookiesProvider>
-        </SnackbarProvider>
+        <ScrollContext>
+            <SnackbarProvider maxSnack={3}
+                              anchorOrigin={{
+                                  vertical: 'top',
+                                  horizontal: 'right',
+                              }}>
+                <CookiesProvider>
+                    <ApolloProvider client={client}>
+                        <Route exact path="*" component={App}/>
+                    </ApolloProvider>
+                </CookiesProvider>
+            </SnackbarProvider>
+        </ScrollContext>
     </BrowserRouter>,
     document.getElementById('root')
 );

@@ -1,11 +1,14 @@
 import React from "react";
 import CardContent from "@material-ui/core/CardContent/CardContent";
 import Typography from "@material-ui/core/Typography/Typography";
-import {IssueDetails} from "./IssueDetails";
-import {getHierarchyLevel, HierarchyLevel} from "../../util/util";
+import IssueDetails from "./IssueDetails";
+import {getHierarchyLevelFromUrl, getSelected, HierarchyLevel} from "../../util/util";
+import {withRouter} from "react-router-dom";
 
 export function Details(props) {
-    switch (getHierarchyLevel(props.context.selected)) {
+    let selected = getSelected(props.match.url);
+
+    switch (getHierarchyLevelFromUrl(selected)) {
         case HierarchyLevel.ISSUE_DETAILS:
         case HierarchyLevel.ISSUE_DETAILS_US:
             return <IssueDetails/>;
@@ -26,3 +29,5 @@ function GenericDetails(props) {
         </CardContent>
     );
 }
+
+export default withRouter(Details)

@@ -9,13 +9,14 @@ import Button from "@material-ui/core/es/Button/Button";
 import LoginDialog from "./admin/LoginDialog";
 import {Mutation} from "react-apollo";
 import {logout} from "../graphql/mutations";
-import {generateLabel, getHierarchyLevel, HierarchyLevel} from "../util/util";
+import {generateLabel, generateUrl, getHierarchyLevelFromUrl, getSelected, HierarchyLevel} from "../util/util";
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import {AppContext} from "./generic/AppContext";
 import {withSnackbar} from "notistack";
 import Hamburger from 'react-hamburgers';
 import {compose} from "recompose";
 import {withRouter} from "react-router-dom";
+import Link from "react-router-dom/es/Link";
 
 class TopBar extends React.Component {
     constructor(props) {
@@ -31,15 +32,15 @@ class TopBar extends React.Component {
 
         return (
             <AppContext.Consumer>
-                {({context, handleLogout, handleDrawerOpen}) => (
+                {({context, handleLogout, toogleDrawer}) => (
                     <AppBar position="fixed" className="appBar">
                         <Toolbar>
                             <Hamburger
                                 active={context.drawerOpen}
                                 type="slider"
-                                onClick={() => handleDrawerOpen()}/>
+                                onClick={() => toogleDrawer()}/>
                             <Typography variant="h6" color="inherit" className="appTitle" noWrap>
-                                {this.generateHeader(context)}
+                                {this.generateHeader(context.drawerOpen, toogleDrawer)}
                             </Typography>
                             <div className="grow"/>
                             <div>
@@ -49,10 +50,8 @@ class TopBar extends React.Component {
                                         <Tooltip title={"Wechseln zu " + (us ? "Deutsch" : "US")}>
                                             <Switch
                                                 checked={us}
-                                                onChange={() => this.props.history.push(us ? "/" : "us")}
-                                                color="secondary"
-
-                                            />
+                                                onChange={() => this.props.history.push(us ? "/" : "/us")}
+                                                color="secondary"/>
                                         </Tooltip>
                                     }
                                     label="US"
@@ -119,30 +118,47 @@ class TopBar extends React.Component {
         })
     };
 
-    generateHeader(context) {
-        switch (getHierarchyLevel(context.selected)) {
+    generateHeader(drawerOpen, toogleDrawer) {
+        let selected = getSelected(this.props.match.url);
+        let us = this.props.match.url.indexOf("/us") === 0;
+
+        switch (getHierarchyLevelFromUrl(selected)) {
             case HierarchyLevel.SERIES:
-                return <span>{generateLabel(context.selected)}</span>;
-            case HierarchyLevel.ISSUE:
                 return (
                     <React.Fragment>
-                        <span>{generateLabel(context.selected.publisher)}</span>
+                        <Link to={us ? "/us" : "/"} onClick={() => {
+                            if (!drawerOpen) toogleDrawer()
+                        }}>{"Shortbox"}</Link>
                         <KeyboardArrowRightIcon className="navArrow"/>
-                        <span>{generateLabel(context.selected)}</span>
+                        <span>{generateLabel({name: selected[0]})}</span>
                     </React.Fragment>
                 );
+            case HierarchyLevel.ISSUE:
             case HierarchyLevel.ISSUE_DETAILS:
             case HierarchyLevel.ISSUE_DETAILS_US:
                 return (
                     <React.Fragment>
-                        <span>{generateLabel(context.selected.series.publisher)}</span>
+                        <Link to={us ? "/us" : "/"} onClick={() => {
+                            if (!drawerOpen) toogleDrawer()
+                        }}>{"Shortbox"}</Link>
                         <KeyboardArrowRightIcon className="navArrow"/>
-                        <span>{generateLabel(context.selected.series)}</span>
+                        <Link to={generateUrl({name: selected[0]}, us)} onClick={() => {
+                            if (!drawerOpen) toogleDrawer()
+                        }}>
+                            {generateLabel({name: selected[0]})}
+                        </Link>
+                        <KeyboardArrowRightIcon className="navArrow"/>
+                        <span>
+                            {generateLabel({
+                                title: selected[1].substring(0, selected[1].indexOf("_")),
+                                volume: parseInt(selected[1].substring(selected[1].lastIndexOf("_") + 1)),
+                            })}
+                        </span>
                     </React.Fragment>
                 );
             case HierarchyLevel.PUBLISHER:
             default:
-                return <span>{'Shortbox'}</span>;
+                return <span>{"Shortbox"}</span>;
         }
     }
 }

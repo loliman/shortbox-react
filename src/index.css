@@ -20,6 +20,7 @@
 }
 
 #drawer > div {
+    overflow: unset;
     flex-shrink: 0 !important;
     padding: 0 !important;
     width: 25%;
@@ -32,6 +33,10 @@
 
 ::-webkit-scrollbar {
     display: none;
+}
+
+#list {
+    overflow: auto;
 }
 
 .content > div {
@@ -50,6 +55,16 @@
 .appTitle {
     margin-top: -1px;
     max-width: 80%;
+}
+
+.appTitle > a {
+    color: white;
+    text-decoration: none;
+}
+
+.appTitle > a:hover {
+    color: lightsteelblue;
+    text-decoration: none;
 }
 
 @media (max-width: 600px) {

@@ -3,7 +3,7 @@ import {Query} from "react-apollo";
 import {issue} from "../../graphql/queries";
 import {QueryResult} from "../generic/QueryResult";
 import CardHeader from "@material-ui/core/CardHeader/CardHeader";
-import {generateIssueSubHeader, generateLabel, generateStoryTitle} from "../../util/util";
+import {generateIssueSubHeader, generateLabel, generateStoryTitle, generateUrl, getSelected} from "../../util/util";
 import CardContent from "@material-ui/core/CardContent/CardContent";
 import Typography from "@material-ui/core/Typography/Typography";
 import GridList from "@material-ui/core/GridList/GridList";
@@ -28,42 +28,49 @@ import Tooltip from "@material-ui/core/es/Tooltip/Tooltip";
 import List from "@material-ui/core/List/List";
 import ListItem from "@material-ui/core/ListItem/ListItem";
 import {AppContext} from "../generic/AppContext";
+import {Link, withRouter} from "react-router-dom";
 
-export class IssueDetails extends React.Component {
+class IssueDetails extends React.Component {
     render() {
+        let selected = getSelected(this.props.match.url);
+        let variables = {
+            publisher_name: selected[0],
+            series_title: selected[1].substring(0, selected[1].indexOf("_")),
+            series_volume: parseInt(selected[1].substring(selected[1].lastIndexOf("_") + 1, selected[1].length)),
+            issue_number: selected[2]
+        };
+
+        let us = this.props.match.url.indexOf("/us") === 0;
+
         return (
-            <AppContext.Consumer>
-                {({context}) => (
-                    <Query query={issue} variables={{id: parseInt(context.selected.id)}}>
-                        {({loading, error, data}) => {
-                            if (loading || error)
-                                return <QueryResult loading={loading} error={error}/>;
+            <Query query={issue} variables={variables}>
+                {({loading, error, data}) => {
+                    if (loading || error)
+                        return <QueryResult loading={loading} error={error}/>;
 
-                            let selectedVariant = context.selected.format ? context.selected : data.issue;
+                    let selectedVariant = data.issue;
 
-                            return (
-                                <React.Fragment>
-                                    <CardHeader title={generateLabel(context.selected)}
-                                                subheader={generateIssueSubHeader(selectedVariant)}/>
+                    return (
+                        <React.Fragment>
+                            <CardHeader title={generateLabel(data.issue)}
+                                        subheader={generateIssueSubHeader(selectedVariant)}/>
 
-                                    <CardContent>
-                                        <IssueDetailsVariants handleVariantSelection={this.handleVariantSelection}
-                                                              selected={data.issue}/>
+                            <CardContent>
+                                <IssueDetailsVariants handleVariantSelection={this.handleVariantSelection}
+                                                      selected={data.issue}/>
 
-                                        <div className="details">
-                                            <IssueDetailsTable issue={data.issue} selectedVariant={selectedVariant}/>
-                                            <IssueDetailsCover selectedVariant={selectedVariant}/>
-                                        </div>
+                                <div className="details">
+                                    <IssueDetailsTable issue={data.issue} selectedVariant={selectedVariant}/>
+                                    <IssueDetailsCover selectedVariant={selectedVariant}/>
+                                </div>
 
-                                        <IssueStories stories={data.issue.stories}
-                                                      handleStorySelection={this.props.onSelection}/>
-                                    </CardContent>
-                                </React.Fragment>
-                            );
-                        }}
-                    </Query>
-                )}
-            </AppContext.Consumer>
+                                <IssueStories stories={data.issue.stories}
+                                              us={us}/>
+                            </CardContent>
+                        </React.Fragment>
+                    );
+                }}
+            </Query>
         );
     }
 
@@ -86,28 +93,24 @@ function IssueStories(props) {
         <div className="stories">
             <CardHeader title="Geschichten"/>
 
-            {props.stories.map(story => <IssueStory key={story.id} story={story}/>)}
+            {props.stories.map(story => <IssueStory us={props.us} key={story.id} story={story}/>)}
         </div>
     );
 }
 
 function IssueStory(props) {
     return (
-        <AppContext.Consumer>
-            {({context}) => (
-                <ExpansionPanel className="story">
-                    <ExpansionPanelSummary className="summary" expandIcon={<ExpandMoreIcon/>}>
-                        <IssueStoryTitle story={props.story} goToDetails={props.goToDetails}/>
-                    </ExpansionPanelSummary>
-                    <ExpansionPanelDetails>
-                        <IssueStoryDetails/>
-                        {
-                            context.us ? <IssueStoryIssues goToDetails={props.goToDetails} story={props.story}/> : null
-                        }
-                    </ExpansionPanelDetails>
-                </ExpansionPanel>
-            )}
-        </AppContext.Consumer>
+        <ExpansionPanel className="story">
+            <ExpansionPanelSummary className="summary" expandIcon={<ExpandMoreIcon/>}>
+                <IssueStoryTitle story={props.story} us={props.us}/>
+            </ExpansionPanelSummary>
+            <ExpansionPanelDetails>
+                <IssueStoryDetails/>
+                {
+                    props.us ? <IssueStoryIssues story={props.story}/> : null
+                }
+            </ExpansionPanelDetails>
+        </ExpansionPanel>
     );
 }
 
@@ -117,44 +120,35 @@ function IssueStoryDetails(props) {
 
 function IssueStoryIssues(props) {
     return (
-        <AppContext.Consumer>
-            {({handleNavigation}) => (
-                <List className="issueStoryIssueList">
-                    {
-                        props.story.children.map((child) =>
-                            <ListItem key={child.id} className="issueStoryIssueItem" divider>
-                                <div>
-                                    <Typography
-                                        className="issueStoryIssue">{generateLabel(child.issue.series) + " #" + child.issue.number}</Typography>
-                                    <Typography className="issueStoryIssue issueStoryIssuePublisher">
-                                        {generateLabel(child.issue.series.publisher)}
-                                    </Typography>
-                                </div>
-                                <Tooltip title="Zur Ausgabe">
-                                    <IconButton className="detailsIcon issueStoryIssueButton"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleNavigation(child.issue)
-                                                }}
-                                                aria-label="Details">
-                                        <SearchIcon fontSize="small"/>
-                                    </IconButton>
-                                </Tooltip>
-                            </ListItem>
-                        )
-                    }
-                </List>
-            )}
-        </AppContext.Consumer>
+        <List className="issueStoryIssueList">
+            {
+                props.story.children.map((child) =>
+                    <ListItem key={child.id} className="issueStoryIssueItem" divider>
+                        <div>
+                            <Typography
+                                className="issueStoryIssue">{generateLabel(child.issue.series) + " #" + child.issue.number}</Typography>
+                            <Typography className="issueStoryIssue issueStoryIssuePublisher">
+                                {generateLabel(child.issue.series.publisher)}
+                            </Typography>
+                        </div>
+                        <Tooltip title="Zur Ausgabe">
+                            <IconButton className="detailsIcon issueStoryIssueButton"
+                                        component={Link}
+                                        to={generateUrl(child.issue)}
+                                        aria-label="Details">
+                                <SearchIcon fontSize="small"/>
+                            </IconButton>
+                        </Tooltip>
+                    </ListItem>
+                )
+            }
+        </List>
     )
 }
 
 function IssueStoryTitle(props) {
-    return (
-        <AppContext.Consumer>
-            {({context, handleNavigation}) => {
                 let extended;
-                if (!context.us) {
+    if (!props.us) {
                     extended = (
                         <div className="chips">
                             {
@@ -177,10 +171,8 @@ function IssueStoryTitle(props) {
 
                             <Tooltip title="Zur US Ausgabe">
                                 <IconButton className="detailsIcon"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleNavigation(props.story.parent.issue)
-                                            }}
+                                            component={Link}
+                                            to={generateUrl(props.story.parent.issue, true)}
                                             aria-label="Details">
                                     <SearchIcon fontSize="small"/>
                                 </IconButton>
@@ -196,9 +188,6 @@ function IssueStoryTitle(props) {
                         {extended}
                     </div>
                 )
-            }}
-        </AppContext.Consumer>
-    );
 }
 
 function IssueDetailsTable(props) {
@@ -315,3 +304,5 @@ function IssueDetailsVariant(props) {
         </GridListTile>
     );
 }
+
+export default withRouter(IssueDetails);

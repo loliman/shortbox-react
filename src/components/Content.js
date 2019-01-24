@@ -1,6 +1,6 @@
 import {AppContext} from "./generic/AppContext";
 import Card from "@material-ui/core/Card/Card";
-import {Details} from "./details/Details";
+import Details from "./details/Details";
 import React from "react";
 import Editor from "./admin/editor/Editor";
 
