@@ -70,4 +70,44 @@ function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export {generateLabel, getHierarchyLevel, generateIssueSubHeader, generateStoryTitle, HierarchyLevel, capitalize}
+function getHierarchyLevelFromUrl(url) {
+    if (url.length === 0)
+        return HierarchyLevel.PUBLISHER;
+    else if (url.length === 1)
+        return HierarchyLevel.SERIES;
+    else if (url.length === 2)
+        return HierarchyLevel.ISSUE;
+}
+
+function getSelected(url) {
+    if(url.startsWith("/"))
+        url = url.substring(1, url.length);
+
+    if(url.endsWith("/"))
+        url = url.substring(0, url.length-1);
+
+    let urls = [];
+    if(url === "")
+        return urls;
+
+    url.split("/").forEach((u) => urls.push(decodeURIComponent(u)));
+
+    return urls;
+}
+
+function generateUrl(item) {
+    if(item.name)
+        return encodeURIComponent(item.name);
+
+    if(item.publisher)
+        return encodeURIComponent(item.publisher.name)
+            + "/"
+            + encodeURIComponent(item.title + "_Vol_" + item.volume);
+
+    return encodeURIComponent(item.series.title + "_Vol_" + item.series.volume)
+        + "/"
+        + encodeURIComponent(item.number);
+}
+
+export {generateLabel, getHierarchyLevel, generateIssueSubHeader, generateStoryTitle, HierarchyLevel, capitalize,
+    getSelected, getHierarchyLevelFromUrl, generateUrl}

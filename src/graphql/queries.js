@@ -8,8 +8,8 @@ const publishers = gql`query Publishers($us: Boolean!){
     }
 }`;
 
-const series = gql`query Series($publisher_id: Int!){
-    series(publisher_id: $publisher_id) {
+const series = gql`query Series($publisher_name: String!){
+    series(publisher_name: $publisher_name) {
         id,
         title,
         volume,
@@ -22,8 +22,8 @@ const series = gql`query Series($publisher_id: Int!){
     }
 }`;
 
-const issues = gql`query Issues($series_id: Int!){
-    issues(series_id: $series_id) {
+const issues = gql`query Issues($series_title: String!, $series_volume: Int!, $publisher_name: String!){
+    issues(series_title: $series_title, series_volume: $series_volume, publisher_name: $publisher_name, ) {
         id,
         title,
         number,
@@ -41,17 +41,18 @@ const issues = gql`query Issues($series_id: Int!){
             volume,
             publisher {
                 id,
-                name
+                name,
+                us
             }
         }
     }
 }`;
 
-function getListQuery(l) {
-    switch (l) {
-        case HierarchyLevel.PUBLISHER:
+function getListQuery(s) {
+    switch (s.length) {
+        case 0:
             return publishers;
-        case HierarchyLevel.SERIES:
+        case 1:
             return series;
         default:
             return issues;

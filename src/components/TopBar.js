@@ -14,6 +14,8 @@ import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import {AppContext} from "./generic/AppContext";
 import {withSnackbar} from "notistack";
 import Hamburger from 'react-hamburgers';
+import {compose} from "recompose";
+import {withRouter} from "react-router-dom";
 
 class TopBar extends React.Component {
     constructor(props) {
@@ -25,9 +27,11 @@ class TopBar extends React.Component {
     }
 
     render() {
+        let us = this.props.match.url.indexOf("/us") === 0;
+
         return (
             <AppContext.Consumer>
-                {({context, handleLogout, toogleUs, handleDrawerOpen}) => (
+                {({context, handleLogout, handleDrawerOpen}) => (
                     <AppBar position="fixed" className="appBar">
                         <Toolbar>
                             <Hamburger
@@ -42,11 +46,12 @@ class TopBar extends React.Component {
                                 <FormControlLabel
                                     className="switch"
                                     control={
-                                        <Tooltip title={"Wechseln zu " + (!context.us ? "US" : "Deutsch")}>
+                                        <Tooltip title={"Wechseln zu " + (us ? "Deutsch" : "US")}>
                                             <Switch
-                                                checked={context.us}
-                                                onChange={toogleUs}
+                                                checked={us}
+                                                onChange={() => this.props.history.push(us ? "/" : "us")}
                                                 color="secondary"
+
                                             />
                                         </Tooltip>
                                     }
@@ -142,4 +147,6 @@ class TopBar extends React.Component {
     }
 }
 
-export default withSnackbar(TopBar);
+export default compose(
+    withSnackbar,
+    withRouter)(TopBar);

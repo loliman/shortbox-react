@@ -22,7 +22,6 @@ class AppContextProvider extends React.Component {
         return (
             <AppContext.Provider value={{
                 context: this.state,
-                toogleUs: this.toogleUs,
                 handleLogin: this.handleLogin,
                 handleLogout: this.handleLogout,
                 handleNavigation: this.handleNavigation,
@@ -34,14 +33,6 @@ class AppContextProvider extends React.Component {
             </AppContext.Provider>
         )
     }
-
-    toogleUs = () => {
-        this.setState(() => ({
-            us: !this.state.us,
-            selected: null,
-            lastSelected: []
-        }));
-    };
 
     handleLogin = (user) => {
         this.props.cookies.set('session', user);

@@ -1,12 +1,14 @@
 import React from "react";
 import CssBaseline from "@material-ui/core/CssBaseline/CssBaseline";
 import TopBar from "./TopBar";
-import {List} from "./List";
+import List from "./List";
 import {instanceOf} from 'prop-types';
 import {Cookies, withCookies} from 'react-cookie';
 import {AddFab, EditMenu} from "./admin/Admin";
 import AppContext from "./generic/AppContext";
 import Content from "./Content";
+import { withRouter } from "react-router";
+import {compose} from "recompose";
 
 class App extends React.Component {
     static propTypes = {
@@ -66,4 +68,7 @@ class App extends React.Component {
     };
 }
 
-export default withCookies(App);
+export default compose(
+    withRouter,
+    withCookies
+)(App);
