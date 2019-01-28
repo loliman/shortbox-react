@@ -3,6 +3,19 @@
     padding: 10px !important;
 }
 
+#loginForm {
+    width: 100%;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    margin-top: 10%;
+}
+
+#loginButtons {
+    margin-top: 24px;
+    margin-left: 25%;
+}
+
 .appBar {
     z-index: 1201 !important;
 }
@@ -10,7 +23,7 @@
 .content {
     flex-grow: 1 !important;
     margin-left: 25%;
-    transition: ease-in 75ms;
+    transition: ease-in 150ms;
     margin-top: 64px;
     z-index: 1000 !important;
 }
@@ -39,10 +52,9 @@
     overflow: auto;
 }
 
-.content > div {
+.content > div, .contentShift > div {
     overflow: auto;
     height: calc(100vh - 84px);
-    margin-left: 3px;
 }
 
 .contentShift {
@@ -50,6 +62,7 @@
     margin-left: 0;
     transition: ease-out 200ms;
     margin-top: 64px;
+    z-index: 1000 !important;
 }
 
 .appTitle {
@@ -68,7 +81,7 @@
 }
 
 @media (max-width: 600px) {
-    .content > div {
+    .content > div, .contentShift > div {
         width: 102.5%;
         height: 93vh;
         margin-left: -10px;
@@ -79,9 +92,11 @@
         margin-top: 48px;
         z-index: 1000 !important;
         margin-bottom: -10px;
+        margin-left: 0 !important;
     }
 
     .contentShift {
+        margin-left: 0 !important;
         margin-top: 48px !important;
     }
 
@@ -190,6 +205,11 @@
 
 .tile:hover {
     cursor: pointer;
+}
+
+.breadCrumbLink:hover {
+    cursor: pointer;
+    opacity: 0.7;
 }
 
 .navArrow {
@@ -332,6 +352,10 @@ div[class^="MuiExpansionPanelSummary-content-"] {
     width: 100%;
 }
 
+.fieldSmall {
+    width: 25%;
+}
+
 .itemText {
     white-space: normal;
 }
@@ -354,6 +378,15 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 
 .mobileChip {
     width: 15.5px !important;
+}
+
+.issuePreview {
+    margin-bottom: 10px;
+}
+
+.lastAdded {
+    font-weight: initial;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
 }
 
 /*!

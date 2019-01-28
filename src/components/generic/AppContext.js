@@ -1,5 +1,7 @@
 import React from 'react'
-import {getHierarchyLevel} from "../../util/util";
+import {withRouter} from "react-router-dom";
+import {withCookies} from "react-cookie";
+import {compose} from "recompose";
 
 export const AppContext = React.createContext();
 
@@ -7,13 +9,10 @@ class AppContextProvider extends React.Component {
     constructor(props) {
         super(props);
 
+        let mobile = window.innerWidth <= 600;
         this.state = {
-            selected: null,
-
-            edit: null,
-
-            session: props.cookies.get('session'),
-            drawerOpen: window.innerWidth > 600
+            mobile: mobile,
+            drawerOpen: !mobile
         };
     }
 
@@ -21,12 +20,13 @@ class AppContextProvider extends React.Component {
         return (
             <AppContext.Provider value={{
                 context: this.state,
+
+                drawerOpen: this.state.drawerOpen,
+                toogleDrawer: this.toogleDrawer,
+                session: this.props.cookies.get('session'),
                 handleLogin: this.handleLogin,
                 handleLogout: this.handleLogout,
-                handleNavigation: this.handleNavigation,
-                toogleDrawer: this.toogleDrawer,
-                handleAdd: this.handleAdd,
-                handleEdit: this.handleEdit
+                mobile: this.state.mobile
             }}>
                 {this.props.children}
             </AppContext.Provider>
@@ -35,46 +35,21 @@ class AppContextProvider extends React.Component {
 
     handleLogin = (user) => {
         this.props.cookies.set('session', user);
-        this.setState(() => ({
-            session: user
-        }))
     };
 
     handleLogout = () => {
         this.props.cookies.remove('session');
-        this.setState(() => ({
-            session: null
-        }))
     };
 
-    handleNavigation = (e, back) => {
-        this.setState(() => ({
-            selected: e,
-            edit: null,
-            drawerOpen: (window.innerWidth <= 600 && getHierarchyLevel(e).indexOf("issue_details") !== -1) ?
-                false :
-                this.state.drawerOpen
-        }));
-    };
 
     toogleDrawer = () => {
         this.setState({
             drawerOpen: !this.state.drawerOpen
         })
     };
-
-    handleEdit = (e) => {
-        this.setState(() => ({
-            edit: e,
-            drawerOpen: window.innerWidth > 600 ? this.state.drawerOpen : !this.state.drawerOpen
-        }));
-    };
-
-    handleAdd = (e) => {
-        this.setState(() => ({
-            edit: e
-        }));
-    };
 }
 
-export default AppContextProvider
+export default compose(
+    withCookies,
+    withRouter
+)(AppContextProvider);

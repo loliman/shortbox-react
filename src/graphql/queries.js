@@ -1,4 +1,5 @@
 import gql from "graphql-tag";
+import {HierarchyLevel} from "../util/hierarchiy";
 
 const publishers = gql`query Publishers($us: Boolean!){
     publishers(us: $us) {
@@ -48,16 +49,39 @@ const issues = gql`query Issues($series_title: String!, $series_volume: Int!, $p
     }
 }`;
 
-function getListQuery(s) {
-    switch (s.length) {
-        case 0:
+function getListQuery(level) {
+    switch (level) {
+        case HierarchyLevel.PUBLISHER:
             return publishers;
-        case 1:
+        case HierarchyLevel.SERIES:
             return series;
         default:
             return issues;
     }
 }
+
+const publisher = gql`query Publisher($publisher_name: String!){
+    publisher(publisher_name: $publisher_name) {
+        id,
+        name,
+        us
+    }
+}`;
+
+const seriesd = gql`query Seriesd($series_title: String!, $series_volume: Int!, $publisher_name: String!){
+    seriesd(series_title: $series_title, series_volume: $series_volume, publisher_name: $publisher_name) {
+        id,
+        title,
+        volume,
+        startyear,
+        endyear,
+        publisher {
+            id,
+            name,
+            us
+        }
+    }
+}`;
 
 const issue = gql`query Issue($issue_number: String!, $series_title: String!, $series_volume: Int!, $publisher_name: String!){
     issue(issue_number: $issue_number, series_title: $series_title, series_volume: $series_volume, publisher_name: $publisher_name) {
@@ -75,8 +99,10 @@ const issue = gql`query Issue($issue_number: String!, $series_title: String!, $s
         series {
             id,
             title,
+            volume,
             publisher {
                 id, 
+                name,
                 us
             }
         },
@@ -138,4 +164,4 @@ const issue = gql`query Issue($issue_number: String!, $series_title: String!, $s
     }
 }`;
 
-export {getListQuery, issue, publishers};
+export {getListQuery, issue, publisher, seriesd, publishers};

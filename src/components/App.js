@@ -1,71 +1,89 @@
 import React from "react";
 import CssBaseline from "@material-ui/core/CssBaseline/CssBaseline";
-import TopBar from "./TopBar";
-import List from "./List";
 import {instanceOf} from 'prop-types';
 import {Cookies, withCookies} from 'react-cookie';
-import {AddFab, EditMenu} from "./admin/Admin";
-import AppContext from "./generic/AppContext";
-import Content from "./Content";
 import {withRouter} from "react-router";
 import {compose} from "recompose";
+import {Redirect, Route, Switch} from "react-router-dom";
+import Login from "./Login";
+import PublisherDetails from "./details/PublisherDetails";
+import SeriesDetails from "./details/SeriesDetails";
+import IssueCreate from "./restricted/create/IssueCreate";
+import PublisherCreate from "./restricted/create/PublisherCreate";
+import SeriesCreate from "./restricted/create/SeriesCreate";
+import PublisherEdit from "./restricted/edit/PublisherEdit";
+import SeriesEdit from "./restricted/edit/SeriesEdit";
+import IssueEdit from "./restricted/edit/IssueEdit";
+import Home from "./Home";
+import AppContextProvider from "./generic/AppContext";
+import IssueDetailsUS from "./details/IssueDetailsUS";
+import IssueDetailsDE from "./details/IssueDetailsDE";
 
 class App extends React.Component {
     static propTypes = {
         cookies: instanceOf(Cookies).isRequired
     };
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            openSpeedDial: false,
-            editMenu: {
-                anchorEl: null,
-                item: null
-            }
-        };
-    }
-
     render() {
+        let session = this.props.cookies.get('session');
+
         return (
-            <AppContext cookies={this.props.cookies}>
+            <AppContextProvider>
                 <div className="root">
                     <CssBaseline/>
 
-                    <TopBar/>
+                    <Switch>
+                        <Route exact path="/" render={() => <Redirect to="/de" />}/>
 
-                    <List handleMenuOpen={this.handleEditMenuOpen}
-                          anchorEl={this.state.editMenu.anchorEl}/>
+                        <Route exact path="/de" component={Home}/>
+                        <Route exact path="/de/:publisher" component={PublisherDetails}/>
+                        <Route exact path="/de/:publisher/:series" component={SeriesDetails}/>
+                        <Route exact path="/de/:publisher/:series/:issue" component={IssueDetailsDE}/>
+                        <Route exact path="/de/:publisher/:series/:issue/:variant" component={IssueDetailsDE}/>
 
-                    <Content drawerOpen={this.state.drawerOpen}/>
+                        <Route exact path="/us" component={Home}/>
+                        <Route exact path="/us/:publisher" component={PublisherDetails}/>
+                        <Route exact path="/us/:publisher/:series" component={SeriesDetails}/>
+                        <Route exact path="/us/:publisher/:series/:issue" component={IssueDetailsUS}/>
 
-                    <AddFab/>
-                    <EditMenu editMenu={this.state.editMenu}
-                              handleOpen={this.handleEditMenuOpen}
-                              handleClose={this.handleEditMenuClose}/>
+                        <Route exact path="/login" component={Login}/>
+
+                        <PrivateRoute exact session={session} path="/create/publisher" component={PublisherCreate}/>
+                        <PrivateRoute exact session={session} path="/create/series" component={SeriesCreate}/>
+                        <PrivateRoute exact session={session} path="/create/issue" component={IssueCreate}/>
+
+                        <PrivateRoute exact session={session} path="/edit/:publisher" component={PublisherEdit}/>
+                        <PrivateRoute exact session={session} path="/edit/:publisher/:series" component={SeriesEdit}/>
+                        <PrivateRoute exact session={session} path="/edit/:publisher/:series/:issue" component={IssueEdit}/>
+                        <PrivateRoute exact session={session} path="/edit/:publisher/:series/:issue/:variant" component={IssueEdit}/>
+
+                        <Route render={() => <Redirect to="/de" />} />
+                    </Switch>
                 </div>
-            </AppContext>
+            </AppContextProvider>
         );
     }
+}
 
-    handleEditMenuOpen = (e, item) => {
-        this.setState({
-            editMenu: {
-                anchorEl: e.currentTarget,
-                item: item
-            }
-        });
-    };
 
-    handleEditMenuClose = () => {
-        this.setState({
-            editMenu: {
-                anchorEl: null,
-                item: this.state.editMenu.item
+function PrivateRoute({ component: Component, session, ...rest }) {
+    return (
+        <Route
+            {...rest}
+            render={(session, props) =>
+                session ? (
+                    <Component {...props} />
+                ) : (
+                    <Redirect
+                        to={{
+                            pathname: "/login",
+                            state: { from: props.location }
+                        }}
+                    />
+                )
             }
-        });
-    };
+        />
+    );
 }
 
 export default compose(

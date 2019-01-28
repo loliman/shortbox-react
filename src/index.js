@@ -10,8 +10,9 @@ import {SnackbarProvider} from 'notistack';
 import {createHttpLink} from "apollo-link-http";
 import {InMemoryCache} from 'apollo-cache-inmemory';
 import {setContext} from 'apollo-link-context';
-import {BrowserRouter, Route} from "react-router-dom";
+import {BrowserRouter} from "react-router-dom";
 import {ScrollContext} from 'react-router-scroll-4';
+import {LastLocationProvider} from "react-router-last-location";
 
 const httpLink = createHttpLink({
     uri: 'https://localhost:4000/graphql',
@@ -40,19 +41,21 @@ const client = new ApolloClient({
 
 ReactDOM.render(
     <BrowserRouter>
-        <ScrollContext>
-            <SnackbarProvider maxSnack={3}
-                              anchorOrigin={{
-                                  vertical: 'top',
-                                  horizontal: 'right',
-                              }}>
-                <CookiesProvider>
-                    <ApolloProvider client={client}>
-                        <Route exact path="*" component={App}/>
-                    </ApolloProvider>
-                </CookiesProvider>
-            </SnackbarProvider>
-        </ScrollContext>
+        <LastLocationProvider>
+            <ScrollContext>
+                <SnackbarProvider maxSnack={3}
+                                  anchorOrigin={{
+                                      vertical: 'top',
+                                      horizontal: 'right',
+                                  }}>
+                    <CookiesProvider>
+                        <ApolloProvider client={client}>
+                            <App />
+                        </ApolloProvider>
+                    </CookiesProvider>
+                </SnackbarProvider>
+            </ScrollContext>
+        </LastLocationProvider>
     </BrowserRouter>,
     document.getElementById('root')
 );
