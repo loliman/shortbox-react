@@ -32,6 +32,19 @@ const createPublisher = gql`mutation CreatePublisher($name: String!){
    }
 }`;
 
+const createSeries = gql`mutation CreateSeries($title: String!, $startyear: Int!, $endyear: Int, $volume: Int!, $publisher_name: String!){
+   createSeries(title: $title, startyear: $startyear, endyear: $endyear, volume: $volume, publisher_name: $publisher_name) {
+        id,
+        title,
+        startyear,
+        endyear,
+        volume,
+        publisher {
+            title
+        }
+   }
+}`;
+
 const editPublisher = gql`mutation EditPublisher($name_old: String!, $name: String!){
    editPublisher(name_old: $name_old, name: $name) {
         id,
@@ -51,4 +64,4 @@ function getDeleteMutation(level) {
     }
 }
 
-export {login, logout, getDeleteMutation, editPublisher, createPublisher}
+export {login, logout, getDeleteMutation, editPublisher, createPublisher, createSeries}

@@ -16,8 +16,8 @@ function SeriesDetails(props) {
         <Layout>
             <Query query={seriesd} variables={getGqlVariables(selected)}>
                 {({loading, error, data}) => {
-                    if (loading || error)
-                        return <QueryResult loading={loading} error={error}/>;
+                    if (loading || error || !data.seriesd)
+                        return <QueryResult loading={loading} error={error} data={data.seriesd} selected={selected}/>;
 
                     return(
                         <React.Fragment>

@@ -17,6 +17,7 @@
     "notistack": "^0.4.1",
     "react": "^16.7.0",
     "react-apollo": "^2.3.3",
+    "react-autocomplete": "^1.8.1",
     "react-cookie": "^3.0.8",
     "react-dom": "^16.7.0",
     "react-hamburgers": "^1.0.0",

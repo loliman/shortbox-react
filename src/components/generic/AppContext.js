@@ -19,8 +19,6 @@ class AppContextProvider extends React.Component {
     render() {
         return (
             <AppContext.Provider value={{
-                context: this.state,
-
                 drawerOpen: this.state.drawerOpen,
                 toogleDrawer: this.toogleDrawer,
                 session: this.props.cookies.get('session'),

@@ -164,4 +164,4 @@ const issue = gql`query Issue($issue_number: String!, $series_title: String!, $s
     }
 }`;
 
-export {getListQuery, issue, publisher, seriesd, publishers};
+export {getListQuery, issue, publisher, seriesd, publishers, series};

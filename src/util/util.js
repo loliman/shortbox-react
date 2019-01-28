@@ -1,8 +1,4 @@
-
-
-
-
-function generateLabel(o) {
+export function generateLabel(o) {
     if (!o)
         return "Shortbox";
     else if (o.name)
@@ -18,7 +14,7 @@ function generateLabel(o) {
         return o.series.title + ' #' + o.number;
 }
 
-function capitalize(string) {
+export function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
@@ -36,7 +32,7 @@ function romanize(num) {
     return Array(+digits.join("") + 1).join("M") + roman;
 }
 
-function getGqlVariables(selected, us) {
+export function getGqlVariables(selected, us) {
     let publisher_name;
     let series_title;
     let series_volume;
@@ -72,5 +68,3 @@ function getGqlVariables(selected, us) {
         issue_number: issue_number
     };
 }
-
-export {generateLabel, capitalize, getGqlVariables}

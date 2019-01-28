@@ -3,10 +3,7 @@ import MuiList from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText'
 import {Query} from "react-apollo";
-import {
-    generateLabel,
-    getGqlVariables
-} from "../util/util";
+import {generateLabel, getGqlVariables} from "../util/util";
 import {getListQuery} from '../graphql/queries'
 import QueryResult from './generic/QueryResult';
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer/SwipeableDrawer";
@@ -107,7 +104,7 @@ function TypeListEntry(props) {
 function NoEntries(props) {
     return (
         <div className="queryResult">
-            <Typography className="queryResultText">Keine Einträge</Typography>
+            <Typography className="queryResultText">Keine Einträge gefunden</Typography>
         </div>
     );
 }

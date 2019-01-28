@@ -1,11 +1,11 @@
-const HierarchyLevel = Object.freeze({
+export const HierarchyLevel = Object.freeze({
     PUBLISHER: "publishers",
     SERIES: "series",
     ISSUE: "issues",
     ISSUE_DETAILS: "issue_details"
 });
 
-function getHierarchyLevel(o, edit) {
+export function getHierarchyLevel(o, edit) {
     if (!o || (o.name && edit))
         return HierarchyLevel.PUBLISHER;
     else if (o.name || (o.publisher && edit))
@@ -16,7 +16,7 @@ function getHierarchyLevel(o, edit) {
         return HierarchyLevel.ISSUE_DETAILS;
 }
 
-function generateUrl(item, us) {
+export function generateUrl(item, us) {
     let url = (us ? "/us/" : "/de/");
 
     if (!item)
@@ -49,7 +49,7 @@ function generateUrl(item, us) {
         + encodeURIComponent(item.format + "_" + item.variant);
 }
 
-function getSelected(params) {
+export function getSelected(params) {
     let selected;
 
     if (params.publisher) {
@@ -86,8 +86,3 @@ function getSelected(params) {
 
     return selected;
 }
-
-export {getSelected};
-export {generateUrl};
-export {getHierarchyLevel};
-export {HierarchyLevel};

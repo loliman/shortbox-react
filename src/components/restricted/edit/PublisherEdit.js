@@ -25,8 +25,8 @@ function PublisherEdit(props) {
             <Query query={publisher} variables={getGqlVariables(selected)}>
                 {({loading, error, data}) => {
                     o = data;
-                    if (loading || error)
-                        return <QueryResult loading={loading} error={error}/>;
+                    if (loading || error || !o.publisher)
+                        return <QueryResult loading={loading} error={error} data={o.publisher} selected={selected}/>;
 
                     return (
                         <Mutation mutation={editPublisher}
@@ -117,6 +117,5 @@ function PublisherEdit(props) {
             </Query>
         </Layout>
     )
-};
-
+}
 export default withContext(PublisherEdit);
