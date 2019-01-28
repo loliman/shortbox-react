@@ -376,6 +376,19 @@ div[class^="MuiExpansionPanelSummary-content-"] {
     width: 25%;
 }
 
+.suggestionContainer {
+    width: 25%;
+    overflow: auto;
+    max-height: 50vh;
+}
+
+.suggestionItem {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: inline-block;
+}
+
 .itemText {
     white-space: normal;
 }

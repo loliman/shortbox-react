@@ -22,8 +22,8 @@ export const SeriesSchema = Yup.object().shape({
         .integer("Bitte geben Sie eine Zahl ein"),
     startyear: Yup.number("Bitte geben Sie eine Zahl ein")
         .min(1900, "Das Jahr muss größer als 1900 sein")
-        .required("Bitte geben Sie eine Zahl ein")
-        .integer(),
+        .required("Pflichtfeld")
+        .integer("Bitte geben Sie eine Zahl ein"),
     endyear: Yup.number("Bitte geben Sie eine Zahl ein")
         .min(1900, "Das Jahr muss größer als 1900 sein")
         .integer("Bitte geben Sie eine Zahl ein")

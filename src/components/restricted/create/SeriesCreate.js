@@ -7,16 +7,15 @@ import {createSeries} from "../../../graphql/mutations";
 import {Field, Form, Formik} from 'formik';
 import {TextField} from 'formik-material-ui';
 import Button from "@material-ui/core/Button/Button";
-import {series} from "../../../graphql/queries";
-import {withSnackbar} from "notistack";
-import {compose} from "recompose";
-import {withRouter} from "react-router-dom";
+import {publishers, series} from "../../../graphql/queries";
 import {generateUrl} from "../../../util/hierarchiy";
 import {SeriesSchema} from "../../../util/yupSchema";
 import {generateLabel, getGqlVariables} from "../../../util/util";
+import AutoComplete from "../../generic/AutoComplete";
+import {withContext} from "../../generic";
 
 function SeriesCreate(props) {
-    const {history, enqueueSnackbar} = props;
+    const {history, enqueueSnackbar, us} = props;
 
     return (
         <Layout>
@@ -72,7 +71,7 @@ function SeriesCreate(props) {
                             if (error)
                                 actions.resetForm();
                         }}>
-                        {({resetForm, submitForm, isSubmitting}) => (
+                        {({resetForm, submitForm, isSubmitting, values, handleChange, touched, errors}) => (
                             <Form>
                                 <CardHeader title="Serie erstellen"/>
 
@@ -84,13 +83,22 @@ function SeriesCreate(props) {
                                         component={TextField}
                                     />
                                     <br/>
-                                    <Field
-                                        className="fieldSmall"
+
+                                    <AutoComplete
+                                        id="publisher"
+                                        query={publishers}
+                                        variables={getGqlVariables(null, us)}
+                                        suggestionLabel="name"
+                                        type="text"
                                         name="publisher"
                                         label="Verlag"
-                                        component={TextField}
+                                        error={touched.publisher && errors.publisher}
+                                        value={values.publisher}
+                                        onChange={(field, value) => {
+                                            values[field] = value
+                                        }}
                                     />
-                                    <br/>
+
                                     <Field
                                         className="fieldSmall"
                                         name="volume"
@@ -101,7 +109,7 @@ function SeriesCreate(props) {
                                     <Field
                                         className="fieldSmall"
                                         name="startyear"
-                                        label="Starjahr"
+                                        label="Startjahr"
                                         component={TextField}
                                     />
                                     <br/>
@@ -136,7 +144,4 @@ function SeriesCreate(props) {
     )
 }
 
-export default compose(
-    withSnackbar,
-    withRouter
-)(SeriesCreate);
+export default withContext(SeriesCreate);
