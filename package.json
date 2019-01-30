@@ -30,8 +30,8 @@
     "yup": "^0.26.7"
   },
   "scripts": {
-    "prestart": "rm ./node_modules/webpack-dev-server/ssl/server.pem && cat ../example.com+5-key.pem ../example.com+5.pem > ./node_modules/webpack-dev-server/ssl/server.pem",
-    "start": "HTTPS=true PORT=3443 react-scripts start",
+    "prestart": "rm ./node_modules/webpack-dev-server/ssl/server.pem && cat ../localhost+2-key.pem ../localhost+2.pem > ./node_modules/webpack-dev-server/ssl/server.pem",
+    "start": "set HTTPS=true&&set PORT=3443&&react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

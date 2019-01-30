@@ -7,7 +7,7 @@ export function generateLabel(o) {
         let year;
 
         if (o.startyear)
-            year = ' (' + o.startyear + ' - ' + ((o.endyear === 0) ? '...' : o.endyear) + ')';
+            year = ' (' + o.startyear + ' - ' + ((!o.endyear || o.endyear === 0) ? '...' : o.endyear) + ')';
 
         return o.title + ' (Vol. ' + romanize(o.volume) + ')' + (year ? year : "");
     } else if (o.series)

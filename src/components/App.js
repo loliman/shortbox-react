@@ -70,8 +70,8 @@ function PrivateRoute({ component: Component, session, ...rest }) {
     return (
         <Route
             {...rest}
-            render={(session, props) =>
-                session ? (
+            render={(props) => {
+                return session ? (
                     <Component {...props} />
                 ) : (
                     <Redirect
@@ -81,7 +81,7 @@ function PrivateRoute({ component: Component, session, ...rest }) {
                         }}
                     />
                 )
-            }
+            }}
         />
     );
 }

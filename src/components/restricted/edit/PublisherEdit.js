@@ -38,18 +38,31 @@ function PublisherEdit(props) {
                                       });
 
                                       let idx = 0;
-                                      data.editPublisher.some((e, i) => {
+                                      data.publishers.some((e, i) => {
                                           idx = i;
                                           return e.id === o.publisher.id;
                                       });
 
-                                      data.editPublisher[idx] = result.data.editPublisher;
+                                      data.publishers[idx] = result.data.editPublisher;
 
                                       cache.writeQuery({
                                           query: publishers,
                                           variables: {
                                               us: o.publisher.us
                                           },
+                                          data: data
+                                      });
+
+                                      data = cache.readQuery({
+                                          query: publisher,
+                                          variables: getGqlVariables(selected)
+                                      });
+
+                                      data.publisher = result.data.editPublisher;
+
+                                      cache.writeQuery({
+                                          query: publisher,
+                                          variables: getGqlVariables(selected),
                                           data: data
                                       });
                                   }}

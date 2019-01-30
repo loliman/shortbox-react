@@ -15,6 +15,8 @@ function EditButton(props) {
                 <MoreVertIcon/>
             </IconButton>
         );
+
+    return null;
 }
 
 export default withContext(EditButton);

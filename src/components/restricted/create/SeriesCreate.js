@@ -7,11 +7,10 @@ import {createSeries} from "../../../graphql/mutations";
 import {Field, Form, Formik} from 'formik';
 import {TextField} from 'formik-material-ui';
 import Button from "@material-ui/core/Button/Button";
-import {publishers, series} from "../../../graphql/queries";
+import {series} from "../../../graphql/queries";
 import {generateUrl} from "../../../util/hierarchiy";
 import {SeriesSchema} from "../../../util/yupSchema";
 import {generateLabel, getGqlVariables} from "../../../util/util";
-import AutoComplete from "../../generic/AutoComplete";
 import {withContext} from "../../generic";
 
 function SeriesCreate(props) {
@@ -63,7 +62,7 @@ function SeriesCreate(props) {
                                     publisher_name: values.publisher,
                                     volume: values.volume,
                                     startyear: values.startyear,
-                                    endyear: values.endyear,
+                                    endyear: parseInt(values.endyear),
                                 }
                             });
 
@@ -84,7 +83,15 @@ function SeriesCreate(props) {
                                     />
                                     <br/>
 
-                                    <AutoComplete
+                                    <Field
+                                        className="fieldSmall"
+                                        name="publisher"
+                                        label="Verlag"
+                                        component={TextField}
+                                    />
+                                    <br/>
+
+                                    {/*<AutoComplete
                                         id="publisher"
                                         query={publishers}
                                         variables={getGqlVariables(null, us)}
@@ -97,12 +104,13 @@ function SeriesCreate(props) {
                                         onChange={(field, value) => {
                                             values[field] = value
                                         }}
-                                    />
+                                    />*/}
 
                                     <Field
                                         className="fieldSmall"
                                         name="volume"
                                         label="Volume"
+                                        type="number"
                                         component={TextField}
                                     />
                                     <br/>
@@ -110,6 +118,7 @@ function SeriesCreate(props) {
                                         className="fieldSmall"
                                         name="startyear"
                                         label="Startjahr"
+                                        type="number"
                                         component={TextField}
                                     />
                                     <br/>

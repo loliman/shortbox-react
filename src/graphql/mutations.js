@@ -40,7 +40,9 @@ const createSeries = gql`mutation CreateSeries($title: String!, $startyear: Int!
         endyear,
         volume,
         publisher {
-            title
+            id,
+            name,
+            us
         }
    }
 }`;
@@ -50,6 +52,23 @@ const editPublisher = gql`mutation EditPublisher($name_old: String!, $name: Stri
         id,
         name,
         us
+   }
+}`;
+
+const editSeries = gql`mutation EditSeries($title_old: String!, $volume_old: Int!, $publisher_old: String!, 
+                                           $title: String!, $publisher: String!, $volume: Int!, $startyear: Int!, $endyear: Int){
+   editSeries(title_old: $title_old, volume_old: $volume_old, publisher_old: $publisher_old, 
+              title: $title, publisher: $publisher, volume: $volume, startyear: $startyear, endyear: $endyear) {
+        id,
+        title,
+        volume,
+        startyear,
+        endyear,
+        publisher {
+            id,
+            name,
+            us
+        }
    }
 }`;
 
@@ -64,4 +83,4 @@ function getDeleteMutation(level) {
     }
 }
 
-export {login, logout, getDeleteMutation, editPublisher, createPublisher, createSeries}
+export {login, logout, getDeleteMutation, editPublisher, createPublisher, createSeries, editSeries}
