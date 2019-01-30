@@ -93,7 +93,7 @@ function PublisherEdit(props) {
                                         if(error)
                                             actions.resetForm();
                                     }}>
-                                    {({resetForm, submitForm, isSubmitting}) => (
+                                    {({values, resetForm, submitForm, isSubmitting}) => (
                                         <Form>
                                             <CardHeader title={generateLabel(selected) + " bearbeiten"} />
 
@@ -109,7 +109,12 @@ function PublisherEdit(props) {
                                                 <br/>
 
                                                 <Button disabled={isSubmitting}
-                                                        onClick={resetForm}
+                                                        onClick={() => {
+                                                            values = {
+                                                                name: ''
+                                                            };
+                                                            resetForm();
+                                                        }}
                                                         color="secondary">
                                                     Zurücksetzen
                                                 </Button>

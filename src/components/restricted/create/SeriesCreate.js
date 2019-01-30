@@ -7,11 +7,12 @@ import {createSeries} from "../../../graphql/mutations";
 import {Field, Form, Formik} from 'formik';
 import {TextField} from 'formik-material-ui';
 import Button from "@material-ui/core/Button/Button";
-import {series} from "../../../graphql/queries";
+import {publishers, series} from "../../../graphql/queries";
 import {generateUrl} from "../../../util/hierarchiy";
 import {SeriesSchema} from "../../../util/yupSchema";
 import {generateLabel, getGqlVariables} from "../../../util/util";
 import {withContext} from "../../generic";
+import AutoComplete from "../../generic/AutoComplete";
 
 function SeriesCreate(props) {
     const {history, enqueueSnackbar, us} = props;
@@ -83,15 +84,7 @@ function SeriesCreate(props) {
                                     />
                                     <br/>
 
-                                    <Field
-                                        className="fieldSmall"
-                                        name="publisher"
-                                        label="Verlag"
-                                        component={TextField}
-                                    />
-                                    <br/>
-
-                                    {/*<AutoComplete
+                                    <AutoComplete
                                         id="publisher"
                                         query={publishers}
                                         variables={getGqlVariables(null, us)}
@@ -104,7 +97,7 @@ function SeriesCreate(props) {
                                         onChange={(field, value) => {
                                             values[field] = value
                                         }}
-                                    />*/}
+                                    />
 
                                     <Field
                                         className="fieldSmall"
@@ -133,7 +126,16 @@ function SeriesCreate(props) {
                                     <br/>
 
                                     <Button disabled={isSubmitting}
-                                            onClick={resetForm}
+                                            onClick={() => {
+                                                values = {
+                                                    title: '',
+                                                    publisher: '',
+                                                    volume: '',
+                                                    startyear: '',
+                                                    endyear: '',
+                                                };
+                                                resetForm();
+                                            }}
                                             color="secondary">
                                         Zurücksetzen
                                     </Button>

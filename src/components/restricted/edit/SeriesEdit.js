@@ -7,16 +7,17 @@ import {editSeries} from "../../../graphql/mutations";
 import {Field, Form, Formik} from 'formik';
 import {TextField} from 'formik-material-ui';
 import Button from "@material-ui/core/Button/Button";
-import {series, seriesd} from "../../../graphql/queries";
+import {publishers, series, seriesd} from "../../../graphql/queries";
 import {withContext} from "../../generic";
 import {generateLabel, getGqlVariables} from "../../../util/util";
 import QueryResult from "../../generic/QueryResult";
 import {SeriesSchema} from "../../../util/yupSchema";
 import {generateUrl} from "../../../util/hierarchiy";
+import AutoComplete from "../../generic/AutoComplete";
 
 
 function SeriesEdit(props) {
-    const {selected, history, enqueueSnackbar} = props;
+    const {selected, history, enqueueSnackbar, us} = props;
 
     let o;
 
@@ -104,7 +105,7 @@ function SeriesEdit(props) {
                                         if (error)
                                             actions.resetForm();
                                     }}>
-                                    {({resetForm, submitForm, isSubmitting}) => (
+                                    {({resetForm, submitForm, isSubmitting, values, handleChange, touched, errors}) => (
                                         <Form>
                                             <CardHeader title={generateLabel(selected) + " bearbeiten"}/>
 
@@ -117,28 +118,20 @@ function SeriesEdit(props) {
                                                 />
                                                 <br/>
 
-                                                <Field
-                                                    className="fieldSmall"
+                                                <AutoComplete
+                                                    id="publisher"
+                                                    query={publishers}
+                                                    variables={getGqlVariables(null, us)}
+                                                    suggestionLabel="name"
+                                                    type="text"
                                                     name="publisher"
                                                     label="Verlag"
-                                                    component={TextField}
+                                                    error={touched.publisher && errors.publisher}
+                                                    value={values.publisher}
+                                                    onChange={(field, value) => {
+                                                        values[field] = value
+                                                    }}
                                                 />
-                                                <br/>
-
-                                                {/*<AutoComplete
-                                        id="publisher"
-                                        query={publishers}
-                                        variables={getGqlVariables(null, us)}
-                                        suggestionLabel="name"
-                                        type="text"
-                                        name="publisher"
-                                        label="Verlag"
-                                        error={touched.publisher && errors.publisher}
-                                        value={values.publisher}
-                                        onChange={(field, value) => {
-                                            values[field] = value
-                                        }}
-                                    />*/}
 
                                                 <Field
                                                     className="fieldSmall"
@@ -168,7 +161,16 @@ function SeriesEdit(props) {
                                                 <br/>
 
                                                 <Button disabled={isSubmitting}
-                                                        onClick={resetForm}
+                                                        onClick={() => {
+                                                            values = {
+                                                                title: '',
+                                                                publisher: '',
+                                                                volume: '',
+                                                                startyear: '',
+                                                                endyear: '',
+                                                            };
+                                                            resetForm();
+                                                        }}
                                                         color="secondary">
                                                     Zurücksetzen
                                                 </Button>

@@ -18,7 +18,7 @@ import {generateUrl, HierarchyLevel} from "../../util/hierarchiy";
 
 function DeletionDialog(props) {
     let {level} = props;
-    const {item, open, handleClose, selected, us, history, enqueueSnackbar} = props;
+    const {item, open, handleClose, selected, us, history, match, enqueueSnackbar} = props;
 
     let deleteMutation = getDeleteMutation(level);
     let getQuery = getListQuery(level);
@@ -54,15 +54,10 @@ function DeletionDialog(props) {
                               });
                           }}
                           onCompleted={(data) => {
-                              if (level.indexOf('issue_details') !== -1) {
-                                  history.push(generateUrl({
-                                      title: getGqlVariables.series_title,
-                                      volume: getGqlVariables.series_volume,
-                                      publisher: {
-                                          publisher_name: getGqlVariables.publisher_name
-                                      }
-                                  }));
-                                  level = HierarchyLevel.ISSUE;
+                              if (level.indexOf('issue_details') !== -1 || match.indexOf('edit') !== -1) {
+                                  history.push(generateUrl(selected));
+                                  if (level.indexOf('issue_details') !== -1)
+                                    level = HierarchyLevel.ISSUE;
                               }
 
                               let mutation = 'delete' + capitalize(level);
@@ -71,6 +66,7 @@ function DeletionDialog(props) {
                                   enqueueSnackbar(generateLabel(item) + " erfolgreich gelöscht", {variant: 'success'});
 
                               handleClose();
+
                           }}
                           onError={() => {
                               enqueueSnackbar(generateLabel(item) + " konnte nicht gelöscht werden", {variant: 'error'});
