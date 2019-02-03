@@ -7,7 +7,7 @@ import {generateLabel, getGqlVariables} from "../util/util";
 import {getListQuery} from '../graphql/queries'
 import QueryResult from './generic/QueryResult';
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer/SwipeableDrawer";
-import EditButton from "./restricted/edit/EditButton";
+import EditButton from "./restricted/EditButton";
 import Typography from "@material-ui/core/es/Typography/Typography";
 import {Link} from "react-router-dom";
 import {ScrollContainer} from "react-router-scroll-4";
@@ -58,10 +58,10 @@ class List extends React.Component {
                         <Query query={getListQuery(level)}
                                variables={getGqlVariables(selected, us)}>
                             {({loading, error, data}) => {
-                                if (loading || error)
-                                    return <QueryResult loading={loading} error={error}/>;
+                                if (loading || error || !data[level])
+                                    return <QueryResult loading={loading} error={error} />;
 
-                                if (data[level].length === 0)
+                                if (!data[level].length === 0)
                                     return <NoEntries />;
 
                                 return data[level].map((i) => {

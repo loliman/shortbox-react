@@ -54,7 +54,7 @@ function DeletionDialog(props) {
                               });
                           }}
                           onCompleted={(data) => {
-                              if (level.indexOf('issue_details') !== -1 || match.indexOf('edit') !== -1) {
+                              if (level.indexOf('issue_details') !== -1 || match.url.indexOf('edit') !== -1) {
                                   history.push(generateUrl(selected));
                                   if (level.indexOf('issue_details') !== -1)
                                     level = HierarchyLevel.ISSUE;

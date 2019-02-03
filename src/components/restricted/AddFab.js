@@ -6,7 +6,7 @@ import SpeedDialAction from "@material-ui/lab/SpeedDialAction/SpeedDialAction";
 import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import BookIcon from "@material-ui/icons/Book";
 import ListIcon from "@material-ui/icons/List";
-import {withContext} from "../../generic";
+import {withContext} from "../generic";
 
 class AddFab extends React.Component {
     constructor(props) {

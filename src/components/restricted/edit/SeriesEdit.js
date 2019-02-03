@@ -17,72 +17,76 @@ import AutoComplete from "../../generic/AutoComplete";
 
 
 function SeriesEdit(props) {
-    const {selected, history, enqueueSnackbar, us} = props;
-
-    let o;
+    const {selected, history, enqueueSnackbar, us, level} = props;
+    let old;
+    let neew;
 
     return (
         <Layout>
             <Query query={seriesd} variables={getGqlVariables(selected)}>
                 {({loading, error, data}) => {
-                    o = data;
-                    if (loading || error || !o.seriesd)
-                        return <QueryResult loading={loading} error={error} data={o.seriesd} selected={selected}/>;
+                    old = data.seriesd;
+
+                    if (loading || error || !old)
+                        return <QueryResult loading={loading} error={error} data={old} selected={selected}/>;
 
                     return (
                         <Mutation mutation={editSeries}
                                   update={(cache, result) => {
+                                      neew = result.data.editSeries;
+
                                       let data = cache.readQuery({
                                           query: series,
                                           variables: {
-                                              publisher_name: o.seriesd.publisher.name
+                                              publisher_name: old.publisher.name
                                           }
                                       });
 
-                                      let idx = 0;
-                                      data.series.some((e, i) => {
-                                          idx = i;
-                                          return e.id === o.seriesd.id;
-                                      });
-
-                                      data.series[idx] = result.data.editSeries;
+                                      data[level] = data[level].filter((e) => e.id !== old.id);
 
                                       cache.writeQuery({
                                           query: series,
                                           variables: {
-                                              publisher_name: o.seriesd.publisher.name
+                                              publisher_name: old.publisher.name
                                           },
                                           data: data
                                       });
 
                                       data = cache.readQuery({
                                           query: series,
-                                          variables: getGqlVariables(selected)
+                                          variables: {
+                                              publisher_name: neew.publisher.name
+                                          }
                                       });
 
-                                      data.series = result.data.editSeries;
+                                      data.series.push(neew);
+                                      data.series.sort((a, b) => {
+                                          return (a.title.toLowerCase() + a.volume).localeCompare((b.title.toLowerCase() + b.volume));
+                                      });
 
                                       cache.writeQuery({
                                           query: series,
-                                          variables: getGqlVariables(selected),
+                                          variables: {
+                                              publisher_name: neew.publisher.name
+                                          },
                                           data: data
                                       });
                                   }}
                                   onCompleted={(data) => {
-                                      enqueueSnackbar(generateLabel(selected) + " erfolgreich gespeichert", {variant: 'success'});
-                                      history.push(generateUrl(selected.publisher, o.seriesd.publisher.us));
+                                      enqueueSnackbar(generateLabel(neew) + " erfolgreich gespeichert", {variant: 'success'});
+                                      history.push(generateUrl(neew.publisher, neew.publisher.us));
                                   }}
                                   onError={() => {
-                                      enqueueSnackbar(generateLabel(selected) + " kann nicht gespeichert werden", {variant: 'error'});
+                                      enqueueSnackbar(generateLabel(old) + " kann nicht gespeichert werden", {variant: 'error'});
                                   }}>
                             {(editSeries, {error}) => (
                                 <Formik
                                     initialValues={{
-                                        title: o.seriesd.title,
-                                        publisher: o.seriesd.publisher.name,
-                                        volume: o.seriesd.volume,
-                                        startyear: o.seriesd.startyear,
-                                        endyear: o.seriesd.endyear
+                                        title: old.title,
+                                        publisher: old.publisher.name,
+                                        volume: old.volume,
+                                        startyear: old.startyear,
+                                        endyear: old.endyear
                                     }}
                                     validationSchema={SeriesSchema}
                                     onSubmit={async (values, actions) => {
@@ -90,9 +94,9 @@ function SeriesEdit(props) {
 
                                         await editSeries({
                                             variables: {
-                                                title_old: o.seriesd.title,
-                                                volume_old: o.seriesd.volume,
-                                                publisher_old: o.seriesd.publisher.name,
+                                                title_old: old.title,
+                                                volume_old: old.volume,
+                                                publisher_old: old.publisher.name,
                                                 title: values.title,
                                                 publisher: values.publisher,
                                                 volume: values.volume,

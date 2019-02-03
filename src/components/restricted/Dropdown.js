@@ -2,15 +2,15 @@ import React from "react";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener/ClickAwayListener";
 import Menu from "@material-ui/core/Menu/Menu";
 import MenuItem from "@material-ui/core/MenuItem/MenuItem";
-import {generateUrl} from "../../../util/hierarchiy";
+import {generateUrl} from "../../util/hierarchiy";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import Typography from "@material-ui/core/es/Typography/Typography";
 import ListItemIcon from "@material-ui/core/es/ListItemIcon/ListItemIcon";
-import DeletionDialog from "../DeletionDialog";
-import {withContext} from "../../generic";
+import DeletionDialog from "./DeletionDialog";
+import {withContext} from "../generic";
 
-class EditDropdown extends React.Component {
+class Dropdown extends React.Component {
     constructor(props) {
         super(props);
 
@@ -40,6 +40,8 @@ class EditDropdown extends React.Component {
                         <MenuItem key="edit"
                                   onClick={() => {
                                       this.props.history.push("/edit" + generateUrl(this.props.EditDropdown.item).substring(3));
+                                      if(this.props.mobile)
+                                          this.props.toogleDrawer();
                                       this.props.handleClose();
                                   }}>
                             <ListItemIcon>
@@ -83,4 +85,4 @@ class EditDropdown extends React.Component {
     };
 }
 
-export default withContext(EditDropdown);
+export default withContext(Dropdown);

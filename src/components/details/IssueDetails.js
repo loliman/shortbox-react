@@ -41,13 +41,19 @@ function IssueDetails(props) {
                                 issue.releasedate = v.releasedate;
                                 issue.price = v.price;
                                 issue.currency = v.currency;
+                                issue.verified = v.verified;
                             }
                         });
 
                     return (
                         <React.Fragment>
                             <CardHeader title={generateLabel(issue)}
-                                        subheader={props.subheader ? generateIssueSubHeader(issue) : ""}/>
+                                        subheader={props.subheader ? generateIssueSubHeader(issue) : ""}
+                                        action={
+                                            issue.verified ?
+                                                <img src="/verified_badge.png" alt="verifiziert" height="35"/> :
+                                                null
+                                        }/>
 
                             <CardContent>
                                 {props.issueDetailsVariants ?

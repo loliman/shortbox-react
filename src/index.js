@@ -13,6 +13,7 @@ import {setContext} from 'apollo-link-context';
 import {BrowserRouter} from "react-router-dom";
 import {ScrollContext} from 'react-router-scroll-4';
 import {LastLocationProvider} from "react-router-last-location";
+import Button from "@material-ui/core/Button/Button";
 
 const httpLink = createHttpLink({
     uri: 'https://localhost:4000/graphql',
@@ -47,7 +48,12 @@ ReactDOM.render(
                                   anchorOrigin={{
                                       vertical: 'top',
                                       horizontal: 'right',
-                                  }}>
+                                  }}
+                                  action={[
+                                      <Button className="snackbarbtn" color="primary" size="small">
+                                          Verbergen
+                                      </Button>
+                                  ]}>
                     <CookiesProvider>
                         <ApolloProvider client={client}>
                             <App />

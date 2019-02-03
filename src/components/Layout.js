@@ -2,9 +2,9 @@ import Card from "@material-ui/core/Card/Card";
 import React from "react";
 import TopBar from "./TopBar";
 import List from "./List";
-import EditDropdown from "./restricted/edit/EditDropdown";
+import EditDropdown from "./restricted/Dropdown";
 import {withContext} from "./generic";
-import AddFab from "./restricted/create/AddFab";
+import AddFab from "./restricted/AddFab";
 
 class Layout extends React.Component {
     constructor(props) {

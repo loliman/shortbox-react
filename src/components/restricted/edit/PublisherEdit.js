@@ -17,66 +17,56 @@ import {generateUrl} from "../../../util/hierarchiy";
 
 function PublisherEdit(props) {
     const {selected, history, enqueueSnackbar} = props;
-
-    let o;
+    let old;
+    let neew;
 
     return (
         <Layout>
             <Query query={publisher} variables={getGqlVariables(selected)}>
                 {({loading, error, data}) => {
-                    o = data;
-                    if (loading || error || !o.publisher)
-                        return <QueryResult loading={loading} error={error} data={o.publisher} selected={selected}/>;
+                    old = data.publisher;
+
+                    if (loading || error || !old)
+                        return <QueryResult loading={loading} error={error} data={old} selected={selected}/>;
 
                     return (
                         <Mutation mutation={editPublisher}
                                   update={(cache, result) => {
+                                      neew = result.data.editPublisher;
+
                                       let data = cache.readQuery({query: publishers,
                                           variables: {
-                                              us: o.publisher.us
+                                              us: old.us
                                           }
                                       });
 
                                       let idx = 0;
                                       data.publishers.some((e, i) => {
                                           idx = i;
-                                          return e.id === o.publisher.id;
+                                          return e.id === old.id;
                                       });
 
-                                      data.publishers[idx] = result.data.editPublisher;
+                                      data.publishers[idx] = neew;
 
                                       cache.writeQuery({
                                           query: publishers,
                                           variables: {
-                                              us: o.publisher.us
+                                              us: old.us
                                           },
-                                          data: data
-                                      });
-
-                                      data = cache.readQuery({
-                                          query: publisher,
-                                          variables: getGqlVariables(selected)
-                                      });
-
-                                      data.publisher = result.data.editPublisher;
-
-                                      cache.writeQuery({
-                                          query: publisher,
-                                          variables: getGqlVariables(selected),
                                           data: data
                                       });
                                   }}
                                   onCompleted={(data) => {
-                                      enqueueSnackbar(data.editPublisher.name + " erfolgreich gespeichert", {variant: 'success'});
-                                      history.push(generateUrl(null, o.publisher.us));
+                                      enqueueSnackbar(neew.name + " erfolgreich gespeichert", {variant: 'success'});
+                                      history.push(generateUrl(null, neew.us));
                                   }}
                                   onError={() => {
-                                      enqueueSnackbar(generateLabel({name: o.publisher.name}) + " kann nicht gespeichert werden", {variant: 'error'});
+                                      enqueueSnackbar(generateLabel({name: old.name}) + " kann nicht gespeichert werden", {variant: 'error'});
                                   }}>
                             {(editPublisher, {error}) => (
                                 <Formik
                                     initialValues={{
-                                        name: o.publisher.name
+                                        name: old.name
                                     }}
                                     validationSchema={PublisherSchema}
                                     onSubmit={async (values, actions) => {
@@ -84,7 +74,7 @@ function PublisherEdit(props) {
 
                                         await editPublisher({
                                             variables: {
-                                                name_old: o.publisher.name,
+                                                name_old: old.name,
                                                 name: values.name
                                             }
                                         });

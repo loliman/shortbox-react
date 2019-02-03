@@ -122,8 +122,6 @@ class AutoCompleteContainer extends React.Component {
     };
 
     handleChange = () => (event, { newValue }) => {
-        console.log(event);
-        console.log(newValue);
         this.setState({
             search: newValue,
         });

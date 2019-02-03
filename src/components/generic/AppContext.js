@@ -8,7 +8,6 @@ export const AppContext = React.createContext();
 class AppContextProvider extends React.Component {
     constructor(props) {
         super(props);
-
         let mobile = window.innerWidth <= 600;
         this.state = {
             mobile: mobile,

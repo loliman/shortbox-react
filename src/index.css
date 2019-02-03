@@ -94,6 +94,7 @@
     text-decoration: none;
 }
 
+/*MOBILE*/
 @media (max-width: 600px) {
     .content > div, .contentShift > div {
         width: 102.5%;
@@ -146,6 +147,28 @@
 
     .appTitle {
         width: 40%;
+    }
+
+    #loginForm {
+        width: 104%;
+        display: block;
+        align-content: center;
+        justify-content: center;
+        height: 100vh;
+        margin: -2%;
+    }
+
+    #loginForm > div {
+        height: 100%;
+    }
+
+    #loginButtons {
+        margin-top: 24px;
+        margin-left: 31%;
+    }
+
+    div[class^="MuiSnackbar-root-"] {
+        top: 0 !important;
     }
 }
 
@@ -420,6 +443,10 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 .lastAdded {
     font-weight: initial;
     font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+}
+
+.snackbarbtn > span {
+    color: white;
 }
 
 /*!

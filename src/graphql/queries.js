@@ -159,8 +159,10 @@ const issue = gql`query Issue($issue_number: String!, $series_title: String!, $s
             releasedate,
             variant,
             coverurl,
-            limitation
-        }
+            limitation,
+            verified
+        },
+        verified
     }
 }`;
 

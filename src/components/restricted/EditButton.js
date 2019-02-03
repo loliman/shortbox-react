@@ -1,7 +1,7 @@
 import IconButton from "@material-ui/core/IconButton/IconButton";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import React from "react";
-import {withContext} from "../../generic";
+import {withContext} from "../generic";
 
 function EditButton(props) {
     if (props.session)
