@@ -97,7 +97,7 @@ function IssueDetailsVariants(props) {
 function IssueDetailsVariant(props) {
     return (
         <GridListTile component={Link} to={props.to} className="tile" key={props.variant.id}>
-            <img src={props.variant.coverurl}
+            <img src={props.variant.cover.url}
                  alt={props.variant.variant + ' (' + props.variant.format + ')'}/>
             <GridListTileBar
                 title={(props.variant.variant ? props.variant.variant : 'Reguläre Ausgabe') + ' (' + props.variant.format + ')'}

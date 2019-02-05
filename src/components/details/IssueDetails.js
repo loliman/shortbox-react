@@ -34,7 +34,7 @@ function IssueDetails(props) {
                     if (selected.format)
                         data.issue.variants.forEach((v) => {
                             if (v.format === selected.format && v.variant === selected.variant) {
-                                issue.coverurl = v.coverurl;
+                                issue.cover.url = v.cover.url;
                                 issue.format = v.format;
                                 issue.variant = v.variant;
                                 issue.limitation = v.limitation;
@@ -123,7 +123,7 @@ class IssueDetailsCover extends React.Component {
     render() {
         const {issue} = this.props;
 
-        let coverUrl = issue.coverurl !== '' ? issue.coverurl : "nocover.jpg";
+        let coverUrl = issue.cover.url !== '' ? issue.cover.url : "nocover.jpg";
 
         return (
             <React.Fragment>

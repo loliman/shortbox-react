@@ -33,7 +33,10 @@ const issues = gql`query Issues($series_title: String!, $series_volume: Int!, $p
         price,
         currency,
         releasedate,
-        coverurl,
+        cover {
+            id,
+            url
+        },
         series {
             id,
             title,
@@ -95,7 +98,10 @@ const issue = gql`query Issue($issue_number: String!, $series_title: String!, $s
         releasedate,
         price,
         currency,
-        coverurl,
+        cover {
+            id, 
+            url
+        },
         series {
             id,
             title,
@@ -158,7 +164,10 @@ const issue = gql`query Issue($issue_number: String!, $series_title: String!, $s
             currency,
             releasedate,
             variant,
-            coverurl,
+            cover {
+                id,
+                url
+            },
             limitation,
             verified
         },
