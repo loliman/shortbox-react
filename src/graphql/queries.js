@@ -98,9 +98,17 @@ const issue = gql`query Issue($issue_number: String!, $series_title: String!, $s
         releasedate,
         price,
         currency,
+        editors {
+            id,
+            name
+        },
         cover {
             id, 
-            url
+            url,
+            artists {
+                id,
+                name
+            }
         },
         series {
             id,
@@ -112,9 +120,23 @@ const issue = gql`query Issue($issue_number: String!, $series_title: String!, $s
                 us
             }
         },
+        features {
+            id,
+            title,
+            addinfo,
+            writers {
+                id,
+                name
+            },
+            translators {
+                id,
+                name
+            }
+        },
         stories {
             id,
             title,
+            addinfo,
             parent {
                 id,
                 issue {
@@ -135,6 +157,34 @@ const issue = gql`query Issue($issue_number: String!, $series_title: String!, $s
                 },
                 children {
                     id
+                },
+                pencilers {
+                    id,
+                    name
+                },
+                writers {
+                    id,
+                    name
+                },
+                inkers {
+                    id,
+                    name
+                },
+                colourists {
+                    id,
+                    name
+                },
+                letterers {
+                    id,
+                    name
+                },
+                editors {
+                    id,
+                    name
+                },
+                translators {
+                    id,
+                    name
                 }
             },
             children {
@@ -155,7 +205,90 @@ const issue = gql`query Issue($issue_number: String!, $series_title: String!, $s
                     }
                 }
             },
-            firstapp
+            firstapp,
+            pencilers {
+                id,
+                name
+            },
+            writers {
+                id,
+                name
+            },
+            inkers {
+                id,
+                name
+            },
+            colourists {
+                id,
+                name
+            },
+            letterers {
+                id,
+                name
+            },
+            editors {
+                id,
+                name
+            },
+            translators {
+                id,
+                name
+            }
+        },
+        covers {
+            id,
+            addinfo,
+            number,
+            url,
+            parent {
+                id,
+                issue {
+                    id,
+                    number,
+                    series {
+                        id,
+                        title,
+                        startyear,
+                        endyear,
+                        volume,
+                        publisher {
+                            id,
+                            name,
+                            us
+                        }
+                    }   
+                },
+                children {
+                    id
+                },
+                artists {
+                    id,
+                    name
+                }
+            },
+            children {
+                id,
+                issue {
+                    id,
+                    number,
+                    series {
+                        id,
+                        title,
+                        volume,
+                        startyear,
+                        endyear,
+                        publisher {
+                            id,
+                            name
+                        }
+                    }
+                }
+            },
+            firstapp,
+            artists {
+                id,
+                name
+            }
         },
         variants {
             id,

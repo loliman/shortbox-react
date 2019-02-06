@@ -68,3 +68,17 @@ export function getGqlVariables(selected, us) {
         issue_number: issue_number
     };
 }
+
+export function toIndividualList(o) {
+    if (!o || o.length === 0)
+        return "Unbekannt";
+
+    let length = o.length;
+    let list = "";
+
+    o.forEach((item, index) => {
+        list += (length - 1 === index ? item.name : item.name + ", ");
+    });
+
+    return list;
+}

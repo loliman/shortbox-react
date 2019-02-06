@@ -1,8 +1,14 @@
-export function generateStoryTitle(s) {
+import {generateLabel} from "./util";
+
+export function generateItemTitle(s) {
     if (s.title)
         return s.title;
+    else if (s.parent)
+        return generateLabel(s.parent.issue.series) + " #" + s.parent.issue.number;
+    else if (s.series)
+        return generateLabel(s.series) + " #" + s.number;
     else
-        return "ohne Titel";
+        return "Ohne Titel";
 }
 
 export function generateIssueSubHeader(i) {

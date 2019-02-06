@@ -1,7 +1,7 @@
 import Layout from "../Layout";
 import {Query} from "react-apollo";
 import {issue} from "../../graphql/queries";
-import {generateLabel, getGqlVariables} from "../../util/util";
+import {generateLabel, getGqlVariables, toIndividualList} from "../../util/util";
 import QueryResult from "../generic/QueryResult";
 import React from "react";
 import CardHeader from "@material-ui/core/CardHeader/CardHeader";
@@ -18,10 +18,21 @@ import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary/Expan
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails/ExpansionPanelDetails";
 import {withContext} from "../generic";
-import {generateIssueSubHeader} from "../../util/issues";
+import {generateIssueSubHeader, generateItemTitle} from "../../util/issues";
+import Typography from "@material-ui/core/es/Typography/Typography";
+import Chip from "@material-ui/core/Chip/Chip";
+import PriorityHighIcon from "@material-ui/icons/PriorityHigh";
+import SearchIcon from "@material-ui/icons/Search";
+import Tooltip from "@material-ui/core/es/Tooltip/Tooltip";
+import IconButton from "@material-ui/core/IconButton/IconButton";
+import {Link} from "react-router-dom";
+import {generateUrl} from "../../util/hierarchiy";
+import GridList from "@material-ui/core/GridList/GridList";
+import GridListTile from "@material-ui/core/GridListTile/GridListTile";
+import GridListTileBar from "@material-ui/core/GridListTileBar/GridListTileBar";
 
 function IssueDetails(props) {
-    const {selected} = props;
+    const {selected, us} = props;
 
     return (
         <Layout>
@@ -56,19 +67,20 @@ function IssueDetails(props) {
                                         }/>
 
                             <CardContent>
-                                {props.issueDetailsVariants ?
-                                    React.cloneElement(props.issueDetailsVariants, {
-                                        selected: data.issue,
-                                        issue: data.issue
-                                    }) :
-                                    null}
+                                <IssueDetailsVariants selected={data.issue} issue={data.issue}/>
 
                                 <div className="details">
                                     <IssueDetailsTable issue={issue}/>
                                     <IssueDetailsCover issue={issue}/>
                                 </div>
 
-                                <IssueStories {...props} stories={issue.stories}/>
+                                {props.bottom ?
+                                    React.cloneElement(props.bottom, {
+                                        selected: data.issue,
+                                        issue: data.issue,
+                                        us: us
+                                    }) :
+                                    null}
                             </CardContent>
                         </React.Fragment>
                     );
@@ -96,6 +108,12 @@ function IssueDetailsTable(props) {
                                      value={props.issue.releasedate}/>
                     <IssueDetailsRow key="price" label="Preis"
                                      value={props.issue.price + ' ' + props.issue.currency}/>
+                    {
+                        props.issue.editors && props.issue.editors.length > 0 ?
+                            <IssueDetailsRow key="editor" label="Editor"
+                                             value={toIndividualList(props.issue.editors)}/> :
+                            null
+                    }
                 </TableBody>
             </Table>
         </Paper>
@@ -147,26 +165,164 @@ class IssueDetailsCover extends React.Component {
     }
 }
 
-function IssueStories(props) {
+export function IssueContains(props) {
     return (
         <div className="stories">
-            <CardHeader title="Geschichten"/>
+            <CardHeader title={props.header}/>
 
-            {props.stories.map(story => <IssueStory {...props} key={story.id} story={story}/>)}
+            {props.items.length === 0 ?
+                <Typography className="noRelationsWarning">{props.noEntriesHint}</Typography> :
+                props.items.map(item => {
+                    if (!props.itemDetails)
+                        return <IssueContainsSimpleItem {...props} key={item.id} item={item}/>;
+                    else
+                        return <IssueContainsItem {...props} key={item.id} item={item}/>;
+                })}
         </div>
     );
 }
 
-function IssueStory(props) {
+function IssueContainsSimpleItem(props) {
+    return (
+        <ExpansionPanel className="story" expanded={false}>
+            <ExpansionPanelSummary className="summary">
+                {React.cloneElement(props.itemTitle, {item: props.item, us: props.us, simple: true})}
+            </ExpansionPanelSummary>
+        </ExpansionPanel>
+    );
+}
+
+function IssueContainsItem(props) {
     return (
         <ExpansionPanel className="story">
             <ExpansionPanelSummary className="summary" expandIcon={<ExpandMoreIcon/>}>
-                {React.cloneElement(props.issueStoryTitle, {story: props.story})}
+                {React.cloneElement(props.itemTitle, {item: props.item, us: props.us})}
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
-                {React.cloneElement(props.issueStoryDetails, {story: props.story})}
+                {React.cloneElement(props.itemDetails, {item: props.item})}
             </ExpansionPanelDetails>
         </ExpansionPanel>
+    );
+}
+
+export function IssueContainsTitleSimple(props) {
+    return (
+        <div className={props.simple ? "storyTitle storyTitleSimple" : "storyTitle"}>
+            <div className="headingContainer">
+                <Typography className="heading">{generateItemTitle(props.item)}</Typography>
+                <Typography className="heading headingAddInfo">
+                    {props.item.addinfo ? props.item.addinfo : null}
+                </Typography>
+            </div>
+        </div>
+    )
+}
+
+export function IssueContainsTitleDetailed(props) {
+    return (
+        <div className={props.simple ? "storyTitle storyTitleSimple" : "storyTitle"}>
+            <div className="headingContainer">
+                <Typography className="heading">{generateItemTitle(props.item)}</Typography>
+                <Typography className="heading headingAddInfo">
+                    {props.item.addinfo ? props.item.addinfo : null}
+                </Typography>
+            </div>
+
+            <div className="chips">
+                {
+                    props.item.url && props.item.number === 0 ?
+                        Math.max(document.documentElement.clientWidth, window.innerWidth || 0) > 600 ?
+                            <Chip className="chip" label="Cover" color="default"/>
+                            : <Chip className="chip" label="C" color="default"/>
+                        : null
+                }
+
+                {
+                    props.item.parent && props.item.parent.children.length < 2 ?
+                        Math.max(document.documentElement.clientWidth, window.innerWidth || 0) > 600 ?
+                            <Chip className="chip" label="Einzige Ausgabe" color="secondary"
+                                  icon={<PriorityHighIcon/>}/>
+                            : <Chip className="chip" label={<PriorityHighIcon className="
+                            mobileChip"/>}
+                                    color="secondary"/>
+                        : null
+                }
+
+                {
+                    props.item.firstapp && props.item.parent ?
+                        <Chip className="chip"
+                              label={Math.max(document.documentElement.clientWidth, window.innerWidth || 0) > 600 ? "Erstausgabe" : "1."}
+                              color="primary"/>
+                        : null
+                }
+
+                {
+                    !props.item.parent && !props.item.series ?
+                        Math.max(document.documentElement.clientWidth, window.innerWidth || 0) > 600 ?
+                            <Chip className="chip" label="Exklusiv" color="secondary"
+                                  icon={<PriorityHighIcon/>}/>
+                            : <Chip className="chip" label={<PriorityHighIcon className="
+                            mobileChip"/>}
+                                    color="secondary"/>
+                        :
+                        <Tooltip title="Zur Ausgabe">
+                            <IconButton className="detailsIcon"
+                                        component={Link}
+                                        to={generateUrl(props.item.parent ? props.item.parent.issue : props.item, !props.us)}
+                                        aria-label="Details">
+                                <SearchIcon fontSize="small"/>
+                            </IconButton>
+                        </Tooltip>
+                }
+            </div>
+        </div>
+    )
+}
+
+function IssueDetailsVariants(props) {
+    if (props.selected.variants.length === 0)
+        return null;
+
+    let variants = [];
+    variants.push(<IssueDetailsVariant to={generateUrl(props.issue, false)}
+                                       key={props.issue} variant={props.issue}/>);
+
+    props.selected.variants.forEach(variant => {
+        variant.series = props.selected.series;
+        variant.number = props.selected.number;
+
+        variants.push(<IssueDetailsVariant to={generateUrl(variant, false)}
+                                           key={variant.id} variant={variant}/>);
+    });
+
+    return (
+        <React.Fragment>
+            <Typography className="coverGalleryHeader" component="p">
+                Erhältlich in {props.selected.variants.length + 1} Varianten
+            </Typography>
+
+            <div className="coverGallery">
+                <GridList className="gridList" cols={2.5}>
+                    {variants}
+                </GridList>
+            </div>
+        </React.Fragment>
+    );
+}
+
+function IssueDetailsVariant(props) {
+    return (
+        <GridListTile component={Link} to={props.to} className="tile" key={props.variant.id}>
+            <img src={props.variant.cover.url}
+                 alt={props.variant.variant + ' (' + props.variant.format + ')'}/>
+            <GridListTileBar
+                title={(props.variant.variant ? props.variant.variant : 'Reguläre Ausgabe') + ' (' + props.variant.format + ')'}
+                classes={{
+                    root: "titleBar",
+                    title: "title",
+                }}
+            />
+        </GridListTile>
     );
 }
 
