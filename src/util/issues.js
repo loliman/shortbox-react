@@ -3,8 +3,10 @@ import {generateLabel} from "./util";
 export function generateItemTitle(s) {
     if (s.title)
         return s.title;
-    else if (s.parent)
-        return generateLabel(s.parent.issue.series) + " #" + s.parent.issue.number;
+    else if (s.parent) {
+        let title = generateLabel(s.parent.issue.series) + " #" + s.parent.issue.number;
+        return title + (s.parent.variant ? " [" + s.parent.format + "/" + s.parent.variant + "]" : "");
+    }
     else if (s.series)
         return generateLabel(s.series) + " #" + s.number;
     else

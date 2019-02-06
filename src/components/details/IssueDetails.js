@@ -109,6 +109,12 @@ function IssueDetailsTable(props) {
                     <IssueDetailsRow key="price" label="Preis"
                                      value={props.issue.price + ' ' + props.issue.currency}/>
                     {
+                        props.issue.cover.artists && props.issue.cover.artists.length > 0 ?
+                            <IssueDetailsRow key="coverartists" label="Cover Artists"
+                                             value={toIndividualList(props.issue.cover.artists)}/> :
+                            null
+                    }
+                    {
                         props.issue.editors && props.issue.editors.length > 0 ?
                             <IssueDetailsRow key="editor" label="Editor"
                                              value={toIndividualList(props.issue.editors)}/> :
@@ -219,6 +225,12 @@ export function IssueContainsTitleSimple(props) {
 }
 
 export function IssueContainsTitleDetailed(props) {
+    let issue = props.item.parent ? props.item.parent.issue : props.item.issue;
+    if(issue && issue.issue) {
+        issue.number = issue.issue.number;
+        issue.series = issue.issue.series;
+    }
+
     return (
         <div className={props.simple ? "storyTitle storyTitleSimple" : "storyTitle"}>
             <div className="headingContainer">
@@ -257,7 +269,7 @@ export function IssueContainsTitleDetailed(props) {
                 }
 
                 {
-                    !props.item.parent && !props.item.series ?
+                    !props.item.parent && !props.item.issue ?
                         Math.max(document.documentElement.clientWidth, window.innerWidth || 0) > 600 ?
                             <Chip className="chip" label="Exklusiv" color="secondary"
                                   icon={<PriorityHighIcon/>}/>
@@ -268,7 +280,7 @@ export function IssueContainsTitleDetailed(props) {
                         <Tooltip title="Zur Ausgabe">
                             <IconButton className="detailsIcon"
                                         component={Link}
-                                        to={generateUrl(props.item.parent ? props.item.parent.issue : props.item, !props.us)}
+                                        to={generateUrl(issue, !props.us)}
                                         aria-label="Details">
                                 <SearchIcon fontSize="small"/>
                             </IconButton>

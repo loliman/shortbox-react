@@ -31,7 +31,7 @@ export function generateUrl(item, us) {
             + "/"
             + encodeURIComponent(item.title.replace(/%/g, '%25') + "_Vol_" + item.volume);
 
-    if (!item.variant)
+    if (!item.variant || item.variant === "")
         return url
             + encodeURIComponent(item.series.publisher.name.replace(/%/g, '%25'))
             + "/"

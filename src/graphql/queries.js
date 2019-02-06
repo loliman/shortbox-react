@@ -244,19 +244,23 @@ const issue = gql`query Issue($issue_number: String!, $series_title: String!, $s
                 id,
                 issue {
                     id,
-                    number,
-                    series {
-                        id,
-                        title,
-                        startyear,
-                        endyear,
-                        volume,
-                        publisher {
+                    variant,
+                    format,
+                    issue {
+                        number,
+                        series {
                             id,
-                            name,
-                            us
-                        }
-                    }   
+                            title,
+                            startyear,
+                            endyear,
+                            volume,
+                            publisher {
+                                id,
+                                name,
+                                us
+                            }
+                        }   
+                    }
                 },
                 children {
                     id
@@ -270,16 +274,18 @@ const issue = gql`query Issue($issue_number: String!, $series_title: String!, $s
                 id,
                 issue {
                     id,
-                    number,
-                    series {
-                        id,
-                        title,
-                        volume,
-                        startyear,
-                        endyear,
-                        publisher {
+                    issue {
+                        number,
+                        series {
                             id,
-                            name
+                            title,
+                            volume,
+                            startyear,
+                            endyear,
+                            publisher {
+                                id,
+                                name
+                            }
                         }
                     }
                 }

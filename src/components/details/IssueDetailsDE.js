@@ -51,7 +51,11 @@ function IssueFeatureDetails(props) {
     return (
         <div>
             <Typography><b>Autor</b> {toIndividualList(props.item.writers)}</Typography>
-            <Typography><b>Übersetzer</b> {toIndividualList(props.item.translators)}</Typography>
+            {
+                props.item.translators.length > 0 ?
+                <Typography><b>Übersetzer</b> {toIndividualList(props.item.translators)}</Typography> :
+                null
+            }
         </div>
     );
 }
@@ -64,7 +68,11 @@ function IssueStoryDetails(props) {
             <Typography><b>Inker</b> {toIndividualList(props.item.parent.inkers)}</Typography>
             <Typography><b>Kolorist</b> {toIndividualList(props.item.parent.colourists)}</Typography>
             <Typography><b>Letterer</b> {toIndividualList(props.item.parent.letteres)}</Typography>
-            <Typography><b>Übersetzer</b> {toIndividualList(props.item.translators)}</Typography>
+            {
+                props.item.translators.length > 0 ?
+                    <Typography><b>Übersetzer</b> {toIndividualList(props.item.translators)}</Typography> :
+                    null
+            }
             <Typography><b>Editor</b> {toIndividualList(props.item.parent.editors)}</Typography>
         </div>
     );
