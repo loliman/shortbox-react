@@ -69,7 +69,7 @@ function PublisherCreate(props) {
                             <Form>
                                 <CardHeader title="Verlag erstellen" />
 
-                                <CardContent>
+                                <CardContent className="cardContent">
                                     <Field
                                         className="fieldSmall"
                                         name="name"
@@ -104,8 +104,7 @@ function PublisherCreate(props) {
             </Mutation>
         </Layout>
     )
-};
-
+}
 export default compose(
     withSnackbar,
     withRouter

@@ -42,7 +42,8 @@ function Bottom(props) {
 function IssueCoversDetails(props) {
     return (
         <div>
-            <Typography><b>Artist</b> {toIndividualList(props.item.artists)}</Typography>
+            <Typography><b>Artist</b> {toIndividualList(props.item.parent ? props.item.parent.artists : props.item.artists)}
+            </Typography>
         </div>
     );
 }

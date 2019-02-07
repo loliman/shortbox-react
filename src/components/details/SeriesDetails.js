@@ -23,7 +23,7 @@ function SeriesDetails(props) {
                         <React.Fragment>
                             <CardHeader title={generateLabel(data.seriesd)}/>
 
-                            <CardContent>
+                            <CardContent className="cardContent">
 
                             </CardContent>
                         </React.Fragment>

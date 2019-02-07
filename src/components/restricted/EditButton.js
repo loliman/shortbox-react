@@ -4,7 +4,7 @@ import React from "react";
 import {withContext} from "../generic";
 
 function EditButton(props) {
-    if (props.session)
+    if (props.session && !props.us)
         return (
             <IconButton
                 className="itemMenuButton"

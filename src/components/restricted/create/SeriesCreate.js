@@ -75,7 +75,7 @@ function SeriesCreate(props) {
                             <Form>
                                 <CardHeader title="Serie erstellen"/>
 
-                                <CardContent>
+                                <CardContent className="cardContent">
                                     <Field
                                         className="fieldSmall"
                                         name="title"

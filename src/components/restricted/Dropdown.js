@@ -20,7 +20,7 @@ class Dropdown extends React.Component {
     }
 
     render() {
-        if(!this.props.EditDropdown.item || !this.props.session)
+        if (!this.props.EditDropdown.item || !this.props.session || this.props.us)
             return null;
 
         return (

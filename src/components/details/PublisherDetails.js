@@ -26,7 +26,7 @@ function PublisherDetails(props) {
                         <React.Fragment>
                             <CardHeader title={generateLabel(data.publisher)}/>
 
-                            <CardContent>
+                            <CardContent className="cardContent">
 
                             </CardContent>
                         </React.Fragment>

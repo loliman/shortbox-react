@@ -15,7 +15,7 @@ function Home(props) {
             <CardHeader title="Willkommen auf Shortbox"
                         subheader="Das deutsche Archiv für Marvel Comics"/>
 
-            <CardContent>
+            <CardContent className="cardContent">
                 <h3 className="lastAdded">Zuletzt hinzugefügt</h3>
 
                 {data.map((i) => <IssuePreview key={i} issue={i} />)}

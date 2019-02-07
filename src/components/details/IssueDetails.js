@@ -66,11 +66,11 @@ function IssueDetails(props) {
                                                 null
                                         }/>
 
-                            <CardContent>
+                            <CardContent className="cardContent">
                                 <IssueDetailsVariants selected={data.issue} issue={data.issue}/>
 
                                 <div className="details">
-                                    <IssueDetailsTable issue={issue}/>
+                                    <IssueDetailsTable issue={issue} us={us}/>
                                     <IssueDetailsCover issue={issue}/>
                                 </div>
 
@@ -109,7 +109,7 @@ function IssueDetailsTable(props) {
                     <IssueDetailsRow key="price" label="Preis"
                                      value={props.issue.price + ' ' + props.issue.currency}/>
                     {
-                        props.issue.cover.artists && props.issue.cover.artists.length > 0 ?
+                        props.us ?
                             <IssueDetailsRow key="coverartists" label="Cover Artists"
                                              value={toIndividualList(props.issue.cover.artists)}/> :
                             null
@@ -231,10 +231,13 @@ export function IssueContainsTitleDetailed(props) {
         issue.series = issue.issue.series;
     }
 
+    let exclusive = !props.item.parent && !props.item.issue;
+
     return (
         <div className={props.simple ? "storyTitle storyTitleSimple" : "storyTitle"}>
             <div className="headingContainer">
-                <Typography className="heading">{generateItemTitle(props.item)}</Typography>
+                <Typography
+                    className="heading">{generateItemTitle(props.item.issue ? props.item.issue : props.item)}</Typography>
                 <Typography className="heading headingAddInfo">
                     {props.item.addinfo ? props.item.addinfo : null}
                 </Typography>
@@ -269,23 +272,25 @@ export function IssueContainsTitleDetailed(props) {
                 }
 
                 {
-                    !props.item.parent && !props.item.issue ?
+                    exclusive ?
                         Math.max(document.documentElement.clientWidth, window.innerWidth || 0) > 600 ?
                             <Chip className="chip" label="Exklusiv" color="secondary"
                                   icon={<PriorityHighIcon/>}/>
                             : <Chip className="chip" label={<PriorityHighIcon className="
                             mobileChip"/>}
                                     color="secondary"/>
-                        :
-                        <Tooltip title="Zur Ausgabe">
-                            <IconButton className="detailsIcon"
-                                        component={Link}
-                                        to={generateUrl(issue, !props.us)}
-                                        aria-label="Details">
-                                <SearchIcon fontSize="small"/>
-                            </IconButton>
-                        </Tooltip>
+                        : null
                 }
+
+                <Tooltip title="Zur Ausgabe">
+                    <IconButton className="detailsIcon"
+                                component={Link}
+                                to={generateUrl(issue, !props.us)}
+                                aria-label="Details"
+                                disabled={exclusive}>
+                        <SearchIcon fontSize="small"/>
+                    </IconButton>
+                </Tooltip>
             </div>
         </div>
     )

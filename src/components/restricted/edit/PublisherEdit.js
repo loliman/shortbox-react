@@ -87,7 +87,7 @@ function PublisherEdit(props) {
                                         <Form>
                                             <CardHeader title={generateLabel(selected) + " bearbeiten"} />
 
-                                            <CardContent>
+                                            <CardContent className="cardContent">
                                                 <Field
                                                     className="fieldSmall"
                                                     name="name"
