@@ -16,7 +16,7 @@ function Bottom(props) {
             <br/>
 
             <IssueContains {...props} header="Geschichten"
-                           noEntriesHint="Diesem Comic sind noch keine Geschichten zugeordnet."
+                           noEntriesHint="Dieser Ausgabe sind noch keine Geschichten zugeordnet."
                            items={props.issue.stories} itemTitle={<IssueContainsTitleDetailed/>}
                            itemDetails={<IssueStoryDetails/>}/>
 
@@ -24,7 +24,7 @@ function Bottom(props) {
             <br/>
 
             <IssueContains {...props} header="Redaktionelle Inhalte"
-                           noEntriesHint="Diesem Comic sind noch keine redaktionellen Inhalte zugeordnet."
+                           noEntriesHint="Dieser Ausgabe sind noch keine redaktionellen Inhalte zugeordnet."
                            items={props.issue.features} itemTitle={<IssueContainsTitleSimple/>}
                            itemDetails={<IssueFeatureDetails/>}/>
 
@@ -32,7 +32,7 @@ function Bottom(props) {
             <br/>
 
             <IssueContains {...props} header="Covergalerie"
-                           noEntriesHint="Diesem Comic sind noch keine Cover zugeordnet."
+                           noEntriesHint="Dieser Ausgabe sind noch keine Cover zugeordnet."
                            items={props.issue.covers} itemTitle={<IssueContainsTitleDetailed/>}
                            itemDetails={<IssueCoversDetails/>}/>
         </React.Fragment>

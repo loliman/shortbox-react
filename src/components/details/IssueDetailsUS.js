@@ -23,7 +23,7 @@ function Bottom(props) {
             <br/>
 
             <IssueContains {...props} header="Geschichten"
-                           noEntriesHint="Diesem Comic sind noch keine Geschichten zugeordnet."
+                           noEntriesHint="Dieser Ausgabe sind noch keine Geschichten zugeordnet."
                            items={props.issue.stories} itemTitle={<IssueContainsTitleSimple/>}
                            itemDetails={<IssueStoryDetails/>}/>
 
@@ -31,7 +31,7 @@ function Bottom(props) {
             <br/>
 
             <IssueContains {...props} header="Cover erschienen in"
-                           noEntriesHint="Diesem Comic sind noch keine Cover zugeordnet."
+                           noEntriesHint="Dieser Ausgabe sind noch keine Cover zugeordnet."
                            items={props.issue.covers[0].children.map(c => c.issue)}
                            itemTitle={<IssueContainsTitleDetailed/>}/>
         </React.Fragment>

@@ -57,7 +57,9 @@ function PublisherCreate(props) {
 
                             await createPublisher({
                                 variables: {
-                                    name: values.name
+                                    publisher: {
+                                        name: values.name
+                                    }
                                 }
                             });
 

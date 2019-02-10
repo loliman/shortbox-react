@@ -18,7 +18,7 @@ export function capitalize(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function romanize(num) {
+export function romanize(num) {
     if (isNaN(num))
         return NaN;
     var digits = String(+num).split(""),

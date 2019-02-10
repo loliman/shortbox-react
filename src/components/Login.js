@@ -34,8 +34,10 @@ function Login(props) {
                         let password = sha256(values.password);
                         await login({
                             variables: {
-                                name: values.name,
-                                password: password
+                                user : {
+                                    name: values.name,
+                                    password: password
+                                }
                             }
                         });
 

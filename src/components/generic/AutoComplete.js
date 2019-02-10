@@ -6,7 +6,6 @@ import Paper from "@material-ui/core/Paper/Paper";
 import MenuItem from "@material-ui/core/MenuItem/MenuItem";
 import TextField from "@material-ui/core/TextField/TextField";
 import {Query} from "react-apollo";
-import QueryResult from "./QueryResult";
 
 const theme = {
     container: {
@@ -29,17 +28,30 @@ const theme = {
 };
 
 function AutoComplete(props) {
-    const {query, variables, ...rest} = props;
+    const {query, variables, label, disabled, ...rest} = props;
+
+    if(disabled)
+        return <div><TextField disabled label={label} className="fieldSmall"/></div>;
 
     return (
         <Query query={query}
            variables={variables}>
             {({loading, error, data}) => {
-                if (loading || error)
-                    return <QueryResult loading={loading} error={error} />;
+                let l = label;
+                let d = disabled;
+
+                if(loading)
+                    l += " (Lade...)";
+                else if(error)
+                    l  = " (Fehler!)";
+
+                if(loading || error)
+                    d = true;
 
                 return <AutoCompleteContainer
                     suggestions={data[query.definitions[0].name.value.toLowerCase()]}
+                    label={l}
+                    disabled={d}
                     {...rest}
                 />
             }}
@@ -76,7 +88,7 @@ class AutoCompleteContainer extends React.Component {
                        theme={theme}
                        renderInputComponent={(inputProps) => {
                            const {inputRef = () => {}, ref, value, ...other} = inputProps;
-                           const {error, id, label, name, onBlur, type} = this.props;
+                           const {error, id, label, name, onBlur, type, disabled} = this.props;
 
                            return (
                                <Field
@@ -89,6 +101,7 @@ class AutoCompleteContainer extends React.Component {
                                    className="fieldSmall"
                                    component={AutoCompleteTextField}
                                    {...other}
+                                   disabled={disabled}
                                    error={error}
                                    id={id}
                                    label={label}
@@ -148,7 +161,6 @@ class AutoCompleteContainer extends React.Component {
 }
 
 function AutoCompleteTextField(props) {
-
     return(
         <TextField
             {...fieldToTextField(props)}

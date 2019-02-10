@@ -136,6 +136,7 @@ const issue = gql`query Issue($issue_number: String!, $series_title: String!, $s
         stories {
             id,
             title,
+            number,
             addinfo,
             parent {
                 id,
@@ -155,6 +156,7 @@ const issue = gql`query Issue($issue_number: String!, $series_title: String!, $s
                         }
                     }   
                 },
+                number,
                 children {
                     id
                 },
@@ -314,4 +316,4 @@ const issue = gql`query Issue($issue_number: String!, $series_title: String!, $s
     }
 }`;
 
-export {getListQuery, issue, publisher, seriesd, publishers, series};
+export {getListQuery, issue, publisher, seriesd, publishers, series, issues};

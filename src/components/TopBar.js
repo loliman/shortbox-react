@@ -138,8 +138,10 @@ function LogOut(props) {
                 <Button color="secondary" onClick={() => {
                     logout({
                         variables: {
-                            id: parseInt(session.id),
-                            sessionid: session.sessionid
+                            user: {
+                                id: parseInt(session.id),
+                                sessionid: session.sessionid
+                            }
                         }
                     })
                 }}>

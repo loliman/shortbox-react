@@ -9,7 +9,7 @@ export default function QueryResult(props) {
     const {loading, error, data, selected} = props;
 
         if (loading)
-            return <div className="queryResult"><CircularProgress/><Typography
+            return <div className="queryResult"><CircularProgress className="circularProgress"/><Typography
                 className="queryResultText">Lade...</Typography></div>;
         if (error)
             return <div className="queryResult"><ErrorIcon fontSize="large"/><Typography

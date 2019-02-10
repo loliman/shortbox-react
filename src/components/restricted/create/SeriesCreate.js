@@ -48,7 +48,9 @@ function SeriesCreate(props) {
                     <Formik
                         initialValues={{
                             title: '',
-                            publisher: '',
+                            publisher: {
+                              name: ''
+                            },
                             volume: '',
                             startyear: '',
                             endyear: '',
@@ -59,11 +61,15 @@ function SeriesCreate(props) {
 
                             await createSeries({
                                 variables: {
-                                    title: values.title,
-                                    publisher_name: values.publisher,
-                                    volume: values.volume,
-                                    startyear: values.startyear,
-                                    endyear: parseInt(values.endyear),
+                                    series: {
+                                        title: values.title,
+                                        publisher: {
+                                            name: values.publisher.name
+                                        },
+                                        volume: values.volume,
+                                        startyear: values.startyear,
+                                        endyear: parseInt(values.endyear),
+                                    }
                                 }
                             });
 
@@ -90,10 +96,10 @@ function SeriesCreate(props) {
                                         variables={getGqlVariables(null, us)}
                                         suggestionLabel="name"
                                         type="text"
-                                        name="publisher"
+                                        name="publisher.name"
                                         label="Verlag"
                                         error={touched.publisher && errors.publisher}
-                                        value={values.publisher}
+                                        value={values.publisher.name}
                                         onChange={(field, value) => {
                                             values[field] = value
                                         }}
@@ -129,7 +135,9 @@ function SeriesCreate(props) {
                                             onClick={() => {
                                                 values = {
                                                     title: '',
-                                                    publisher: '',
+                                                    publisher: {
+                                                        name: ''
+                                                    },
                                                     volume: '',
                                                     startyear: '',
                                                     endyear: '',

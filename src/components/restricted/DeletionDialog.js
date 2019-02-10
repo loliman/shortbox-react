@@ -75,7 +75,9 @@ function DeletionDialog(props) {
                     {(deletepublisher) => (
                         <Button color="secondary" onClick={() => {
                             deletepublisher({
-                                variables: deleteVariables
+                                variables: {
+                                    item: deleteVariables
+                                }
                             })
                         }}>
                             Löschen
