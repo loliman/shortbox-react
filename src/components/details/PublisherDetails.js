@@ -6,18 +6,14 @@ import Layout from "../Layout";
 import {Query} from "react-apollo";
 import QueryResult from "../generic/QueryResult";
 import {publisher} from "../../graphql/queries";
-import {generateLabel} from "../../util/util";
-import {getSelected} from "../../util/hierarchiy";
+import {generateLabel, getSelected} from "../../util/hierarchy";
 
 function PublisherDetails(props) {
     let selected = getSelected(props.match.params);
-    let variables = {
-        publisher_name: selected.name
-    };
 
     return (
         <Layout>
-            <Query query={publisher} variables={variables}>
+            <Query query={publisher} variables={selected}>
                 {({loading, error, data}) => {
                     if (loading || error || !data.publisher)
                         return <QueryResult loading={loading} error={error} data={data.publisher} selected={selected}/>;

@@ -1,5 +1,5 @@
 import React from "react";
-import {generateLabel, toIndividualList} from "../../util/util";
+import {toIndividualList, wrapItem} from "../../util/util";
 import Typography from "@material-ui/core/Typography/Typography";
 import SearchIcon from '@material-ui/icons/Search';
 import IconButton from "@material-ui/core/IconButton/IconButton";
@@ -8,7 +8,7 @@ import List from "@material-ui/core/List/List";
 import ListItem from "@material-ui/core/ListItem/ListItem";
 import {Link} from "react-router-dom";
 import {withContext} from "../generic";
-import {generateUrl} from "../../util/hierarchiy";
+import {generateLabel, generateUrl} from "../../util/hierarchy";
 import IssueDetails, {IssueContains, IssueContainsTitleDetailed, IssueContainsTitleSimple} from "./IssueDetails";
 
 function IssueDetailsUS(props) {
@@ -62,15 +62,15 @@ function IssueStoryDetails(props) {
                             <ListItem key={child.id} className="issueStoryIssueItem" divider>
                                 <div>
                                     <Typography
-                                        className="issueStoryIssue">{generateLabel(child.issue.series) + " #" + child.issue.number}</Typography>
+                                        className="issueStoryIssue">{generateLabel(wrapItem(child.issue.series)) + " #" + child.issue.number}</Typography>
                                     <Typography className="issueStoryIssue issueStoryIssuePublisher">
-                                        {generateLabel(child.issue.series.publisher)}
+                                        {generateLabel(wrapItem(child.issue.series.publisher))}
                                     </Typography>
                                 </div>
                                 <Tooltip title="Zur Ausgabe">
                                     <IconButton className="detailsIcon issueStoryIssueButton"
                                                 component={Link}
-                                                to={generateUrl(child.issue)}
+                                                to={generateUrl(wrapItem(child.issue))}
                                                 aria-label="Details">
                                         <SearchIcon fontSize="small"/>
                                     </IconButton>

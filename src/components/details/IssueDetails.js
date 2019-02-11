@@ -1,7 +1,7 @@
 import Layout from "../Layout";
 import {Query} from "react-apollo";
 import {issue} from "../../graphql/queries";
-import {generateLabel, getGqlVariables, toIndividualList} from "../../util/util";
+import {toIndividualList, wrapItem} from "../../util/util";
 import QueryResult from "../generic/QueryResult";
 import React from "react";
 import CardHeader from "@material-ui/core/CardHeader/CardHeader";
@@ -26,7 +26,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import Tooltip from "@material-ui/core/es/Tooltip/Tooltip";
 import IconButton from "@material-ui/core/IconButton/IconButton";
 import {Link} from "react-router-dom";
-import {generateUrl} from "../../util/hierarchiy";
+import {generateLabel, generateUrl} from "../../util/hierarchy";
 import GridList from "@material-ui/core/GridList/GridList";
 import GridListTile from "@material-ui/core/GridListTile/GridListTile";
 import GridListTileBar from "@material-ui/core/GridListTileBar/GridListTileBar";
@@ -36,15 +36,15 @@ function IssueDetails(props) {
 
     return (
         <Layout>
-            <Query query={issue} variables={getGqlVariables(selected)}>
+            <Query query={issue} variables={selected}>
                 {({loading, error, data}) => {
                     if (loading || error || !data.issue)
                         return <QueryResult loading={loading} error={error} data={data.issue} selected={selected}/>;
 
                     let issue = JSON.parse(JSON.stringify(data.issue));
-                    if (selected.format)
+                    if (selected.issue.format)
                         data.issue.variants.forEach((v) => {
-                            if (v.format === selected.format && v.variant === selected.variant) {
+                            if (v.format === selected.issue.format && v.variant === selected.issue.variant) {
                                 issue.cover.url = v.cover.url;
                                 issue.format = v.format;
                                 issue.variant = v.variant;
@@ -58,7 +58,7 @@ function IssueDetails(props) {
 
                     return (
                         <React.Fragment>
-                            <CardHeader title={generateLabel(issue)}
+                            <CardHeader title={generateLabel(wrapItem(issue))}
                                         subheader={props.subheader ? generateIssueSubHeader(issue) : ""}
                                         action={
                                             issue.verified ?
@@ -153,7 +153,7 @@ class IssueDetailsCover extends React.Component {
             <React.Fragment>
                 <CardMedia
                     image={coverUrl}
-                    title={generateLabel(issue)}
+                    title={generateLabel(wrapItem(issue))}
                     className="media"
                     onClick={() => this.triggerIsOpen()}/>
 
@@ -285,7 +285,7 @@ export function IssueContainsTitleDetailed(props) {
                 <Tooltip title="Zur Ausgabe">
                     <IconButton className="detailsIcon"
                                 component={Link}
-                                to={generateUrl(issue, !props.us)}
+                                to={exclusive ? "" : generateUrl(wrapItem(issue), !props.us)}
                                 aria-label="Details"
                                 disabled={exclusive}>
                         <SearchIcon fontSize="small"/>
@@ -301,14 +301,14 @@ function IssueDetailsVariants(props) {
         return null;
 
     let variants = [];
-    variants.push(<IssueDetailsVariant to={generateUrl(props.issue, false)}
+    variants.push(<IssueDetailsVariant to={generateUrl(wrapItem(props.issue), false)}
                                        key={props.issue} variant={props.issue}/>);
 
     props.selected.variants.forEach(variant => {
         variant.series = props.selected.series;
         variant.number = props.selected.number;
 
-        variants.push(<IssueDetailsVariant to={generateUrl(variant, false)}
+        variants.push(<IssueDetailsVariant to={generateUrl(wrapItem(variant), false)}
                                            key={variant.id} variant={variant}/>);
     });
 

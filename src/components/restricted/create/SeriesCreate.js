@@ -8,11 +8,11 @@ import {Field, Form, Formik} from 'formik';
 import {TextField} from 'formik-material-ui';
 import Button from "@material-ui/core/Button/Button";
 import {publishers, series} from "../../../graphql/queries";
-import {generateUrl} from "../../../util/hierarchiy";
+import {generateLabel, generateUrl} from "../../../util/hierarchy";
 import {SeriesSchema} from "../../../util/yupSchema";
-import {generateLabel, getGqlVariables} from "../../../util/util";
 import {withContext} from "../../generic";
 import AutoComplete from "../../generic/AutoComplete";
+import {wrapItem} from "../../../util/util";
 
 function SeriesCreate(props) {
     const {history, enqueueSnackbar, us} = props;
@@ -21,25 +21,37 @@ function SeriesCreate(props) {
         <Layout>
             <Mutation mutation={createSeries}
                       update={(cache, result) => {
-                          let data = cache.readQuery({
-                              query: series,
-                              variables: getGqlVariables(result.data.createSeries.publisher)
-                          });
+                          try {
+                              let data = cache.readQuery({
+                                  query: series,
+                                  variables: {
+                                      publisher: {
+                                          name: result.data.createSeries.publisher.name
+                                      }
+                                  }
+                              });
 
-                          data.series.push(result.data.createSeries);
-                          data.series.sort((a, b) => {
-                              return (a.title.toLowerCase() + a.volume).localeCompare((b.title.toLowerCase() + b.volume));
-                          });
+                              data.series.push(result.data.createSeries);
+                              data.series.sort((a, b) => {
+                                  return (a.title.toLowerCase() + a.volume).localeCompare((b.title.toLowerCase() + b.volume));
+                              });
 
-                          cache.writeQuery({
-                              query: series,
-                              variables: getGqlVariables(result.data.createSeries.publisher),
-                              data: data
-                          });
+                              cache.writeQuery({
+                                  query: series,
+                                  variables: {
+                                      publisher: {
+                                          name: result.data.createSeries.publisher.name
+                                      }
+                                  },
+                                  data: data
+                              });
+                          } catch (e) {
+                              //ignore cache exception;
+                          }
                       }}
                       onCompleted={(data) => {
                           enqueueSnackbar(generateLabel(data.createSeries) + " erfolgreich erstellt", {variant: 'success'});
-                          history.push(generateUrl(data.createSeries));
+                          history.push(generateUrl(wrapItem(data.createSeries)));
                       }}
                       onError={() => {
                           enqueueSnackbar("Serie kann nicht erstellt werden", {variant: 'error'});
@@ -93,7 +105,7 @@ function SeriesCreate(props) {
                                     <AutoComplete
                                         id="publisher"
                                         query={publishers}
-                                        variables={getGqlVariables(null, us)}
+                                        variables={{us: us}}
                                         suggestionLabel="name"
                                         type="text"
                                         name="publisher.name"
@@ -101,7 +113,7 @@ function SeriesCreate(props) {
                                         error={touched.publisher && errors.publisher}
                                         value={values.publisher.name}
                                         onChange={(field, value) => {
-                                            values[field] = value
+                                            values.publisher.name = value
                                         }}
                                     />
 

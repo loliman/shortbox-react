@@ -9,21 +9,20 @@ import {TextField} from 'formik-material-ui';
 import Button from "@material-ui/core/Button/Button";
 import {publishers, series, seriesd} from "../../../graphql/queries";
 import {withContext} from "../../generic";
-import {generateLabel, getGqlVariables} from "../../../util/util";
+import {compare, generateLabel, generateUrl} from "../../../util/hierarchy";
 import QueryResult from "../../generic/QueryResult";
 import {SeriesSchema} from "../../../util/yupSchema";
-import {generateUrl} from "../../../util/hierarchiy";
 import AutoComplete from "../../generic/AutoComplete";
-
+import {wrapItem} from "../../../util/util";
 
 function SeriesEdit(props) {
-    const {selected, history, enqueueSnackbar, us, level} = props;
+    const {selected, history, enqueueSnackbar, us} = props;
     let old;
-    let neew;
+    let edit;
 
     return (
         <Layout>
-            <Query query={seriesd} variables={getGqlVariables(selected)}>
+            <Query query={seriesd} variables={selected}>
                 {({loading, error, data}) => {
                     old = data.seriesd;
 
@@ -33,60 +32,75 @@ function SeriesEdit(props) {
                     return (
                         <Mutation mutation={editSeries}
                                   update={(cache, result) => {
-                                      neew = result.data.editSeries;
+                                      try {
+                                          let queryName = series.definitions[0].name.value.toLowerCase();
+                                          edit = result.data.editSeries;
 
-                                      let data = cache.readQuery({
-                                          query: series,
-                                          variables: {
-                                              publisher_name: old.publisher.name
-                                          }
-                                      });
+                                          let data = cache.readQuery({
+                                              query: series,
+                                              variables: {
+                                                  publisher: {
+                                                      name: old.publisher.name
+                                                  }
+                                              }
+                                          });
 
-                                      data[level] = data[level].filter((e) => e.id !== old.id);
+                                          data[queryName] = data[queryName].filter((e) => compare(e, old));
 
-                                      cache.writeQuery({
-                                          query: series,
-                                          variables: {
-                                              publisher_name: old.publisher.name
-                                          },
-                                          data: data
-                                      });
+                                          cache.writeQuery({
+                                              query: series,
+                                              variables: {
+                                                  publisher: {
+                                                      name: old.publisher.name
+                                                  }
+                                              },
+                                              data: data
+                                          });
 
-                                      data = cache.readQuery({
-                                          query: series,
-                                          variables: {
-                                              publisher_name: neew.publisher.name
-                                          }
-                                      });
+                                          data = cache.readQuery({
+                                              query: series,
+                                              variables: {
+                                                  publisher: {
+                                                      name: edit.publisher.name
+                                                  }
+                                              }
+                                          });
 
-                                      data.series.push(neew);
-                                      data.series.sort((a, b) => {
-                                          return (a.title.toLowerCase() + a.volume).localeCompare((b.title.toLowerCase() + b.volume));
-                                      });
+                                          data.series.push(edit);
+                                          data.series.sort((a, b) => {
+                                              return (a.title.toLowerCase() + a.volume).localeCompare((b.title.toLowerCase() + b.volume));
+                                          });
 
-                                      cache.writeQuery({
-                                          query: series,
-                                          variables: {
-                                              publisher_name: neew.publisher.name
-                                          },
-                                          data: data
-                                      });
+                                          cache.writeQuery({
+                                              query: series,
+                                              variables: {
+                                                  publisher: {
+                                                      name: edit.publisher.name
+                                                  }
+                                              },
+                                              data: data
+                                          });
+                                      } catch (e) {
+                                          //ignore cache exception;
+                                      }
                                   }}
                                   onCompleted={(data) => {
-                                      enqueueSnackbar(generateLabel(neew) + " erfolgreich gespeichert", {variant: 'success'});
-                                      history.push(generateUrl(neew.publisher, neew.publisher.us));
+                                      enqueueSnackbar(generateLabel(wrapItem(edit)) + " erfolgreich gespeichert", {variant: 'success'});
+                                      history.push(generateUrl(wrapItem(edit), us));
                                   }}
                                   onError={() => {
-                                      enqueueSnackbar(generateLabel(old) + " kann nicht gespeichert werden", {variant: 'error'});
+                                      enqueueSnackbar(generateLabel(wrapItem(old)) + " kann nicht gespeichert werden", {variant: 'error'});
                                   }}>
                             {(editSeries, {error}) => (
                                 <Formik
                                     initialValues={{
                                         title: old.title,
-                                        publisher: old.publisher.name,
+                                        publisher: {
+                                            name: old.publisher.name
+                                        },
                                         volume: old.volume,
                                         startyear: old.startyear,
-                                        endyear: old.endyear
+                                        endyear: (old.endyear ? old.endyear : "")
                                     }}
                                     validationSchema={SeriesSchema}
                                     onSubmit={async (values, actions) => {
@@ -94,14 +108,24 @@ function SeriesEdit(props) {
 
                                         await editSeries({
                                             variables: {
-                                                title_old: old.title,
-                                                volume_old: old.volume,
-                                                publisher_old: old.publisher.name,
-                                                title: values.title,
-                                                publisher: values.publisher,
-                                                volume: values.volume,
-                                                startyear: values.startyear,
-                                                endyear: values.endyear
+                                                old: {
+                                                    title: old.title,
+                                                    publisher: {
+                                                        name: old.publisher.name
+                                                    },
+                                                    volume: old.volume,
+                                                    startyear: old.startyear,
+                                                    endyear: parseInt(old.endyear)
+                                                },
+                                                edit: {
+                                                    title: values.title,
+                                                    publisher: {
+                                                        name: values.publisher.name
+                                                    },
+                                                    volume: values.volume,
+                                                    startyear: values.startyear,
+                                                    endyear: parseInt(values.endyear)
+                                                }
                                             }
                                         });
 
@@ -125,15 +149,15 @@ function SeriesEdit(props) {
                                                 <AutoComplete
                                                     id="publisher"
                                                     query={publishers}
-                                                    variables={getGqlVariables(null, us)}
+                                                    variables={{us: us}}
                                                     suggestionLabel="name"
                                                     type="text"
-                                                    name="publisher"
+                                                    name="publisher.name"
                                                     label="Verlag"
                                                     error={touched.publisher && errors.publisher}
-                                                    value={values.publisher}
+                                                    value={values.publisher.name}
                                                     onChange={(field, value) => {
-                                                        values[field] = value
+                                                        values.publisher.name = value
                                                     }}
                                                 />
 
@@ -157,7 +181,6 @@ function SeriesEdit(props) {
                                                     className="fieldSmall"
                                                     name="endyear"
                                                     label="Endjahr"
-                                                    type="number"
                                                     component={TextField}
                                                 />
 
@@ -167,11 +190,13 @@ function SeriesEdit(props) {
                                                 <Button disabled={isSubmitting}
                                                         onClick={() => {
                                                             values = {
-                                                                title: '',
-                                                                publisher: '',
-                                                                volume: '',
-                                                                startyear: '',
-                                                                endyear: '',
+                                                                title: old.title,
+                                                                publisher: {
+                                                                    name: old.publisher.name
+                                                                },
+                                                                volume: old.volume,
+                                                                startyear: old.startyear,
+                                                                endyear: (old.endyear ? old.endyear : "")
                                                             };
                                                             resetForm();
                                                         }}

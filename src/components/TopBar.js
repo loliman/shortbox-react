@@ -8,12 +8,11 @@ import Tooltip from "@material-ui/core/es/Tooltip/Tooltip";
 import Button from "@material-ui/core/es/Button/Button";
 import {Mutation} from "react-apollo";
 import {logout} from "../graphql/mutations";
-import {generateLabel} from "../util/util";
+import {generateLabel, generateUrl, HierarchyLevel} from "../util/hierarchy";
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import Hamburger from 'react-hamburgers';
 import Link from "react-router-dom/es/Link";
 import {withContext} from "./generic";
-import {generateUrl, HierarchyLevel} from "../util/hierarchiy";
 
 function TopBar(props) {
     const {drawerOpen, toogleDrawer, us, history, session} = props;
@@ -60,21 +59,21 @@ function BreadCrumbMenu(props) {
     const {selected, level, us} = props;
 
     switch (level) {
-        case HierarchyLevel.PUBLISHER:
+        case HierarchyLevel.ROOT:
             return <BreadCrumbLabel label="Shortbox" />;
-        case HierarchyLevel.SERIES:
+        case HierarchyLevel.PUBLISHER:
             return (
                 <React.Fragment>
                     <BreadCrumbLink to={us ? "/us" : "/de"} label="Shortbox" {...props}/>
                     <BreadCrumbLabel label={generateLabel(selected)}/>
                 </React.Fragment>
             );
-        case HierarchyLevel.ISSUE:
+        case HierarchyLevel.SERIES:
             return (
                 <React.Fragment>
                     <BreadCrumbLink to={us ? "/us" : "/de"} label="Shortbox" {...props}/>
-                    <BreadCrumbLink to={generateUrl(selected.publisher, us)}
-                                    label={generateLabel(selected.publisher)}
+                    <BreadCrumbLink to={generateUrl(selected.series, us)}
+                                    label={generateLabel(selected.series)}
                                     {...props}/>
                     <BreadCrumbLabel label={generateLabel(selected)}/>
                 </React.Fragment>
@@ -83,10 +82,10 @@ function BreadCrumbMenu(props) {
             return (
                 <React.Fragment>
                     <BreadCrumbLink to={us ? "/us" : "/de"} label="Shortbox" {...props}/>
-                    <BreadCrumbLink to={generateUrl(selected.series.publisher, us)}
-                                    label={generateLabel(selected.series.publisher)}
+                    <BreadCrumbLink to={generateUrl(selected.issue.series, us)}
+                                    label={generateLabel(selected.issue.series)}
                                     {...props}/>
-                    <BreadCrumbLabel label={generateLabel(selected.series)}/>
+                    <BreadCrumbLabel label={generateLabel(selected.issue)}/>
                 </React.Fragment>
             );
     }

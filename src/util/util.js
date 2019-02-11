@@ -1,17 +1,48 @@
-export function generateLabel(o) {
-    if (!o)
-        return "Shortbox";
-    else if (o.name)
-        return o.name;
-    else if (o.volume) {
-        let year;
+export function wrapItem(item) {
+    if (item.name)
+        return {us: (item.us ? item.us : false), publisher: item};
 
-        if (o.startyear)
-            year = ' (' + o.startyear + ' - ' + ((!o.endyear || o.endyear === 0) ? '...' : o.endyear) + ')';
+    if (item.number)
+        return {us: (item.series.publisher.us ? item.series.publisher.us : false), issue: item};
 
-        return o.title + ' (Vol. ' + romanize(o.volume) + ')' + (year ? year : "");
-    } else if (o.series)
-        return o.series.title + ' #' + o.number;
+    return {us: (item.publisher.us ? item.publisher.us : false), series: item};
+}
+
+export function unwrapItem(item) {
+    if (item.publisher)
+        return item.publisher;
+
+    if (item.series)
+        return item.series;
+
+    return item.issue;
+}
+
+export function stripItem(item) {
+    let stripped = JSON.parse(JSON.stringify(item));
+
+    if (stripped.id) {
+        stripped.id = undefined;
+        stripped.__resolveType = undefined;
+        stripped.__typename = undefined;
+    }
+
+    if (stripped.series) {
+        stripped.series.id = undefined;
+        stripped.series.__resolveType = undefined;
+        stripped.series__typename = undefined;
+        stripped.series.publisher.id = undefined;
+        stripped.series.publisher.__resolveType = undefined;
+        stripped.series.publisher.__typename = undefined;
+    }
+
+    if (stripped.publisher) {
+        stripped.publisher.id = undefined;
+        stripped.publisher.__typename = undefined;
+        stripped.publisher.__resolveType = undefined;
+    }
+
+    return stripped;
 }
 
 export function capitalize(string) {
@@ -32,51 +63,14 @@ export function romanize(num) {
     return Array(+digits.join("") + 1).join("M") + roman;
 }
 
-export function getGqlVariables(selected, us) {
-    let publisher_name;
-    let series_title;
-    let series_volume;
-    let issue_number;
-
-    if(selected) {
-        if (selected.series)
-            publisher_name = selected.series.publisher.name;
-        else if (selected.publisher)
-            publisher_name = selected.publisher.name;
-        else
-            publisher_name = selected.name;
-
-        if (selected.series)
-            series_title = selected.series.title;
-        else if (selected.title)
-            series_title = selected.title;
-
-        if (selected.series)
-            series_volume = selected.series.volume;
-        else if (selected.title)
-            series_volume = selected.volume;
-
-        if (selected.series)
-            issue_number = selected.number;
-    }
-
-    return {
-        us: us,
-        publisher_name: publisher_name,
-        series_title: series_title,
-        series_volume: series_volume,
-        issue_number: issue_number
-    };
-}
-
-export function toIndividualList(o) {
-    if (!o || o.length === 0)
+export function toIndividualList(item) {
+    if (!item || item.length === 0)
         return "Unbekannt";
 
-    let length = o.length;
+    let length = item.length;
     let list = "";
 
-    o.forEach((item, index) => {
+    item.forEach((item, index) => {
         list += (length - 1 === index ? item.name : item.name + ", ");
     });
 

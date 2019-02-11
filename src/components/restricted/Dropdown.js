@@ -2,7 +2,7 @@ import React from "react";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener/ClickAwayListener";
 import Menu from "@material-ui/core/Menu/Menu";
 import MenuItem from "@material-ui/core/MenuItem/MenuItem";
-import {generateUrl} from "../../util/hierarchiy";
+import {generateUrl} from "../../util/hierarchy";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import Typography from "@material-ui/core/es/Typography/Typography";

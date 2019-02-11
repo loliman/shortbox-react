@@ -8,9 +8,8 @@ import {Field, Form, Formik} from 'formik';
 import {TextField} from 'formik-material-ui';
 import Button from "@material-ui/core/Button/Button";
 import {issues, publishers, series} from "../../../graphql/queries";
-import {generateUrl} from "../../../util/hierarchiy";
+import {generateLabel, generateUrl} from "../../../util/hierarchy";
 import {IssueSchema} from "../../../util/yupSchema";
-import {generateLabel, getGqlVariables} from "../../../util/util";
 import {withContext} from "../../generic";
 import AutoComplete from "../../generic/AutoComplete";
 import MenuItem from "@material-ui/core/MenuItem/MenuItem";
@@ -24,7 +23,7 @@ function IssueCreate(props) {
                       update={(cache, result) => {
                           let data = cache.readQuery({
                               query: issues,
-                              variables: getGqlVariables(result.data.createIssue.series)
+                              variables: result.data.createIssue.series
                           });
 
                           data.series.push(result.data.createIssue);
@@ -35,7 +34,7 @@ function IssueCreate(props) {
 
                           cache.writeQuery({
                               query: issues,
-                              variables: getGqlVariables(result.data.createIssue.series),
+                              variables: result.data.createIssue.series,
                               data: data
                           });
                       }}
@@ -98,7 +97,7 @@ function IssueCreate(props) {
                                     <AutoComplete
                                         id="publisher"
                                         query={publishers}
-                                        variables={getGqlVariables(null, us)}
+                                        variables={{us: us}}
                                         suggestionLabel="name"
                                         type="text"
                                         name="publisher"
@@ -114,7 +113,7 @@ function IssueCreate(props) {
                                         disabled={!values.publisher || values.publisher.trim().length === 0}
                                         id="series"
                                         query={series}
-                                        variables={getGqlVariables({name: values.publisher}, us)}
+                                        variables={{name: values.publisher}}
                                         suggestionLabel="title"
                                         type="text"
                                         name="seriestitle"

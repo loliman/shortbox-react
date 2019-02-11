@@ -3,7 +3,7 @@ import MuiList from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText'
 import {Query} from "react-apollo";
-import {generateLabel, getGqlVariables} from "../util/util";
+import {wrapItem} from "../util/util";
 import {getListQuery} from '../graphql/queries'
 import QueryResult from './generic/QueryResult';
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer/SwipeableDrawer";
@@ -12,7 +12,7 @@ import Typography from "@material-ui/core/es/Typography/Typography";
 import {Link} from "react-router-dom";
 import {ScrollContainer} from "react-router-scroll-4";
 import {withContext} from "./generic";
-import {generateUrl, HierarchyLevel} from "../util/hierarchiy";
+import {generateLabel, generateUrl, HierarchyLevel} from "../util/hierarchy";
 
 class List extends React.Component {
     constructor(props) {
@@ -24,25 +24,16 @@ class List extends React.Component {
     }
 
     render() {
-        const {us, drawerOpen, toogleDrawer, mobile, handleMenuOpen, anchorEl} = this.props;
+        const {drawerOpen, toogleDrawer, mobile, handleMenuOpen, anchorEl} = this.props;
         let {selected, level} = this.props;
 
-        if(this.props.match.url.indexOf("/edit") === 0) {
-            switch (level) {
-                case HierarchyLevel.PUBLISHER:
-                    selected = null;
-                    break;
-                case HierarchyLevel.SERIES:
-                    selected = selected.publisher;
-                    break;
-                default:
-                    selected = selected.series;
-                    break;
-            }
+        if (level === HierarchyLevel.ISSUE) {
+            level = HierarchyLevel.SERIES;
+            selected = selected.issue;
         }
 
-        if (level === HierarchyLevel.ISSUE_DETAILS)
-            level = HierarchyLevel.ISSUE;
+        let query = getListQuery(level);
+        let queryName = query.definitions[0].name.value.toLowerCase();
 
         return (
             <SwipeableDrawer
@@ -55,20 +46,20 @@ class List extends React.Component {
                 id="drawer">
                 <ScrollContainer scrollKey={this.state.scrollKey}>
                     <MuiList id="list">
-                        <Query query={getListQuery(level)}
-                               variables={getGqlVariables(selected, us)}>
+                        <Query query={query}
+                               variables={selected}>
                             {({loading, error, data}) => {
-                                if (loading || error || !data[level])
+                                if (loading || error || !data[queryName])
                                     return <QueryResult loading={loading} error={error} />;
 
-                                if (!data[level].length === 0)
+                                if (data[queryName].length === 0)
                                     return <NoEntries />;
 
-                                return data[level].map((i) => {
+                                return data[queryName].map((i) => {
                                     return <TypeListEntry anchorEl={anchorEl}
                                                           {...this.props}
                                                           handleMenuOpen={handleMenuOpen}
-                                                          key={i.id} item={i}/>
+                                                          key={i.id} item={wrapItem(i)}/>
                                 });
                             }}
                         </Query>

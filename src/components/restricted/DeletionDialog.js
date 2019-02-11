@@ -8,23 +8,17 @@ import WarningIcon from "@material-ui/icons/Warning";
 import {getDeleteMutation} from "../../graphql/mutations";
 import {Mutation} from "react-apollo";
 import Typography from "@material-ui/core/es/Typography/Typography";
-import {
-    capitalize,
-    generateLabel,
-    getGqlVariables} from "../../util/util";
+import {stripItem, unwrapItem, wrapItem} from "../../util/util";
 import {withContext} from "../generic";
 import {getListQuery} from "../../graphql/queries";
-import {generateUrl, HierarchyLevel} from "../../util/hierarchiy";
+import {compare, generateLabel, generateUrl, HierarchyLevel} from "../../util/hierarchy";
 
 function DeletionDialog(props) {
     let {level} = props;
-    const {item, open, handleClose, selected, us, history, match, enqueueSnackbar} = props;
+    const {item, open, edit, handleClose, selected, history, enqueueSnackbar, us} = props;
 
     let deleteMutation = getDeleteMutation(level);
     let getQuery = getListQuery(level);
-
-    let deleteVariables = getGqlVariables(item, us);
-    let variables = getGqlVariables(selected, us);
 
     return (
          <Dialog open={open}
@@ -43,26 +37,47 @@ function DeletionDialog(props) {
 
                 <Mutation mutation={deleteMutation}
                           update={(cache) => {
-                              let data = cache.readQuery({query: getQuery, variables: variables});
+                              try {
+                                  let parent = unwrapItem(item);
 
-                              data[level] = data[level].filter((e) => e.id !== item.id);
+                                  if (item.issue)
+                                      parent = wrapItem(item.issue.series);
+                                  else if (item.series)
+                                      parent = wrapItem(item.series.publisher);
+                                  else
+                                      parent = {us: us};
 
-                              cache.writeQuery({
-                                  query: getQuery,
-                                  variables: variables,
-                                  data: data,
-                              });
+                                  parent = stripItem(parent);
+
+                                  let data = cache.readQuery({
+                                      query: getQuery,
+                                      variables: parent
+                                  });
+
+
+                                  let queryName = getQuery.definitions[0].name.value.toLowerCase();
+
+                                  data[queryName] = data[queryName].filter((e) => !compare(e, unwrapItem(item)));
+
+                                  cache.writeQuery({
+                                      query: getQuery,
+                                      variables: parent,
+                                      data: data,
+                                  });
+                              } catch (e) {
+                                  //ignore cache exception;
+                              }
                           }}
                           onCompleted={(data) => {
-                              if (level.indexOf('issue_details') !== -1 || match.url.indexOf('edit') !== -1) {
+                              if (level === HierarchyLevel.ISSUE || edit) {
                                   history.push(generateUrl(selected));
-                                  if (level.indexOf('issue_details') !== -1)
-                                    level = HierarchyLevel.ISSUE;
+                                  if (level === HierarchyLevel.ISSUE)
+                                      level = HierarchyLevel.SERIES;
                               }
 
-                              let mutation = 'delete' + capitalize(level);
+                              let mutationName = deleteMutation.definitions[0].name.value.toLowerCase();
 
-                              if (data[mutation])
+                              if (data[mutationName])
                                   enqueueSnackbar(generateLabel(item) + " erfolgreich gelöscht", {variant: 'success'});
 
                               handleClose();
@@ -76,7 +91,7 @@ function DeletionDialog(props) {
                         <Button color="secondary" onClick={() => {
                             deletepublisher({
                                 variables: {
-                                    item: deleteVariables
+                                    item: stripItem(unwrapItem(item))
                                 }
                             })
                         }}>
@@ -91,7 +106,7 @@ function DeletionDialog(props) {
 
 function getDeleteConfimText(l, item) {
     switch (l) {
-        case HierarchyLevel.PUBLISHER:
+        case HierarchyLevel.ROOT:
             return (
                 <Typography>
                     Wollen Sie den <b>{generateLabel(item)}</b> Verlag wirklich löschen?
@@ -101,7 +116,7 @@ function getDeleteConfimText(l, item) {
                     gelöscht.
                 </Typography>
             );
-        case HierarchyLevel.SERIES:
+        case HierarchyLevel.PUBLISHER:
             return (
                 <Typography>
                     Wollen Sie die Serie <b>{generateLabel(item)}</b> wirklich löschen?

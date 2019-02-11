@@ -11,8 +11,9 @@ import {publishers} from "../../../graphql/queries";
 import {withSnackbar} from "notistack";
 import {compose} from "recompose";
 import {withRouter} from "react-router-dom";
-import {generateUrl} from "../../../util/hierarchiy";
+import {generateUrl} from "../../../util/hierarchy";
 import {PublisherSchema} from "../../../util/yupSchema";
+import {wrapItem} from "../../../util/util";
 
 function PublisherCreate(props) {
     const {history, enqueueSnackbar} = props;
@@ -21,27 +22,32 @@ function PublisherCreate(props) {
         <Layout>
             <Mutation mutation={createPublisher}
                       update={(cache, result) => {
-                          let data = cache.readQuery({query: publishers,
-                              variables: {
-                                  us: false
-                              }
-                          });
-                          data.publishers.push(result.data.createPublisher);
-                          data.publishers.sort((a, b) => {
-                              return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-                          });
+                          try {
+                              let data = cache.readQuery({
+                                  query: publishers,
+                                  variables: {
+                                      us: false
+                                  }
+                              });
+                              data.publishers.push(result.data.createPublisher);
+                              data.publishers.sort((a, b) => {
+                                  return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
+                              });
 
-                          cache.writeQuery({
-                              query: publishers,
-                              variables: {
-                                  us: false
-                              },
-                              data: data
-                          });
+                              cache.writeQuery({
+                                  query: publishers,
+                                  variables: {
+                                      us: false
+                                  },
+                                  data: data
+                              });
+                          } catch (e) {
+                              //ignore cache exception;
+                          }
                       }}
                       onCompleted={(data) => {
                           enqueueSnackbar(data.createPublisher.name + " erfolgreich erstellt", {variant: 'success'});
-                          history.push(generateUrl(data.createPublisher));
+                          history.push(generateUrl(wrapItem(data.createPublisher)));
                       }}
                       onError={() => {
                           enqueueSnackbar("Verlag kann nicht erstellt werden", {variant: 'error'});

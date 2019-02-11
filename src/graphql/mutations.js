@@ -1,5 +1,5 @@
 import gql from "graphql-tag";
-import {HierarchyLevel} from "../util/hierarchiy";
+import {HierarchyLevel} from "../util/hierarchy";
 
 const login = gql`mutation Login($user: UserInput!){
     login(user: $user) {
@@ -68,18 +68,16 @@ const createIssue = gql`mutation CreateIssue($title: String!, $publishername: St
    }
 }`;
 
-const editPublisher = gql`mutation EditPublisher($name_old: String!, $name: String!){
-   editPublisher(name_old: $name_old, name: $name) {
+const editPublisher = gql`mutation EditPublisher($old: PublisherInput!, $edit: PublisherInput!){
+   editPublisher(old: $old, edit: $edit) {
         id,
         name,
         us
    }
 }`;
 
-const editSeries = gql`mutation EditSeries($title_old: String!, $volume_old: Int!, $publisher_old: String!, 
-                                           $title: String!, $publisher: String!, $volume: Int!, $startyear: Int!, $endyear: Int){
-   editSeries(title_old: $title_old, volume_old: $volume_old, publisher_old: $publisher_old, 
-              title: $title, publisher: $publisher, volume: $volume, startyear: $startyear, endyear: $endyear) {
+const editSeries = gql`mutation EditSeries($old: SeriesInput!, $edit: SeriesInput!){
+   editSeries(old: $old, edit: $edit) {
         id,
         title,
         volume,
@@ -95,9 +93,9 @@ const editSeries = gql`mutation EditSeries($title_old: String!, $volume_old: Int
 
 function getDeleteMutation(level) {
     switch (level) {
-        case HierarchyLevel.PUBLISHER:
+        case HierarchyLevel.ROOT:
             return deletePublishers;
-        case HierarchyLevel.SERIES:
+        case HierarchyLevel.PUBLISHER:
             return deleteSeries;
         default:
             return deleteIssues;

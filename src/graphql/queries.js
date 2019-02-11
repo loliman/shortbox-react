@@ -1,5 +1,5 @@
 import gql from "graphql-tag";
-import {HierarchyLevel} from "../util/hierarchiy";
+import {HierarchyLevel} from "../util/hierarchy";
 
 const publishers = gql`query Publishers($us: Boolean!){
     publishers(us: $us) {
@@ -9,8 +9,8 @@ const publishers = gql`query Publishers($us: Boolean!){
     }
 }`;
 
-const series = gql`query Series($publisher_name: String!){
-    series(publisher_name: $publisher_name) {
+const series = gql`query Series($publisher: PublisherInput!){
+    series(publisher: $publisher) {
         id,
         title,
         volume,
@@ -23,8 +23,8 @@ const series = gql`query Series($publisher_name: String!){
     }
 }`;
 
-const issues = gql`query Issues($series_title: String!, $series_volume: Int!, $publisher_name: String!){
-    issues(series_title: $series_title, series_volume: $series_volume, publisher_name: $publisher_name) {
+const issues = gql`query Issues($series: SeriesInput!){
+    issues(series: $series) {
         id,
         title,
         number,
@@ -54,25 +54,25 @@ const issues = gql`query Issues($series_title: String!, $series_volume: Int!, $p
 
 function getListQuery(level) {
     switch (level) {
-        case HierarchyLevel.PUBLISHER:
+        case HierarchyLevel.ROOT:
             return publishers;
-        case HierarchyLevel.SERIES:
+        case HierarchyLevel.PUBLISHER:
             return series;
         default:
             return issues;
     }
 }
 
-const publisher = gql`query Publisher($publisher_name: String!){
-    publisher(publisher_name: $publisher_name) {
+const publisher = gql`query Publisher($publisher: PublisherInput!){
+    publisher(publisher: $publisher) {
         id,
         name,
         us
     }
 }`;
 
-const seriesd = gql`query Seriesd($series_title: String!, $series_volume: Int!, $publisher_name: String!){
-    seriesd(series_title: $series_title, series_volume: $series_volume, publisher_name: $publisher_name) {
+const seriesd = gql`query Seriesd($series: SeriesInput!){
+    seriesd(series: $series) {
         id,
         title,
         volume,
@@ -86,8 +86,8 @@ const seriesd = gql`query Seriesd($series_title: String!, $series_volume: Int!, 
     }
 }`;
 
-const issue = gql`query Issue($issue_number: String!, $series_title: String!, $series_volume: Int!, $publisher_name: String!){
-    issue(issue_number: $issue_number, series_title: $series_title, series_volume: $series_volume, publisher_name: $publisher_name) {
+const issue = gql`query Issue($issue: IssueInput!){
+    issue(issue: $issue) {
         id,
         title,
         number,

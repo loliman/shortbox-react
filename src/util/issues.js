@@ -1,26 +1,26 @@
-import {generateLabel, romanize} from "./util";
+import {romanize, wrapItem} from "./util";
+import {generateLabel} from "./hierarchy";
 
-export function generateItemTitle(s) {
-    if (s.title)
-        return s.title;
-    else if (s.parent) {
-        let title = generateLabel(s.parent.issue.series) + " #" + s.parent.issue.number;
-        title += ((s.__typename !== "Cover" && s.parent.number > 0) ? " [" + romanize(s.parent.number) + "]" : "");
-        title += (s.parent.variant ? " [" + s.parent.format + "/" + s.parent.variant + "]" : "");
+export function generateItemTitle(item) {
+    if (item.title)
+        return item.title;
+    else if (item.parent) {
+        let title = generateLabel(wrapItem(item.parent.issue.series)) + " #" + item.parent.issue.number;
+        title += ((item.__typename !== "Cover" && item.parent.number > 0) ? " [" + romanize(item.parent.number) + "]" : "");
+        title += (item.parent.variant ? " [" + item.parent.format + "/" + item.parent.variant + "]" : "");
         return title ;
-    }
-    else if (s.series)
-        return generateLabel(s.series) + " #" + s.number;
+    } else if (item.series)
+        return generateLabel(wrapItem(item.series)) + " #" + item.number;
     else
         return "Ohne Titel";
 }
 
-export function generateIssueSubHeader(i) {
-    let header = i.title;
-    if (i.format) {
-        header += " [" + i.format;
-        if (i.variant)
-            header += " " + i.variant;
+export function generateIssueSubHeader(item) {
+    let header = item.title;
+    if (item.format) {
+        header += " [" + item.format;
+        if (item.variant)
+            header += " " + item.variant;
         header += "]"
     }
     return header;

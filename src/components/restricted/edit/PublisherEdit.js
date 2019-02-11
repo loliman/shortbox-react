@@ -9,20 +9,19 @@ import {TextField} from 'formik-material-ui';
 import Button from "@material-ui/core/Button/Button";
 import {publisher, publishers} from "../../../graphql/queries";
 import {withContext} from "../../generic";
-import {generateLabel, getGqlVariables} from "../../../util/util";
+import {compare, generateLabel, generateUrl} from "../../../util/hierarchy";
 import QueryResult from "../../generic/QueryResult";
 import {PublisherSchema} from "../../../util/yupSchema";
-import {generateUrl} from "../../../util/hierarchiy";
-
+import {wrapItem} from "../../../util/util";
 
 function PublisherEdit(props) {
-    const {selected, history, enqueueSnackbar} = props;
+    const {selected, history, enqueueSnackbar, us} = props;
     let old;
-    let neew;
+    let edit;
 
     return (
         <Layout>
-            <Query query={publisher} variables={getGqlVariables(selected)}>
+            <Query query={publisher} variables={selected}>
                 {({loading, error, data}) => {
                     old = data.publisher;
 
@@ -32,33 +31,34 @@ function PublisherEdit(props) {
                     return (
                         <Mutation mutation={editPublisher}
                                   update={(cache, result) => {
-                                      neew = result.data.editPublisher;
+                                      try {
+                                          edit = result.data.editPublisher;
 
-                                      let data = cache.readQuery({query: publishers,
-                                          variables: {
-                                              us: old.us
-                                          }
-                                      });
+                                          let data = cache.readQuery({
+                                              query: publishers,
+                                              variables: {us: us}
+                                          });
 
-                                      let idx = 0;
-                                      data.publishers.some((e, i) => {
-                                          idx = i;
-                                          return e.id === old.id;
-                                      });
+                                          let idx = 0;
+                                          data.publishers.some((e, i) => {
+                                              idx = i;
+                                              return !compare(e, old);
+                                          });
 
-                                      data.publishers[idx] = neew;
+                                          data.publishers[idx] = edit;
 
-                                      cache.writeQuery({
-                                          query: publishers,
-                                          variables: {
-                                              us: old.us
-                                          },
-                                          data: data
-                                      });
+                                          cache.writeQuery({
+                                              query: publishers,
+                                              variables: {us: us},
+                                              data: data
+                                          })
+                                      } catch (e) {
+                                          //ignore cache exception;
+                                      }
                                   }}
                                   onCompleted={(data) => {
-                                      enqueueSnackbar(neew.name + " erfolgreich gespeichert", {variant: 'success'});
-                                      history.push(generateUrl(null, neew.us));
+                                      enqueueSnackbar(edit.name + " erfolgreich gespeichert", {variant: 'success'});
+                                      history.push(generateUrl(wrapItem(edit), us));
                                   }}
                                   onError={() => {
                                       enqueueSnackbar(generateLabel({name: old.name}) + " kann nicht gespeichert werden", {variant: 'error'});
@@ -74,8 +74,12 @@ function PublisherEdit(props) {
 
                                         await editPublisher({
                                             variables: {
-                                                name_old: old.name,
-                                                name: values.name
+                                                old: {
+                                                    name: old.name
+                                                },
+                                                edit: {
+                                                    name: values.name
+                                                }
                                             }
                                         });
 
@@ -101,7 +105,7 @@ function PublisherEdit(props) {
                                                 <Button disabled={isSubmitting}
                                                         onClick={() => {
                                                             values = {
-                                                                name: ''
+                                                                name: old.name
                                                             };
                                                             resetForm();
                                                         }}

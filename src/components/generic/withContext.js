@@ -4,9 +4,7 @@ import {withSnackbar} from "notistack";
 import {withLastLocation} from "react-router-last-location";
 import {withRouter} from "react-router-dom";
 import {AppContext} from "./AppContext";
-import {getHierarchyLevel} from "../../util/hierarchiy";
-import {getSelected} from "../../util/hierarchiy";
-import {generateLabel} from "../../util/util";
+import {generateLabel, getHierarchyLevel, getSelected} from "../../util/hierarchy";
 
 function getDisplayName(WrappedComponent) {
     return WrappedComponent.displayName || WrappedComponent.name || 'Component';
@@ -18,8 +16,8 @@ function withContext(WrappedComponent) {
             {(context) => {
                 let edit =  props.match.url.indexOf("/edit") === 0;
                 let us = props.match.url.indexOf("/us") === 0;
-                let selected = getSelected(props.match.params);
-                let level = getHierarchyLevel(selected, edit);
+                let selected = getSelected(props.match.params, us);
+                let level = getHierarchyLevel(selected);
 
                 document.title = generateLabel(selected);
 
