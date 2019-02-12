@@ -68,7 +68,7 @@ function Login(props) {
                                             component={Link}
                                             to={props.lastLocation ? props.lastLocation : "/"}
                                             color="primary">
-                                        Zurück
+                                        Abbrechen
                                     </Button>
                                     <Button
                                         disabled={isSubmitting}

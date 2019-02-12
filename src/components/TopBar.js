@@ -128,8 +128,10 @@ function LogOut(props) {
                   onCompleted={(data) => {
                       if (!data.logout)
                           enqueueSnackbar("Logout fehlgeschlagen", {variant: 'error'});
-                      else
-                          handleLogout()
+                      else {
+                          enqueueSnackbar("Auf Wiedersehen!", {variant: 'success'});
+                          handleLogout();
+                      }
                   }}
                   onError={() => enqueueSnackbar("Logout fehlgeschlagen", {variant: 'error'})}
                   ignoreResults>

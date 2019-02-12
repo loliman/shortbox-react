@@ -45,10 +45,6 @@ ReactDOM.render(
         <LastLocationProvider>
             <ScrollContext>
                 <SnackbarProvider maxSnack={3}
-                                  anchorOrigin={{
-                                      vertical: 'top',
-                                      horizontal: 'right',
-                                  }}
                                   action={[
                                       <Button key="hide" className="snackbarbtn" color="primary" size="small">
                                           Verbergen
