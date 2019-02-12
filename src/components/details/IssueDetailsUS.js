@@ -1,5 +1,5 @@
 import React from "react";
-import {toIndividualList, wrapItem} from "../../util/util";
+import {toIndividualList} from "../../util/util";
 import Typography from "@material-ui/core/Typography/Typography";
 import SearchIcon from '@material-ui/icons/Search';
 import IconButton from "@material-ui/core/IconButton/IconButton";
@@ -62,15 +62,15 @@ function IssueStoryDetails(props) {
                             <ListItem key={child.id} className="issueStoryIssueItem" divider>
                                 <div>
                                     <Typography
-                                        className="issueStoryIssue">{generateLabel(wrapItem(child.issue.series)) + " #" + child.issue.number}</Typography>
+                                        className="issueStoryIssue">{generateLabel(child.issue.series) + " #" + child.issue.number}</Typography>
                                     <Typography className="issueStoryIssue issueStoryIssuePublisher">
-                                        {generateLabel(wrapItem(child.issue.series.publisher))}
+                                        {generateLabel(child.issue.series.publisher)}
                                     </Typography>
                                 </div>
                                 <Tooltip title="Zur Ausgabe">
                                     <IconButton className="detailsIcon issueStoryIssueButton"
                                                 component={Link}
-                                                to={generateUrl(wrapItem(child.issue))}
+                                                to={generateUrl(child.issue)}
                                                 aria-label="Details">
                                         <SearchIcon fontSize="small"/>
                                     </IconButton>

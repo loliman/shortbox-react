@@ -13,7 +13,6 @@ import {compose} from "recompose";
 import {withRouter} from "react-router-dom";
 import {generateUrl} from "../../../util/hierarchy";
 import {PublisherSchema} from "../../../util/yupSchema";
-import {wrapItem} from "../../../util/util";
 
 function PublisherCreate(props) {
     const {history, enqueueSnackbar} = props;
@@ -47,7 +46,7 @@ function PublisherCreate(props) {
                       }}
                       onCompleted={(data) => {
                           enqueueSnackbar(data.createPublisher.name + " erfolgreich erstellt", {variant: 'success'});
-                          history.push(generateUrl(wrapItem(data.createPublisher)));
+                          history.push(generateUrl(data.createPublisher));
                       }}
                       onError={() => {
                           enqueueSnackbar("Verlag kann nicht erstellt werden", {variant: 'error'});

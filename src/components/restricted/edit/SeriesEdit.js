@@ -13,7 +13,6 @@ import {compare, generateLabel, generateUrl} from "../../../util/hierarchy";
 import QueryResult from "../../generic/QueryResult";
 import {SeriesSchema} from "../../../util/yupSchema";
 import AutoComplete from "../../generic/AutoComplete";
-import {wrapItem} from "../../../util/util";
 
 function SeriesEdit(props) {
     const {selected, history, enqueueSnackbar, us} = props;
@@ -85,11 +84,11 @@ function SeriesEdit(props) {
                                       }
                                   }}
                                   onCompleted={(data) => {
-                                      enqueueSnackbar(generateLabel(wrapItem(edit)) + " erfolgreich gespeichert", {variant: 'success'});
-                                      history.push(generateUrl(wrapItem(edit), us));
+                                      enqueueSnackbar(generateLabel(edit) + " erfolgreich gespeichert", {variant: 'success'});
+                                      history.push(generateUrl(edit), us);
                                   }}
                                   onError={() => {
-                                      enqueueSnackbar(generateLabel(wrapItem(old)) + " kann nicht gespeichert werden", {variant: 'error'});
+                                      enqueueSnackbar(generateLabel(old) + " kann nicht gespeichert werden", {variant: 'error'});
                                   }}>
                             {(editSeries, {error}) => (
                                 <Formik

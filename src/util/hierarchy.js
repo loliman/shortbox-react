@@ -1,4 +1,4 @@
-import {romanize} from "./util";
+import {romanize, wrapItem} from "./util";
 
 export const HierarchyLevel = Object.freeze({
     ROOT: "ROOT",
@@ -19,6 +19,9 @@ export function getHierarchyLevel(item) {
 }
 
 export function generateUrl(item, us) {
+    if (item.__typename)
+        item = wrapItem(item);
+
     let url = (us ? "/us/" : "/de/");
 
     if (!item.publisher && !item.series && !item.issue)
@@ -74,9 +77,7 @@ export function getSelected(params, us) {
         selected.issue.series.publisher = {};
         selected.issue.series.publisher.name = selected.series.publisher.name;
         selected.series = undefined;
-
-        let number = decodeURIComponent(params.issue);
-        selected.issue.number = number;
+        selected.issue.number = decodeURIComponent(params.issue);
     }
     if (params.variant) {
         let variant = decodeURIComponent(params.variant);
@@ -88,6 +89,9 @@ export function getSelected(params, us) {
 }
 
 export function generateLabel(item) {
+    if (item.__typename)
+        item = wrapItem(item);
+
     if (!item.publisher && !item.series && !item.issue)
         return "Shortbox";
 
@@ -108,11 +112,19 @@ export function generateLabel(item) {
 }
 
 export function compare(a, b) {
-    if (a.name && b.name)
-        return a.name === b.name;
-    if (a.volume && b.volume)
-        return a.title === b.title && a.volume === b.volume;
-    if (a.number && b.number)
-        return a.number === b.number;
-    return false;
+    if (!a.__typename === b.__typename)
+        return false;
+
+    let type = a.__typename;
+
+    switch (type) {
+        case "Publisher":
+            return a.name === b.name;
+        case "Series":
+            return a.title === b.title && a.volume === b.volume;
+        case "Issue":
+            return a.number === b.number;
+        default:
+            return false;
+    }
 }

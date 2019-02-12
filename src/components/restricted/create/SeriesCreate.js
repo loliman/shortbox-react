@@ -12,7 +12,6 @@ import {generateLabel, generateUrl} from "../../../util/hierarchy";
 import {SeriesSchema} from "../../../util/yupSchema";
 import {withContext} from "../../generic";
 import AutoComplete from "../../generic/AutoComplete";
-import {wrapItem} from "../../../util/util";
 
 function SeriesCreate(props) {
     const {history, enqueueSnackbar, us} = props;
@@ -51,7 +50,7 @@ function SeriesCreate(props) {
                       }}
                       onCompleted={(data) => {
                           enqueueSnackbar(generateLabel(data.createSeries) + " erfolgreich erstellt", {variant: 'success'});
-                          history.push(generateUrl(wrapItem(data.createSeries)));
+                          history.push(generateUrl(data.createSeries));
                       }}
                       onError={() => {
                           enqueueSnackbar("Serie kann nicht erstellt werden", {variant: 'error'});

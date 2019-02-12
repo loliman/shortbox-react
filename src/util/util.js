@@ -1,18 +1,18 @@
 export function wrapItem(item) {
-    if (item.name)
+    if (item.__typename === "Publisher")
         return {us: (item.us ? item.us : false), publisher: item};
 
-    if (item.number)
-        return {us: (item.series.publisher.us ? item.series.publisher.us : false), issue: item};
+    if (item.__typename === "Series")
+        return {us: (item.publisher.us ? item.publisher.us : false), series: item};
 
-    return {us: (item.publisher.us ? item.publisher.us : false), series: item};
+    return {us: (item.series.publisher.us ? item.series.publisher.us : false), issue: item};
 }
 
 export function unwrapItem(item) {
-    if (item.publisher)
+    if (item.__typename === "Publisher")
         return item.publisher;
 
-    if (item.series)
+    if (item.__typename === "Series")
         return item.series;
 
     return item.issue;

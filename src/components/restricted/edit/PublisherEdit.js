@@ -12,7 +12,6 @@ import {withContext} from "../../generic";
 import {compare, generateLabel, generateUrl} from "../../../util/hierarchy";
 import QueryResult from "../../generic/QueryResult";
 import {PublisherSchema} from "../../../util/yupSchema";
-import {wrapItem} from "../../../util/util";
 
 function PublisherEdit(props) {
     const {selected, history, enqueueSnackbar, us} = props;
@@ -58,7 +57,7 @@ function PublisherEdit(props) {
                                   }}
                                   onCompleted={(data) => {
                                       enqueueSnackbar(edit.name + " erfolgreich gespeichert", {variant: 'success'});
-                                      history.push(generateUrl(wrapItem(edit), us));
+                                      history.push(generateUrl(edit), us);
                                   }}
                                   onError={() => {
                                       enqueueSnackbar(generateLabel({name: old.name}) + " kann nicht gespeichert werden", {variant: 'error'});

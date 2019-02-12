@@ -3,7 +3,6 @@ import MuiList from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText'
 import {Query} from "react-apollo";
-import {wrapItem} from "../util/util";
 import {getListQuery} from '../graphql/queries'
 import QueryResult from './generic/QueryResult';
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer/SwipeableDrawer";
@@ -59,7 +58,7 @@ class List extends React.Component {
                                     return <TypeListEntry anchorEl={anchorEl}
                                                           {...this.props}
                                                           handleMenuOpen={handleMenuOpen}
-                                                          key={i.id} item={wrapItem(i)}/>
+                                                          key={i.id} item={i}/>
                                 });
                             }}
                         </Query>

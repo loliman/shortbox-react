@@ -1,7 +1,7 @@
 import Layout from "../Layout";
 import {Query} from "react-apollo";
 import {issue} from "../../graphql/queries";
-import {toIndividualList, wrapItem} from "../../util/util";
+import {toIndividualList} from "../../util/util";
 import QueryResult from "../generic/QueryResult";
 import React from "react";
 import CardHeader from "@material-ui/core/CardHeader/CardHeader";
@@ -58,7 +58,7 @@ function IssueDetails(props) {
 
                     return (
                         <React.Fragment>
-                            <CardHeader title={generateLabel(wrapItem(issue))}
+                            <CardHeader title={generateLabel(issue)}
                                         subheader={props.subheader ? generateIssueSubHeader(issue) : ""}
                                         action={
                                             issue.verified ?
@@ -153,7 +153,7 @@ class IssueDetailsCover extends React.Component {
             <React.Fragment>
                 <CardMedia
                     image={coverUrl}
-                    title={generateLabel(wrapItem(issue))}
+                    title={generateLabel(issue)}
                     className="media"
                     onClick={() => this.triggerIsOpen()}/>
 
@@ -285,7 +285,7 @@ export function IssueContainsTitleDetailed(props) {
                 <Tooltip title="Zur Ausgabe">
                     <IconButton className="detailsIcon"
                                 component={Link}
-                                to={exclusive ? "" : generateUrl(wrapItem(issue), !props.us)}
+                                to={exclusive ? "" : generateUrl(issue, !props.us)}
                                 aria-label="Details"
                                 disabled={exclusive}>
                         <SearchIcon fontSize="small"/>
@@ -301,14 +301,14 @@ function IssueDetailsVariants(props) {
         return null;
 
     let variants = [];
-    variants.push(<IssueDetailsVariant to={generateUrl(wrapItem(props.issue), false)}
+    variants.push(<IssueDetailsVariant to={generateUrl(props.issue, false)}
                                        key={props.issue} variant={props.issue}/>);
 
     props.selected.variants.forEach(variant => {
         variant.series = props.selected.series;
         variant.number = props.selected.number;
 
-        variants.push(<IssueDetailsVariant to={generateUrl(wrapItem(variant), false)}
+        variants.push(<IssueDetailsVariant to={generateUrl(variant, false)}
                                            key={variant.id} variant={variant}/>);
     });
 

@@ -8,7 +8,7 @@ import WarningIcon from "@material-ui/icons/Warning";
 import {getDeleteMutation} from "../../graphql/mutations";
 import {Mutation} from "react-apollo";
 import Typography from "@material-ui/core/es/Typography/Typography";
-import {stripItem, unwrapItem, wrapItem} from "../../util/util";
+import {stripItem} from "../../util/util";
 import {withContext} from "../generic";
 import {getListQuery} from "../../graphql/queries";
 import {compare, generateLabel, generateUrl, HierarchyLevel} from "../../util/hierarchy";
@@ -38,12 +38,12 @@ function DeletionDialog(props) {
                 <Mutation mutation={deleteMutation}
                           update={(cache) => {
                               try {
-                                  let parent = unwrapItem(item);
+                                  let parent;
 
                                   if (item.issue)
-                                      parent = wrapItem(item.issue.series);
+                                      parent = {series: item.issue.series};
                                   else if (item.series)
-                                      parent = wrapItem(item.series.publisher);
+                                      parent = {publisher: item.series.publisher};
                                   else
                                       parent = {us: us};
 
@@ -54,17 +54,16 @@ function DeletionDialog(props) {
                                       variables: parent
                                   });
 
-
                                   let queryName = getQuery.definitions[0].name.value.toLowerCase();
 
-                                  data[queryName] = data[queryName].filter((e) => !compare(e, unwrapItem(item)));
-
+                                  data[queryName] = data[queryName].filter((e) => !compare(e, item));
                                   cache.writeQuery({
                                       query: getQuery,
                                       variables: parent,
                                       data: data,
                                   });
                               } catch (e) {
+                                  console.error(e)
                                   //ignore cache exception;
                               }
                           }}
@@ -81,7 +80,6 @@ function DeletionDialog(props) {
                                   enqueueSnackbar(generateLabel(item) + " erfolgreich gelöscht", {variant: 'success'});
 
                               handleClose();
-
                           }}
                           onError={() => {
                               enqueueSnackbar(generateLabel(item) + " konnte nicht gelöscht werden", {variant: 'error'});
@@ -91,7 +89,7 @@ function DeletionDialog(props) {
                         <Button color="secondary" onClick={() => {
                             deletepublisher({
                                 variables: {
-                                    item: stripItem(unwrapItem(item))
+                                    item: stripItem(item)
                                 }
                             })
                         }}>
