@@ -8,14 +8,13 @@ import {Field, Form, Formik} from 'formik';
 import {TextField} from 'formik-material-ui';
 import Button from "@material-ui/core/Button/Button";
 import {publishers} from "../../../graphql/queries";
-import {withSnackbar} from "notistack";
-import {compose} from "recompose";
-import {withRouter} from "react-router-dom";
 import {generateUrl} from "../../../util/hierarchy";
 import {PublisherSchema} from "../../../util/yupSchema";
+import Link from "react-router-dom/es/Link";
+import {withContext} from "../../generic";
 
 function PublisherCreate(props) {
-    const {history, enqueueSnackbar} = props;
+    const {history, lastLocation, enqueueSnackbar} = props;
 
     return (
         <Layout>
@@ -87,22 +86,33 @@ function PublisherCreate(props) {
                                     <br/>
                                     <br/>
 
-                                    <Button disabled={isSubmitting}
-                                            onClick={() => {
-                                                values = {
-                                                    name: ''
-                                                };
-                                                resetForm();
-                                            }}
-                                            color="secondary">
-                                        Zurücksetzen
-                                    </Button>
-                                    <Button
-                                        disabled={isSubmitting}
-                                        onClick={submitForm}
-                                        color="primary">
-                                        Erstellen
-                                    </Button>
+                                    <div className="formButtons">
+                                        <Button disabled={isSubmitting}
+                                                onClick={() => {
+                                                    values = {
+                                                        name: ''
+                                                    };
+                                                    resetForm();
+                                                }}
+                                                color="secondary">
+                                            Zurücksetzen
+                                        </Button>
+
+                                        <Button disabled={isSubmitting}
+                                                component={Link}
+                                                to={lastLocation ? lastLocation : "/"}
+                                                color="primary">
+                                            Abbrechen
+                                        </Button>
+
+                                        <Button
+                                            className="createButton"
+                                            disabled={isSubmitting}
+                                            onClick={submitForm}
+                                            color="primary">
+                                            Erstellen
+                                        </Button>
+                                    </div>
                                 </CardContent>
                             </Form>
                         )}
@@ -112,7 +122,5 @@ function PublisherCreate(props) {
         </Layout>
     )
 }
-export default compose(
-    withSnackbar,
-    withRouter
-)(PublisherCreate);
+
+export default withContext(PublisherCreate);

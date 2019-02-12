@@ -13,9 +13,10 @@ import {compare, generateLabel, generateUrl} from "../../../util/hierarchy";
 import QueryResult from "../../generic/QueryResult";
 import {SeriesSchema} from "../../../util/yupSchema";
 import AutoComplete from "../../generic/AutoComplete";
+import Link from "react-router-dom/es/Link";
 
 function SeriesEdit(props) {
-    const {selected, history, enqueueSnackbar, us} = props;
+    const {selected, history, enqueueSnackbar, lastLocation, us} = props;
     let old;
     let edit;
 
@@ -185,29 +186,38 @@ function SeriesEdit(props) {
 
                                                 <br/>
                                                 <br/>
+                                                <div className="formButtons">
+                                                    <Button disabled={isSubmitting}
+                                                            onClick={() => {
+                                                                values = {
+                                                                    title: old.title,
+                                                                    publisher: {
+                                                                        name: old.publisher.name
+                                                                    },
+                                                                    volume: old.volume,
+                                                                    startyear: old.startyear,
+                                                                    endyear: (old.endyear ? old.endyear : "")
+                                                                };
+                                                                resetForm();
+                                                            }}
+                                                            color="secondary">
+                                                        Zurücksetzen
+                                                    </Button>
+                                                    <Button disabled={isSubmitting}
+                                                            component={Link}
+                                                            to={lastLocation ? lastLocation : "/"}
+                                                            color="primary">
+                                                        Abbrechen
+                                                    </Button>
 
-                                                <Button disabled={isSubmitting}
-                                                        onClick={() => {
-                                                            values = {
-                                                                title: old.title,
-                                                                publisher: {
-                                                                    name: old.publisher.name
-                                                                },
-                                                                volume: old.volume,
-                                                                startyear: old.startyear,
-                                                                endyear: (old.endyear ? old.endyear : "")
-                                                            };
-                                                            resetForm();
-                                                        }}
-                                                        color="secondary">
-                                                    Zurücksetzen
-                                                </Button>
-                                                <Button
-                                                    disabled={isSubmitting}
-                                                    onClick={submitForm}
-                                                    color="primary">
-                                                    Speichern
-                                                </Button>
+                                                    <Button
+                                                        className="createButton"
+                                                        disabled={isSubmitting}
+                                                        onClick={submitForm}
+                                                        color="primary">
+                                                        Speichern
+                                                    </Button>
+                                                </div>
                                             </CardContent>
                                         </Form>
                                     )}

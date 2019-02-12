@@ -12,9 +12,10 @@ import {generateLabel, generateUrl} from "../../../util/hierarchy";
 import {SeriesSchema} from "../../../util/yupSchema";
 import {withContext} from "../../generic";
 import AutoComplete from "../../generic/AutoComplete";
+import Link from "react-router-dom/es/Link";
 
 function SeriesCreate(props) {
-    const {history, enqueueSnackbar, us} = props;
+    const {history, enqueueSnackbar, lastLocation, us} = props;
 
     return (
         <Layout>
@@ -142,28 +143,39 @@ function SeriesCreate(props) {
                                     <br/>
                                     <br/>
 
-                                    <Button disabled={isSubmitting}
-                                            onClick={() => {
-                                                values = {
-                                                    title: '',
-                                                    publisher: {
-                                                        name: ''
-                                                    },
-                                                    volume: '',
-                                                    startyear: '',
-                                                    endyear: '',
-                                                };
-                                                resetForm();
-                                            }}
-                                            color="secondary">
-                                        Zurücksetzen
-                                    </Button>
-                                    <Button
-                                        disabled={isSubmitting}
-                                        onClick={submitForm}
-                                        color="primary">
-                                        Erstellen
-                                    </Button>
+                                    <div className="formButtons">
+                                        <Button disabled={isSubmitting}
+                                                onClick={() => {
+                                                    values = {
+                                                        title: '',
+                                                        publisher: {
+                                                            name: ''
+                                                        },
+                                                        volume: '',
+                                                        startyear: '',
+                                                        endyear: '',
+                                                    };
+                                                    resetForm();
+                                                }}
+                                                color="secondary">
+                                            Zurücksetzen
+                                        </Button>
+
+                                        <Button disabled={isSubmitting}
+                                                component={Link}
+                                                to={lastLocation ? lastLocation : "/"}
+                                                color="primary">
+                                            Abbrechen
+                                        </Button>
+
+                                        <Button
+                                            className="createButton"
+                                            disabled={isSubmitting}
+                                            onClick={submitForm}
+                                            color="primary">
+                                            Erstellen
+                                        </Button>
+                                    </div>
                                 </CardContent>
                             </Form>
                         )}

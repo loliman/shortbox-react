@@ -12,9 +12,10 @@ import {withContext} from "../../generic";
 import {compare, generateLabel, generateUrl} from "../../../util/hierarchy";
 import QueryResult from "../../generic/QueryResult";
 import {PublisherSchema} from "../../../util/yupSchema";
+import Link from "react-router-dom/es/Link";
 
 function PublisherEdit(props) {
-    const {selected, history, enqueueSnackbar, us} = props;
+    const {selected, history, lastLocation, enqueueSnackbar, us} = props;
     let old;
     let edit;
 
@@ -101,22 +102,31 @@ function PublisherEdit(props) {
                                                 <br/>
                                                 <br/>
 
-                                                <Button disabled={isSubmitting}
-                                                        onClick={() => {
-                                                            values = {
-                                                                name: old.name
-                                                            };
-                                                            resetForm();
-                                                        }}
-                                                        color="secondary">
-                                                    Zurücksetzen
-                                                </Button>
-                                                <Button
-                                                    disabled={isSubmitting}
-                                                    onClick={submitForm}
-                                                    color="primary">
-                                                    Speichern
-                                                </Button>
+                                                <div className="formButtons">
+                                                    <Button disabled={isSubmitting}
+                                                            onClick={() => {
+                                                                values = {
+                                                                    name: old.name
+                                                                };
+                                                                resetForm();
+                                                            }}
+                                                            color="secondary">
+                                                        Zurücksetzen
+                                                    </Button>
+                                                    <Button disabled={isSubmitting}
+                                                            component={Link}
+                                                            to={lastLocation ? lastLocation : "/"}
+                                                            color="primary">
+                                                        Abbrechen
+                                                    </Button>
+                                                    <Button
+                                                        className="createButton"
+                                                        disabled={isSubmitting}
+                                                        onClick={submitForm}
+                                                        color="primary">
+                                                        Speichern
+                                                    </Button>
+                                                </div>
                                             </CardContent>
                                         </Form>
                                     )}
