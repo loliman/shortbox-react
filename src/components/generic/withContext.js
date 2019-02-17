@@ -14,20 +14,21 @@ function withContext(WrappedComponent) {
     const WithContext = props => (
         <AppContext.Consumer>
             {(context) => {
-                let edit =  props.match.url.indexOf("/edit") === 0;
                 let us = props.match.url.indexOf("/us") === 0;
                 let selected = getSelected(props.match.params, us);
-                let level = getHierarchyLevel(selected);
 
-                let title = generateLabel(selected);
-                if(level !== HierarchyLevel.ROOT)
-                    title += " - Shortbox";
-                document.title = title;
+                let params = {
+                    edit: props.match.url.indexOf("/edit") === 0,
+                    create: props.match.url.indexOf("/create") === 0,
+                    us: us,
+                    selected: selected,
+                    level: getHierarchyLevel(selected)
+                };
+
+                document.title = createAppTitle(params, props.match.url);
 
                 return (
-                    <WrappedComponent us={us} edit={edit}
-                                      selected={selected} level={level}
-                                      {...context} {...props} />
+                    <WrappedComponent {...params} {...context} {...props} />
                 );
             }}
         </AppContext.Consumer>
@@ -40,6 +41,32 @@ function withContext(WrappedComponent) {
         withLastLocation,
         withRouter
     )(WithContext);
+}
+
+function createAppTitle(params, url) {
+    let title;
+    if(params.edit)
+        title = generateLabel(params.selected) + " bearbeiten";
+    else if(params.create) {
+        if (url.indexOf("/issue") !== -1)
+            title = "Ausgabe";
+        else if (url.indexOf("/series") !== -1)
+            title = "Serie";
+        else
+            title = "Verlag";
+
+        title += " anlegen";
+    } else {
+        title = generateLabel(params.selected);
+    }
+
+    if(params.us)
+        title += " [US]";
+
+    if(params.level !== HierarchyLevel.ROOT || params.edit || params.create)
+        title += " - Shortbox";
+
+    return title;
 }
 
 export default withContext;
