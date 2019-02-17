@@ -3,6 +3,7 @@ import Typography from "@material-ui/core/Typography/Typography";
 import {withContext} from "../generic";
 import IssueDetails, {IssueContains, IssueContainsTitleDetailed, IssueContainsTitleSimple} from "./IssueDetails";
 import {toIndividualList} from "../../util/util";
+import Paper from "@material-ui/core/Paper/Paper";
 
 function IssueDetailsDE(props) {
     return <IssueDetails bottom={<Bottom/>}
@@ -12,6 +13,17 @@ function IssueDetailsDE(props) {
 function Bottom(props) {
     return (
         <React.Fragment>
+            {
+                props.issue.addinfo && props.issue.addinfo !== "" ?
+                    <React.Fragment>
+                        <br/>
+                        <Paper className="detailsPaper">
+                            <Typography>{props.issue.addinfo}</Typography>
+                        </Paper>
+                    </React.Fragment>:
+                    null
+            }
+
             <br/>
             <br/>
 

@@ -7,6 +7,7 @@ import {Query} from "react-apollo";
 import QueryResult from "../generic/QueryResult";
 import {publisher} from "../../graphql/queries";
 import {generateLabel, getSelected} from "../../util/hierarchy";
+import Typography from "@material-ui/core/es/Typography/Typography";
 
 function PublisherDetails(props) {
     let selected = getSelected(props.match.params);
@@ -23,7 +24,7 @@ function PublisherDetails(props) {
                             <CardHeader title={generateLabel(data.publisher)}/>
 
                             <CardContent className="cardContent">
-
+                                <Typography>{data.publisher.addinfo}</Typography>
                             </CardContent>
                         </React.Fragment>
                     );

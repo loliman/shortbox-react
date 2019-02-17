@@ -49,9 +49,13 @@ function IssueCreate(props) {
                     <Formik
                         initialValues={{
                             title: '',
-                            publisher: '',
-                            seriestitle: '',
-                            seriesvolume: '',
+                            series: {
+                                title: '',
+                                volume: '',
+                                publisher: {
+                                    name: ''
+                                }
+                            },
                             number: '',
                             limitation: '',
                             pages: '',
@@ -66,9 +70,13 @@ function IssueCreate(props) {
                             await createIssue({
                                 variables: {
                                     title: values.title,
-                                    publisher: values.publisher,
-                                    seriestitle: values.seriestitle,
-                                    seriesvolume: values.seriesvolume,
+                                    series: {
+                                        title: values.series.title,
+                                        volume: values.series.volume,
+                                        publisher: {
+                                            name: values.series.publisher.name
+                                        }
+                                    },
                                     number: values.number,
                                     pages: parseInt(values.pages),
                                     releasedate: values.releasedate,
@@ -81,139 +89,145 @@ function IssueCreate(props) {
                             if (error)
                                 actions.resetForm();
                         }}>
-                        {({resetForm, submitForm, isSubmitting, values, handleChange, touched, errors}) => (
-                            <Form>
-                                <CardHeader title="Ausgabe erstellen"/>
+                        {({resetForm, submitForm, isSubmitting, values, setFieldValue, touched, errors}) => {
+                            return (
+                                <Form>
+                                    <CardHeader title="Ausgabe erstellen"/>
 
-                                <CardContent className="cardContent">
-                                    <Field
-                                        className="fieldSmall"
-                                        name="title"
-                                        label="Titel"
-                                        component={TextField}
-                                    />
-                                    <br/>
+                                    <CardContent className="cardContent">
+                                        <Field
+                                            className="field field35"
+                                            name="title"
+                                            label="Titel"
+                                            component={TextField}
+                                        />
+                                        <br/>
 
-                                    <AutoComplete
-                                        id="publisher"
-                                        query={publishers}
-                                        variables={{us: us}}
-                                        suggestionLabel="name"
-                                        type="text"
-                                        name="publisher"
-                                        label="Verlag"
-                                        error={touched.publisher && errors.publisher}
-                                        value={values.publisher}
-                                        onChange={(field, value) => {
-                                            values[field] = value
-                                        }}
-                                    />
-
-                                    <AutoComplete
-                                        disabled={!values.publisher || values.publisher.trim().length === 0}
-                                        id="series"
-                                        query={series}
-                                        variables={{name: values.publisher}}
-                                        suggestionLabel="title"
-                                        type="text"
-                                        name="seriestitle"
-                                        label="Serie"
-                                        error={touched.seriestitle && errors.seriestitle}
-                                        value={values.seriestitle}
-                                        onChange={(field, value) => {
-                                            values[field] = value
-                                        }}
-                                    />
-
-                                    <Field
-                                        disabled={!values.publisher || values.publisher.trim().length === 0}
-                                        className="fieldSmall"
-                                        name="seriesvolume"
-                                        label="Volume"
-                                        type="number"
-                                        component={TextField}
-                                    />
-                                    <br/>
-                                    <Field
-                                        className="fieldSmall"
-                                        name="number"
-                                        label="Nummer"
-                                        component={TextField}
-                                    />
-                                    <br/>
-                                    <Field
-                                        className="fieldSmall"
-                                        name="pages"
-                                        label="Seiten"
-                                        type="number"
-                                        component={TextField}
-                                    />
-                                    <br/>
-                                    <Field
-                                        className="fieldSmall"
-                                        name="releasedate"
-                                        label="Erscheinungsdatum"
-                                        type="date"
-                                        component={TextField}
-                                    />
-                                    <br/>
-                                    <Field
-                                        className="fieldSmall"
-                                        name="price"
-                                        label="Preis"
-                                        type="number"
-                                        component={TextField}
-                                    />
-                                    <br/>
-                                    <Field
-                                        type="text"
-                                        name="currency"
-                                        label="Währung"
-                                        select
-                                        component={TextField}
-                                        className="fieldSmall"
-                                        InputLabelProps={{
-                                            shrink: true,
-                                        }}
-                                    >
-                                        <MenuItem key="eur" value="EUR">
-                                            EUR
-                                        </MenuItem>
-                                        <MenuItem key="dem" value="DEM">
-                                            DEM
-                                        </MenuItem>
-                                    </Field>
-                                    <br/>
-                                    <br/>
-
-                                    <Button disabled={isSubmitting}
-                                            onClick={() => {
-                                                values = {
-                                                    title: '',
-                                                    publisher: '',
-                                                    seriestitle: '',
-                                                    seriesvolume: '',
-                                                    number: '',
-                                                    limitation: '',
-                                                    pages: '',
-                                                    releasedate: '',
-                                                    price: '',
-                                                    currency: 'EUR'
-                                                };
-                                                resetForm();
+                                        <AutoComplete
+                                            id="publisher"
+                                            query={publishers}
+                                            variables={{us: us}}
+                                            name="series.publisher.name"
+                                            label="Verlag"
+                                            error={touched.series && touched.series.publisher && errors.series && errors.series.publisher}
+                                            onChange={(value) => {
+                                                setFieldValue("series.publisher", value, true);
                                             }}
-                                            color="secondary">
-                                        Zurücksetzen
-                                    </Button>
-                                    <Button
-                                        disabled={isSubmitting}
-                                        onClick={submitForm}
-                                        color="primary">
-                                        Erstellen
-                                    </Button>
-                                </CardContent>
-                            </Form>
-                        )}
+                                            width="35%"
+                                        />
+
+                                        <br/>
+
+                                        <AutoComplete
+                                            disabled={!values.series.publisher.name ||
+                                                values.series.publisher.name.trim().length === 0}
+                                            id="series"
+                                            query={series}
+                                            variables={{publisher: {name: values.series.publisher.name}}}
+                                            name="series.title"
+                                            label="Serie"
+                                            error={touched.series && errors.series}
+                                            onChange={(value) => {
+                                                setFieldValue("series", value, true);
+                                            }}
+                                            width="25%"
+                                        />
+
+                                        <Field
+                                            disabled={!values.series.publisher.name ||
+                                                values.series.publisher.name.trim().length === 0}
+                                            className="field field10"
+                                            name="series.volume"
+                                            label="Volume"
+                                            type="number"
+                                            component={TextField}
+                                        />
+                                        <br/>
+                                        <Field
+                                            className="field field35"
+                                            name="number"
+                                            label="Nummer"
+                                            component={TextField}
+                                        />
+                                        <br/>
+                                        <Field
+                                            className="field field35"
+                                            name="pages"
+                                            label="Seiten"
+                                            type="number"
+                                            component={TextField}
+                                        />
+                                        <br/>
+                                        <Field
+                                            className="field field35"
+                                            name="releasedate"
+                                            label="Erscheinungsdatum"
+                                            type="date"
+                                            component={TextField}
+                                        />
+                                        <br/>
+                                        <Field
+                                            className="field field25"
+                                            name="price"
+                                            label="Preis"
+                                            type="number"
+                                            component={TextField}
+                                        />
+
+                                        <Field
+                                            type="text"
+                                            name="currency"
+                                            label="Währung"
+                                            select
+                                            component={TextField}
+                                            className="field field10"
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                        >
+                                            <MenuItem key="eur" value="EUR">
+                                                EUR
+                                            </MenuItem>
+                                            <MenuItem key="dem" value="DEM">
+                                                DEM
+                                            </MenuItem>
+                                        </Field>
+                                        <br/>
+                                        <br/>
+
+                                        <Button disabled={isSubmitting}
+                                                onClick={() => {
+                                                    values = {
+                                                        title: '',
+                                                        series: {
+                                                            title: values.series.title,
+                                                            volume: values.series.volume,
+                                                            publisher: {
+                                                                name: values.series.publisher.name
+                                                            }
+                                                        },
+                                                        number: '',
+                                                        limitation: '',
+                                                        pages: '',
+                                                        releasedate: '',
+                                                        price: '',
+                                                        currency: 'EUR'
+                                                    };
+                                                    resetForm();
+                                                }}
+                                                color="secondary">
+                                            Zurücksetzen
+                                        </Button>
+                                        <Button
+                                            disabled={isSubmitting}
+                                            onClick={submitForm}
+                                            color="primary">
+                                            Erstellen
+                                        </Button>
+                                    </CardContent>
+                                </Form>
+                            )
+                        }}
                     </Formik>
                 )}
             </Mutation>

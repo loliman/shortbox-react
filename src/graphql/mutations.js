@@ -28,6 +28,7 @@ const createPublisher = gql`mutation CreatePublisher($publisher: PublisherInput!
    createPublisher(publisher: $publisher) {
         id,
         name,
+        addinfo,
         us
    }
 }`;
@@ -39,6 +40,7 @@ const createSeries = gql`mutation CreateSeries($series: SeriesInput!){
         startyear,
         endyear,
         volume,
+        addinfo,
         publisher {
             id,
             name,
@@ -59,6 +61,7 @@ const createIssue = gql`mutation CreateIssue($title: String!, $publishername: St
             startyear,
             endyear,
             volume,
+            addinfo,
             publisher {
                 id,
                 name,
@@ -72,7 +75,8 @@ const editPublisher = gql`mutation EditPublisher($old: PublisherInput!, $edit: P
    editPublisher(old: $old, edit: $edit) {
         id,
         name,
-        us
+        us,
+        addinfo,
    }
 }`;
 
@@ -83,6 +87,7 @@ const editSeries = gql`mutation EditSeries($old: SeriesInput!, $edit: SeriesInpu
         volume,
         startyear,
         endyear,
+        addinfo,
         publisher {
             id,
             name,

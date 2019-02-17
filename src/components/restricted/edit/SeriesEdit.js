@@ -100,7 +100,8 @@ function SeriesEdit(props) {
                                         },
                                         volume: old.volume,
                                         startyear: old.startyear,
-                                        endyear: (old.endyear ? old.endyear : "")
+                                        endyear: (old.endyear ? old.endyear : ""),
+                                        addinfo: old.addinfo
                                     }}
                                     validationSchema={SeriesSchema}
                                     onSubmit={async (values, actions) => {
@@ -124,7 +125,8 @@ function SeriesEdit(props) {
                                                     },
                                                     volume: values.volume,
                                                     startyear: values.startyear,
-                                                    endyear: parseInt(values.endyear)
+                                                    endyear: parseInt(values.endyear),
+                                                    addinfo: values.addinfo
                                                 }
                                             }
                                         });
@@ -133,13 +135,13 @@ function SeriesEdit(props) {
                                         if (error)
                                             actions.resetForm();
                                     }}>
-                                    {({resetForm, submitForm, isSubmitting, values, handleChange, touched, errors}) => (
+                                    {({resetForm, submitForm, isSubmitting, values, setFieldValue, touched, errors}) => (
                                         <Form>
                                             <CardHeader title={generateLabel(selected) + " bearbeiten"}/>
 
                                             <CardContent className="cardContent">
                                                 <Field
-                                                    className="fieldSmall"
+                                                    className="field field35"
                                                     name="title"
                                                     label="Titel"
                                                     component={TextField}
@@ -150,19 +152,17 @@ function SeriesEdit(props) {
                                                     id="publisher"
                                                     query={publishers}
                                                     variables={{us: us}}
-                                                    suggestionLabel="name"
-                                                    type="text"
                                                     name="publisher.name"
                                                     label="Verlag"
                                                     error={touched.publisher && errors.publisher}
-                                                    value={values.publisher.name}
                                                     onChange={(field, value) => {
-                                                        values.publisher.name = value
+                                                        setFieldValue("publisher", value, true);
                                                     }}
+                                                    width="35%"
                                                 />
-
+                                                <br/>
                                                 <Field
-                                                    className="fieldSmall"
+                                                    className="field field35"
                                                     name="volume"
                                                     label="Volume"
                                                     type="number"
@@ -170,7 +170,7 @@ function SeriesEdit(props) {
                                                 />
                                                 <br/>
                                                 <Field
-                                                    className="fieldSmall"
+                                                    className="field field35"
                                                     name="startyear"
                                                     label="Startjahr"
                                                     type="number"
@@ -178,9 +178,18 @@ function SeriesEdit(props) {
                                                 />
                                                 <br/>
                                                 <Field
-                                                    className="fieldSmall"
+                                                    className="field field35"
                                                     name="endyear"
                                                     label="Endjahr"
+                                                    component={TextField}
+                                                />
+                                                <br/>
+                                                <Field
+                                                    className="field field35"
+                                                    name="addinfo"
+                                                    label="Weitere Informationen"
+                                                    multiline
+                                                    rows={10}
                                                     component={TextField}
                                                 />
 
@@ -196,7 +205,8 @@ function SeriesEdit(props) {
                                                                     },
                                                                     volume: old.volume,
                                                                     startyear: old.startyear,
-                                                                    endyear: (old.endyear ? old.endyear : "")
+                                                                    endyear: (old.endyear ? old.endyear : ""),
+                                                                    addinfo: old.addinfo
                                                                 };
                                                                 resetForm();
                                                             }}

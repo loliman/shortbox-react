@@ -52,6 +52,24 @@ const issues = gql`query Issues($series: SeriesInput!){
     }
 }`;
 
+export const lastEdited = gql`query LastEdited {
+    lastEdited {
+        id,
+        number,
+        createdAt,
+        updatedAt,
+        series {
+            id,
+            title,
+            volume,
+            publisher {
+                id,
+                name
+            }
+        }
+    }
+}`;
+
 function getListQuery(level) {
     switch (level) {
         case HierarchyLevel.ROOT:
@@ -67,7 +85,8 @@ const publisher = gql`query Publisher($publisher: PublisherInput!){
     publisher(publisher: $publisher) {
         id,
         name,
-        us
+        us,
+        addinfo
     }
 }`;
 
@@ -78,6 +97,7 @@ const seriesd = gql`query Seriesd($series: SeriesInput!){
         volume,
         startyear,
         endyear,
+        addinfo,
         publisher {
             id,
             name,
@@ -312,7 +332,8 @@ const issue = gql`query Issue($issue: IssueInput!){
             limitation,
             verified
         },
-        verified
+        verified,
+        addinfo
     }
 }`;
 

@@ -10,16 +10,20 @@ export const LoginSchema = Yup.object().shape({
 export const PublisherSchema = Yup.object().shape({
     name: Yup.string()
         .required('Pflichtfeld')
-        .max(255, 'Maximal 255 Zeichen')
+        .max(255, 'Maximal 255 Zeichen'),
+    addinfo: Yup.string()
+        .max(2500, 'Maximal 2500 Zeichen')
 });
 
 export const SeriesSchema = Yup.object().shape({
     title: Yup.string()
         .required('Pflichtfeld')
         .max(255, 'Maximal 255 Zeichen'),
-    publisher: Yup.string()
-        .required('Pflichtfeld')
-        .max(255, 'Maximal 255 Zeichen'),
+    publisher: Yup.object().shape({
+        name: Yup.string()
+            .required('Pflichtfeld')
+            .max(255, 'Maximal 255 Zeichen'),
+    }),
     volume: Yup.number("Bitte geben Sie eine Zahl ein")
         .required("Pflichtfeld")
         .integer("Bitte geben Sie eine Zahl ein"),
@@ -29,22 +33,28 @@ export const SeriesSchema = Yup.object().shape({
         .integer("Bitte geben Sie eine Zahl ein"),
     endyear: Yup.number("Bitte geben Sie eine Zahl ein")
         .min(Yup.ref('startyear'), "Das Jahr muss mindest dem Startjahr entsprechen")
-        .integer("Bitte geben Sie eine Zahl ein")
+        .integer("Bitte geben Sie eine Zahl ein"),
+    addinfo: Yup.string()
+        .max(2500, 'Maximal 2500 Zeichen')
 });
 
 export const IssueSchema = Yup.object().shape({
     title: Yup.string()
         .required('Pflichtfeld')
         .max(255, 'Maximal 255 Zeichen'),
-    publisher: Yup.string()
-        .required('Pflichtfeld')
-        .max(255, 'Maximal 255 Zeichen'),
-    seriestitle: Yup.string()
-        .required('Pflichtfeld')
-        .max(255, 'Maximal 255 Zeichen'),
-    seriesvolume: Yup.number("Bitte geben Sie eine Zahl ein")
-        .required("Pflichtfeld")
-        .integer("Bitte geben Sie eine Zahl ein"),
+    series: Yup.object().shape({
+        title: Yup.string()
+            .required('Pflichtfeld')
+            .max(255, 'Maximal 255 Zeichen'),
+        volume: Yup.number("Bitte geben Sie eine Zahl ein")
+            .required("Pflichtfeld")
+            .integer("Bitte geben Sie eine Zahl ein"),
+        publisher: Yup.object().shape({
+            name: Yup.string()
+                .required('Pflichtfeld')
+                .max(255, 'Maximal 255 Zeichen')
+        }),
+    }),
     number: Yup.string()
         .required('Pflichtfeld')
         .max(255, 'Maximal 255 Zeichen'),
@@ -56,5 +66,7 @@ export const IssueSchema = Yup.object().shape({
     price: Yup.number("Bitte geben Sie eine Zahl ein")
         .integer("Bitte geben Sie eine Zahl ein"),
     currency: Yup.string()
-        .max(3, 'Maximal 3 Zeichen')
+        .max(3, 'Maximal 3 Zeichen'),
+    addinfo: Yup.string()
+        .max(2500, 'Maximal 2500 Zeichen')
 });

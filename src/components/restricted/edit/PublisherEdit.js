@@ -66,7 +66,8 @@ function PublisherEdit(props) {
                             {(editPublisher, {error}) => (
                                 <Formik
                                     initialValues={{
-                                        name: old.name
+                                        name: old.name,
+                                        addinfo: old.addinfo
                                     }}
                                     validationSchema={PublisherSchema}
                                     onSubmit={async (values, actions) => {
@@ -78,7 +79,8 @@ function PublisherEdit(props) {
                                                     name: old.name
                                                 },
                                                 edit: {
-                                                    name: values.name
+                                                    name: values.name,
+                                                    addinfo: values.addinfo
                                                 }
                                             }
                                         });
@@ -93,12 +95,20 @@ function PublisherEdit(props) {
 
                                             <CardContent className="cardContent">
                                                 <Field
-                                                    className="fieldSmall"
+                                                    className="field field35"
                                                     name="name"
                                                     label="Name"
                                                     component={TextField}
                                                 />
-
+                                                <br/>
+                                                <Field
+                                                    className="field field35"
+                                                    name="addinfo"
+                                                    label="Weitere Informationen"
+                                                    multiline
+                                                    rows={10}
+                                                    component={TextField}
+                                                />
                                                 <br/>
                                                 <br/>
 
@@ -106,7 +116,8 @@ function PublisherEdit(props) {
                                                     <Button disabled={isSubmitting}
                                                             onClick={() => {
                                                                 values = {
-                                                                    name: old.name
+                                                                    name: old.name,
+                                                                    addino: old.addinfo
                                                                 };
                                                                 resetForm();
                                                             }}

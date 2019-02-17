@@ -7,6 +7,7 @@ import Layout from "../Layout";
 import {Query} from "react-apollo";
 import QueryResult from "../generic/QueryResult";
 import {seriesd} from "../../graphql/queries";
+import Typography from "@material-ui/core/es/Typography/Typography";
 
 function SeriesDetails(props) {
     let selected = getSelected(props.match.params);
@@ -23,7 +24,7 @@ function SeriesDetails(props) {
                             <CardHeader title={generateLabel(data.seriesd)}/>
 
                             <CardContent className="cardContent">
-
+                                <Typography>{data.seriesd.addinfo}</Typography>
                             </CardContent>
                         </React.Fragment>
                     );

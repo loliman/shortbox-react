@@ -53,7 +53,8 @@ function PublisherCreate(props) {
                 {(createPublisher, {error}) => (
                     <Formik
                         initialValues={{
-                            name: ''
+                            name: '',
+                            addinfo: ''
                         }}
                         validationSchema={PublisherSchema}
                         onSubmit={async (values, actions) => {
@@ -62,7 +63,8 @@ function PublisherCreate(props) {
                             await createPublisher({
                                 variables: {
                                     publisher: {
-                                        name: values.name
+                                        name: values.name,
+                                        addinfo: values.addinfo
                                     }
                                 }
                             });
@@ -77,9 +79,20 @@ function PublisherCreate(props) {
 
                                 <CardContent className="cardContent">
                                     <Field
-                                        className="fieldSmall"
+                                        className="field field35"
                                         name="name"
                                         label="Name"
+                                        component={TextField}
+                                    />
+
+                                    <br />
+
+                                    <Field
+                                        className="field field35"
+                                        name="addinfo"
+                                        label="Weitere Informationen"
+                                        multiline
+                                        rows={10}
                                         component={TextField}
                                     />
 
@@ -90,7 +103,8 @@ function PublisherCreate(props) {
                                         <Button disabled={isSubmitting}
                                                 onClick={() => {
                                                     values = {
-                                                        name: ''
+                                                        name: '',
+                                                        addinfo: ''
                                                     };
                                                     resetForm();
                                                 }}

@@ -66,6 +66,7 @@ function SeriesCreate(props) {
                             volume: '',
                             startyear: '',
                             endyear: '',
+                            addinfo: ''
                         }}
                         validationSchema={SeriesSchema}
                         onSubmit={async (values, actions) => {
@@ -81,6 +82,7 @@ function SeriesCreate(props) {
                                         volume: values.volume,
                                         startyear: values.startyear,
                                         endyear: parseInt(values.endyear),
+                                        addinfo: values.addinfo
                                     }
                                 }
                             });
@@ -89,13 +91,13 @@ function SeriesCreate(props) {
                             if (error)
                                 actions.resetForm();
                         }}>
-                        {({resetForm, submitForm, isSubmitting, values, handleChange, touched, errors}) => (
+                        {({resetForm, submitForm, isSubmitting, values, setFieldValue, touched, errors}) => (
                             <Form>
                                 <CardHeader title="Serie erstellen"/>
 
                                 <CardContent className="cardContent">
                                     <Field
-                                        className="fieldSmall"
+                                        className="field field35"
                                         name="title"
                                         label="Titel"
                                         component={TextField}
@@ -106,19 +108,18 @@ function SeriesCreate(props) {
                                         id="publisher"
                                         query={publishers}
                                         variables={{us: us}}
-                                        suggestionLabel="name"
-                                        type="text"
                                         name="publisher.name"
                                         label="Verlag"
                                         error={touched.publisher && errors.publisher}
-                                        value={values.publisher.name}
                                         onChange={(field, value) => {
-                                            values.publisher.name = value
+                                            setFieldValue("publisher", value, true);
                                         }}
+                                        width="35%"
                                     />
 
+                                    <br/>
                                     <Field
-                                        className="fieldSmall"
+                                        className="field field35"
                                         name="volume"
                                         label="Volume"
                                         type="number"
@@ -126,7 +127,7 @@ function SeriesCreate(props) {
                                     />
                                     <br/>
                                     <Field
-                                        className="fieldSmall"
+                                        className="field field35"
                                         name="startyear"
                                         label="Startjahr"
                                         type="number"
@@ -134,12 +135,20 @@ function SeriesCreate(props) {
                                     />
                                     <br/>
                                     <Field
-                                        className="fieldSmall"
+                                        className="field field35"
                                         name="endyear"
                                         label="Endjahr"
                                         component={TextField}
                                     />
-
+                                    <br/>
+                                    <Field
+                                        className="field field35"
+                                        name="addinfo"
+                                        label="Weitere Informationen"
+                                        multiline
+                                        rows={10}
+                                        component={TextField}
+                                    />
                                     <br/>
                                     <br/>
 
@@ -154,6 +163,7 @@ function SeriesCreate(props) {
                                                         volume: '',
                                                         startyear: '',
                                                         endyear: '',
+                                                        addinfo: ''
                                                     };
                                                     resetForm();
                                                 }}

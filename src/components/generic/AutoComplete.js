@@ -6,52 +6,58 @@ import Paper from "@material-ui/core/Paper/Paper";
 import MenuItem from "@material-ui/core/MenuItem/MenuItem";
 import TextField from "@material-ui/core/TextField/TextField";
 import {Query} from "react-apollo";
+import {generateLabel} from "../../util/hierarchy";
 
 const theme = {
     container: {
+        display: 'inline-block',
         position: 'relative',
+        marginRight: 6 + 'px',
+        width: 100 + '%'
     },
     suggestionsContainerOpen: {
         position: 'absolute',
         zIndex: 1,
         left: 0,
         right: 0,
+        overflow: 'auto',
+        maxHeight: 50 + 'vh',
+    },
+    suggestion: {
+        display: 'block',
+        width: 99 + '%'
     },
     suggestionsList: {
         margin: 0,
         padding: 0,
         listStyleType: 'none',
-    },
-    suggestion: {
-        display: 'block',
-    },
+    }
 };
 
 function AutoComplete(props) {
-    const {query, variables, label, disabled, ...rest} = props;
+    const {query, variables, width, ...rest} = props;
+    let {disabled, label} = props;
 
-    if(disabled)
-        return <div><TextField disabled label={label} className="fieldSmall"/></div>;
+    let acTheme = JSON.parse(JSON.stringify(theme));
+    if(width)
+        acTheme.container.width = width;
 
     return (
         <Query query={query}
            variables={variables}>
             {({loading, error, data}) => {
-                let l = label;
-                let d = disabled;
-
-                if(loading)
-                    l += " (Lade...)";
+                if(!disabled && loading)
+                    label += " (Lade...)";
                 else if(error)
-                    l  = " (Fehler!)";
+                    label  = " (Fehler!)";
 
-                if(loading || error)
-                    d = true;
+                let suggestions = data[query.definitions[0].name.value.toLowerCase()];
 
                 return <AutoCompleteContainer
-                    suggestions={data[query.definitions[0].name.value.toLowerCase()]}
-                    label={l}
-                    disabled={d}
+                    suggestions={suggestions}
+                    label={label}
+                    theme={acTheme}
+                    disabled={disabled}
                     {...rest}
                 />
             }}
@@ -71,54 +77,51 @@ class AutoCompleteContainer extends React.Component {
 
     render() {
         return (
-            <div>
-                <Autosuggest
-                       suggestions={this.state.suggestions}
-                       onSuggestionSelected={(_, {suggestionValue}) => {
-                           this.props.onChange(this.props.name, suggestionValue);
-                       }}
-                       onSuggestionsFetchRequested={this.handleSuggestionsFetchRequested}
-                       onSuggestionsClearRequested={this.handleSuggestionsClearRequested}
-                       getSuggestionValue={(suggestion) => suggestion[this.props.suggestionLabel]}
-                       renderSuggestion={this.renderSuggestion}
-                       inputProps={{
-                           value: this.state.search,
-                           onChange: this.handleChange('search'),
-                       }}
-                       theme={theme}
-                       renderInputComponent={(inputProps) => {
-                           const {inputRef = () => {}, ref, value, ...other} = inputProps;
-                           const {error, id, label, name, onBlur, type, disabled} = this.props;
+            <Autosuggest
+                   suggestions={this.state.suggestions}
+                   onSuggestionSelected={(_, {suggestion}) => {
+                       this.props.onChange(suggestion);
+                   }}
+                   onSuggestionsFetchRequested={this.handleSuggestionsFetchRequested}
+                   onSuggestionsClearRequested={this.handleSuggestionsClearRequested}
+                   getSuggestionValue={(suggestion) => generateLabel(suggestion)}
+                   renderSuggestion={this.renderSuggestion}
+                   inputProps={{
+                       value: this.state.search,
+                       onChange: this.handleChange('search'),
+                   }}
+                   theme={this.props.theme}
+                   renderInputComponent={(inputProps) => {
+                       const {inputRef = () => {}, ref, ...other} = inputProps;
+                       const {error, id, label, name, type, disabled} = this.props;
 
-                           return (
-                               <Field
-                                   InputProps={{
-                                       inputRef: node => {
-                                           ref(node);
-                                           inputRef(node);
-                                       }
-                                   }}
-                                   className="fieldSmall"
-                                   component={AutoCompleteTextField}
-                                   {...other}
-                                   disabled={disabled}
-                                   error={error}
-                                   id={id}
-                                   label={label}
-                                   name={name}
-                                   onBlur={onBlur}
-                                   type={type}
-                                   value={value}
-                               />
-                           );
-                       }}
-                       renderSuggestionsContainer={(options) => (
-                           <Paper {...options.containerProps} square className="suggestionContainer">
+                       return (
+                           <Field
+                               InputProps={{
+                                   inputRef: node => {
+                                       ref(node);
+                                       inputRef(node);
+                                   }
+                               }}
+                               component={AutoCompleteTextField}
+                               {...other}
+                               disabled={disabled}
+                               error={error}
+                               id={id}
+                               label={label}
+                               name={name}
+                               type={type}
+                           />
+                       );
+                   }}
+                   renderSuggestionsContainer={(options) => {
+                       return (
+                           <Paper {...options.containerProps} square>
                                {options.children}
                            </Paper>
-                       )}
-                   />
-            </div>
+                       );
+                   }}
+               />
         );
     }
 
@@ -145,15 +148,15 @@ class AutoCompleteContainer extends React.Component {
 
         return inputValue.length === 0 ? [] :
             this.props.suggestions.filter(suggestion => {
-                return suggestion[this.props.suggestionLabel].toLowerCase().indexOf(inputValue) !== -1;
+                return generateLabel(suggestion).toLowerCase().indexOf(inputValue) !== -1;
             });
     };
 
     renderSuggestion = (suggestion, { query, isHighlighted }) => {
         return (
             <MenuItem selected={isHighlighted} component="div">
-                <div className="suggestionItem">
-                    <span>{suggestion[this.props.suggestionLabel]}</span>
+                <div>
+                    <span>{generateLabel(suggestion)}</span>
                 </div>
             </MenuItem>
         );
@@ -164,9 +167,15 @@ function AutoCompleteTextField(props) {
     return(
         <TextField
             {...fieldToTextField(props)}
+            fullWidth
+            className="field"
             onChange={event => {
                 props.onChange(event);
-                props.form.setFieldValue(props.field.name, event.target.value);
+                props.field.onChange(event);
+            }}
+            onBlur={event => {
+                props.onBlur();
+                props.field.onBlur(event);
             }}
         />
     );

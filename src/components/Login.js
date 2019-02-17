@@ -51,13 +51,13 @@ function Login(props) {
 
                                 <CardContent>
                                     <Field
-                                        className="field"
+                                        className="field field100"
                                         name="name"
                                         label="Name"
                                         component={TextField}
                                     /><br/>
                                     <Field
-                                        className="field"
+                                        className="field field100"
                                         name="password"
                                         type="password"
                                         label="Passwort"

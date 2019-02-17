@@ -4,7 +4,7 @@ import {withSnackbar} from "notistack";
 import {withLastLocation} from "react-router-last-location";
 import {withRouter} from "react-router-dom";
 import {AppContext} from "./AppContext";
-import {generateLabel, getHierarchyLevel, getSelected} from "../../util/hierarchy";
+import {generateLabel, getHierarchyLevel, getSelected, HierarchyLevel} from "../../util/hierarchy";
 
 function getDisplayName(WrappedComponent) {
     return WrappedComponent.displayName || WrappedComponent.name || 'Component';
@@ -19,7 +19,10 @@ function withContext(WrappedComponent) {
                 let selected = getSelected(props.match.params, us);
                 let level = getHierarchyLevel(selected);
 
-                document.title = generateLabel(selected);
+                let title = generateLabel(selected);
+                if(level !== HierarchyLevel.ROOT)
+                    title += " - Shortbox";
+                document.title = title;
 
                 return (
                     <WrappedComponent us={us} edit={edit}

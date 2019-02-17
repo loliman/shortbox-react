@@ -421,11 +421,24 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 }
 
 .field {
+    margin-top: 6px !important;
+    margin-right: 6px !important;
+}
+
+.field100 {
     width: 100%;
 }
 
-.fieldSmall {
-    width: 35%;
+.field35 {
+    width: calc(35% + 6px);
+}
+
+.field25 {
+    width: 25%;
+}
+
+.field10 {
+    width: 10%;
 }
 
 .formButtons {
@@ -434,19 +447,6 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 
 .createButton {
     float: right;
-}
-
-.suggestionContainer {
-    width: 25%;
-    overflow: auto;
-    max-height: 50vh;
-}
-
-.suggestionItem {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    display: inline-block;
 }
 
 .itemText {
@@ -475,6 +475,10 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 
 .issuePreview {
     margin-bottom: 10px;
+}
+
+.issuePreview:hover {
+    cursor: pointer;
 }
 
 .lastAdded {
