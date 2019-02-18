@@ -133,6 +133,11 @@
         margin-top: 48px !important;
     }
 
+    .issuePreview {
+        margin-bottom: 10px;
+        width: 100%;
+    }
+
     #drawer {
         z-index: 1200 !important;
     }
@@ -205,6 +210,11 @@
         width: 25% !important;
     }
 
+    .issuePreview {
+        margin-bottom: 10px;
+        width: 50%;
+    }
+    
     #drawer {
         z-index: 999 !important;
     }
@@ -501,11 +511,6 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 
 .mobileChip {
     width: 15.5px !important;
-}
-
-.issuePreview {
-    margin-bottom: 10px;
-    width: 50%;
 }
 
 .issuePreview:hover {
