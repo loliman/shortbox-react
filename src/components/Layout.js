@@ -37,7 +37,7 @@ class Layout extends React.Component {
 
                     <Typography className="footer">
                         <span className="spanLink"
-                              onClick={() => this.props.history.push("/impress")}>Impressum</span>&nbsp;
+                              onClick={() => this.props.history.push("/impress")}>Impressum</span> | &nbsp;
                         <span className="spanLink"
                               onClick={() => this.props.history.push("/privacy")}>Datenschutz</span>
                     </Typography>
