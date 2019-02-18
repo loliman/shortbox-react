@@ -18,6 +18,8 @@ import Home from "./Home";
 import AppContextProvider from "./generic/AppContext";
 import IssueDetailsUS from "./details/IssueDetailsUS";
 import IssueDetailsDE from "./details/IssueDetailsDE";
+import Impress from "./Impress";
+import Privacy from "./Privacy";
 
 class App extends React.Component {
     static propTypes = {
@@ -47,6 +49,9 @@ class App extends React.Component {
                         <Route exact path="/us/:publisher/:series/:issue" component={IssueDetailsUS}/>
 
                         <Route exact path="/login" component={Login}/>
+
+                        <Route exact path="/impress" component={Impress}/>
+                        <Route exact path="/privacy" component={Privacy}/>
 
                         <PrivateRoute exact session={session} path="/create/publisher" component={PublisherCreate}/>
                         <PrivateRoute exact session={session} path="/create/series" component={SeriesCreate}/>

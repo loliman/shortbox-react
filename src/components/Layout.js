@@ -5,6 +5,7 @@ import List from "./List";
 import EditDropdown from "./restricted/Dropdown";
 import {withContext} from "./generic";
 import AddFab from "./restricted/AddFab";
+import Typography from "@material-ui/core/Typography";
 
 class Layout extends React.Component {
     constructor(props) {
@@ -33,6 +34,13 @@ class Layout extends React.Component {
                     <Card>
                         {children}
                     </Card>
+
+                    <Typography className="footer">
+                        <span className="spanLink"
+                              onClick={() => this.props.history.push("/impress")}>Impressum</span>&nbsp;
+                        <span className="spanLink"
+                              onClick={() => this.props.history.push("/privacy")}>Datenschutz</span>
+                    </Typography>
                 </main>
 
                 <AddFab us={us}/>

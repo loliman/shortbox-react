@@ -20,6 +20,14 @@
     z-index: 1201 !important;
 }
 
+.copyright {
+    color: gray !important;
+}
+
+.copyright > a {
+    text-decoration: none;
+}
+
 .content {
     flex-grow: 1 !important;
     margin-left: 20%;
@@ -68,7 +76,7 @@
 
 .content > div, .contentShift > div {
     overflow: auto;
-    height: calc(100vh - 84px);
+    height: calc(99vh - 97px);
 }
 
 .contentShift {
@@ -77,6 +85,16 @@
     transition: ease-out 200ms;
     margin-top: 64px;
     z-index: 1000 !important;
+}
+
+.footer {
+    padding-top: 4px;
+    padding-right: 4px;
+    float: right;
+}
+
+.footer > a {
+    text-decoration: none;
 }
 
 .appTitle {
@@ -97,8 +115,8 @@
 /*MOBILE*/
 @media (max-width: 600px) {
     .content > div, .contentShift > div {
-        width: 102.5%;
-        height: 93vh;
+        width: 100vw;
+        height: 90vh;
         margin-left: -10px;
     }
 
@@ -321,7 +339,19 @@
 }
 
 .cardContent {
-    padding-bottom: 75px !important;
+    padding-bottom: 60px !important;
+}
+
+.cardContent a {
+    text-decoration: none;
+}
+
+.spanLink {
+    color: blue;
+}
+
+.spanLink:hover {
+    cursor: pointer;
 }
 
 .chip {

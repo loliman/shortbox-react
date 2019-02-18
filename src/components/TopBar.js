@@ -60,11 +60,12 @@ function BreadCrumbMenu(props) {
 
     switch (level) {
         case HierarchyLevel.ROOT:
-            return <BreadCrumbLabel label="Shortbox" />;
+            return <BreadCrumbLink to={us ? "/us" : "/de"} label="Shortbox" {...props}/>;
         case HierarchyLevel.PUBLISHER:
             return (
                 <React.Fragment>
                     <BreadCrumbLink to={us ? "/us" : "/de"} label="Shortbox" {...props}/>
+                    <KeyboardArrowRightIcon className="navArrow"/>
                     <BreadCrumbLabel label={generateLabel(selected)}/>
                 </React.Fragment>
             );
@@ -72,9 +73,11 @@ function BreadCrumbMenu(props) {
             return (
                 <React.Fragment>
                     <BreadCrumbLink to={us ? "/us" : "/de"} label="Shortbox" {...props}/>
+                    <KeyboardArrowRightIcon className="navArrow"/>
                     <BreadCrumbLink to={generateUrl(selected.series, us)}
                                     label={generateLabel(selected.series)}
                                     {...props}/>
+                    <KeyboardArrowRightIcon className="navArrow"/>
                     <BreadCrumbLabel label={generateLabel(selected)}/>
                 </React.Fragment>
             );
@@ -82,9 +85,11 @@ function BreadCrumbMenu(props) {
             return (
                 <React.Fragment>
                     <BreadCrumbLink to={us ? "/us" : "/de"} label="Shortbox" {...props}/>
+                    <KeyboardArrowRightIcon className="navArrow"/>
                     <BreadCrumbLink to={generateUrl(selected.issue.series, us)}
                                     label={generateLabel(selected.issue.series)}
                                     {...props}/>
+                    <KeyboardArrowRightIcon className="navArrow"/>
                     <BreadCrumbLabel label={generateLabel(selected.issue)}/>
                 </React.Fragment>
             );
@@ -102,7 +107,6 @@ function BreadCrumbLink(props) {
                   }}>
                 {props.label}
             </span>
-            <KeyboardArrowRightIcon className="navArrow"/>
         </React.Fragment>
     )
 }

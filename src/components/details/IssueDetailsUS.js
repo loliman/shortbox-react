@@ -34,8 +34,30 @@ function Bottom(props) {
                            noEntriesHint="Dieser Ausgabe sind noch keine Cover zugeordnet."
                            items={props.issue.covers[0].children.map(c => c.issue)}
                            itemTitle={<IssueContainsTitleDetailed/>}/>
+
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+
+            <Typography className="copyright">
+                Informationen über&nbsp;
+                <a href={generateMarvelDbUrl(props.issue)} rel="noopener noreferrer nofollow"
+                   target="_blank">{generateLabel(props.issue.series) + " #" + props.issue.number}</a>
+                &nbsp;werden bezogen aus der&nbsp;
+                <a href="https://marvel.fandom.com" rel="noopener noreferrer nofollow" target="_blank">Marvel
+                    Database</a>
+                &nbsp;und stehen unter der&nbsp;
+                <a href="unter der https://creativecommons.org/licenses/by-sa/3.0/" rel="noopener noreferrer nofollow"
+                   target="_blank">Creative Commons License 3.0</a>
+            </Typography>
         </React.Fragment>
     );
+}
+
+function generateMarvelDbUrl(issue) {
+    let url = "https://marvel.fandom.com/wiki/" + issue.series.title + "_Vol_" + issue.series.volume + "_" + issue.number;
+    return url.replace(new RegExp(" ", 'g'), "_");
 }
 
 function IssueStoryDetails(props) {
