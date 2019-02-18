@@ -455,6 +455,10 @@ div[class^="MuiExpansionPanelSummary-content-"] {
     width: 100%;
 }
 
+.fieldFileUpload > div > div {
+    width: 100% !important;
+}
+
 .field35 {
     width: calc(35% + 6px);
 }
@@ -501,10 +505,17 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 
 .issuePreview {
     margin-bottom: 10px;
+    width: 50%;
 }
 
 .issuePreview:hover {
     cursor: pointer;
+}
+
+.history {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .lastAdded {

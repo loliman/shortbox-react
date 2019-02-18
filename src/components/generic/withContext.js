@@ -27,7 +27,6 @@ function withContext(WrappedComponent) {
 
                 document.title = createAppTitle(params, props.match.url);
 
-
                 return (
                     <WrappedComponent {...params} {...context} {...props} />
                 );

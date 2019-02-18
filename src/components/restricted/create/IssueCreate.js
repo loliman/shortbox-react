@@ -5,7 +5,7 @@ import CardContent from "@material-ui/core/CardContent/CardContent";
 import {Mutation} from "react-apollo";
 import {createIssue} from "../../../graphql/mutations";
 import {Field, Form, Formik} from 'formik';
-import {TextField} from 'formik-material-ui';
+import {SimpleFileUpload, TextField} from 'formik-material-ui';
 import Button from "@material-ui/core/Button/Button";
 import {issues, publishers, series} from "../../../graphql/queries";
 import {generateLabel, generateUrl} from "../../../util/hierarchy";
@@ -57,6 +57,7 @@ function IssueCreate(props) {
                                 }
                             },
                             number: '',
+                            cover: '',
                             limitation: '',
                             pages: '',
                             releasedate: '',
@@ -78,6 +79,7 @@ function IssueCreate(props) {
                                         }
                                     },
                                     number: values.number,
+                                    cover: values.cover,
                                     pages: parseInt(values.pages),
                                     releasedate: values.releasedate,
                                     price: parseFloat(values.price),
@@ -150,6 +152,13 @@ function IssueCreate(props) {
                                             component={TextField}
                                         />
                                         <br/>
+                                        <div className="field field35 fieldFileUpload">
+                                            <Field
+                                                name="cover"
+                                                label="Cover"
+                                                component={SimpleFileUpload}
+                                            />
+                                        </div>
                                         <Field
                                             className="field field35"
                                             name="pages"
@@ -207,6 +216,7 @@ function IssueCreate(props) {
                                                             }
                                                         },
                                                         number: '',
+                                                        cover: '',
                                                         limitation: '',
                                                         pages: '',
                                                         releasedate: '',

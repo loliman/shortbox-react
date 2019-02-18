@@ -12,27 +12,40 @@ function Impress(props) {
 
             <CardContent className="cardContent">
                 <Typography>
-                    <p>Angaben gemäß § 5 TMG <br/>
-                        <br/></p>
-                    <h3 id="dsg-general-controller">Verantwortlicher</h3>
-                    <p>
-                        Christian Riese <br/>
-                        Humperdinckweg 15<br/>
-                        33102 Paderborn, Deutschland <br/>
-                    </p>
+                    Angaben gemäß § 5 TMG
+                </Typography>
 
-                    <h3>Kontakt</h3>
-                    <p>
+                <br/>
+
+                <Typography variant="h6">Verantwortlicher</Typography>
+
+                <Typography>
+                    Christian Riese <br/>
+                    Humperdinckweg 15<br/>
+                    33102 Paderborn, Deutschland<br/>
+                </Typography>
+
+                <br />
+
+                <Typography variant="h6">Kontakt</Typography>
+
+                <Typography>
                         E-Mail: <a href='mailto:christian.riese@gmail.com'>christian.riese@gmail.com</a><br/>
-                    </p>
+                </Typography>
 
-                    <h3>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</h3>
-                    <p>
-                        Christian Riese <br/>
-                        Humperdinckweg 15 <br/>
-                        33102 Paderborn <br/>
-                    </p>
-                    <br/>
+                <br />
+
+                <Typography variant="h6">Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</Typography>
+
+                <Typography>
+                        Christian Riese<br/>
+                        Humperdinckweg 15<br/>
+                        33102 Paderborn<br/>
+                </Typography>
+
+                <br/>
+
+                <Typography>
                     Impressum vom <a href="https://www.impressum-generator.de" rel="noopener noreferrer nofollow"
                                      target="_blank">Impressum Generator</a> der <a
                     href="https://www.kanzlei-hasselbach.de/">Kanzlei Hasselbach, Rechtsanwälte für Arbeitsrecht und

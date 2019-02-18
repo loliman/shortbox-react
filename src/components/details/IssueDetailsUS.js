@@ -48,7 +48,7 @@ function Bottom(props) {
                 <a href="https://marvel.fandom.com" rel="noopener noreferrer nofollow" target="_blank">Marvel
                     Database</a>
                 &nbsp;und stehen unter der&nbsp;
-                <a href="unter der https://creativecommons.org/licenses/by-sa/3.0/" rel="noopener noreferrer nofollow"
+                <a href="https://creativecommons.org/licenses/by/3.0/de/" rel="noopener noreferrer nofollow"
                    target="_blank">Creative Commons License 3.0</a>
             </Typography>
         </React.Fragment>

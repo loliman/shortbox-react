@@ -18,14 +18,30 @@ function Home(props) {
                         subheader="Das deutsche Archiv für Marvel Comics"/>
 
             <CardContent className="cardContent">
-                <Query query={lastEdited}>
-                    {({loading, error, data}) => {
-                        if (loading || error || !data.lastEdited)
-                            return <QueryResult loading={loading} error={error} />;
+                <Typography>
+                    Shortbox.de ist ein 2018 gestartetes, privates Projekt von Marvel Fans für Marvel Fans, welches
+                        den Anspruch hat jede je erschienene deutsche Marvel-Veröffentlichung detailiert zu katalogisieren.<br />
+                    Alle auf Shortbox.de gelisteten Informationen unterliegen der&nbsp;
+                        <a href="https://creativecommons.org/licenses/by/3.0/de/" rel="noopener noreferrer nofollow"
+                           target="_blank">Creative Commons License 3.0</a> und stehen somit, unter Angabe der Quelle,
+                        jedem zu freien und kostenlosen Verfügung.
+                </Typography>
 
-                        return data.lastEdited.map((i) => <IssuePreview {...props} key={i.id} issue={i} />);
-                    }}
-                </Query>
+                <br />
+                <br />
+
+                <Typography variant="h6">Letzte Änderungen</Typography>
+
+                <div className="history">
+                    <Query query={lastEdited}>
+                        {({loading, error, data}) => {
+                            if (loading || error || !data.lastEdited)
+                                return <QueryResult loading={loading} error={error} />;
+
+                            return data.lastEdited.map((i) => <IssuePreview {...props} key={i.id} issue={i} />);
+                        }}
+                    </Query>
+                </div>
             </CardContent>
         </Layout>
     );
@@ -47,7 +63,7 @@ function IssuePreview(props) {
                 {
                     props.issue.createdAt === props.issue.updatedAt ?
                         <Typography>Hinzugefügt {date} um {time}</Typography> :
-                        <Typography>Zuletzt bearbeitet {date} um {time}</Typography>
+                        <Typography>Bearbeitet {date} um {time}</Typography>
                 }
             </CardContent>
         </Card>
