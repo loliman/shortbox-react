@@ -77,7 +77,7 @@ function TypeListEntry(props) {
             <ListItem component={Link}
                       to={generateUrl(item, us)}
                       onClick={() => {
-                          if(mobile && level === HierarchyLevel.ISSUE)
+                          if (mobile && level === HierarchyLevel.SERIES)
                               toogleDrawer();
                       }}
                       button>

@@ -1,6 +1,9 @@
 .root {
     display: flex !important;
-    padding: 10px !important;
+    padding-bottom: 0 !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    padding-top: 10px !important;
 }
 
 #loginForm {
@@ -22,6 +25,7 @@
 
 .copyright {
     color: gray !important;
+    margin-top: auto !important;
 }
 
 .copyright > a {
@@ -46,10 +50,8 @@
     padding: 0 !important;
     width: 25%;
     margin-top: 64px !important;
-    height: -moz-calc(100% - 59px);
-    height: -webkit-calc(100% - 59px);
-    height: -o-calc(100% - 59px);
-    height: calc(100% - 59px);
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+    border-radius: 4px;
 }
 
 ::-webkit-scrollbar {
@@ -76,7 +78,7 @@
 
 .content > div, .contentShift > div {
     overflow: auto;
-    height: calc(99vh - 97px);
+    height: calc(99vh - 90px);
 }
 
 .contentShift {
@@ -145,9 +147,6 @@
     #drawer > div {
         width: 100% !important;
         margin-top: 56px !important;
-        height: -moz-calc(100% - 51px);
-        height: -webkit-calc(100% - 51px);
-        height: -o-calc(100% - 51px);
         height: calc(100% - 51px);
     }
 
@@ -222,10 +221,7 @@
     #drawer > div {
         width: 20% !important;
         margin-top: 64px !important;
-        height: -moz-calc(100% - 59px);
-        height: -webkit-calc(100% - 59px);
-        height: -o-calc(100% - 59px);
-        height: calc(100% - 59px);
+        height: calc(99vh - 80px);
     }
 
     .appTitle {
@@ -295,6 +291,11 @@
     margin-bottom: -5px !important;
 }
 
+.navArrowLeft {
+    margin-left: -5px;
+    margin-right: 5px;
+}
+
 .table {
     align-self: center !important;
 }
@@ -350,6 +351,12 @@
 
 .cardContent a {
     text-decoration: none;
+}
+
+.cardContent {
+    display: flex;
+    flex-direction: column;
+    min-height: 84vh;
 }
 
 .spanLink {

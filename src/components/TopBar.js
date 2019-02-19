@@ -10,12 +10,13 @@ import {Mutation} from "react-apollo";
 import {logout} from "../graphql/mutations";
 import {generateLabel, generateUrl, HierarchyLevel} from "../util/hierarchy";
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
+import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
 import Hamburger from 'react-hamburgers';
 import Link from "react-router-dom/es/Link";
 import {withContext} from "./generic";
 
 function TopBar(props) {
-    const {drawerOpen, toogleDrawer, us, history, session} = props;
+    const {drawerOpen, toogleDrawer, us, history, session, mobile} = props;
 
     return (
         <AppBar position="fixed" className="appBar">
@@ -25,7 +26,11 @@ function TopBar(props) {
                     type="slider"
                     onClick={() => toogleDrawer()}/>
                 <Typography variant="h6" color="inherit" className="appTitle" noWrap>
-                    <BreadCrumbMenu {...props} />
+                    {
+                        mobile ?
+                            <BreadCrumbMenu {...props} /> :
+                            <BreadCrumbMenuMobile {...props} />
+                    }
                 </Typography>
                 <div className="grow"/>
                 <div>
@@ -56,6 +61,39 @@ function TopBar(props) {
 }
 
 function BreadCrumbMenu(props) {
+    const {selected, level, us} = props;
+
+    switch (level) {
+        case HierarchyLevel.ROOT:
+            return <BreadCrumbLink to={us ? "/us" : "/de"} label="Shortbox" {...props}/>;
+        case HierarchyLevel.PUBLISHER:
+            return (
+                <React.Fragment>
+                    <BreadCrumbLink to={us ? "/us" : "/de"}
+                                    label={<KeyboardArrowLeftIcon className="navArrow navArrowLeft"/>} {...props}/>
+                    <BreadCrumbLabel label={generateLabel(selected)}/>
+                </React.Fragment>
+            );
+        case HierarchyLevel.SERIES:
+            return (
+                <React.Fragment>
+                    <BreadCrumbLink to={generateUrl(selected.series, us)}
+                                    label={<KeyboardArrowLeftIcon className="navArrow navArrowLeft"/>} {...props}/>
+                    <BreadCrumbLabel label={generateLabel(selected)}/>
+                </React.Fragment>
+            );
+        default:
+            return (
+                <React.Fragment>
+                    <BreadCrumbLink to={generateUrl(selected.issue.series, us)}
+                                    label={<KeyboardArrowLeftIcon className="navArrow navArrowLeft"/>} {...props}/>
+                    <BreadCrumbLabel label={generateLabel(selected.issue)}/>
+                </React.Fragment>
+            );
+    }
+}
+
+function BreadCrumbMenuMobile(props) {
     const {selected, level, us} = props;
 
     switch (level) {
