@@ -155,7 +155,7 @@ function SeriesEdit(props) {
                                                     name="publisher.name"
                                                     label="Verlag"
                                                     error={touched.publisher && errors.publisher}
-                                                    onChange={(field, value) => {
+                                                    onChange={(value) => {
                                                         setFieldValue("publisher", value, true);
                                                     }}
                                                     width="35%"

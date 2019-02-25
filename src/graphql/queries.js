@@ -14,7 +14,7 @@ const series = gql`query Series($publisher: PublisherInput!){
         startyear,
         endyear,
         publisher {
-            name 
+            name
         }
     }
 }`;
@@ -74,6 +74,7 @@ const seriesd = gql`query Seriesd($series: SeriesInput!){
         endyear,
         addinfo,
         publisher {
+            name,
             us
         }
     }

@@ -41,7 +41,7 @@ function PublisherEdit(props) {
 
                                           let idx = 0;
                                           data.publishers.some((e, i) => {
-                                              idx = i;
+                                              idx = i-1;
                                               return !compare(e, old);
                                           });
 

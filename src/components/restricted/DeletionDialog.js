@@ -11,23 +11,25 @@ import Typography from "@material-ui/core/es/Typography/Typography";
 import {stripItem} from "../../util/util";
 import {withContext} from "../generic";
 import {getListQuery} from "../../graphql/queries";
-import {compare, generateLabel, generateUrl, HierarchyLevel} from "../../util/hierarchy";
+import {compare, generateLabel, generateUrl, getHierarchyLevel, HierarchyLevel} from "../../util/hierarchy";
 
 function DeletionDialog(props) {
     let {level} = props;
     const {item, open, handleClose, history, enqueueSnackbar, us} = props;
 
     let parent;
-    if (item.issue)
-        parent = {series: item.issue.series};
-    else if (item.series)
-        parent = {publisher: item.series.publisher};
+    if (item.__typename === "Issue")
+        parent = {series: item.series};
+    else if (item.__typename === "Series") {
+        parent = {publisher: item.publisher};
+        parent.publisher.us = undefined;
+    }
     else
         parent = {us: us};
     parent = stripItem(parent);
 
     let deleteMutation = getDeleteMutation(level);
-    let getQuery = getListQuery(level);
+    let getQuery = getListQuery(getHierarchyLevel(parent));
 
     return (
          <Dialog open={open}
