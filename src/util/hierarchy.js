@@ -112,7 +112,7 @@ export function generateLabel(item) {
 }
 
 export function compare(a, b) {
-    if (!a.__typename === b.__typename)
+    if (a.__typename !== b.__typename)
         return false;
 
     let type = a.__typename;

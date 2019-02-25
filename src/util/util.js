@@ -21,11 +21,8 @@ export function unwrapItem(item) {
 export function stripItem(item) {
     let stripped = JSON.parse(JSON.stringify(item));
 
-    if (stripped.id) {
-        stripped.id = undefined;
-        stripped.__resolveType = undefined;
-        stripped.__typename = undefined;
-    }
+    stripped.__resolveType = undefined;
+    stripped.__typename = undefined;
 
     if (stripped.series) {
         stripped.series.id = undefined;

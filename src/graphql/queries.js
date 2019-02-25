@@ -3,21 +3,17 @@ import {HierarchyLevel} from "../util/hierarchy";
 
 const publishers = gql`query Publishers($us: Boolean!){
     publishers(us: $us) {
-        id,
-        name,
-        us
+        name
     }
 }`;
 
 const series = gql`query Series($publisher: PublisherInput!){
     series(publisher: $publisher) {
-        id,
         title,
         volume,
         startyear,
         endyear,
         publisher {
-            id,
             name 
         }
     }
@@ -25,28 +21,12 @@ const series = gql`query Series($publisher: PublisherInput!){
 
 const issues = gql`query Issues($series: SeriesInput!){
     issues(series: $series) {
-        id,
-        title,
         number,
-        limitation,
-        format,
-        price,
-        currency,
-        releasedate,
-        cover {
-            id,
-            url
-        },
         series {
-            id,
             title,
-            startyear,
-            endyear,
             volume,
             publisher {
-                id,
-                name,
-                us
+                name
             }
         }
     }
@@ -54,16 +34,13 @@ const issues = gql`query Issues($series: SeriesInput!){
 
 export const lastEdited = gql`query LastEdited {
     lastEdited {
-        id,
         number,
         createdAt,
         updatedAt,
         series {
-            id,
             title,
             volume,
             publisher {
-                id,
                 name
             }
         }
@@ -83,7 +60,6 @@ function getListQuery(level) {
 
 const publisher = gql`query Publisher($publisher: PublisherInput!){
     publisher(publisher: $publisher) {
-        id,
         name,
         us,
         addinfo
@@ -92,15 +68,12 @@ const publisher = gql`query Publisher($publisher: PublisherInput!){
 
 const seriesd = gql`query Seriesd($series: SeriesInput!){
     seriesd(series: $series) {
-        id,
         title,
         volume,
         startyear,
         endyear,
         addinfo,
         publisher {
-            id,
-            name,
             us
         }
     }
@@ -108,233 +81,225 @@ const seriesd = gql`query Seriesd($series: SeriesInput!){
 
 const issue = gql`query Issue($issue: IssueInput!){
     issue(issue: $issue) {
-        id,
         title,
         number,
         format,
         limitation,
-        language,
         pages,
         releasedate,
         price,
-        currency,
-        editors {
-            id,
-            name
-        },
+        currency
         cover {
-            id, 
-            url,
-            artists {
-                id,
-                name
-            }
+            url
         },
         series {
-            id,
             title,
             volume,
             publisher {
-                id, 
                 name,
                 us
             }
         },
         features {
-            id,
             title,
             addinfo,
             writers {
-                id,
                 name
             },
             translators {
-                id,
                 name
             }
         },
         stories {
-            id,
             title,
-            number,
             addinfo,
             parent {
-                id,
                 issue {
-                    id,
                     number,
                     series {
-                        id,
                         title,
                         startyear,
                         endyear,
                         volume,
                         publisher {
-                            id,
                             name,
                             us
                         }
                     }   
                 },
-                number,
                 children {
                     id
                 },
                 pencilers {
-                    id,
                     name
                 },
                 writers {
-                    id,
                     name
                 },
                 inkers {
-                    id,
                     name
                 },
                 colourists {
-                    id,
                     name
                 },
                 letterers {
-                    id,
                     name
                 },
                 editors {
-                    id,
-                    name
-                },
-                translators {
-                    id,
                     name
                 }
             },
-            children {
-                id,
-                issue {
-                    id,
-                    number,
-                    series {
-                        id,
-                        title,
-                        volume,
-                        startyear,
-                        endyear,
-                        publisher {
-                            id,
-                            name
-                        }
-                    }
-                }
-            },
-            firstapp,
-            pencilers {
-                id,
-                name
-            },
-            writers {
-                id,
-                name
-            },
-            inkers {
-                id,
-                name
-            },
-            colourists {
-                id,
-                name
-            },
-            letterers {
-                id,
-                name
-            },
-            editors {
-                id,
-                name
-            },
-            translators {
-                id,
-                name
-            }
+			translators {
+				name
+			},
+            firstapp
         },
         covers {
-            id,
-            addinfo,
-            number,
             url,
+            addinfo,
             parent {
-                id,
+            
                 issue {
-                    id,
                     variant,
                     format,
                     issue {
                         number,
                         series {
-                            id,
                             title,
                             startyear,
                             endyear,
                             volume,
                             publisher {
-                                id,
                                 name,
                                 us
                             }
                         }   
                     }
                 },
+                
                 children {
                     id
                 },
                 artists {
-                    id,
                     name
                 }
-            },
-            children {
-                id,
-                issue {
-                    id,
-                    issue {
-                        number,
-                        series {
-                            id,
-                            title,
-                            volume,
-                            startyear,
-                            endyear,
-                            publisher {
-                                id,
-                                name
-                            }
-                        }
-                    }
-                }
-            },
-            firstapp,
-            artists {
-                id,
-                name
             }
+            firstapp
         },
+		
         variants {
-            id,
             format,
             price,
             currency,
             releasedate,
             variant,
             cover {
-                id,
                 url
             },
             limitation,
             verified
         },
+		
         verified,
         addinfo
     }
 }`;
 
-export {getListQuery, issue, publisher, seriesd, publishers, series, issues};
+const issue_us = gql`query Issue($issue: IssueInput!){
+    issue(issue: $issue) {
+        title,
+        number,
+        releasedate,
+        editors {
+            name
+        },
+        cover {
+            url,
+            artists {
+                name
+            }
+        },
+        series {
+            title,
+            volume,
+            publisher {
+                name,
+                us
+            }
+        },
+        stories {
+            title,
+            number,
+            addinfo,
+            children {
+                issue {
+                    number,
+                    series {
+                        title,
+                        volume,
+                        startyear,
+                        endyear,
+                        publisher {
+                            name,
+							us
+                        }
+                    }
+                }
+            },
+            pencilers {
+                name
+            },
+            writers {
+                name
+            },
+            inkers {
+                name
+            },
+            colourists {
+                name
+            },
+            letterers {
+                name
+            },
+            editors {
+                name
+            }
+        },
+        covers {
+            children {
+            
+                issue {
+                    issue {
+                        number,
+                        series {
+                            title,
+                            volume,
+                            startyear,
+                            endyear,
+                            publisher {
+                                name,
+                                us
+                            }
+                        }
+                    }
+                }
+                
+            }
+        },
+		
+        variants {
+            format,
+            price,
+            currency,
+            releasedate,
+            variant,
+            cover {
+                url
+            },
+            limitation,
+            verified
+        }
+    }
+}`;
+
+export {getListQuery, issue, issue_us, publisher, seriesd, publishers, series, issues};

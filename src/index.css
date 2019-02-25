@@ -433,10 +433,6 @@ div[class^="MuiExpansionPanelSummary-content-"] {
     padding-left: 17px;
 }
 
-.itemMenuButton {
-    padding: 0 10px 0 10px !important;
-}
-
 .itemContainer {
     display: flex !important;
     justify-content: space-between;
@@ -451,6 +447,14 @@ div[class^="MuiExpansionPanelSummary-content-"] {
     right: 15px;
     position: fixed;
     align-self: end;
+}
+
+.editButton {
+    float: right;
+}
+
+.verifiedBadge {
+    margin-top: 7px;
 }
 
 #form-delete-dialog-title > h2 {

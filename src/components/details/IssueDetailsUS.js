@@ -9,11 +9,30 @@ import ListItem from "@material-ui/core/ListItem/ListItem";
 import {Link} from "react-router-dom";
 import {withContext} from "../generic";
 import {generateLabel, generateUrl} from "../../util/hierarchy";
-import IssueDetails, {IssueContains, IssueContainsTitleDetailed, IssueContainsTitleSimple} from "./IssueDetails";
+import IssueDetails, {
+    IssueContains,
+    IssueContainsTitleDetailed,
+    IssueContainsTitleSimple,
+    IssueDetailsRow
+} from "./IssueDetails";
 
 function IssueDetailsUS(props) {
     return <IssueDetails bottom={<Bottom/>}
+                         details={<Details/>}
                          subheader/>
+}
+
+function Details(props) {
+    return (
+        <React.Fragment>
+            <IssueDetailsRow key="releasedate" label="Erscheinungsdatum"
+                             value={props.issue.releasedate}/>
+            <IssueDetailsRow key="coverartists" label="Cover Artists"
+                             value={toIndividualList(props.issue.cover.artists)}/>
+            <IssueDetailsRow key="editor" label="Editor"
+                             value={toIndividualList(props.issue.editors)}/>
+        </React.Fragment>
+    );
 }
 
 function Bottom(props) {
@@ -76,12 +95,12 @@ function IssueStoryDetails(props) {
 
             <List className="issueStoryIssueList">
                 {
-                    props.item.children.map((child) => {
+                    props.item.children.map((child, idx) => {
                         if (!child.issue)
                             return null;
 
                         return (
-                            <ListItem key={child.id} className="issueStoryIssueItem" divider>
+                            <ListItem key={idx} className="issueStoryIssueItem" divider>
                                 <div>
                                     <Typography
                                         className="issueStoryIssue">{generateLabel(child.issue.series) + " #" + child.issue.number}</Typography>

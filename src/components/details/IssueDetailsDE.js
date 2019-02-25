@@ -1,13 +1,38 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography/Typography";
 import {withContext} from "../generic";
-import IssueDetails, {IssueContains, IssueContainsTitleDetailed, IssueContainsTitleSimple} from "./IssueDetails";
+import IssueDetails, {
+    IssueContains,
+    IssueContainsTitleDetailed,
+    IssueContainsTitleSimple,
+    IssueDetailsRow
+} from "./IssueDetails";
 import {toIndividualList} from "../../util/util";
 import Paper from "@material-ui/core/Paper/Paper";
 
 function IssueDetailsDE(props) {
     return <IssueDetails bottom={<Bottom/>}
+                         details={<Details/>}
                          subheader/>
+}
+
+function Details(props) {
+    return (
+        <React.Fragment>
+            <IssueDetailsRow key="format" label="Format" value={props.issue.format}/>
+            {
+                props.issue.limitation && props.issue.limitation > 0 ?
+                    <IssueDetailsRow key="limitation" label="Limitierung"
+                                     value={props.issue.limitation + " Exemplare"}/> :
+                    null
+            }
+            <IssueDetailsRow key="pages" label="Seiten" value={props.issue.pages}/>
+            <IssueDetailsRow key="releasedate" label="Erscheinungsdatum"
+                             value={props.issue.releasedate}/>
+            <IssueDetailsRow key="price" label="Preis"
+                             value={props.issue.price + ' ' + props.issue.currency}/>
+        </React.Fragment>
+    );
 }
 
 function Bottom(props) {

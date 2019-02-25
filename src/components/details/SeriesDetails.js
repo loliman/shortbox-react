@@ -8,6 +8,7 @@ import {Query} from "react-apollo";
 import QueryResult from "../generic/QueryResult";
 import {seriesd} from "../../graphql/queries";
 import Typography from "@material-ui/core/es/Typography/Typography";
+import EditButton from "../restricted/EditButton";
 
 function SeriesDetails(props) {
     let selected = getSelected(props.match.params);
@@ -21,7 +22,8 @@ function SeriesDetails(props) {
 
                     return(
                         <React.Fragment>
-                            <CardHeader title={generateLabel(data.seriesd)}/>
+                            <CardHeader title={generateLabel(data.seriesd)}
+                                        action={<EditButton item={data.seriesd}/>}/>
 
                             <CardContent className="cardContent">
                                 <Typography>{data.seriesd.addinfo}</Typography>

@@ -98,9 +98,9 @@ const editSeries = gql`mutation EditSeries($old: SeriesInput!, $edit: SeriesInpu
 
 function getDeleteMutation(level) {
     switch (level) {
-        case HierarchyLevel.ROOT:
-            return deletePublishers;
         case HierarchyLevel.PUBLISHER:
+            return deletePublishers;
+        case HierarchyLevel.SERIES:
             return deleteSeries;
         default:
             return deleteIssues;

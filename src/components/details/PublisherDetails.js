@@ -1,13 +1,14 @@
 import React from 'react'
 import CardHeader from "@material-ui/core/CardHeader/CardHeader";
 import CardContent from "@material-ui/core/CardContent/CardContent";
-import {withRouter} from "react-router-dom";
 import Layout from "../Layout";
 import {Query} from "react-apollo";
 import QueryResult from "../generic/QueryResult";
 import {publisher} from "../../graphql/queries";
 import {generateLabel, getSelected} from "../../util/hierarchy";
 import Typography from "@material-ui/core/es/Typography/Typography";
+import EditButton from "../restricted/EditButton";
+import withContext from "../generic/withContext";
 
 function PublisherDetails(props) {
     let selected = getSelected(props.match.params);
@@ -21,7 +22,8 @@ function PublisherDetails(props) {
 
                     return (
                         <React.Fragment>
-                            <CardHeader title={generateLabel(data.publisher)}/>
+                            <CardHeader title={generateLabel(data.publisher)}
+                                        action={<EditButton item={data.publisher}/>}/>
 
                             <CardContent className="cardContent">
                                 <Typography>{data.publisher.addinfo}</Typography>
@@ -34,4 +36,4 @@ function PublisherDetails(props) {
     )
 }
 
-export default withRouter(PublisherDetails);
+export default withContext(PublisherDetails);

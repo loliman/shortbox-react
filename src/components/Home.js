@@ -38,7 +38,7 @@ function Home(props) {
                             if (loading || error || !data.lastEdited)
                                 return <QueryResult loading={loading} error={error} />;
 
-                            return data.lastEdited.map((i) => <IssuePreview {...props} key={i.id} issue={i} />);
+                            return data.lastEdited.map((i, idx) => <IssuePreview {...props} key={idx} issue={i}/>);
                         }}
                     </Query>
                 </div>

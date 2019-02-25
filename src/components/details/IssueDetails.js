@@ -1,7 +1,6 @@
 import Layout from "../Layout";
 import {Query} from "react-apollo";
-import {issue} from "../../graphql/queries";
-import {toIndividualList} from "../../util/util";
+import {issue, issue_us} from "../../graphql/queries";
 import QueryResult from "../generic/QueryResult";
 import React from "react";
 import CardHeader from "@material-ui/core/CardHeader/CardHeader";
@@ -30,13 +29,14 @@ import {generateLabel, generateUrl} from "../../util/hierarchy";
 import GridList from "@material-ui/core/GridList/GridList";
 import GridListTile from "@material-ui/core/GridListTile/GridListTile";
 import GridListTileBar from "@material-ui/core/GridListTileBar/GridListTileBar";
+import EditButton from "../restricted/EditButton";
 
 function IssueDetails(props) {
     const {selected, us} = props;
 
     return (
         <Layout>
-            <Query query={issue} variables={selected}>
+            <Query query={us ? issue_us : issue} variables={selected}>
                 {({loading, error, data}) => {
                     if (loading || error || !data.issue)
                         return <QueryResult loading={loading} error={error} data={data.issue} selected={selected}/>;
@@ -61,16 +61,19 @@ function IssueDetails(props) {
                             <CardHeader title={generateLabel(issue)}
                                         subheader={props.subheader ? generateIssueSubHeader(issue) : ""}
                                         action={
-                                            issue.verified ?
-                                                <img src="/verified_badge.png" alt="verifiziert" height="35"/> :
-                                                null
+                                            <div>
+                                                {issue.verified ?
+                                                    <img className="verifiedBadge" src="/verified_badge.png"
+                                                         alt="verifiziert" height="35"/> : null}
+                                                <EditButton/>
+                                            </div>
                                         }/>
 
                             <CardContent className="cardContent">
                                 <IssueDetailsVariants selected={data.issue} issue={data.issue}/>
 
                                 <div className="details">
-                                    <IssueDetailsTable issue={issue} us={us}/>
+                                    <IssueDetailsTable issue={issue} details={props.details} us={us}/>
                                     <IssueDetailsCover issue={issue}/>
                                 </div>
 
@@ -95,38 +98,16 @@ function IssueDetailsTable(props) {
         <Paper className="detailsPaper">
             <Table className="table">
                 <TableBody>
-                    <IssueDetailsRow key="format" label="Format" value={props.issue.format}/>
-                    {
-                        props.issue.limitation && props.issue.limitation > 0 ?
-                            <IssueDetailsRow key="limitation" label="Limitierung"
-                                             value={props.issue.limitation + " Exemplare"}/> :
-                            null
-                    }
-                    <IssueDetailsRow key="language" label="Sprache" value={props.issue.language}/>
-                    <IssueDetailsRow key="pages" label="Seiten" value={props.issue.pages}/>
-                    <IssueDetailsRow key="releasedate" label="Erscheinungsdatum"
-                                     value={props.issue.releasedate}/>
-                    <IssueDetailsRow key="price" label="Preis"
-                                     value={props.issue.price + ' ' + props.issue.currency}/>
-                    {
-                        props.us ?
-                            <IssueDetailsRow key="coverartists" label="Cover Artists"
-                                             value={toIndividualList(props.issue.cover.artists)}/> :
-                            null
-                    }
-                    {
-                        props.issue.editors && props.issue.editors.length > 0 ?
-                            <IssueDetailsRow key="editor" label="Editor"
-                                             value={toIndividualList(props.issue.editors)}/> :
-                            null
-                    }
+                    {React.cloneElement(props.details, {
+                        issue: props.issue
+                    })}
                 </TableBody>
             </Table>
         </Paper>
     );
 }
 
-function IssueDetailsRow(props) {
+export function IssueDetailsRow(props) {
     return (
         <TableRow>
             <TableCell align="left">{props.label}</TableCell>
@@ -178,11 +159,11 @@ export function IssueContains(props) {
 
             {props.items.length === 0 ?
                 <Typography className="noRelationsWarning">{props.noEntriesHint}</Typography> :
-                props.items.map(item => {
+                props.items.map((item, idx) => {
                     if (!props.itemDetails)
-                        return <IssueContainsSimpleItem {...props} key={item.id} item={item}/>;
+                        return <IssueContainsSimpleItem {...props} key={idx} item={item}/>;
                     else
-                        return <IssueContainsItem {...props} key={item.id} item={item}/>;
+                        return <IssueContainsItem {...props} key={idx} item={item}/>;
                 })}
         </div>
     );
@@ -302,14 +283,14 @@ function IssueDetailsVariants(props) {
 
     let variants = [];
     variants.push(<IssueDetailsVariant to={generateUrl(props.issue, false)}
-                                       key={props.issue} variant={props.issue}/>);
+                                       key={-1} variant={props.issue}/>);
 
-    props.selected.variants.forEach(variant => {
+    props.selected.variants.forEach((variant, idx) => {
         variant.series = props.selected.series;
         variant.number = props.selected.number;
 
         variants.push(<IssueDetailsVariant to={generateUrl(variant, false)}
-                                           key={variant.id} variant={variant}/>);
+                                           key={idx} variant={variant}/>);
     });
 
     return (
@@ -329,7 +310,7 @@ function IssueDetailsVariants(props) {
 
 function IssueDetailsVariant(props) {
     return (
-        <GridListTile component={Link} to={props.to} className="tile" key={props.variant.id}>
+        <GridListTile component={Link} to={props.to} className="tile">
             <img src={props.variant.cover.url}
                  alt={props.variant.variant + ' (' + props.variant.format + ')'}/>
             <GridListTileBar

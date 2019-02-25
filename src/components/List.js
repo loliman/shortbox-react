@@ -6,7 +6,6 @@ import {Query} from "react-apollo";
 import {getListQuery} from '../graphql/queries'
 import QueryResult from './generic/QueryResult';
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer/SwipeableDrawer";
-import EditButton from "./restricted/EditButton";
 import Typography from "@material-ui/core/es/Typography/Typography";
 import {Link} from "react-router-dom";
 import {ScrollContainer} from "react-router-scroll-4";
@@ -23,7 +22,7 @@ class List extends React.Component {
     }
 
     render() {
-        const {drawerOpen, toogleDrawer, mobile, handleMenuOpen, anchorEl} = this.props;
+        const {drawerOpen, toogleDrawer, mobile, handleMenuOpen} = this.props;
         let {selected, level} = this.props;
 
         if (level === HierarchyLevel.ISSUE) {
@@ -54,11 +53,10 @@ class List extends React.Component {
                                 if (data[queryName].length === 0)
                                     return <NoEntries />;
 
-                                return data[queryName].map((i) => {
-                                    return <TypeListEntry anchorEl={anchorEl}
-                                                          {...this.props}
+                                return data[queryName].map((i, idx) => {
+                                    return <TypeListEntry {...this.props}
                                                           handleMenuOpen={handleMenuOpen}
-                                                          key={i.id} item={i}/>
+                                                          key={idx} item={i}/>
                                 });
                             }}
                         </Query>
@@ -70,7 +68,7 @@ class List extends React.Component {
 }
 
 function TypeListEntry(props) {
-    const {us, item, level, mobile, toogleDrawer, handleMenuOpen} = props;
+    const {us, item, level, mobile, toogleDrawer} = props;
 
     return (
         <div id={item.id} className="itemContainer">
@@ -85,8 +83,6 @@ function TypeListEntry(props) {
                               primary={generateLabel(item)}
                 />
             </ListItem>
-
-            <EditButton handleMenuOpen={handleMenuOpen} item={item}/>
         </div>
     );
 }

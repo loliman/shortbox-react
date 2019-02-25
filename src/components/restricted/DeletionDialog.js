@@ -15,7 +15,16 @@ import {compare, generateLabel, generateUrl, HierarchyLevel} from "../../util/hi
 
 function DeletionDialog(props) {
     let {level} = props;
-    const {item, open, edit, handleClose, selected, history, enqueueSnackbar, us} = props;
+    const {item, open, handleClose, history, enqueueSnackbar, us} = props;
+
+    let parent;
+    if (item.issue)
+        parent = {series: item.issue.series};
+    else if (item.series)
+        parent = {publisher: item.series.publisher};
+    else
+        parent = {us: us};
+    parent = stripItem(parent);
 
     let deleteMutation = getDeleteMutation(level);
     let getQuery = getListQuery(level);
@@ -38,17 +47,6 @@ function DeletionDialog(props) {
                 <Mutation mutation={deleteMutation}
                           update={(cache) => {
                               try {
-                                  let parent;
-
-                                  if (item.issue)
-                                      parent = {series: item.issue.series};
-                                  else if (item.series)
-                                      parent = {publisher: item.series.publisher};
-                                  else
-                                      parent = {us: us};
-
-                                  parent = stripItem(parent);
-
                                   let data = cache.readQuery({
                                       query: getQuery,
                                       variables: parent
@@ -57,10 +55,11 @@ function DeletionDialog(props) {
                                   let queryName = getQuery.definitions[0].name.value.toLowerCase();
 
                                   data[queryName] = data[queryName].filter((e) => !compare(e, item));
+
                                   cache.writeQuery({
                                       query: getQuery,
                                       variables: parent,
-                                      data: data,
+                                      data: data
                                   });
                               } catch (e) {
                                   console.error(e)
@@ -68,11 +67,7 @@ function DeletionDialog(props) {
                               }
                           }}
                           onCompleted={(data) => {
-                              if (level === HierarchyLevel.ISSUE || edit) {
-                                  history.push(generateUrl(selected));
-                                  if (level === HierarchyLevel.ISSUE)
-                                      level = HierarchyLevel.SERIES;
-                              }
+                              history.push(generateUrl(parent));
 
                               let mutationName = deleteMutation.definitions[0].name.value.toLowerCase();
 
@@ -85,9 +80,9 @@ function DeletionDialog(props) {
                               enqueueSnackbar(generateLabel(item) + " konnte nicht gelöscht werden", {variant: 'error'});
                               handleClose();
                           }}>
-                    {(deletepublisher) => (
+                    {(deleteMutation) => (
                         <Button color="secondary" onClick={() => {
-                            deletepublisher({
+                            deleteMutation({
                                 variables: {
                                     item: stripItem(item)
                                 }
@@ -104,7 +99,7 @@ function DeletionDialog(props) {
 
 function getDeleteConfimText(l, item) {
     switch (l) {
-        case HierarchyLevel.ROOT:
+        case HierarchyLevel.PUBLISHER:
             return (
                 <Typography>
                     Wollen Sie den <b>{generateLabel(item)}</b> Verlag wirklich löschen?
@@ -114,7 +109,7 @@ function getDeleteConfimText(l, item) {
                     gelöscht.
                 </Typography>
             );
-        case HierarchyLevel.PUBLISHER:
+        case HierarchyLevel.SERIES:
             return (
                 <Typography>
                     Wollen Sie die Serie <b>{generateLabel(item)}</b> wirklich löschen?
