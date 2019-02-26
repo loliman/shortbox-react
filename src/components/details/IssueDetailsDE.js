@@ -60,8 +60,8 @@ function Bottom(props) {
             <br/>
             <br/>
 
-            <IssueContains {...props} header="Redaktionelle Inhalte"
-                           noEntriesHint="Dieser Ausgabe sind noch keine redaktionellen Inhalte zugeordnet."
+            <IssueContains {...props} header="Weitere Inhalte"
+                           noEntriesHint="Dieser Ausgabe sind noch keine weiteren Inhalte zugeordnet."
                            items={props.issue.features} itemTitle={<IssueContainsTitleSimple/>}
                            itemDetails={<IssueFeatureDetails/>}/>
 
