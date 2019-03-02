@@ -42,19 +42,6 @@ function IssueDetails(props) {
                         return <QueryResult loading={loading} error={error} data={data.issue} selected={selected}/>;
 
                     let issue = JSON.parse(JSON.stringify(data.issue));
-                    if (selected.issue.format)
-                        data.issue.variants.forEach((v) => {
-                            if (v.format === selected.issue.format && v.variant === selected.issue.variant) {
-                                issue.cover.url = v.cover.url;
-                                issue.format = v.format;
-                                issue.variant = v.variant;
-                                issue.limitation = v.limitation;
-                                issue.releasedate = v.releasedate;
-                                issue.price = v.price;
-                                issue.currency = v.currency;
-                                issue.verified = v.verified;
-                            }
-                        });
 
                     return (
                         <React.Fragment>
@@ -206,13 +193,13 @@ export function IssueContainsTitleSimple(props) {
 }
 
 export function IssueContainsTitleDetailed(props) {
-    let issue = props.item.parent ? props.item.parent.issue : props.item.issue;
+    let issue = props.item.parent ? props.item.parent.issue : props.item;
     if(issue && issue.issue) {
         issue.number = issue.issue.number;
         issue.series = issue.issue.series;
     }
 
-    let exclusive = !props.item.parent && !props.item.issue;
+    let exclusive = !props.item.parent && !props.item.issue && !props.us;
 
     return (
         <div className={props.simple ? "storyTitle storyTitleSimple" : "storyTitle"}>
@@ -281,9 +268,12 @@ function IssueDetailsVariants(props) {
     if (props.selected.variants.length === 0)
         return null;
 
+    let main = props.issue.variant !== "" ? props.issue.parent : props.issue;
+    console.log(main);
+
     let variants = [];
-    variants.push(<IssueDetailsVariant to={generateUrl(props.issue, false)}
-                                       key={-1} variant={props.issue}/>);
+    variants.push(<IssueDetailsVariant to={generateUrl(main, false)}
+                                       key={-1} variant={main}/>);
 
     props.selected.variants.forEach((variant, idx) => {
         variant.series = props.selected.series;

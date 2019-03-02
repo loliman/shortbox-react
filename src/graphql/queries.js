@@ -159,25 +159,21 @@ const issue = gql`query Issue($issue: IssueInput!){
             url,
             addinfo,
             parent {
-            
                 issue {
                     variant,
                     format,
-                    issue {
-                        number,
-                        series {
-                            title,
-                            startyear,
-                            endyear,
-                            volume,
-                            publisher {
-                                name,
-                                us
-                            }
-                        }   
-                    }
+                    number,
+                    series {
+                        title,
+                        startyear,
+                        endyear,
+                        volume,
+                        publisher {
+                            name,
+                            us
+                        }
+                    }   
                 },
-                
                 children {
                     id
                 },
@@ -187,20 +183,29 @@ const issue = gql`query Issue($issue: IssueInput!){
             }
             firstapp
         },
-		
         variants {
             format,
-            price,
-            currency,
-            releasedate,
+            variant,
+            cover {
+                url
+            }
+        },
+        variant,
+        parent {
+            number,
+            format,
             variant,
             cover {
                 url
             },
-            limitation,
-            verified
-        },
-		
+            series {
+                title,
+                volume,
+                publisher {
+                    name
+                }
+            }
+        }
         verified,
         addinfo
     }
@@ -268,38 +273,31 @@ const issue_us = gql`query Issue($issue: IssueInput!){
         },
         covers {
             children {
-            
                 issue {
-                    issue {
-                        number,
-                        series {
-                            title,
-                            volume,
-                            startyear,
-                            endyear,
-                            publisher {
-                                name,
-                                us
-                            }
+                    number,
+                    format,
+                    variant,
+                    series {
+                        title,
+                        volume,
+                        startyear,
+                        endyear,
+                        publisher {
+                            name,
+                            us
                         }
                     }
-                }
-                
+                } 
             }
         },
 		
         variants {
             format,
-            price,
-            currency,
-            releasedate,
             variant,
             cover {
                 url
-            },
-            limitation,
-            verified
-        }
+            }
+        },
     }
 }`;
 
