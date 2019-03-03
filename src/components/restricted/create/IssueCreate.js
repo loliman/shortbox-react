@@ -13,6 +13,11 @@ import {IssueSchema} from "../../../util/yupSchema";
 import {withContext} from "../../generic";
 import AutoComplete from "../../generic/AutoComplete";
 import MenuItem from "@material-ui/core/MenuItem/MenuItem";
+import IconButton from "@material-ui/core/IconButton";
+import AddIcon from "@material-ui/icons/Add";
+import DeleteIcon from "@material-ui/icons/Delete";
+import {Card} from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
 
 function IssueCreate(props) {
     const {history, enqueueSnackbar, us} = props;
@@ -57,12 +62,18 @@ function IssueCreate(props) {
                                 }
                             },
                             number: '',
+                            variant: '',
                             cover: '',
+                            format: '',
                             limitation: '',
                             pages: '',
                             releasedate: '',
                             price: '',
-                            currency: 'EUR'
+                            currency: 'EUR',
+                            addinfo: '',
+                            stories: [],
+                            features: [],
+                            covers: []
                         }}
                         validationSchema={IssueSchema}
                         onSubmit={async (values, actions) => {
@@ -80,10 +91,13 @@ function IssueCreate(props) {
                                     },
                                     number: values.number,
                                     cover: values.cover,
+                                    format: values.format,
+                                    limitation: values.limitation,
                                     pages: parseInt(values.pages),
                                     releasedate: values.releasedate,
                                     price: parseFloat(values.price),
-                                    currency: values.currency
+                                    currency: values.currency,
+                                    addinfo: values.addinfo
                                 }
                             });
 
@@ -158,7 +172,64 @@ function IssueCreate(props) {
                                                 label="Cover"
                                                 component={SimpleFileUpload}
                                             />
+
+                                            <img alt="preview" src={createPreview(values.cover)}/>
                                         </div>
+                                        <Field
+                                            type="text"
+                                            name="format"
+                                            label="Format"
+                                            select
+                                            component={TextField}
+                                            className="field field35"
+                                            InputLabelProps={{
+                                                shrink: true,
+                                            }}
+                                        >
+                                            <MenuItem key="heft" value="Heft">
+                                                Heft
+                                            </MenuItem>
+                                            <MenuItem key="miniHeft" value="Mini Heft">
+                                                Mini Heft
+                                            </MenuItem>
+                                            <MenuItem key="magazin" value="Magazin">
+                                                Magazin
+                                            </MenuItem>
+                                            <MenuItem key="prestige" value="Prestige">
+                                                Prestige
+                                            </MenuItem>
+                                            <MenuItem key="softcover" value="Softcover">
+                                                Softcover
+                                            </MenuItem>
+                                            <MenuItem key="hardcover" value="Hardcover">
+                                                Hardcover
+                                            </MenuItem>
+                                            <MenuItem key="taschenbuch" value="Taschenbuch">
+                                                Taschenbuch
+                                            </MenuItem>
+                                            <MenuItem key="album" value="Album">
+                                                Album
+                                            </MenuItem>
+                                            <MenuItem key="albumHardcover" value="Album Hardcover">
+                                                Album Hardcover
+                                            </MenuItem>
+                                        </Field>
+                                        <br/>
+                                        <Field
+                                            className="field field35"
+                                            name="variant"
+                                            label="Variante"
+                                            component={TextField}
+                                        />
+                                        <br/>
+                                        <Field
+                                            className="field field35"
+                                            name="limitation"
+                                            label="Limitierung"
+                                            type="number"
+                                            component={TextField}
+                                        />
+                                        <br/>
                                         <Field
                                             className="field field35"
                                             name="pages"
@@ -201,7 +272,163 @@ function IssueCreate(props) {
                                                 DEM
                                             </MenuItem>
                                         </Field>
+                                        <br />
+
+                                        <Field
+                                            className="field field35"
+                                            name="addinfo"
+                                            label="Weitere Informationen"
+                                            multiline
+                                            rows={10}
+                                            component={TextField}
+                                        />
+
                                         <br/>
+                                        <br/>
+
+                                        <div>
+                                            <CardHeader className="left" title="Geschichten"/>
+                                            <IconButton className="right" aria-label="Hinzufügen"
+                                                        onClick={() => {
+                                                            let stories = values.stories;
+                                                            stories.push(stories.length);
+                                                            setFieldValue("stories", stories, true)}}>
+                                                <AddIcon />
+                                            </IconButton>
+                                        </div>
+                                        <br/>
+                                        <Card>
+                                            <CardContent>
+                                                {
+                                                    values.stories.length === 0 ?
+                                                        <Typography className="addWith">Hinzufügen mit '+'</Typography> :
+                                                        null
+                                                }
+                                                {values.stories.map((item, index) => {
+                                                    return (
+                                                        <div key={index}>
+                                                            <Field
+                                                                className="field field3"
+                                                                name="sort"
+                                                                label="#"
+                                                                component={TextField}
+                                                            />
+                                                            <IconButton className="removeBtn" aria-label="Entfernen"
+                                                                        onClick={() => {
+                                                                            let stories = values.stories.filter((e) => e !== item);
+                                                                            setFieldValue("stories", stories, true)}}>
+                                                                <DeleteIcon />
+                                                            </IconButton>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </CardContent>
+                                        </Card>
+
+                                        <br/>
+
+                                        <div>
+                                            <CardHeader className="left" title="Weitere Inhalte"/>
+                                            <IconButton className="right" aria-label="Hinzufügen"
+                                                        onClick={() => {
+                                                            let features = values.features;
+                                                            features.push(features.length);
+                                                            setFieldValue("features", features, true)}}>
+                                                <AddIcon />
+                                            </IconButton>
+                                        </div>
+                                        <br/>
+                                        <Card>
+                                            <CardContent>
+                                                {
+                                                    values.features.length === 0 ?
+                                                        <Typography className="addWith">Hinzufügen mit '+'</Typography> :
+                                                        null
+                                                }
+                                                {values.features.map((item, index) => {
+                                                    return (
+                                                        <div key={index}>
+                                                            <Field
+                                                                className="field field3"
+                                                                name="sort"
+                                                                label="#"
+                                                                component={TextField}
+                                                            />
+
+                                                            <Field
+                                                                className="field field35"
+                                                                name="titel"
+                                                                label="Titel"
+                                                                component={TextField}
+                                                            />
+
+                                                            <Field
+                                                                className="field field25"
+                                                                name="addinfo"
+                                                                label="Weitere Informationen"
+                                                                component={TextField}
+                                                            />
+
+                                                            <Field
+                                                                className="field field15"
+                                                                name="author"
+                                                                label="Autor"
+                                                                component={TextField}
+                                                            />
+
+                                                            <IconButton className="removeBtn" aria-label="Entfernen"
+                                                                        onClick={() => {
+                                                                            let features = values.features.filter((e) => e !== item);
+                                                                            setFieldValue("features", features, true)}}>
+                                                                <DeleteIcon />
+                                                            </IconButton>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </CardContent>
+                                        </Card>
+
+                                        <br/>
+
+                                        <div>
+                                            <CardHeader className="left" title="Covergalerie"/>
+                                            <IconButton className="right" aria-label="Hinzufügen"
+                                                        onClick={() => {
+                                                            let covers = values.covers;
+                                                            covers.push(covers.length);
+                                                            setFieldValue("covers", covers, true)}}>
+                                                <AddIcon />
+                                            </IconButton>
+                                        </div>
+                                        <br/>
+                                        <Card>
+                                            <CardContent>
+                                                {
+                                                    values.covers.length === 0 ?
+                                                        <Typography className="addWith">Hinzufügen mit '+'</Typography> :
+                                                        null
+                                                }
+                                                {values.covers.map((item, index) => {
+                                                    return (
+                                                        <div key={index}>
+                                                            <Field
+                                                                className="field field3"
+                                                                name="sort"
+                                                                label="#"
+                                                                component={TextField}
+                                                            />
+
+                                                            <IconButton className="removeBtn" aria-label="Entfernen"
+                                                                        onClick={() => {
+                                                                            let covers = values.covers.filter((e) => e !== item);
+                                                                            setFieldValue("covers", covers, true)}}>
+                                                                <DeleteIcon />
+                                                            </IconButton>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </CardContent>
+                                        </Card>
                                         <br/>
 
                                         <Button disabled={isSubmitting}
@@ -217,11 +444,14 @@ function IssueCreate(props) {
                                                         },
                                                         number: '',
                                                         cover: '',
+                                                        format: '',
+                                                        variant: '',
                                                         limitation: '',
                                                         pages: '',
                                                         releasedate: '',
                                                         price: '',
-                                                        currency: 'EUR'
+                                                        currency: 'EUR',
+                                                        addinfo: ''
                                                     };
                                                     resetForm();
                                                 }}
@@ -243,6 +473,13 @@ function IssueCreate(props) {
             </Mutation>
         </Layout>
     )
+}
+
+function createPreview(file) {
+    if(file === '')
+        return null;
+
+    return URL.createObjectURL(file);
 }
 
 export default withContext(IssueCreate);

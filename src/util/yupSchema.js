@@ -58,6 +58,8 @@ export const IssueSchema = Yup.object().shape({
     number: Yup.string()
         .required('Pflichtfeld')
         .max(255, 'Maximal 255 Zeichen'),
+    format: Yup.string()
+        .required('Pflichtfeld'),
     limitation: Yup.number("Bitte geben Sie eine Zahl ein")
         .integer("Bitte geben Sie eine Zahl ein"),
     pages: Yup.number("Bitte geben Sie eine Zahl ein")

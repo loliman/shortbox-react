@@ -186,26 +186,20 @@ const issue = gql`query Issue($issue: IssueInput!){
         variants {
             format,
             variant,
+            number,
+            series {
+                title,
+                volume,
+                publisher {
+                    name,
+                    us
+                }
+            },
             cover {
                 url
             }
         },
         variant,
-        parent {
-            number,
-            format,
-            variant,
-            cover {
-                url
-            },
-            series {
-                title,
-                volume,
-                publisher {
-                    name
-                }
-            }
-        }
         verified,
         addinfo
     }
@@ -290,7 +284,6 @@ const issue_us = gql`query Issue($issue: IssueInput!){
                 } 
             }
         },
-		
         variants {
             format,
             variant,

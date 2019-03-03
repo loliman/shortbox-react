@@ -16,7 +16,7 @@ import {LastLocationProvider} from "react-router-last-location";
 import Button from "@material-ui/core/Button/Button";
 
 const httpLink = createHttpLink({
-    uri: 'https://localhost:4000/graphql',
+    uri: 'http://localhost:4000',
 });
 
 const authLink = setContext((_, {headers}) => {

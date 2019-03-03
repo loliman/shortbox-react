@@ -354,9 +354,7 @@
 }
 
 .cardContent {
-    display: flex;
-    flex-direction: column;
-    min-height: 84vh;
+    min-height: 81vh;
 }
 
 .spanLink {
@@ -488,8 +486,26 @@ div[class^="MuiExpansionPanelSummary-content-"] {
     width: 25%;
 }
 
+.field15 {
+    width: 15%;
+}
+
 .field10 {
     width: 10%;
+}
+
+.field5 {
+    width: 5%;
+}
+
+.field3 {
+    width: 3%;
+}
+
+.addWith {
+    margin-top: 21px !important;
+    color: darkgray !important;
+    margin-bottom: 12px !important;
 }
 
 .formButtons {
@@ -541,6 +557,20 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 
 .snackbarbtn > span {
     color: white;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    left: -14px !important;
+    top: 6px !important;
+}
+
+.removeBtn {
+    padding: 0 !important;
+    top: 23px !important;
 }
 
 /*!
