@@ -7,7 +7,7 @@ import {createIssue} from "../../../graphql/mutations";
 import {Field, Form, Formik} from 'formik';
 import {SimpleFileUpload, TextField} from 'formik-material-ui';
 import Button from "@material-ui/core/Button/Button";
-import {issues, publishers, series} from "../../../graphql/queries";
+import {individuals, issues, publishers, series} from "../../../graphql/queries";
 import {generateLabel, generateUrl} from "../../../util/hierarchy";
 import {IssueSchema} from "../../../util/yupSchema";
 import {withContext} from "../../generic";
@@ -20,6 +20,8 @@ import {Card} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Lightbox from "react-images";
 import CardMedia from "@material-ui/core/CardMedia";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Switch from "@material-ui/core/Switch";
 
 class IssueCreate extends React.Component {
     constructor(props) {
@@ -334,7 +336,7 @@ class IssueCreate extends React.Component {
                                                 </IconButton>
                                             </div>
                                             <br/>
-                                            <Card>
+                                            <Card className="createCardBoxes">
                                                 <CardContent>
                                                     {
                                                         values.stories.length === 0 ?
@@ -345,12 +347,6 @@ class IssueCreate extends React.Component {
                                                     {values.stories.map((item, index) => {
                                                         return (
                                                             <div key={index}>
-                                                                <Field
-                                                                    className="field field3"
-                                                                    name="sort"
-                                                                    label="#"
-                                                                    component={TextField}
-                                                                />
                                                                 <IconButton className="removeBtn" aria-label="Entfernen"
                                                                             onClick={() => {
                                                                                 let stories = values.stories.filter((e) => e !== item);
@@ -358,6 +354,71 @@ class IssueCreate extends React.Component {
                                                                             }}>
                                                                     <DeleteIcon/>
                                                                 </IconButton>
+
+                                                                <Field
+                                                                    className="field field3"
+                                                                    name="sort"
+                                                                    label="#"
+                                                                    component={TextField}
+                                                                />
+
+                                                                <Field
+                                                                    className="field field15"
+                                                                    name="series"
+                                                                    label="Serie"
+                                                                    component={TextField}
+                                                                />
+
+                                                                <AutoComplete
+                                                                    query={series}
+                                                                    variables={{publisher: {name: "*", us: true}}}
+                                                                    name="series.title"
+                                                                    label="Serie"
+                                                                    error={touched.series && errors.series}
+                                                                    onChange={(value) => {
+                                                                        setFieldValue("series", value, true);
+                                                                    }}
+                                                                    width="25%"
+                                                                    top="-17px"
+                                                                />
+
+                                                                <Field
+                                                                    className="field field5"
+                                                                    name="volume"
+                                                                    label="Vol."
+                                                                    component={TextField}
+                                                                />
+
+                                                                <Field
+                                                                    className="field field10"
+                                                                    name="number"
+                                                                    label="Nummer"
+                                                                    component={TextField}
+                                                                />
+
+                                                                <Field
+                                                                    className="field field25"
+                                                                    name="titel"
+                                                                    label="Titel"
+                                                                    component={TextField}
+                                                                />
+
+                                                                <Field
+                                                                    className="field field25"
+                                                                    name="addinfo"
+                                                                    label="Weitere Informationen"
+                                                                    component={TextField}
+                                                                />
+
+                                                                <FormControlLabel
+                                                                    className="right exclusiveToggle"
+                                                                    control={
+                                                                        <Switch
+                                                                            value="exklusiv"
+                                                                        />
+                                                                    }
+                                                                    label="exklusiv"
+                                                                />
                                                             </div>
                                                         );
                                                     })}
@@ -378,7 +439,7 @@ class IssueCreate extends React.Component {
                                                 </IconButton>
                                             </div>
                                             <br/>
-                                            <Card>
+                                            <Card className="createCardBoxes">
                                                 <CardContent>
                                                     {
                                                         values.features.length === 0 ?
@@ -389,6 +450,14 @@ class IssueCreate extends React.Component {
                                                     {values.features.map((item, index) => {
                                                         return (
                                                             <div key={index}>
+                                                                <IconButton className="removeBtn" aria-label="Entfernen"
+                                                                            onClick={() => {
+                                                                                let features = values.features.filter((e) => e !== item);
+                                                                                setFieldValue("features", features, true)
+                                                                            }}>
+                                                                    <DeleteIcon/>
+                                                                </IconButton>
+
                                                                 <Field
                                                                     className="field field3"
                                                                     name="sort"
@@ -410,20 +479,18 @@ class IssueCreate extends React.Component {
                                                                     component={TextField}
                                                                 />
 
-                                                                <Field
-                                                                    className="field field15"
+                                                                <AutoComplete
+                                                                    id="author"
+                                                                    query={individuals}
                                                                     name="author"
                                                                     label="Autor"
-                                                                    component={TextField}
+                                                                    error={touched.author && errors.author}
+                                                                    onChange={(value) => {
+                                                                        setFieldValue("author", value, true);
+                                                                    }}
+                                                                    width="20%"
+                                                                    top="-17px"
                                                                 />
-
-                                                                <IconButton className="removeBtn" aria-label="Entfernen"
-                                                                            onClick={() => {
-                                                                                let features = values.features.filter((e) => e !== item);
-                                                                                setFieldValue("features", features, true)
-                                                                            }}>
-                                                                    <DeleteIcon/>
-                                                                </IconButton>
                                                             </div>
                                                         );
                                                     })}
@@ -444,7 +511,7 @@ class IssueCreate extends React.Component {
                                                 </IconButton>
                                             </div>
                                             <br/>
-                                            <Card>
+                                            <Card className="createCardBoxes">
                                                 <CardContent>
                                                     {
                                                         values.covers.length === 0 ?
@@ -455,13 +522,6 @@ class IssueCreate extends React.Component {
                                                     {values.covers.map((item, index) => {
                                                         return (
                                                             <div key={index}>
-                                                                <Field
-                                                                    className="field field3"
-                                                                    name="sort"
-                                                                    label="#"
-                                                                    component={TextField}
-                                                                />
-
                                                                 <IconButton className="removeBtn" aria-label="Entfernen"
                                                                             onClick={() => {
                                                                                 let covers = values.covers.filter((e) => e !== item);
@@ -469,6 +529,57 @@ class IssueCreate extends React.Component {
                                                                             }}>
                                                                     <DeleteIcon/>
                                                                 </IconButton>
+
+                                                                <Field
+                                                                    className="field field3"
+                                                                    name="sort"
+                                                                    label="#"
+                                                                    component={TextField}
+                                                                />
+
+                                                                <AutoComplete
+                                                                    query={series}
+                                                                    variables={{publisher: {name: "*", us: true}}}
+                                                                    name="series.title"
+                                                                    label="Serie"
+                                                                    error={touched.series && errors.series}
+                                                                    onChange={(value) => {
+                                                                        setFieldValue("series", value, true);
+                                                                    }}
+                                                                    width="25%"
+                                                                    top="-17px"
+                                                                />
+
+                                                                <Field
+                                                                    className="field field5"
+                                                                    name="volume"
+                                                                    label="Vol."
+                                                                    component={TextField}
+                                                                />
+
+                                                                <Field
+                                                                    className="field field10"
+                                                                    name="number"
+                                                                    label="Nummer"
+                                                                    component={TextField}
+                                                                />
+
+                                                                <Field
+                                                                    className="field field25"
+                                                                    name="addinfo"
+                                                                    label="Weitere Informationen"
+                                                                    component={TextField}
+                                                                />
+
+                                                                <FormControlLabel
+                                                                    className="right exclusiveToggle"
+                                                                    control={
+                                                                        <Switch
+                                                                            value="exklusiv"
+                                                                        />
+                                                                    }
+                                                                    label="exklusiv"
+                                                                />
                                                             </div>
                                                         );
                                                     })}

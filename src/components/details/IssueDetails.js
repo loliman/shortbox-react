@@ -57,7 +57,7 @@ function IssueDetails(props) {
                                         }/>
 
                             <CardContent className="cardContent">
-                                <IssueDetailsVariants selected={data.issue} issue={data.issue}/>
+                                <IssueDetailsVariants issue={data.issue}/>
 
                                 <div className="details">
                                     <IssueDetailsTable issue={issue} details={props.details} us={us}/>
@@ -265,18 +265,18 @@ export function IssueContainsTitleDetailed(props) {
 }
 
 function IssueDetailsVariants(props) {
-    if (props.selected.variants.length === 0)
+    if (props.issue.variants.length === 1)
         return null;
 
     return (
         <React.Fragment>
             <Typography className="coverGalleryHeader" component="p">
-                Erhältlich in {props.selected.variants.length} Varianten
+                Erhältlich in {props.issue.variants.length} Varianten
             </Typography>
 
             <div className="coverGallery">
                 <GridList className="gridList" cols={2.5}>
-                    {    props.selected.variants.map((variant, idx) => {
+                    {props.issue.variants.map((variant, idx) => {
                             return (<IssueDetailsVariant to={generateUrl(variant, false)}
                                                            key={idx} variant={variant}/>);
                     })}

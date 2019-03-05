@@ -32,6 +32,12 @@ const issues = gql`query Issues($series: SeriesInput!){
     }
 }`;
 
+const individuals = gql`query Individuals {
+    individuals {
+        name
+    }
+}`;
+
 export const lastEdited = gql`query LastEdited {
     lastEdited {
         number,
@@ -294,4 +300,4 @@ const issue_us = gql`query Issue($issue: IssueInput!){
     }
 }`;
 
-export {getListQuery, issue, issue_us, publisher, seriesd, publishers, series, issues};
+export {getListQuery, issue, issue_us, publisher, seriesd, publishers, series, issues, individuals};

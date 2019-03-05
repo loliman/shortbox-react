@@ -576,19 +576,27 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 }
 
 .addBtn {
-    left: -14px !important;
-    top: 6px !important;
+    left: -23px !important;
+    top: 8px !important;
 }
 
 .removeBtn {
-    padding: 0 !important;
-    top: 23px !important;
+    margin-top: 6px !important;
+    left: -10px !important;
 }
 
 .removeBtnCover {
     float: right;
     bottom: 50px;
     color: rgba(255, 255, 255, 0.54) !important;
+}
+
+.exclusiveToggle {
+    margin-top: 6px;
+}
+
+.createCardBoxes {
+    overflow: inherit !important;
 }
 
 /*!

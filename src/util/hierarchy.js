@@ -89,6 +89,9 @@ export function getSelected(params, us) {
 }
 
 export function generateLabel(item) {
+    if (item.__typename === "Individual")
+        return item.name;
+
     if (item.__typename)
         item = wrapItem(item);
 

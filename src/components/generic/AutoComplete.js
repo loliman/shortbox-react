@@ -35,12 +35,15 @@ const theme = {
 };
 
 function AutoComplete(props) {
-    const {query, variables, width, ...rest} = props;
+    const {query, variables, width, top, ...rest} = props;
     let {disabled, label} = props;
 
     let acTheme = JSON.parse(JSON.stringify(theme));
     if(width)
         acTheme.container.width = width;
+
+    if (top)
+        acTheme.container.top = top;
 
     return (
         <Query query={query}
