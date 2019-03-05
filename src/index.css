@@ -118,7 +118,7 @@
 @media (max-width: 600px) {
     .content > div, .contentShift > div {
         width: 100vw;
-        height: 90vh;
+        height: calc(99vh - 80px);
         margin-left: -10px;
     }
 
@@ -482,6 +482,14 @@ div[class^="MuiExpansionPanelSummary-content-"] {
     width: calc(35% + 6px);
 }
 
+.field50 {
+    width: 50%;
+}
+
+.field100 {
+    width: 100% !important;
+}
+
 .field25 {
     width: 25%;
 }
@@ -564,6 +572,10 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 }
 
 .right {
+    float: right;
+}
+
+.addBtn {
     left: -14px !important;
     top: 6px !important;
 }
@@ -571,6 +583,12 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 .removeBtn {
     padding: 0 !important;
     top: 23px !important;
+}
+
+.removeBtnCover {
+    float: right;
+    bottom: 50px;
+    color: rgba(255, 255, 255, 0.54) !important;
 }
 
 /*!

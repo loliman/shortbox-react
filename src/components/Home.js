@@ -56,10 +56,12 @@ function IssuePreview(props) {
 
     return (
         <Card className="issuePreview" onClick={() => props.history.push(generateUrl(props.issue), false)}>
-            <CardHeader title={generateLabel(props.issue.series) + " #" + props.issue.number}
-                        subheader={generateLabel(props.issue.series.publisher)}/>
-
             <CardContent>
+                <Typography variant="subtitle1">{generateLabel(props.issue.series) + " #" + props.issue.number}</Typography>
+                <Typography variant="caption">{generateLabel(props.issue.series.publisher)}</Typography>
+
+                <br />
+
                 {
                     props.issue.createdAt === props.issue.updatedAt ?
                         <Typography>Hinzugefügt {date} um {time}</Typography> :

@@ -18,468 +18,515 @@ import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@material-ui/icons/Delete";
 import {Card} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
+import Lightbox from "react-images";
+import CardMedia from "@material-ui/core/CardMedia";
 
-function IssueCreate(props) {
-    const {history, enqueueSnackbar, us} = props;
+class IssueCreate extends React.Component {
+    constructor(props) {
+        super(props);
 
-    return (
-        <Layout>
-            <Mutation mutation={createIssue}
-                      update={(cache, result) => {
-                          let data = cache.readQuery({
-                              query: issues,
-                              variables: result.data.createIssue.series
-                          });
+        this.state = {
+            isCoverOpen: false
+        };
+    }
+    
+    render() {
+        const {history, enqueueSnackbar, us} = this.props;
 
-                          data.series.push(result.data.createIssue);
-                          data.series.sort((a, b) => {
-                              return (a.series.title.toLowerCase() + a.number)
-                                  .localeCompare((b.series.title.toLowerCase() + b.number));
-                          });
+        return (
+            <Layout>
+                <Mutation mutation={createIssue}
+                          update={(cache, result) => {
+                              let data = cache.readQuery({
+                                  query: issues,
+                                  variables: result.data.createIssue.series
+                              });
 
-                          cache.writeQuery({
-                              query: issues,
-                              variables: result.data.createIssue.series,
-                              data: data
-                          });
-                      }}
-                      onCompleted={(data) => {
-                          enqueueSnackbar(generateLabel(data.createIssue) + " erfolgreich erstellt", {variant: 'success'});
-                          history.push(generateUrl(data.createIssue));
-                      }}
-                      onError={() => {
-                          enqueueSnackbar("Ausgabe kann nicht erstellt werden", {variant: 'error'});
-                      }}>
-                {(createIssue, {error}) => (
-                    <Formik
-                        initialValues={{
-                            title: '',
-                            series: {
+                              data.series.push(result.data.createIssue);
+                              data.series.sort((a, b) => {
+                                  return (a.series.title.toLowerCase() + a.number)
+                                      .localeCompare((b.series.title.toLowerCase() + b.number));
+                              });
+
+                              cache.writeQuery({
+                                  query: issues,
+                                  variables: result.data.createIssue.series,
+                                  data: data
+                              });
+                          }}
+                          onCompleted={(data) => {
+                              enqueueSnackbar(generateLabel(data.createIssue) + " erfolgreich erstellt", {variant: 'success'});
+                              history.push(generateUrl(data.createIssue));
+                          }}
+                          onError={() => {
+                              enqueueSnackbar("Ausgabe kann nicht erstellt werden", {variant: 'error'});
+                          }}>
+                    {(createIssue, {error}) => (
+                        <Formik
+                            initialValues={{
                                 title: '',
-                                volume: '',
-                                publisher: {
-                                    name: ''
-                                }
-                            },
-                            number: '',
-                            variant: '',
-                            cover: '',
-                            format: '',
-                            limitation: '',
-                            pages: '',
-                            releasedate: '',
-                            price: '',
-                            currency: 'EUR',
-                            addinfo: '',
-                            stories: [],
-                            features: [],
-                            covers: []
-                        }}
-                        validationSchema={IssueSchema}
-                        onSubmit={async (values, actions) => {
-                            actions.setSubmitting(true);
+                                series: {
+                                    title: '',
+                                    volume: '',
+                                    publisher: {
+                                        name: ''
+                                    }
+                                },
+                                number: '',
+                                variant: '',
+                                cover: '',
+                                format: '',
+                                limitation: '',
+                                pages: '',
+                                releasedate: '',
+                                price: '',
+                                currency: 'EUR',
+                                addinfo: '',
+                                stories: [],
+                                features: [],
+                                covers: []
+                            }}
+                            validationSchema={IssueSchema}
+                            onSubmit={async (values, actions) => {
+                                actions.setSubmitting(true);
 
-                            await createIssue({
-                                variables: {
-                                    title: values.title,
-                                    series: {
-                                        title: values.series.title,
-                                        volume: values.series.volume,
-                                        publisher: {
-                                            name: values.series.publisher.name
-                                        }
-                                    },
-                                    number: values.number,
-                                    cover: values.cover,
-                                    format: values.format,
-                                    limitation: values.limitation,
-                                    pages: parseInt(values.pages),
-                                    releasedate: values.releasedate,
-                                    price: parseFloat(values.price),
-                                    currency: values.currency,
-                                    addinfo: values.addinfo
-                                }
-                            });
+                                await createIssue({
+                                    variables: {
+                                        title: values.title,
+                                        series: {
+                                            title: values.series.title,
+                                            volume: values.series.volume,
+                                            publisher: {
+                                                name: values.series.publisher.name
+                                            }
+                                        },
+                                        number: values.number,
+                                        cover: values.cover,
+                                        format: values.format,
+                                        limitation: values.limitation,
+                                        pages: parseInt(values.pages),
+                                        releasedate: values.releasedate,
+                                        price: parseFloat(values.price),
+                                        currency: values.currency,
+                                        addinfo: values.addinfo
+                                    }
+                                });
 
-                            actions.setSubmitting(false);
-                            if (error)
-                                actions.resetForm();
-                        }}>
-                        {({resetForm, submitForm, isSubmitting, values, setFieldValue, touched, errors}) => {
-                            return (
-                                <Form>
-                                    <CardHeader title="Ausgabe erstellen"/>
+                                actions.setSubmitting(false);
+                                if (error)
+                                    actions.resetForm();
+                            }}>
+                            {({resetForm, submitForm, isSubmitting, values, setFieldValue, touched, errors}) => {
+                                return (
+                                    <Form>
+                                        <CardHeader title="Ausgabe erstellen"/>
 
-                                    <CardContent className="cardContent">
-                                        <Field
-                                            className="field field35"
-                                            name="title"
-                                            label="Titel"
-                                            component={TextField}
-                                        />
-                                        <br/>
+                                        <CardContent className="cardContent">
+                                            {
+                                                values.cover !== '' ?
+                                                    <div className="right field50">
+                                                        <CardMedia
+                                                            image={this.createPreview(values.cover)}
+                                                            title="Cover Vorschau"
+                                                            className="media field100"
+                                                            onClick={() => this.triggerCoverIsOpen()}/>
 
-                                        <AutoComplete
-                                            id="publisher"
-                                            query={publishers}
-                                            variables={{us: us}}
-                                            name="series.publisher.name"
-                                            label="Verlag"
-                                            error={touched.series && touched.series.publisher && errors.series && errors.series.publisher}
-                                            onChange={(value) => {
-                                                setFieldValue("series.publisher", value, true);
-                                            }}
-                                            width="35%"
-                                        />
+                                                        <Lightbox
+                                                            showImageCount={false}
+                                                            images={[{src: this.createPreview(values.cover)}]}
+                                                            isOpen={this.state.isCoverOpen}
+                                                            onClose={() => this.triggerCoverIsOpen()}/>
 
-                                        <br/>
+                                                        <IconButton className="removeBtnCover" aria-label="Entfernen"
+                                                                    onClick={() => {
+                                                                        setFieldValue('cover', '', true)
+                                                                    }}>
+                                                            <DeleteIcon/>
+                                                        </IconButton>
+                                                    </div> : null
+                                            }
 
-                                        <AutoComplete
-                                            disabled={!values.series.publisher.name ||
-                                                values.series.publisher.name.trim().length === 0}
-                                            id="series"
-                                            query={series}
-                                            variables={{publisher: {name: values.series.publisher.name}}}
-                                            name="series.title"
-                                            label="Serie"
-                                            error={touched.series && errors.series}
-                                            onChange={(value) => {
-                                                setFieldValue("series", value, true);
-                                            }}
-                                            width="25%"
-                                        />
-
-                                        <Field
-                                            disabled={!values.series.publisher.name ||
-                                                values.series.publisher.name.trim().length === 0}
-                                            className="field field10"
-                                            name="series.volume"
-                                            label="Volume"
-                                            type="number"
-                                            component={TextField}
-                                        />
-                                        <br/>
-                                        <Field
-                                            className="field field35"
-                                            name="number"
-                                            label="Nummer"
-                                            component={TextField}
-                                        />
-                                        <br/>
-                                        <div className="field field35 fieldFileUpload">
                                             <Field
-                                                name="cover"
-                                                label="Cover"
-                                                component={SimpleFileUpload}
+                                                className="field field35"
+                                                name="title"
+                                                label="Titel"
+                                                component={TextField}
+                                            />
+                                            <br/>
+
+                                            <AutoComplete
+                                                id="publisher"
+                                                query={publishers}
+                                                variables={{us: us}}
+                                                name="series.publisher.name"
+                                                label="Verlag"
+                                                error={touched.series && touched.series.publisher && errors.series && errors.series.publisher}
+                                                onChange={(value) => {
+                                                    setFieldValue("series.publisher", value, true);
+                                                }}
+                                                width="35%"
                                             />
 
-                                            <img alt="preview" src={createPreview(values.cover)}/>
-                                        </div>
-                                        <Field
-                                            type="text"
-                                            name="format"
-                                            label="Format"
-                                            select
-                                            component={TextField}
-                                            className="field field35"
-                                            InputLabelProps={{
-                                                shrink: true,
-                                            }}
-                                        >
-                                            <MenuItem key="heft" value="Heft">
-                                                Heft
-                                            </MenuItem>
-                                            <MenuItem key="miniHeft" value="Mini Heft">
-                                                Mini Heft
-                                            </MenuItem>
-                                            <MenuItem key="magazin" value="Magazin">
-                                                Magazin
-                                            </MenuItem>
-                                            <MenuItem key="prestige" value="Prestige">
-                                                Prestige
-                                            </MenuItem>
-                                            <MenuItem key="softcover" value="Softcover">
-                                                Softcover
-                                            </MenuItem>
-                                            <MenuItem key="hardcover" value="Hardcover">
-                                                Hardcover
-                                            </MenuItem>
-                                            <MenuItem key="taschenbuch" value="Taschenbuch">
-                                                Taschenbuch
-                                            </MenuItem>
-                                            <MenuItem key="album" value="Album">
-                                                Album
-                                            </MenuItem>
-                                            <MenuItem key="albumHardcover" value="Album Hardcover">
-                                                Album Hardcover
-                                            </MenuItem>
-                                        </Field>
-                                        <br/>
-                                        <Field
-                                            className="field field35"
-                                            name="variant"
-                                            label="Variante"
-                                            component={TextField}
-                                        />
-                                        <br/>
-                                        <Field
-                                            className="field field35"
-                                            name="limitation"
-                                            label="Limitierung"
-                                            type="number"
-                                            component={TextField}
-                                        />
-                                        <br/>
-                                        <Field
-                                            className="field field35"
-                                            name="pages"
-                                            label="Seiten"
-                                            type="number"
-                                            component={TextField}
-                                        />
-                                        <br/>
-                                        <Field
-                                            className="field field35"
-                                            name="releasedate"
-                                            label="Erscheinungsdatum"
-                                            type="date"
-                                            component={TextField}
-                                        />
-                                        <br/>
-                                        <Field
-                                            className="field field25"
-                                            name="price"
-                                            label="Preis"
-                                            type="number"
-                                            component={TextField}
-                                        />
+                                            <br/>
 
-                                        <Field
-                                            type="text"
-                                            name="currency"
-                                            label="Währung"
-                                            select
-                                            component={TextField}
-                                            className="field field10"
-                                            InputLabelProps={{
-                                                shrink: true,
-                                            }}
-                                        >
-                                            <MenuItem key="eur" value="EUR">
-                                                EUR
-                                            </MenuItem>
-                                            <MenuItem key="dem" value="DEM">
-                                                DEM
-                                            </MenuItem>
-                                        </Field>
-                                        <br />
-
-                                        <Field
-                                            className="field field35"
-                                            name="addinfo"
-                                            label="Weitere Informationen"
-                                            multiline
-                                            rows={10}
-                                            component={TextField}
-                                        />
-
-                                        <br/>
-                                        <br/>
-
-                                        <div>
-                                            <CardHeader className="left" title="Geschichten"/>
-                                            <IconButton className="right" aria-label="Hinzufügen"
-                                                        onClick={() => {
-                                                            let stories = values.stories;
-                                                            stories.push(stories.length);
-                                                            setFieldValue("stories", stories, true)}}>
-                                                <AddIcon />
-                                            </IconButton>
-                                        </div>
-                                        <br/>
-                                        <Card>
-                                            <CardContent>
-                                                {
-                                                    values.stories.length === 0 ?
-                                                        <Typography className="addWith">Hinzufügen mit '+'</Typography> :
-                                                        null
-                                                }
-                                                {values.stories.map((item, index) => {
-                                                    return (
-                                                        <div key={index}>
-                                                            <Field
-                                                                className="field field3"
-                                                                name="sort"
-                                                                label="#"
-                                                                component={TextField}
-                                                            />
-                                                            <IconButton className="removeBtn" aria-label="Entfernen"
-                                                                        onClick={() => {
-                                                                            let stories = values.stories.filter((e) => e !== item);
-                                                                            setFieldValue("stories", stories, true)}}>
-                                                                <DeleteIcon />
-                                                            </IconButton>
-                                                        </div>
-                                                    );
-                                                })}
-                                            </CardContent>
-                                        </Card>
-
-                                        <br/>
-
-                                        <div>
-                                            <CardHeader className="left" title="Weitere Inhalte"/>
-                                            <IconButton className="right" aria-label="Hinzufügen"
-                                                        onClick={() => {
-                                                            let features = values.features;
-                                                            features.push(features.length);
-                                                            setFieldValue("features", features, true)}}>
-                                                <AddIcon />
-                                            </IconButton>
-                                        </div>
-                                        <br/>
-                                        <Card>
-                                            <CardContent>
-                                                {
-                                                    values.features.length === 0 ?
-                                                        <Typography className="addWith">Hinzufügen mit '+'</Typography> :
-                                                        null
-                                                }
-                                                {values.features.map((item, index) => {
-                                                    return (
-                                                        <div key={index}>
-                                                            <Field
-                                                                className="field field3"
-                                                                name="sort"
-                                                                label="#"
-                                                                component={TextField}
-                                                            />
-
-                                                            <Field
-                                                                className="field field35"
-                                                                name="titel"
-                                                                label="Titel"
-                                                                component={TextField}
-                                                            />
-
-                                                            <Field
-                                                                className="field field25"
-                                                                name="addinfo"
-                                                                label="Weitere Informationen"
-                                                                component={TextField}
-                                                            />
-
-                                                            <Field
-                                                                className="field field15"
-                                                                name="author"
-                                                                label="Autor"
-                                                                component={TextField}
-                                                            />
-
-                                                            <IconButton className="removeBtn" aria-label="Entfernen"
-                                                                        onClick={() => {
-                                                                            let features = values.features.filter((e) => e !== item);
-                                                                            setFieldValue("features", features, true)}}>
-                                                                <DeleteIcon />
-                                                            </IconButton>
-                                                        </div>
-                                                    );
-                                                })}
-                                            </CardContent>
-                                        </Card>
-
-                                        <br/>
-
-                                        <div>
-                                            <CardHeader className="left" title="Covergalerie"/>
-                                            <IconButton className="right" aria-label="Hinzufügen"
-                                                        onClick={() => {
-                                                            let covers = values.covers;
-                                                            covers.push(covers.length);
-                                                            setFieldValue("covers", covers, true)}}>
-                                                <AddIcon />
-                                            </IconButton>
-                                        </div>
-                                        <br/>
-                                        <Card>
-                                            <CardContent>
-                                                {
-                                                    values.covers.length === 0 ?
-                                                        <Typography className="addWith">Hinzufügen mit '+'</Typography> :
-                                                        null
-                                                }
-                                                {values.covers.map((item, index) => {
-                                                    return (
-                                                        <div key={index}>
-                                                            <Field
-                                                                className="field field3"
-                                                                name="sort"
-                                                                label="#"
-                                                                component={TextField}
-                                                            />
-
-                                                            <IconButton className="removeBtn" aria-label="Entfernen"
-                                                                        onClick={() => {
-                                                                            let covers = values.covers.filter((e) => e !== item);
-                                                                            setFieldValue("covers", covers, true)}}>
-                                                                <DeleteIcon />
-                                                            </IconButton>
-                                                        </div>
-                                                    );
-                                                })}
-                                            </CardContent>
-                                        </Card>
-                                        <br/>
-
-                                        <Button disabled={isSubmitting}
-                                                onClick={() => {
-                                                    values = {
-                                                        title: '',
-                                                        series: {
-                                                            title: values.series.title,
-                                                            volume: values.series.volume,
-                                                            publisher: {
-                                                                name: values.series.publisher.name
-                                                            }
-                                                        },
-                                                        number: '',
-                                                        cover: '',
-                                                        format: '',
-                                                        variant: '',
-                                                        limitation: '',
-                                                        pages: '',
-                                                        releasedate: '',
-                                                        price: '',
-                                                        currency: 'EUR',
-                                                        addinfo: ''
-                                                    };
-                                                    resetForm();
+                                            <AutoComplete
+                                                disabled={!values.series.publisher.name ||
+                                                values.series.publisher.name.trim().length === 0}
+                                                id="series"
+                                                query={series}
+                                                variables={{publisher: {name: values.series.publisher.name}}}
+                                                name="series.title"
+                                                label="Serie"
+                                                error={touched.series && errors.series}
+                                                onChange={(value) => {
+                                                    setFieldValue("series", value, true);
                                                 }}
-                                                color="secondary">
-                                            Zurücksetzen
-                                        </Button>
-                                        <Button
-                                            disabled={isSubmitting}
-                                            onClick={submitForm}
-                                            color="primary">
-                                            Erstellen
-                                        </Button>
-                                    </CardContent>
-                                </Form>
-                            )
-                        }}
-                    </Formik>
-                )}
-            </Mutation>
-        </Layout>
-    )
-}
+                                                width="25%"
+                                            />
 
-function createPreview(file) {
-    if(file === '')
-        return null;
+                                            <Field
+                                                disabled={!values.series.publisher.name ||
+                                                values.series.publisher.name.trim().length === 0}
+                                                className="field field10"
+                                                name="series.volume"
+                                                label="Volume"
+                                                type="number"
+                                                component={TextField}
+                                            />
+                                            <br/>
+                                            <Field
+                                                className="field field35"
+                                                name="number"
+                                                label="Nummer"
+                                                component={TextField}
+                                            />
+                                            <br/>
 
-    return URL.createObjectURL(file);
+                                            <div className="field field35 fieldFileUpload addBtn">
+                                                <Field
+                                                    name="cover"
+                                                    label="Cover"
+                                                    className="field field35"
+                                                    component={SimpleFileUpload}
+                                                />
+                                            </div>
+
+                                            <Field
+                                                type="text"
+                                                name="format"
+                                                label="Format"
+                                                select
+                                                component={TextField}
+                                                className="field field35"
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
+                                            >
+                                                <MenuItem key="heft" value="Heft">
+                                                    Heft
+                                                </MenuItem>
+                                                <MenuItem key="miniHeft" value="Mini Heft">
+                                                    Mini Heft
+                                                </MenuItem>
+                                                <MenuItem key="magazin" value="Magazin">
+                                                    Magazin
+                                                </MenuItem>
+                                                <MenuItem key="prestige" value="Prestige">
+                                                    Prestige
+                                                </MenuItem>
+                                                <MenuItem key="softcover" value="Softcover">
+                                                    Softcover
+                                                </MenuItem>
+                                                <MenuItem key="hardcover" value="Hardcover">
+                                                    Hardcover
+                                                </MenuItem>
+                                                <MenuItem key="taschenbuch" value="Taschenbuch">
+                                                    Taschenbuch
+                                                </MenuItem>
+                                                <MenuItem key="album" value="Album">
+                                                    Album
+                                                </MenuItem>
+                                                <MenuItem key="albumHardcover" value="Album Hardcover">
+                                                    Album Hardcover
+                                                </MenuItem>
+                                            </Field>
+                                            <br/>
+                                            <Field
+                                                className="field field35"
+                                                name="variant"
+                                                label="Variante"
+                                                component={TextField}
+                                            />
+                                            <br/>
+                                            <Field
+                                                className="field field35"
+                                                name="limitation"
+                                                label="Limitierung"
+                                                type="number"
+                                                component={TextField}
+                                            />
+                                            <br/>
+                                            <Field
+                                                className="field field35"
+                                                name="pages"
+                                                label="Seiten"
+                                                type="number"
+                                                component={TextField}
+                                            />
+                                            <br/>
+                                            <Field
+                                                className="field field35"
+                                                name="releasedate"
+                                                label="Erscheinungsdatum"
+                                                type="date"
+                                                component={TextField}
+                                            />
+                                            <br/>
+                                            <Field
+                                                className="field field25"
+                                                name="price"
+                                                label="Preis"
+                                                type="number"
+                                                component={TextField}
+                                            />
+
+                                            <Field
+                                                type="text"
+                                                name="currency"
+                                                label="Währung"
+                                                select
+                                                component={TextField}
+                                                className="field field10"
+                                                InputLabelProps={{
+                                                    shrink: true,
+                                                }}
+                                            >
+                                                <MenuItem key="eur" value="EUR">
+                                                    EUR
+                                                </MenuItem>
+                                                <MenuItem key="dem" value="DEM">
+                                                    DEM
+                                                </MenuItem>
+                                            </Field>
+                                            <br/>
+
+                                            <Field
+                                                className="field field35"
+                                                name="addinfo"
+                                                label="Weitere Informationen"
+                                                multiline
+                                                rows={10}
+                                                component={TextField}
+                                            />
+
+                                            <br/>
+                                            <br/>
+
+                                            <div>
+                                                <CardHeader className="left" title="Geschichten"/>
+                                                <IconButton className="addBtn" aria-label="Hinzufügen"
+                                                            onClick={() => {
+                                                                let stories = values.stories;
+                                                                stories.push(stories.length);
+                                                                setFieldValue("stories", stories, true)
+                                                            }}>
+                                                    <AddIcon/>
+                                                </IconButton>
+                                            </div>
+                                            <br/>
+                                            <Card>
+                                                <CardContent>
+                                                    {
+                                                        values.stories.length === 0 ?
+                                                            <Typography className="addWith">Hinzufügen mit
+                                                                '+'</Typography> :
+                                                            null
+                                                    }
+                                                    {values.stories.map((item, index) => {
+                                                        return (
+                                                            <div key={index}>
+                                                                <Field
+                                                                    className="field field3"
+                                                                    name="sort"
+                                                                    label="#"
+                                                                    component={TextField}
+                                                                />
+                                                                <IconButton className="removeBtn" aria-label="Entfernen"
+                                                                            onClick={() => {
+                                                                                let stories = values.stories.filter((e) => e !== item);
+                                                                                setFieldValue("stories", stories, true)
+                                                                            }}>
+                                                                    <DeleteIcon/>
+                                                                </IconButton>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </CardContent>
+                                            </Card>
+
+                                            <br/>
+
+                                            <div>
+                                                <CardHeader className="left" title="Weitere Inhalte"/>
+                                                <IconButton className="addBtn" aria-label="Hinzufügen"
+                                                            onClick={() => {
+                                                                let features = values.features;
+                                                                features.push(features.length);
+                                                                setFieldValue("features", features, true)
+                                                            }}>
+                                                    <AddIcon/>
+                                                </IconButton>
+                                            </div>
+                                            <br/>
+                                            <Card>
+                                                <CardContent>
+                                                    {
+                                                        values.features.length === 0 ?
+                                                            <Typography className="addWith">Hinzufügen mit
+                                                                '+'</Typography> :
+                                                            null
+                                                    }
+                                                    {values.features.map((item, index) => {
+                                                        return (
+                                                            <div key={index}>
+                                                                <Field
+                                                                    className="field field3"
+                                                                    name="sort"
+                                                                    label="#"
+                                                                    component={TextField}
+                                                                />
+
+                                                                <Field
+                                                                    className="field field35"
+                                                                    name="titel"
+                                                                    label="Titel"
+                                                                    component={TextField}
+                                                                />
+
+                                                                <Field
+                                                                    className="field field25"
+                                                                    name="addinfo"
+                                                                    label="Weitere Informationen"
+                                                                    component={TextField}
+                                                                />
+
+                                                                <Field
+                                                                    className="field field15"
+                                                                    name="author"
+                                                                    label="Autor"
+                                                                    component={TextField}
+                                                                />
+
+                                                                <IconButton className="removeBtn" aria-label="Entfernen"
+                                                                            onClick={() => {
+                                                                                let features = values.features.filter((e) => e !== item);
+                                                                                setFieldValue("features", features, true)
+                                                                            }}>
+                                                                    <DeleteIcon/>
+                                                                </IconButton>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </CardContent>
+                                            </Card>
+
+                                            <br/>
+
+                                            <div>
+                                                <CardHeader className="left" title="Covergalerie"/>
+                                                <IconButton className="addBtn" aria-label="Hinzufügen"
+                                                            onClick={() => {
+                                                                let covers = values.covers;
+                                                                covers.push(covers.length);
+                                                                setFieldValue("covers", covers, true)
+                                                            }}>
+                                                    <AddIcon/>
+                                                </IconButton>
+                                            </div>
+                                            <br/>
+                                            <Card>
+                                                <CardContent>
+                                                    {
+                                                        values.covers.length === 0 ?
+                                                            <Typography className="addWith">Hinzufügen mit
+                                                                '+'</Typography> :
+                                                            null
+                                                    }
+                                                    {values.covers.map((item, index) => {
+                                                        return (
+                                                            <div key={index}>
+                                                                <Field
+                                                                    className="field field3"
+                                                                    name="sort"
+                                                                    label="#"
+                                                                    component={TextField}
+                                                                />
+
+                                                                <IconButton className="removeBtn" aria-label="Entfernen"
+                                                                            onClick={() => {
+                                                                                let covers = values.covers.filter((e) => e !== item);
+                                                                                setFieldValue("covers", covers, true)
+                                                                            }}>
+                                                                    <DeleteIcon/>
+                                                                </IconButton>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </CardContent>
+                                            </Card>
+                                            <br/>
+
+                                            <Button disabled={isSubmitting}
+                                                    onClick={() => {
+                                                        values = {
+                                                            title: '',
+                                                            series: {
+                                                                title: values.series.title,
+                                                                volume: values.series.volume,
+                                                                publisher: {
+                                                                    name: values.series.publisher.name
+                                                                }
+                                                            },
+                                                            number: '',
+                                                            cover: '',
+                                                            format: '',
+                                                            variant: '',
+                                                            limitation: '',
+                                                            pages: '',
+                                                            releasedate: '',
+                                                            price: '',
+                                                            currency: 'EUR',
+                                                            addinfo: ''
+                                                        };
+                                                        resetForm();
+                                                    }}
+                                                    color="secondary">
+                                                Zurücksetzen
+                                            </Button>
+                                            <Button
+                                                disabled={isSubmitting}
+                                                onClick={submitForm}
+                                                color="primary">
+                                                Erstellen
+                                            </Button>
+                                        </CardContent>
+                                    </Form>
+                                )
+                            }}
+                        </Formik>
+                    )}
+                </Mutation>
+            </Layout>
+        );
+    }
+
+    triggerCoverIsOpen() {
+        this.setState({isCoverOpen: !this.state.isCoverOpen});
+    }
+
+    createPreview(file) {
+        return URL.createObjectURL(file);
+    }
 }
 
 export default withContext(IssueCreate);
