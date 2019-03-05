@@ -70,5 +70,27 @@ export const IssueSchema = Yup.object().shape({
     currency: Yup.string()
         .max(3, 'Maximal 3 Zeichen'),
     addinfo: Yup.string()
-        .max(2500, 'Maximal 2500 Zeichen')
+        .max(2500, 'Maximal 2500 Zeichen'),
+    stories: Yup.array().of(Yup.object().shape({
+        number: Yup.number("Bitte geben Sie eine Zahl ein")
+            .required('Pflichtfeld')
+            .integer("Bitte geben Sie eine Zahl ein"),
+        issue: Yup.object().shape({
+              series: Yup.object().shape({
+                title: Yup.string()
+                    .required('Pflichtfeld')
+                    .max(255, 'Maximal 255 Zeichen'),
+                volume: Yup.number("Bitte geben Sie eine Zahl ein")
+                    .required("Pflichtfeld")
+                    .integer("Bitte geben Sie eine Zahl ein")
+            }),
+            number: Yup.string()
+                .required('Pflichtfeld')
+                .max(255, 'Maximal 255 Zeichen')
+        }),
+        title: Yup.string()
+            .max(255, 'Maximal 255 Zeichen'),
+        addinfo: Yup.string()
+            .max(2500, 'Maximal 2500 Zeichen'),
+    }))
 });
