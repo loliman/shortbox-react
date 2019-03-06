@@ -6,7 +6,6 @@ import Paper from "@material-ui/core/Paper/Paper";
 import MenuItem from "@material-ui/core/MenuItem/MenuItem";
 import TextField from "@material-ui/core/TextField/TextField";
 import {Query} from "react-apollo";
-import {generateLabel} from "../../util/hierarchy";
 
 const theme = {
     container: {
@@ -35,15 +34,14 @@ const theme = {
 };
 
 function AutoComplete(props) {
-    const {query, variables, width, top, ...rest} = props;
+    const {query, variables, style, ...rest} = props;
     let {disabled, label} = props;
 
     let acTheme = JSON.parse(JSON.stringify(theme));
-    if(width)
-        acTheme.container.width = width;
+    if(style)
+        for (const [key, value] of Object.entries(style))
+            acTheme.container[key] = value;
 
-    if (top)
-        acTheme.container.top = top;
 
     return (
         <Query query={query}
@@ -87,7 +85,7 @@ class AutoCompleteContainer extends React.Component {
                    }}
                    onSuggestionsFetchRequested={this.handleSuggestionsFetchRequested}
                    onSuggestionsClearRequested={this.handleSuggestionsClearRequested}
-                   getSuggestionValue={(suggestion) => generateLabel(suggestion)}
+                   getSuggestionValue={(suggestion) => this.props.generateLabel(suggestion)}
                    renderSuggestion={this.renderSuggestion}
                    inputProps={{
                        value: this.state.search,
@@ -151,7 +149,7 @@ class AutoCompleteContainer extends React.Component {
 
         return inputValue.length === 0 ? [] :
             this.props.suggestions.filter(suggestion => {
-                return generateLabel(suggestion).toLowerCase().indexOf(inputValue) !== -1;
+                return this.props.generateLabel(suggestion).toLowerCase().indexOf(inputValue) !== -1;
             });
     };
 
@@ -159,7 +157,7 @@ class AutoCompleteContainer extends React.Component {
         return (
             <MenuItem selected={isHighlighted} component="div">
                 <div>
-                    <span>{generateLabel(suggestion)}</span>
+                    <span>{this.props.generateLabel(suggestion)}</span>
                 </div>
             </MenuItem>
         );

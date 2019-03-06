@@ -49,10 +49,8 @@ const createSeries = gql`mutation CreateSeries($series: SeriesInput!){
    }
 }`;
 
-const createIssue = gql`mutation CreateIssue($title: String!, $publishername: String!, $seriestitle: String!, $seriesvolume: Int!, 
-    $number: String!, $limitation: Int, $pages: Int, $releasedate: Date, $price: String, $currency: String){
-   createIssue(title: $title, publishername: $publishername, seriestitle: $seriestitle, seriesvolume: $seriesvolume, 
-    number: $number, limitation: $limitation, pages: $pages, releasedate: $releasedate, price: $price, currency: $currency) {
+const createIssue = gql`mutation CreateIssue($issue: IssueInput!){
+   createIssue(issue: $issue) {
         id,
         number,
         series {

@@ -110,11 +110,13 @@ function SeriesCreate(props) {
                                         variables={{us: us}}
                                         name="publisher.name"
                                         label="Verlag"
-                                        error={touched.publisher && errors.publisher}
                                         onChange={(value) => {
                                             setFieldValue("publisher", value, true);
                                         }}
-                                        width="35%"
+                                        style={{
+                                            "width": "35%"
+                                        }}
+                                        generateLabel={generateLabel}
                                     />
 
                                     <br/>

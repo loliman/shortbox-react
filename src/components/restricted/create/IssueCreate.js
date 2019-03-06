@@ -16,12 +16,14 @@ import MenuItem from "@material-ui/core/MenuItem/MenuItem";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from "@material-ui/icons/Add";
 import DeleteIcon from "@material-ui/icons/Delete";
-import {Card} from "@material-ui/core";
+import {ExpansionPanelSummary} from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
 import Lightbox from "react-images";
 import CardMedia from "@material-ui/core/CardMedia";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
+import ExpansionPanel from "@material-ui/core/ExpansionPanel";
+import Link from "react-router-dom/es/Link";
 
 class IssueCreate extends React.Component {
     constructor(props) {
@@ -94,23 +96,28 @@ class IssueCreate extends React.Component {
 
                                 await createIssue({
                                     variables: {
-                                        title: values.title,
-                                        series: {
-                                            title: values.series.title,
-                                            volume: values.series.volume,
-                                            publisher: {
-                                                name: values.series.publisher.name
-                                            }
-                                        },
-                                        number: values.number,
-                                        cover: values.cover,
-                                        format: values.format,
-                                        limitation: values.limitation,
-                                        pages: parseInt(values.pages),
-                                        releasedate: values.releasedate,
-                                        price: parseFloat(values.price),
-                                        currency: values.currency,
-                                        addinfo: values.addinfo
+                                        issue : {
+                                            title: values.title,
+                                            series: {
+                                                title: values.series.title,
+                                                volume: values.series.volume,
+                                                publisher: {
+                                                    name: values.series.publisher.name
+                                                }
+                                            },
+                                            number: values.number,
+                                            cover: values.cover,
+                                            format: values.format,
+                                            limitation: values.limitation,
+                                            pages: parseInt(values.pages),
+                                            releasedate: values.releasedate,
+                                            price: parseFloat(values.price),
+                                            currency: values.currency,
+                                            addinfo: values.addinfo,
+                                            stories: values.stories,
+                                            features: values.features,
+                                            covers: values.covers
+                                        }
                                     }
                                 });
 
@@ -119,6 +126,31 @@ class IssueCreate extends React.Component {
                                     actions.resetForm();
                             }}>
                             {({resetForm, submitForm, isSubmitting, values, setFieldValue, touched, errors}) => {
+                                if(values.cover !== '' && !values.covers.find(e => e.number === 0))
+                                    values.covers.unshift({
+                                        number: 0,
+                                        parent: {
+                                            issue: {
+                                                series: {
+                                                    title: '',
+                                                    volume: '',
+                                                    publisher: {
+                                                        name: ''
+                                                    },
+                                                    number: ''
+                                                }
+                                            },
+                                        },
+                                        artist: {
+                                            name: ''
+                                        },
+                                        addinfo: '',
+                                        exclusive: false,
+                                    });
+                                else if (values.cover === '') {
+                                    values.covers = values.covers.filter(e => e.number !== 0);
+                                }
+
                                 return (
                                     <Form>
                                         <CardHeader title="Ausgabe erstellen"/>
@@ -141,6 +173,7 @@ class IssueCreate extends React.Component {
 
                                                         <IconButton className="removeBtnCover" aria-label="Entfernen"
                                                                     onClick={() => {
+                                                                        console.log('delete');
                                                                         setFieldValue('cover', '', true)
                                                                     }}>
                                                             <DeleteIcon/>
@@ -162,11 +195,13 @@ class IssueCreate extends React.Component {
                                                 variables={{us: us}}
                                                 name="series.publisher.name"
                                                 label="Verlag"
-                                                error={touched.series && touched.series.publisher && errors.series && errors.series.publisher}
                                                 onChange={(value) => {
                                                     setFieldValue("series.publisher", value, true);
                                                 }}
-                                                width="35%"
+                                                style={{
+                                                    "width": "35%"
+                                                }}
+                                                generateLabel={generateLabel}
                                             />
 
                                             <br/>
@@ -179,11 +214,13 @@ class IssueCreate extends React.Component {
                                                 variables={{publisher: {name: values.series.publisher.name}}}
                                                 name="series.title"
                                                 label="Serie"
-                                                error={touched.series && errors.series}
                                                 onChange={(value) => {
                                                     setFieldValue("series", value, true);
                                                 }}
-                                                width="25%"
+                                                style={{
+                                                    "width": "25%"
+                                                }}
+                                                generateLabel={generateLabel}
                                             />
 
                                             <Field
@@ -331,15 +368,39 @@ class IssueCreate extends React.Component {
                                                                 let stories = values.stories;
                                                                 stories.push({
                                                                     number: stories.length + 1,
-                                                                    issue: {
-                                                                        series: {
-                                                                            title: '',
-                                                                            volume: '',
-                                                                            publisher: {
-                                                                                name: ''
-                                                                            },
-                                                                            number: ''
-                                                                        }
+                                                                    parent: {
+                                                                        issue: {
+                                                                            series: {
+                                                                                title: '',
+                                                                                volume: '',
+                                                                                publisher: {
+                                                                                    name: ''
+                                                                                },
+                                                                                number: ''
+                                                                            }
+                                                                        },
+                                                                        number: ''
+                                                                    },
+                                                                    writer: {
+                                                                        name: ''
+                                                                    },
+                                                                    penciler: {
+                                                                        name: ''
+                                                                    },
+                                                                    inker: {
+                                                                        name: ''
+                                                                    },
+                                                                    colourist: {
+                                                                        name: ''
+                                                                    },
+                                                                    letterer: {
+                                                                        name: ''
+                                                                    },
+                                                                    editors: {
+                                                                        name: ''
+                                                                    },
+                                                                    translator: {
+                                                                        name: ''
                                                                     },
                                                                     title: '',
                                                                     addinfo: '',
@@ -350,106 +411,254 @@ class IssueCreate extends React.Component {
                                                     <AddIcon/>
                                                 </IconButton>
                                             </div>
-                                            <br/>
-                                            <Card className="createCardBoxes">
-                                                <CardContent>
-                                                    {
-                                                        values.stories.length === 0 ?
-                                                            <Typography className="addWith">Hinzufügen mit
-                                                                '+'</Typography> :
-                                                            null
-                                                    }
-                                                    {values.stories.map((item, index) => {
-                                                        return (
-                                                            <div key={index}>
-                                                                <IconButton className="removeBtn" aria-label="Entfernen"
-                                                                            onClick={() => {
-                                                                                let stories = values.stories.filter((e, i) => i !== index);
-                                                                                setFieldValue("stories", stories, true)
-                                                                            }}>
-                                                                    <DeleteIcon/>
-                                                                </IconButton>
 
-                                                                <Field
-                                                                    className="field field3"
-                                                                    name={"stories["+index+"].number"}
-                                                                    label="#"
-                                                                    component={TextField}
-                                                                />
+                                            <br />
 
-                                                                <AutoComplete
-                                                                    query={series}
-                                                                    variables={{publisher: values.stories[index].issue.series.publisher.name === '' ?
-                                                                            {name: "*", us: true} :
-                                                                            {name: values.stories[index].issue.series.publisher.name}
-                                                                    }}
-                                                                    name={"stories["+index+"].issue.series.title"}
-                                                                    label="Serie"
-                                                                    onChange={(value) => {
-                                                                        setFieldValue("stories["+index+"].issue.series", value, true);
-                                                                    }}
-                                                                    width="25%"
-                                                                    top="-17px"
-                                                                />
+                                            {values.stories.length === 0 ?
+                                                <Typography className="noRelationsWarning">Hinzufügen mit '+'</Typography> :
+                                                values.stories.map((item, index) => {
+                                                    return (
+                                                        <div key={index} className="storyAddContainer">
+                                                            <IconButton className="removeBtn" aria-label="Entfernen"
+                                                                        onClick={() => {
+                                                                            let stories = values.stories.filter((e, i) => i !== index);
+                                                                            setFieldValue("stories", stories, true)
+                                                                        }}>
+                                                                <DeleteIcon/>
+                                                            </IconButton>
+                                                            <ExpansionPanel className="storyAddPanel" key={index} expanded={true}>
+                                                                <ExpansionPanelSummary className="storyAdd">
+                                                                    <Field
+                                                                        className="field field3"
+                                                                        name={"stories[" + index + "].number"}
+                                                                        label="#"
+                                                                        component={TextField}
+                                                                    />
 
-                                                                <Field
-                                                                    className="field field5"
-                                                                    name={"stories["+index+"].issue.series.volume"}
-                                                                    label="Vol."
-                                                                    component={TextField}
-                                                                />
+                                                                    {values.stories[index].exclusive ?
+                                                                        <React.Fragment>
+                                                                            <AutoComplete
+                                                                                id="writer"
+                                                                                query={individuals}
+                                                                                name={"stories[" + index + "].writer.name"}
+                                                                                label="Autor"
+                                                                                onChange={(value) => {
+                                                                                    setFieldValue("stories[" + index + "].writer", value, true);
+                                                                                }}
+                                                                                style={{
+                                                                                    "width": "20%"
+                                                                                }}
+                                                                                generateLabel={(e) => e.name}
+                                                                            />
+                                                                            <AutoComplete
+                                                                                id="penciler"
+                                                                                query={individuals}
+                                                                                name={"stories[" + index + "].penciler.name"}
+                                                                                label="Zeichner"
+                                                                                onChange={(value) => {
+                                                                                    setFieldValue("stories[" + index + "].penciler", value, true);
+                                                                                }}
+                                                                                style={{
+                                                                                    "width": "20%"
+                                                                                }}
+                                                                                generateLabel={(e) => e.name}
+                                                                            />
+                                                                            <AutoComplete
+                                                                                id="inker"
+                                                                                query={individuals}
+                                                                                name={"stories[" + index + "].inker.name"}
+                                                                                label="Inker"
+                                                                                onChange={(value) => {
+                                                                                    setFieldValue("stories[" + index + "].inker", value, true);
+                                                                                }}
+                                                                                style={{
+                                                                                    "width": "20%"
+                                                                                }}
+                                                                                generateLabel={(e) => e.name}
+                                                                            />
+                                                                            <AutoComplete
+                                                                                id="colourist"
+                                                                                query={individuals}
+                                                                                name={"stories[" + index + "].colourist.name"}
+                                                                                label="Kolorist"
+                                                                                onChange={(value) => {
+                                                                                    setFieldValue("stories[" + index + "].colourist", value, true);
+                                                                                }}
+                                                                                style={{
+                                                                                    "width": "20%"
+                                                                                }}
+                                                                                generateLabel={(e) => e.name}
+                                                                            />
+                                                                            <AutoComplete
+                                                                                id="letterer"
+                                                                                query={individuals}
+                                                                                name={"stories[" + index + "].letterer.name"}
+                                                                                label="Letterer"
+                                                                                onChange={(value) => {
+                                                                                    setFieldValue("stories[" + index + "].letterer", value, true);
+                                                                                }}
+                                                                                style={{
+                                                                                    "width": "20%"
+                                                                                }}
+                                                                                generateLabel={(e) => e.name}
+                                                                            />
+                                                                            <AutoComplete
+                                                                                id="editor"
+                                                                                query={individuals}
+                                                                                name={"stories[" + index + "].editor.name"}
+                                                                                label="Editor"
+                                                                                onChange={(value) => {
+                                                                                    setFieldValue("stories[" + index + "].editor", value, true);
+                                                                                }}
+                                                                                style={{
+                                                                                    "width": "20%"
+                                                                                }}
+                                                                                generateLabel={(e) => e.name}
+                                                                            />
+                                                                        </React.Fragment> :
+                                                                        <React.Fragment>
+                                                                            <AutoComplete
+                                                                                query={series}
+                                                                                variables={{
+                                                                                    publisher: values.stories[index].parent.issue.series.publisher.name === '' ?
+                                                                                        {name: "*", us: true} :
+                                                                                        {name: values.stories[index].parent.issue.series.publisher.name}
+                                                                                }}
+                                                                                name={"stories[" + index + "].parent.issue.series.title"}
+                                                                                label="Serie"
+                                                                                onChange={(value) => {
+                                                                                    setFieldValue("stories[" + index + "].parent.issue.series", value, true);
+                                                                                }}
+                                                                                style={{
+                                                                                    "width": "25%"
+                                                                                }}
+                                                                                generateLabel={generateLabel}
+                                                                            />
 
-                                                                <Field
-                                                                    className="field field10"
-                                                                    name={"stories["+index+"].issue.number"}
-                                                                    label="Nummer"
-                                                                    component={TextField}
-                                                                />
+                                                                            <Field
+                                                                                className="field field5"
+                                                                                name={"stories[" + index + "].parent.issue.series.volume"}
+                                                                                label="Volume"
+                                                                                component={TextField}
+                                                                            />
 
-                                                                <AutoComplete
-                                                                    query={publishers}
-                                                                    variables={{us: true}}
-                                                                    name={"stories["+index+"].issue.series.publisher.name"}
-                                                                    label="Verlag"
-                                                                    onChange={(value) => {
-                                                                        setFieldValue("stories["+index+"].issue.series.publisher", value, true);
-                                                                    }}
-                                                                    width="15%"
-                                                                    top="-17px"
-                                                                />
+                                                                            <AutoComplete
+                                                                                query={publishers}
+                                                                                variables={{us: true}}
+                                                                                name={"stories[" + index + "].parent.issue.series.publisher.name"}
+                                                                                label="Verlag"
+                                                                                onChange={(value) => {
+                                                                                    setFieldValue("stories[" + index + "].parent.issue.series.publisher", value, true);
+                                                                                }}
+                                                                                style={{
+                                                                                    "width": "15%"
+                                                                                }}
+                                                                                generateLabel={generateLabel}
+                                                                            />
 
-                                                                <Field
-                                                                    className="field field25"
-                                                                    name={"stories["+index+"].title"}
-                                                                    label="Titel"
-                                                                    component={TextField}
-                                                                />
+                                                                            <Field
+                                                                                className="field field10"
+                                                                                name={"stories[" + index + "].parent.issue.number"}
+                                                                                label="Nummer"
+                                                                                component={TextField}
+                                                                            />
 
-                                                                <Field
-                                                                    className="field field25"
-                                                                    name={"stories["+index+"].addinfo"}
-                                                                    label="Weitere Informationen"
-                                                                    component={TextField}
-                                                                />
+                                                                            <Field
+                                                                                className="field field10"
+                                                                                name={"stories[" + index + "].parent.number"}
+                                                                                label="#"
+                                                                                component={TextField}
+                                                                            />
 
-                                                                <FormControlLabel
-                                                                    className="right exclusiveToggle"
-                                                                    control={
-                                                                        <Switch
-                                                                            checked={values.stories[index].exclusive}
-                                                                            onChange={() => {
-                                                                                setFieldValue("stories["+index+"].exclusive", !values.stories[index].exclusive, true);
-                                                                            }}
-                                                                            value="exclusive"
-                                                                        />
+                                                                            <AutoComplete
+                                                                                id="translator"
+                                                                                query={individuals}
+                                                                                name={"stories[" + index + "].translator.name"}
+                                                                                label="Übersetzer"
+                                                                                onChange={(value) => {
+                                                                                    setFieldValue("stories[" + index + "].translator", value, true);
+                                                                                }}
+                                                                                style={{
+                                                                                    "width": "20%"
+                                                                                }}
+                                                                                generateLabel={(e) => e.name}
+                                                                            />
+                                                                        </React.Fragment>
                                                                     }
-                                                                    label="exklusiv"
-                                                                />
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </CardContent>
-                                            </Card>
+
+                                                                    <Field
+                                                                        className="field field25"
+                                                                        name={"stories[" + index + "].title"}
+                                                                        label="Titel"
+                                                                        component={TextField}
+                                                                    />
+
+                                                                    <Field
+                                                                        className="field field25"
+                                                                        name={"stories[" + index + "].addinfo"}
+                                                                        label="Weitere Informationen"
+                                                                        component={TextField}
+                                                                    />
+
+                                                                    <FormControlLabel
+                                                                        className="exclusiveToggle"
+                                                                        control={
+                                                                            <Switch
+                                                                                checked={values.stories[index].exclusive}
+                                                                                onChange={() => {
+                                                                                    setFieldValue("stories["+ index + "]",
+                                                                                        {
+                                                                                            number: values.stories[index].number,
+                                                                                            parent: {
+                                                                                                issue: {
+                                                                                                    series: {
+                                                                                                        title: '',
+                                                                                                        volume: '',
+                                                                                                        publisher: {
+                                                                                                            name: ''
+                                                                                                        },
+                                                                                                        number: ''
+                                                                                                    }
+                                                                                                },
+                                                                                                number: ''
+                                                                                            },
+                                                                                            writer: {
+                                                                                                name: ''
+                                                                                            },
+                                                                                            penciler: {
+                                                                                                name: ''
+                                                                                            },
+                                                                                            inker: {
+                                                                                                name: ''
+                                                                                            },
+                                                                                            colourist: {
+                                                                                                name: ''
+                                                                                            },
+                                                                                            letterer: {
+                                                                                                name: ''
+                                                                                            },
+                                                                                            editors: {
+                                                                                                name: ''
+                                                                                            },
+                                                                                            translator: {
+                                                                                                name: ''
+                                                                                            },
+                                                                                            title: '',
+                                                                                            addinfo: '',
+                                                                                            exclusive: !values.stories[index].exclusive,
+                                                                                        })
+                                                                                }}
+                                                                                value="exclusive"
+                                                                            />
+                                                                        }
+                                                                        label="exklusiv"
+                                                                    />
+                                                                </ExpansionPanelSummary>
+                                                            </ExpansionPanel>
+                                                        </div>
+                                                    );
+                                                })
+                                            }
 
                                             <br/>
 
@@ -458,70 +667,75 @@ class IssueCreate extends React.Component {
                                                 <IconButton className="addBtn" aria-label="Hinzufügen"
                                                             onClick={() => {
                                                                 let features = values.features;
-                                                                features.push(features.length);
+                                                                features.push({
+                                                                    number: features.length + 1,
+                                                                    title: '',
+                                                                    addinfo: '',
+                                                                    writer: {
+                                                                        name: ''
+                                                                    },
+                                                                    exclusive: false
+                                                                });
                                                                 setFieldValue("features", features, true)
                                                             }}>
                                                     <AddIcon/>
                                                 </IconButton>
                                             </div>
                                             <br/>
-                                            <Card className="createCardBoxes">
-                                                <CardContent>
-                                                    {
-                                                        values.features.length === 0 ?
-                                                            <Typography className="addWith">Hinzufügen mit
-                                                                '+'</Typography> :
-                                                            null
-                                                    }
-                                                    {values.features.map((item, index) => {
-                                                        return (
-                                                            <div key={index}>
-                                                                <IconButton className="removeBtn" aria-label="Entfernen"
-                                                                            onClick={() => {
-                                                                                let features = values.features.filter((e) => e !== item);
-                                                                                setFieldValue("features", features, true)
-                                                                            }}>
-                                                                    <DeleteIcon/>
-                                                                </IconButton>
+                                            {values.features.length === 0 ?
+                                                <Typography className="noRelationsWarning">Hinzufügen mit '+'</Typography> :
+                                                values.features.map((item, index) => {
+                                                    return (
+                                                        <div key={index} className="storyAddContainer">
+                                                            <IconButton className="removeBtn" aria-label="Entfernen"
+                                                                        onClick={() => {
+                                                                            let features = values.features.filter((e, i) => i !== index);
+                                                                            setFieldValue("features", features, true)
+                                                                        }}>
+                                                                <DeleteIcon/>
+                                                            </IconButton>
+                                                            <ExpansionPanel className="storyAddPanel" key={index} expanded={true}>
+                                                                <ExpansionPanelSummary className="storyAdd">
+                                                                    <Field
+                                                                        className="field field3"
+                                                                        name={"features[" + index + "].number"}
+                                                                        label="#"
+                                                                        component={TextField}
+                                                                    />
 
-                                                                <Field
-                                                                    className="field field3"
-                                                                    name="sort"
-                                                                    label="#"
-                                                                    component={TextField}
-                                                                />
+                                                                    <Field
+                                                                        className="field field35"
+                                                                        name={"features[" + index + "].title"}
+                                                                        label="Titel"
+                                                                        component={TextField}
+                                                                    />
 
-                                                                <Field
-                                                                    className="field field35"
-                                                                    name="titel"
-                                                                    label="Titel"
-                                                                    component={TextField}
-                                                                />
+                                                                    <Field
+                                                                        className="field field25"
+                                                                        name={"features[" + index + "].addinfo"}
+                                                                        label="Weitere Informationen"
+                                                                        component={TextField}
+                                                                    />
 
-                                                                <Field
-                                                                    className="field field25"
-                                                                    name="addinfo"
-                                                                    label="Weitere Informationen"
-                                                                    component={TextField}
-                                                                />
-
-                                                                <AutoComplete
-                                                                    id="author"
-                                                                    query={individuals}
-                                                                    name="author"
-                                                                    label="Autor"
-                                                                    error={touched.author && errors.author}
-                                                                    onChange={(value) => {
-                                                                        setFieldValue("author", value, true);
-                                                                    }}
-                                                                    width="20%"
-                                                                    top="-17px"
-                                                                />
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </CardContent>
-                                            </Card>
+                                                                    <AutoComplete
+                                                                        id="writer"
+                                                                        query={individuals}
+                                                                        name={"features[" + index + "].writer.name"}
+                                                                        label="Autor"
+                                                                        onChange={(value) => {
+                                                                            setFieldValue("features[" + index + "].writer", value, true);
+                                                                        }}
+                                                                        style={{
+                                                                            "width": "20%"
+                                                                        }}
+                                                                        generateLabel={(e) => e.name}
+                                                                    />
+                                                                </ExpansionPanelSummary>
+                                                            </ExpansionPanel>
+                                                        </div>
+                                                    );
+                                                })
+                                            }
 
                                             <br/>
 
@@ -530,122 +744,248 @@ class IssueCreate extends React.Component {
                                                 <IconButton className="addBtn" aria-label="Hinzufügen"
                                                             onClick={() => {
                                                                 let covers = values.covers;
-                                                                covers.push(covers.length);
+                                                                covers.push({
+                                                                    number: values.cover !== '' ? covers.length : covers.length+1,
+                                                                    parent: {
+                                                                        issue: {
+                                                                            series: {
+                                                                                title: '',
+                                                                                volume: '',
+                                                                                publisher: {
+                                                                                    name: ''
+                                                                                },
+                                                                                number: ''
+                                                                            }
+                                                                        },
+                                                                    },
+                                                                    artist: {
+                                                                        name: ''
+                                                                    },
+                                                                    addinfo: '',
+                                                                    exclusive: false,
+                                                                });
                                                                 setFieldValue("covers", covers, true)
                                                             }}>
                                                     <AddIcon/>
                                                 </IconButton>
                                             </div>
                                             <br/>
-                                            <Card className="createCardBoxes">
-                                                <CardContent>
-                                                    {
-                                                        values.covers.length === 0 ?
-                                                            <Typography className="addWith">Hinzufügen mit
-                                                                '+'</Typography> :
-                                                            null
-                                                    }
-                                                    {values.covers.map((item, index) => {
-                                                        return (
-                                                            <div key={index}>
-                                                                <IconButton className="removeBtn" aria-label="Entfernen"
-                                                                            onClick={() => {
-                                                                                let covers = values.covers.filter((e) => e !== item);
-                                                                                setFieldValue("covers", covers, true)
-                                                                            }}>
-                                                                    <DeleteIcon/>
-                                                                </IconButton>
-
-                                                                <Field
-                                                                    className="field field3"
-                                                                    name="sort"
-                                                                    label="#"
-                                                                    component={TextField}
-                                                                />
-
-                                                                <AutoComplete
-                                                                    query={series}
-                                                                    variables={{publisher: {name: "*", us: true}}}
-                                                                    name="series.title"
-                                                                    label="Serie"
-                                                                    error={touched.series && errors.series}
-                                                                    onChange={(value) => {
-                                                                        setFieldValue("series", value, true);
-                                                                    }}
-                                                                    width="25%"
-                                                                    top="-17px"
-                                                                />
-
-                                                                <Field
-                                                                    className="field field5"
-                                                                    name="volume"
-                                                                    label="Vol."
-                                                                    component={TextField}
-                                                                />
-
-                                                                <Field
-                                                                    className="field field10"
-                                                                    name="number"
-                                                                    label="Nummer"
-                                                                    component={TextField}
-                                                                />
-
-                                                                <Field
-                                                                    className="field field25"
-                                                                    name="addinfo"
-                                                                    label="Weitere Informationen"
-                                                                    component={TextField}
-                                                                />
-
-                                                                <FormControlLabel
-                                                                    className="right exclusiveToggle"
-                                                                    control={
-                                                                        <Switch
-                                                                            value="exklusiv"
-                                                                        />
+                                            {values.covers.length === 0 ?
+                                                <Typography className="noRelationsWarning">Hinzufügen mit '+'</Typography> :
+                                                values.covers.map((item, index) => {
+                                                    return (
+                                                        <div key={index} className="storyAddContainer">
+                                                            <IconButton disabled={values.covers[index].number === 0} className="removeBtn" aria-label="Entfernen"
+                                                                        onClick={() => {
+                                                                            let covers = values.covers.filter((e, i) => i !== index);
+                                                                            setFieldValue("covers", covers, true)
+                                                                        }}>
+                                                                <DeleteIcon/>
+                                                            </IconButton>
+                                                            <ExpansionPanel className="storyAddPanel" key={index} expanded={true}>
+                                                                <ExpansionPanelSummary className="storyAdd">
+                                                                    {
+                                                                        values.covers[index].number === 0 ?
+                                                                            <Field
+                                                                                className="field field3"
+                                                                                name={"covers[" + index + "].number"}
+                                                                                label="#"
+                                                                                disabled
+                                                                                component={TextField}
+                                                                            /> :
+                                                                            <Field
+                                                                                className="field field3"
+                                                                                name={"covers[" + index + "].number"}
+                                                                                label="#"
+                                                                                component={TextField}
+                                                                            />
                                                                     }
-                                                                    label="exklusiv"
-                                                                />
-                                                            </div>
-                                                        );
-                                                    })}
-                                                </CardContent>
-                                            </Card>
+
+                                                                    {
+                                                                        values.covers[index].exclusive ?
+                                                                            <AutoComplete
+                                                                                query={individuals}
+                                                                                name={"covers[" + index + "].artist.name"}
+                                                                                label="Artist"
+                                                                                onChange={(value) => {
+                                                                                    setFieldValue("covers[" + index + "].artist", value, true);
+                                                                                }}
+                                                                                style={{
+                                                                                    "width": "25%"
+                                                                                }}
+                                                                                generateLabel={(e) => e.name}
+                                                                            /> :
+                                                                            (<React.Fragment>
+                                                                                <AutoComplete
+                                                                                    query={series}
+                                                                                    variables={{
+                                                                                        publisher: values.covers[index].parent.issue.series.publisher.name === '' ?
+                                                                                            {name: "*", us: true} :
+                                                                                            {name: values.covers[index].parent.issue.series.publisher.name}
+                                                                                    }}
+                                                                                    name={"covers[" + index + "].parent.issue.series.title"}
+                                                                                    label="Serie"
+                                                                                    onChange={(value) => {
+                                                                                        setFieldValue("covers[" + index + "].parent.issue.series", value, true);
+                                                                                    }}
+                                                                                    style={{
+                                                                                        "width": "25%"
+                                                                                    }}
+                                                                                    generateLabel={generateLabel}
+                                                                                />
+
+                                                                                <Field
+                                                                                    className="field field5"
+                                                                                    name={"covers[" + index + "].parent.issue.series.volume"}
+                                                                                    label="Volume"
+                                                                                    component={TextField}
+                                                                                />
+
+                                                                                <Field
+                                                                                    className="field field10"
+                                                                                    name={"covers[" + index + "].parent.issue.number"}
+                                                                                    label="Nummer"
+                                                                                    component={TextField}
+                                                                                />
+
+                                                                                <Field
+                                                                                    className="field field5"
+                                                                                    name={"covers[" + index + "].parent.issue.variant"}
+                                                                                    label="Variante"
+                                                                                    component={TextField}
+                                                                                />
+
+                                                                                <AutoComplete
+                                                                                    query={publishers}
+                                                                                    variables={{us: true}}
+                                                                                    name={"covers[" + index + "].parent.issue.series.publisher.name"}
+                                                                                    label="Verlag"
+                                                                                    onChange={(value) => {
+                                                                                        setFieldValue("covers[" + index + "].parent.issue.series.publisher", value, true);
+                                                                                    }}
+                                                                                    style={{
+                                                                                        "width": "15%"
+                                                                                    }}
+                                                                                    generateLabel={generateLabel}
+                                                                                />
+                                                                            </React.Fragment>)
+                                                                    }
+
+                                                                    <Field
+                                                                        className="field field25"
+                                                                        name={"covers[" + index + "].addinfo"}
+                                                                        label="Weitere Informationen"
+                                                                        component={TextField}
+                                                                    />
+
+                                                                    <FormControlLabel
+                                                                        className="exclusiveToggle"
+                                                                        control={
+                                                                            <Switch
+                                                                                checked={values.covers[index].exclusive}
+                                                                                onChange={() => {
+                                                                                    setFieldValue("covers["+ index + "]",
+                                                                                    {
+                                                                                        number: values.covers[index].number,
+                                                                                        parent: {
+                                                                                            issue: {
+                                                                                                series: {
+                                                                                                    title: '',
+                                                                                                    volume: '',
+                                                                                                    publisher: {
+                                                                                                        name: ''
+                                                                                                    },
+                                                                                                    number: ''
+                                                                                                }
+                                                                                            },
+                                                                                        },
+                                                                                        artist: {
+                                                                                            name: ''
+                                                                                        },
+                                                                                        addinfo: '',
+                                                                                        exclusive: !values.covers[index].exclusive,
+                                                                                    })
+                                                                                }}
+                                                                                value="exclusive"
+                                                                            />
+                                                                        }
+                                                                        label="exklusiv"
+                                                                    />
+                                                                </ExpansionPanelSummary>
+                                                            </ExpansionPanel>
+                                                        </div>
+                                                    );
+                                                })
+                                            }
+
+
+                                            <br/>
                                             <br/>
 
-                                            <Button disabled={isSubmitting}
-                                                    onClick={() => {
-                                                        values = {
-                                                            title: '',
-                                                            series: {
-                                                                title: values.series.title,
-                                                                volume: values.series.volume,
-                                                                publisher: {
-                                                                    name: values.series.publisher.name
-                                                                }
-                                                            },
-                                                            number: '',
-                                                            cover: '',
-                                                            format: '',
-                                                            variant: '',
-                                                            limitation: '',
-                                                            pages: '',
-                                                            releasedate: '',
-                                                            price: '',
-                                                            currency: 'EUR',
-                                                            addinfo: ''
-                                                        };
-                                                        resetForm();
-                                                    }}
-                                                    color="secondary">
-                                                Zurücksetzen
-                                            </Button>
-                                            <Button
-                                                disabled={isSubmitting}
-                                                onClick={submitForm}
-                                                color="primary">
-                                                Erstellen
-                                            </Button>
+                                            <div className="formButtons">
+                                                <Button disabled={isSubmitting}
+                                                        onClick={() => {
+                                                            values = {
+                                                                title: '',
+                                                                series: {
+                                                                    title: '',
+                                                                    volume: '',
+                                                                    publisher: {
+                                                                        name: ''
+                                                                    }
+                                                                },
+                                                                number: '',
+                                                                variant: '',
+                                                                cover: '',
+                                                                format: '',
+                                                                limitation: '',
+                                                                pages: '',
+                                                                releasedate: '',
+                                                                price: '',
+                                                                currency: 'EUR',
+                                                                addinfo: '',
+                                                                stories: [],
+                                                                features: [],
+                                                                covers: [{
+                                                                    number: 0,
+                                                                    issue: {
+                                                                        series: {
+                                                                            title: '',
+                                                                            volume: '',
+                                                                            publisher: {
+                                                                                name: ''
+                                                                            },
+                                                                            number: ''
+                                                                        }
+                                                                    },
+                                                                    artist: {
+                                                                        name: ''
+                                                                    },
+                                                                    addinfo: '',
+                                                                    exclusive: false,
+                                                                }]
+                                                            };
+                                                            resetForm();
+                                                        }}
+                                                        color="secondary">
+                                                    Zurücksetzen
+                                                </Button>
+
+                                                <Button disabled={isSubmitting}
+                                                        component={Link}
+                                                        to={this.props.lastLocation ? this.props.lastLocation : "/"}
+                                                        color="primary">
+                                                    Abbrechen
+                                                </Button>
+
+                                                <Button
+                                                    className="createButton"
+                                                    disabled={isSubmitting}
+                                                    onClick={submitForm}
+                                                    color="primary">
+                                                    Erstellen
+                                                </Button>
+                                            </div>
                                         </CardContent>
                                     </Form>
                                 )
