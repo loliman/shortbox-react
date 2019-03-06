@@ -59,7 +59,6 @@ export const IssueSchema = Yup.object().shape({
         .required('Pflichtfeld')
         .max(255, 'Maximal 255 Zeichen'),
     format: Yup.string()
-        .required('Pflichtfeld')
         .max(255, 'Maximal 255 Zeichen'),
     variant: Yup.string()
         .max(255, 'Maximal 255 Zeichen'),
@@ -79,17 +78,15 @@ export const IssueSchema = Yup.object().shape({
             .required('Pflichtfeld')
             .integer("Bitte geben Sie eine Zahl ein"),
         parent: Yup.object().shape({
-            issue: Yup.object().shape({
+            issue: Yup.object()
+                .shape({
                 series: Yup.object().shape({
                     title: Yup.string()
-                        .required('Pflichtfeld')
                         .max(255, 'Maximal 255 Zeichen'),
                     volume: Yup.number("Bitte geben Sie eine Zahl ein")
-                        .required("Pflichtfeld")
                         .integer("Bitte geben Sie eine Zahl ein")
                 }),
                 number: Yup.string()
-                    .required('Pflichtfeld')
                     .max(255, 'Maximal 255 Zeichen')
             }),
             number: Yup.number("Bitte geben Sie eine Zahl ein")
@@ -127,6 +124,7 @@ export const IssueSchema = Yup.object().shape({
             .max(255, 'Maximal 255 Zeichen'),
         addinfo: Yup.string()
             .max(2500, 'Maximal 2500 Zeichen'),
+        exclusive: Yup.boolean()
     })),
     features: Yup.array().of(Yup.object().shape({
         number: Yup.number("Bitte geben Sie eine Zahl ein")
@@ -149,14 +147,11 @@ export const IssueSchema = Yup.object().shape({
             issue: Yup.object().shape({
                 series: Yup.object().shape({
                     title: Yup.string()
-                        .required('Pflichtfeld')
                         .max(255, 'Maximal 255 Zeichen'),
                     volume: Yup.number("Bitte geben Sie eine Zahl ein")
-                        .required("Pflichtfeld")
                         .integer("Bitte geben Sie eine Zahl ein")
                 }),
                 number: Yup.string()
-                    .required('Pflichtfeld')
                     .max(255, 'Maximal 255 Zeichen'),
                 variant: Yup.string()
                     .max(255, 'Maximal 255 Zeichen')

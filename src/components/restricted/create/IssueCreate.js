@@ -5,7 +5,7 @@ import CardContent from "@material-ui/core/CardContent/CardContent";
 import {Mutation} from "react-apollo";
 import {createIssue} from "../../../graphql/mutations";
 import {Field, Form, Formik} from 'formik';
-import {SimpleFileUpload, TextField} from 'formik-material-ui';
+import {TextField} from 'formik-material-ui';
 import Button from "@material-ui/core/Button/Button";
 import {individuals, issues, publishers, series} from "../../../graphql/queries";
 import {generateLabel, generateUrl} from "../../../util/hierarchy";
@@ -24,13 +24,16 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel";
 import Link from "react-router-dom/es/Link";
+import {stripItem} from "../../../util/util";
+import SimpleFileUpload from "../../generic/SimpleFileUpload";
 
 class IssueCreate extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            isCoverOpen: false
+            isCoverOpen: false,
+            cover: null
         };
     }
     
@@ -108,10 +111,10 @@ class IssueCreate extends React.Component {
                                             number: values.number,
                                             cover: values.cover,
                                             format: values.format,
-                                            limitation: values.limitation,
+                                            limitation: parseInt(values.limitation),
                                             pages: parseInt(values.pages),
                                             releasedate: values.releasedate,
-                                            price: parseFloat(values.price),
+                                            price: values.price + '',
                                             currency: values.currency,
                                             addinfo: values.addinfo,
                                             stories: values.stories,
@@ -124,8 +127,9 @@ class IssueCreate extends React.Component {
                                 actions.setSubmitting(false);
                                 if (error)
                                     actions.resetForm();
-                            }}>
-                            {({resetForm, submitForm, isSubmitting, values, setFieldValue, touched, errors}) => {
+                            }}
+                            on>
+                            {({resetForm, submitForm, isSubmitting, values, setFieldValue}) => {
                                 if(values.cover !== '' && !values.covers.find(e => e.number === 0))
                                     values.covers.unshift({
                                         number: 0,
@@ -138,8 +142,9 @@ class IssueCreate extends React.Component {
                                                         name: ''
                                                     },
                                                     number: ''
-                                                }
+                                                },
                                             },
+                                            number: 0
                                         },
                                         artist: {
                                             name: ''
@@ -157,24 +162,24 @@ class IssueCreate extends React.Component {
 
                                         <CardContent className="cardContent">
                                             {
-                                                values.cover !== '' ?
+                                                this.state.cover !== null ?
                                                     <div className="right field50">
                                                         <CardMedia
-                                                            image={this.createPreview(values.cover)}
+                                                            image={this.state.cover}
                                                             title="Cover Vorschau"
                                                             className="media field100"
                                                             onClick={() => this.triggerCoverIsOpen()}/>
 
                                                         <Lightbox
                                                             showImageCount={false}
-                                                            images={[{src: this.createPreview(values.cover)}]}
+                                                            images={[{src: this.state.cover}]}
                                                             isOpen={this.state.isCoverOpen}
                                                             onClose={() => this.triggerCoverIsOpen()}/>
 
                                                         <IconButton className="removeBtnCover" aria-label="Entfernen"
                                                                     onClick={() => {
-                                                                        console.log('delete');
-                                                                        setFieldValue('cover', '', true)
+                                                                        setFieldValue('cover', '', true);
+                                                                        this.setState({cover: null});
                                                                     }}>
                                                             <DeleteIcon/>
                                                         </IconButton>
@@ -245,8 +250,8 @@ class IssueCreate extends React.Component {
                                                 <Field
                                                     name="cover"
                                                     label="Cover"
-                                                    className="field field35"
                                                     component={SimpleFileUpload}
+                                                    onChange={(e) => this.createPreview(e)}
                                                 />
                                             </div>
 
@@ -396,7 +401,7 @@ class IssueCreate extends React.Component {
                                                                     letterer: {
                                                                         name: ''
                                                                     },
-                                                                    editors: {
+                                                                    editor: {
                                                                         name: ''
                                                                     },
                                                                     translator: {
@@ -443,7 +448,7 @@ class IssueCreate extends React.Component {
                                                                                 name={"stories[" + index + "].writer.name"}
                                                                                 label="Autor"
                                                                                 onChange={(value) => {
-                                                                                    setFieldValue("stories[" + index + "].writer", value, true);
+                                                                                    setFieldValue("stories[" + index + "].writer", stripItem(value), true);
                                                                                 }}
                                                                                 style={{
                                                                                     "width": "20%"
@@ -456,7 +461,7 @@ class IssueCreate extends React.Component {
                                                                                 name={"stories[" + index + "].penciler.name"}
                                                                                 label="Zeichner"
                                                                                 onChange={(value) => {
-                                                                                    setFieldValue("stories[" + index + "].penciler", value, true);
+                                                                                    setFieldValue("stories[" + index + "].penciler", stripItem(value), true);
                                                                                 }}
                                                                                 style={{
                                                                                     "width": "20%"
@@ -469,7 +474,7 @@ class IssueCreate extends React.Component {
                                                                                 name={"stories[" + index + "].inker.name"}
                                                                                 label="Inker"
                                                                                 onChange={(value) => {
-                                                                                    setFieldValue("stories[" + index + "].inker", value, true);
+                                                                                    setFieldValue("stories[" + index + "].inker", stripItem(value), true);
                                                                                 }}
                                                                                 style={{
                                                                                     "width": "20%"
@@ -482,7 +487,7 @@ class IssueCreate extends React.Component {
                                                                                 name={"stories[" + index + "].colourist.name"}
                                                                                 label="Kolorist"
                                                                                 onChange={(value) => {
-                                                                                    setFieldValue("stories[" + index + "].colourist", value, true);
+                                                                                    setFieldValue("stories[" + index + "].colourist", stripItem(value), true);
                                                                                 }}
                                                                                 style={{
                                                                                     "width": "20%"
@@ -495,7 +500,7 @@ class IssueCreate extends React.Component {
                                                                                 name={"stories[" + index + "].letterer.name"}
                                                                                 label="Letterer"
                                                                                 onChange={(value) => {
-                                                                                    setFieldValue("stories[" + index + "].letterer", value, true);
+                                                                                    setFieldValue("stories[" + index + "].letterer", stripItem(value), true);
                                                                                 }}
                                                                                 style={{
                                                                                     "width": "20%"
@@ -508,7 +513,7 @@ class IssueCreate extends React.Component {
                                                                                 name={"stories[" + index + "].editor.name"}
                                                                                 label="Editor"
                                                                                 onChange={(value) => {
-                                                                                    setFieldValue("stories[" + index + "].editor", value, true);
+                                                                                    setFieldValue("stories[" + index + "].editor", stripItem(value), true);
                                                                                 }}
                                                                                 style={{
                                                                                     "width": "20%"
@@ -527,7 +532,7 @@ class IssueCreate extends React.Component {
                                                                                 name={"stories[" + index + "].parent.issue.series.title"}
                                                                                 label="Serie"
                                                                                 onChange={(value) => {
-                                                                                    setFieldValue("stories[" + index + "].parent.issue.series", value, true);
+                                                                                    setFieldValue("stories[" + index + "].parent.issue.series", stripItem(value), true);
                                                                                 }}
                                                                                 style={{
                                                                                     "width": "25%"
@@ -548,7 +553,7 @@ class IssueCreate extends React.Component {
                                                                                 name={"stories[" + index + "].parent.issue.series.publisher.name"}
                                                                                 label="Verlag"
                                                                                 onChange={(value) => {
-                                                                                    setFieldValue("stories[" + index + "].parent.issue.series.publisher", value, true);
+                                                                                    setFieldValue("stories[" + index + "].parent.issue.series.publisher", stripItem(value), true);
                                                                                 }}
                                                                                 style={{
                                                                                     "width": "15%"
@@ -567,6 +572,7 @@ class IssueCreate extends React.Component {
                                                                                 className="field field10"
                                                                                 name={"stories[" + index + "].parent.number"}
                                                                                 label="#"
+                                                                                type="number"
                                                                                 component={TextField}
                                                                             />
 
@@ -576,7 +582,7 @@ class IssueCreate extends React.Component {
                                                                                 name={"stories[" + index + "].translator.name"}
                                                                                 label="Übersetzer"
                                                                                 onChange={(value) => {
-                                                                                    setFieldValue("stories[" + index + "].translator", value, true);
+                                                                                    setFieldValue("stories[" + index + "].translator", stripItem(value), true);
                                                                                 }}
                                                                                 style={{
                                                                                     "width": "20%"
@@ -606,47 +612,7 @@ class IssueCreate extends React.Component {
                                                                             <Switch
                                                                                 checked={values.stories[index].exclusive}
                                                                                 onChange={() => {
-                                                                                    setFieldValue("stories["+ index + "]",
-                                                                                        {
-                                                                                            number: values.stories[index].number,
-                                                                                            parent: {
-                                                                                                issue: {
-                                                                                                    series: {
-                                                                                                        title: '',
-                                                                                                        volume: '',
-                                                                                                        publisher: {
-                                                                                                            name: ''
-                                                                                                        },
-                                                                                                        number: ''
-                                                                                                    }
-                                                                                                },
-                                                                                                number: ''
-                                                                                            },
-                                                                                            writer: {
-                                                                                                name: ''
-                                                                                            },
-                                                                                            penciler: {
-                                                                                                name: ''
-                                                                                            },
-                                                                                            inker: {
-                                                                                                name: ''
-                                                                                            },
-                                                                                            colourist: {
-                                                                                                name: ''
-                                                                                            },
-                                                                                            letterer: {
-                                                                                                name: ''
-                                                                                            },
-                                                                                            editors: {
-                                                                                                name: ''
-                                                                                            },
-                                                                                            translator: {
-                                                                                                name: ''
-                                                                                            },
-                                                                                            title: '',
-                                                                                            addinfo: '',
-                                                                                            exclusive: !values.stories[index].exclusive,
-                                                                                        })
+                                                                                    setFieldValue("stories["+ index + "].exclusive", !values.stories[index].exclusive)
                                                                                 }}
                                                                                 value="exclusive"
                                                                             />
@@ -723,7 +689,7 @@ class IssueCreate extends React.Component {
                                                                         name={"features[" + index + "].writer.name"}
                                                                         label="Autor"
                                                                         onChange={(value) => {
-                                                                            setFieldValue("features[" + index + "].writer", value, true);
+                                                                            setFieldValue("features[" + index + "].writer", stripItem(value), true);
                                                                         }}
                                                                         style={{
                                                                             "width": "20%"
@@ -757,6 +723,7 @@ class IssueCreate extends React.Component {
                                                                                 number: ''
                                                                             }
                                                                         },
+                                                                        number: 0
                                                                     },
                                                                     artist: {
                                                                         name: ''
@@ -808,7 +775,7 @@ class IssueCreate extends React.Component {
                                                                                 name={"covers[" + index + "].artist.name"}
                                                                                 label="Artist"
                                                                                 onChange={(value) => {
-                                                                                    setFieldValue("covers[" + index + "].artist", value, true);
+                                                                                    setFieldValue("covers[" + index + "].artist", stripItem(value), true);
                                                                                 }}
                                                                                 style={{
                                                                                     "width": "25%"
@@ -826,7 +793,7 @@ class IssueCreate extends React.Component {
                                                                                     name={"covers[" + index + "].parent.issue.series.title"}
                                                                                     label="Serie"
                                                                                     onChange={(value) => {
-                                                                                        setFieldValue("covers[" + index + "].parent.issue.series", value, true);
+                                                                                        setFieldValue("covers[" + index + "].parent.issue.series", stripItem(value), true);
                                                                                     }}
                                                                                     style={{
                                                                                         "width": "25%"
@@ -861,7 +828,7 @@ class IssueCreate extends React.Component {
                                                                                     name={"covers[" + index + "].parent.issue.series.publisher.name"}
                                                                                     label="Verlag"
                                                                                     onChange={(value) => {
-                                                                                        setFieldValue("covers[" + index + "].parent.issue.series.publisher", value, true);
+                                                                                        setFieldValue("covers[" + index + "].parent.issue.series.publisher", stripItem(value), true);
                                                                                     }}
                                                                                     style={{
                                                                                         "width": "15%"
@@ -884,27 +851,7 @@ class IssueCreate extends React.Component {
                                                                             <Switch
                                                                                 checked={values.covers[index].exclusive}
                                                                                 onChange={() => {
-                                                                                    setFieldValue("covers["+ index + "]",
-                                                                                    {
-                                                                                        number: values.covers[index].number,
-                                                                                        parent: {
-                                                                                            issue: {
-                                                                                                series: {
-                                                                                                    title: '',
-                                                                                                    volume: '',
-                                                                                                    publisher: {
-                                                                                                        name: ''
-                                                                                                    },
-                                                                                                    number: ''
-                                                                                                }
-                                                                                            },
-                                                                                        },
-                                                                                        artist: {
-                                                                                            name: ''
-                                                                                        },
-                                                                                        addinfo: '',
-                                                                                        exclusive: !values.covers[index].exclusive,
-                                                                                    })
+                                                                                    setFieldValue("covers["+ index + "].exclusive", !values.covers[index].exclusive)
                                                                                 }}
                                                                                 value="exclusive"
                                                                             />
@@ -1002,7 +949,10 @@ class IssueCreate extends React.Component {
     }
 
     createPreview(file) {
-        return URL.createObjectURL(file);
+        this.setState({
+            cover: URL.createObjectURL(file),
+            coverName: file.name
+        });
     }
 }
 

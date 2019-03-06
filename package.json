@@ -10,6 +10,7 @@
     "apollo-client": "^2.5.1",
     "apollo-link-context": "^1.0.14",
     "apollo-link-http": "^1.5.11",
+    "apollo-upload-client": "^10.0.0",
     "formik": "^1.5.1",
     "formik-material-ui": "0.0.16",
     "graphql": "^14.1.1",

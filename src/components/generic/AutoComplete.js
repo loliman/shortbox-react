@@ -147,10 +147,10 @@ class AutoCompleteContainer extends React.Component {
     getSuggestions = (value) => {
         const inputValue = value.trim().toLowerCase();
 
-        return inputValue.length === 0 ? [] :
+        return inputValue.length === 0 || !this.props.suggestions ? [] :
             this.props.suggestions.filter(suggestion => {
                 return this.props.generateLabel(suggestion).toLowerCase().indexOf(inputValue) !== -1;
-            });
+            }).slice(0, 49);
     };
 
     renderSuggestion = (suggestion, { query, isHighlighted }) => {
