@@ -18,8 +18,10 @@ function DeletionDialog(props) {
     const {item, open, handleClose, history, enqueueSnackbar, us} = props;
 
     let parent;
-    if (item.__typename === "Issue")
+    if (item.__typename === "Issue") {
         parent = {series: item.series};
+        parent.series.publisher.us = undefined;
+    }
     else if (item.__typename === "Series") {
         parent = {publisher: item.publisher};
         parent.publisher.us = undefined;
@@ -64,7 +66,6 @@ function DeletionDialog(props) {
                                       data: data
                                   });
                               } catch (e) {
-                                  console.error(e)
                                   //ignore cache exception;
                               }
                           }}
@@ -84,9 +85,21 @@ function DeletionDialog(props) {
                           }}>
                     {(deleteMutation) => (
                         <Button color="secondary" onClick={() => {
+                            let toDelete = {};
+                            if(level === HierarchyLevel.ISSUE) {
+                                toDelete.number = item.number;
+                                toDelete.series = item.series;
+                                toDelete.format = item.format;
+                                toDelete.variant = item.variant;
+                            }
+                            else
+                                toDelete = item;
+
+                            console.log( stripItem(toDelete));
+
                             deleteMutation({
                                 variables: {
-                                    item: stripItem(item)
+                                    item: stripItem(toDelete)
                                 }
                             })
                         }}>

@@ -26,13 +26,16 @@ export const SeriesSchema = Yup.object().shape({
     }),
     volume: Yup.number("Bitte geben Sie eine Zahl ein")
         .required("Pflichtfeld")
+        .min(1, "Das Volume muss größer 0 sein")
         .integer("Bitte geben Sie eine Zahl ein"),
     startyear: Yup.number("Bitte geben Sie eine Zahl ein")
         .min(1900, "Das Jahr muss größer als 1900 sein")
+        .max(2999, "Dsa Jahr darf nicht größer als 2999 sein")
         .required("Pflichtfeld")
         .integer("Bitte geben Sie eine Zahl ein"),
     endyear: Yup.number("Bitte geben Sie eine Zahl ein")
         .min(Yup.ref('startyear'), "Das Jahr muss mindest dem Startjahr entsprechen")
+        .max(2999, "Dsa Jahr darf nicht größer als 2999 sein")
         .integer("Bitte geben Sie eine Zahl ein"),
     addinfo: Yup.string()
         .max(2500, 'Maximal 2500 Zeichen')
@@ -48,6 +51,7 @@ export const IssueSchema = Yup.object().shape({
             .max(255, 'Maximal 255 Zeichen'),
         volume: Yup.number("Bitte geben Sie eine Zahl ein")
             .required("Pflichtfeld")
+            .min(1, "Das Volume muss größer 0 sein")
             .integer("Bitte geben Sie eine Zahl ein"),
         publisher: Yup.object().shape({
             name: Yup.string()
@@ -67,8 +71,7 @@ export const IssueSchema = Yup.object().shape({
     pages: Yup.number("Bitte geben Sie eine Zahl ein")
         .integer("Bitte geben Sie eine Zahl ein"),
     releasedate: Yup.date(),
-    price: Yup.number("Bitte geben Sie eine Zahl ein")
-        .integer("Bitte geben Sie eine Zahl ein"),
+    price: Yup.number("Bitte geben Sie eine Zahl ein. Also Komma bitte den Punkt verwenden"),
     currency: Yup.string()
         .max(3, 'Maximal 3 Zeichen'),
     addinfo: Yup.string()

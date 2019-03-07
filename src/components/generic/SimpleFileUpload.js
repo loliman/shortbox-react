@@ -4,7 +4,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
 
 export default function SimpleFileUpload(props) {
-    const {label, field, form: { isSubmitting, setFieldValue }, disabled, onChange } = props;
+    const { label, field, form: { isSubmitting, setFieldValue }, disabled, onChange } = props;
 
     return (
         <div>

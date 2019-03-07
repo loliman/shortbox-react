@@ -44,22 +44,43 @@ class IssueCreate extends React.Component {
             <Layout>
                 <Mutation mutation={createIssue}
                           update={(cache, result) => {
-                              let data = cache.readQuery({
-                                  query: issues,
-                                  variables: result.data.createIssue.series
-                              });
+                              try {
+                                  let data = cache.readQuery({
+                                      query: issues,
+                                      variables: {
+                                          series: {
+                                              title: result.data.createIssue.series.title,
+                                              volume: result.data.createIssue.series.volume,
+                                              publisher: {
+                                                  name: result.data.createIssue.series.publisher.name
+                                              }
+                                          }
+                                      }
+                                  });
 
-                              data.series.push(result.data.createIssue);
-                              data.series.sort((a, b) => {
-                                  return (a.series.title.toLowerCase() + a.number)
-                                      .localeCompare((b.series.title.toLowerCase() + b.number));
-                              });
+                                  if (data.issues.filter(e => e.number === result.data.createIssue.number).length === 0) {
+                                      data.issues.push(result.data.createIssue);
+                                      data.issues.sort((a, b) => {
+                                          return (a.number).localeCompare((b.number));
+                                      });
 
-                              cache.writeQuery({
-                                  query: issues,
-                                  variables: result.data.createIssue.series,
-                                  data: data
-                              });
+                                      cache.writeQuery({
+                                          query: issues,
+                                          variables: {
+                                              series: {
+                                                  title: result.data.createIssue.series.title,
+                                                  volume: result.data.createIssue.series.volume,
+                                                  publisher: {
+                                                      name: result.data.createIssue.series.publisher.name
+                                                  }
+                                              }
+                                          },
+                                          data: data
+                                      });
+                                  }
+                              } catch (e) {
+                                  //ignore cache exception;
+                              }
                           }}
                           onCompleted={(data) => {
                               enqueueSnackbar(generateLabel(data.createIssue) + " erfolgreich erstellt", {variant: 'success'});
@@ -74,7 +95,7 @@ class IssueCreate extends React.Component {
                                 title: '',
                                 series: {
                                     title: '',
-                                    volume: '',
+                                    volume: 0,
                                     publisher: {
                                         name: ''
                                     }
@@ -83,9 +104,9 @@ class IssueCreate extends React.Component {
                                 variant: '',
                                 cover: '',
                                 format: '',
-                                limitation: '',
-                                pages: '',
-                                releasedate: '',
+                                limitation: 0,
+                                pages: 0,
+                                releasedate: '01-01-1900',
                                 price: '',
                                 currency: 'EUR',
                                 addinfo: '',
@@ -96,6 +117,31 @@ class IssueCreate extends React.Component {
                             validationSchema={IssueSchema}
                             onSubmit={async (values, actions) => {
                                 actions.setSubmitting(true);
+
+                                let stories = values.stories.map(e => {
+                                    if(e.exclusive) {
+                                        e.parent = undefined;
+                                    } else {
+                                        e.writer = undefined;
+                                        e.penciler = undefined;
+                                        e.inker = undefined;
+                                        e.colourist = undefined;
+                                        e.letter = undefined;
+                                        e.editor = undefined;
+                                    }
+
+                                    return e;
+                                });
+
+                                let covers = values.covers.map(e => {
+                                    if(e.exclusive) {
+                                        e.parent = undefined;
+                                    } else {
+                                        e.artist = undefined;
+                                    }
+
+                                    return e;
+                                });
 
                                 await createIssue({
                                     variables: {
@@ -111,15 +157,16 @@ class IssueCreate extends React.Component {
                                             number: values.number,
                                             cover: values.cover,
                                             format: values.format,
-                                            limitation: parseInt(values.limitation),
-                                            pages: parseInt(values.pages),
+                                            variant: values.variant,
+                                            limitation: values.limitation,
+                                            pages: values.pages,
                                             releasedate: values.releasedate,
                                             price: values.price + '',
                                             currency: values.currency,
                                             addinfo: values.addinfo,
-                                            stories: values.stories,
+                                            stories: stories,
                                             features: values.features,
-                                            covers: values.covers
+                                            covers: covers
                                         }
                                     }
                                 });
@@ -137,7 +184,7 @@ class IssueCreate extends React.Component {
                                             issue: {
                                                 series: {
                                                     title: '',
-                                                    volume: '',
+                                                    volume: 0,
                                                     publisher: {
                                                         name: ''
                                                     },
@@ -323,6 +370,7 @@ class IssueCreate extends React.Component {
                                                 name="releasedate"
                                                 label="Erscheinungsdatum"
                                                 type="date"
+                                                InputLabelProps={{ shrink: true }}
                                                 component={TextField}
                                             />
                                             <br/>
@@ -330,7 +378,6 @@ class IssueCreate extends React.Component {
                                                 className="field field25"
                                                 name="price"
                                                 label="Preis"
-                                                type="number"
                                                 component={TextField}
                                             />
 
@@ -377,14 +424,14 @@ class IssueCreate extends React.Component {
                                                                         issue: {
                                                                             series: {
                                                                                 title: '',
-                                                                                volume: '',
+                                                                                volume: 0,
                                                                                 publisher: {
                                                                                     name: ''
                                                                                 },
                                                                                 number: ''
                                                                             }
                                                                         },
-                                                                        number: ''
+                                                                        number: 0
                                                                     },
                                                                     writer: {
                                                                         name: ''
@@ -544,6 +591,7 @@ class IssueCreate extends React.Component {
                                                                                 className="field field5"
                                                                                 name={"stories[" + index + "].parent.issue.series.volume"}
                                                                                 label="Volume"
+                                                                                type="number"
                                                                                 component={TextField}
                                                                             />
 
@@ -716,7 +764,7 @@ class IssueCreate extends React.Component {
                                                                         issue: {
                                                                             series: {
                                                                                 title: '',
-                                                                                volume: '',
+                                                                                volume: 0,
                                                                                 publisher: {
                                                                                     name: ''
                                                                                 },
@@ -805,6 +853,7 @@ class IssueCreate extends React.Component {
                                                                                     className="field field5"
                                                                                     name={"covers[" + index + "].parent.issue.series.volume"}
                                                                                     label="Volume"
+                                                                                    type="number"
                                                                                     component={TextField}
                                                                                 />
 
@@ -876,7 +925,7 @@ class IssueCreate extends React.Component {
                                                                 title: '',
                                                                 series: {
                                                                     title: '',
-                                                                    volume: '',
+                                                                    volume: 0,
                                                                     publisher: {
                                                                         name: ''
                                                                     }
@@ -885,32 +934,15 @@ class IssueCreate extends React.Component {
                                                                 variant: '',
                                                                 cover: '',
                                                                 format: '',
-                                                                limitation: '',
-                                                                pages: '',
-                                                                releasedate: '',
+                                                                limitation: 0,
+                                                                pages: 0,
+                                                                releasedate: '01-01-1900',
                                                                 price: '',
                                                                 currency: 'EUR',
                                                                 addinfo: '',
                                                                 stories: [],
                                                                 features: [],
-                                                                covers: [{
-                                                                    number: 0,
-                                                                    issue: {
-                                                                        series: {
-                                                                            title: '',
-                                                                            volume: '',
-                                                                            publisher: {
-                                                                                name: ''
-                                                                            },
-                                                                            number: ''
-                                                                        }
-                                                                    },
-                                                                    artist: {
-                                                                        name: ''
-                                                                    },
-                                                                    addinfo: '',
-                                                                    exclusive: false,
-                                                                }]
+                                                                covers: []
                                                             };
                                                             resetForm();
                                                         }}

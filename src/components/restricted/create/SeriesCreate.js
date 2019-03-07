@@ -63,9 +63,9 @@ function SeriesCreate(props) {
                             publisher: {
                               name: ''
                             },
-                            volume: '',
-                            startyear: '',
-                            endyear: '',
+                            volume: 0,
+                            startyear: 0,
+                            endyear: 0,
                             addinfo: ''
                         }}
                         validationSchema={SeriesSchema}
@@ -81,7 +81,7 @@ function SeriesCreate(props) {
                                         },
                                         volume: values.volume,
                                         startyear: values.startyear,
-                                        endyear: parseInt(values.endyear),
+                                        endyear: values.endyear,
                                         addinfo: values.addinfo
                                     }
                                 }
@@ -140,6 +140,7 @@ function SeriesCreate(props) {
                                         className="field field35"
                                         name="endyear"
                                         label="Endjahr"
+                                        type="number"
                                         component={TextField}
                                     />
                                     <br/>
@@ -162,9 +163,9 @@ function SeriesCreate(props) {
                                                         publisher: {
                                                             name: ''
                                                         },
-                                                        volume: '',
-                                                        startyear: '',
-                                                        endyear: '',
+                                                        volume: 0,
+                                                        startyear: 0,
+                                                        endyear: 0,
                                                         addinfo: ''
                                                     };
                                                     resetForm();

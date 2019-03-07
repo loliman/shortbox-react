@@ -52,7 +52,7 @@ function IssueDetails(props) {
                                                 {issue.verified ?
                                                     <img className="verifiedBadge" src="/verified_badge.png"
                                                          alt="verifiziert" height="35"/> : null}
-                                                <EditButton/>
+                                                <EditButton item={data.issue}/>
                                             </div>
                                         }/>
 
@@ -115,7 +115,7 @@ class IssueDetailsCover extends React.Component {
     render() {
         const {issue} = this.props;
 
-        let coverUrl = issue.cover.url !== '' ? issue.cover.url : "nocover.jpg";
+        let coverUrl = (issue.cover && issue.cover.url && issue.cover.url !== '') ? issue.cover.url : "/nocover.jpg";
 
         return (
             <React.Fragment>
@@ -287,9 +287,11 @@ function IssueDetailsVariants(props) {
 }
 
 function IssueDetailsVariant(props) {
+    let coverUrl = (props.variant.cover && props.variant.cover.url && props.variant.cover.url !== '') ? props.variant.cover.url : "/nocover.jpg";
+
     return (
         <GridListTile component={Link} to={props.to} className="tile">
-            <img src={props.variant.cover.url}
+            <img src={coverUrl}
                  alt={props.variant.variant + ' (' + props.variant.format + ')'}/>
             <GridListTileBar
                 title={(props.variant.variant ? props.variant.variant : 'Reguläre Ausgabe') + ' (' + props.variant.format + ')'}

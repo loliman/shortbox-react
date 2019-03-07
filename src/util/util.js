@@ -27,7 +27,7 @@ export function stripItem(item) {
     if (stripped.series) {
         stripped.series.id = undefined;
         stripped.series.__resolveType = undefined;
-        stripped.series__typename = undefined;
+        stripped.series.__typename = undefined;
         stripped.series.publisher.id = undefined;
         stripped.series.publisher.__resolveType = undefined;
         stripped.series.publisher.__typename = undefined;
