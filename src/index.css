@@ -32,14 +32,6 @@
     text-decoration: none;
 }
 
-.content {
-    flex-grow: 1 !important;
-    margin-left: 20%;
-    transition: ease-in 150ms;
-    margin-top: 64px;
-    z-index: 1000 !important;
-}
-
 #drawer {
     z-index: 999 !important;
 }
@@ -81,18 +73,19 @@
     height: calc(99vh - 90px);
 }
 
+.content {
+    flex-grow: 1 !important;
+    transition: ease-in 150ms;
+    margin-top: 64px;
+    z-index: 1000 !important;
+}
+
 .contentShift {
     flex-grow: 1 !important;
     margin-left: 0;
     transition: ease-out 200ms;
     margin-top: 64px;
     z-index: 1000 !important;
-}
-
-.footer {
-    padding-top: 4px;
-    padding-right: 4px;
-    float: right;
 }
 
 .footer > a {
@@ -114,8 +107,298 @@
     text-decoration: none;
 }
 
-/*MOBILE*/
-@media (max-width: 600px) {
+/*
+  ##Device = Desktops
+  ##Screen = 1281px to higher resolution desktops
+*/
+@media (min-width: 1281px) {
+    .content {
+        margin-top: 64px;
+        z-index: 1000 !important;
+    }
+
+    .contentShift {
+        margin-top: 64px !important;
+    }
+
+    .media {
+        height: 400px !important;
+        width: 25% !important;
+    }
+
+    .issuePreview {
+        margin-bottom: 10px;
+        min-width: 40vw;
+        max-width: 40vw;
+    }
+
+    #drawer {
+        z-index: 999 !important;
+    }
+
+    #drawer > div {
+        width: 20% !important;
+        margin-top: 64px !important;
+        height: calc(99vh - 80px);
+    }
+
+    .appTitle {
+        max-width: 72%;
+    }
+
+    .details {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        padding-bottom: 2% !important;
+    }
+
+    .content {
+        margin-left: 20%;
+    }
+
+    .footer {
+        padding-top: 4px;
+        padding-right: 4px;
+        float: right;
+    }
+
+    .exclusiveToggle {
+        margin-top: 6px !important;
+        margin-left: auto !important;
+    }
+}
+
+/*
+  ##Device = Laptops, Desktops
+  ##Screen = B/w 1025px to 1280px
+*/
+@media (min-width: 1025px) and (max-width: 1280px) {
+    .content {
+        margin-top: 64px;
+        z-index: 1000 !important;
+    }
+
+    .contentShift {
+        margin-top: 64px !important;
+    }
+
+    .media {
+        height: 400px !important;
+        width: 25% !important;
+    }
+
+    .issuePreview {
+        margin-bottom: 10px;
+        min-width: 40vw;
+        max-width: 40vw;
+    }
+
+    #drawer {
+        z-index: 999 !important;
+    }
+
+    #drawer > div {
+        width: 20% !important;
+        margin-top: 64px !important;
+        height: calc(99vh - 80px);
+    }
+
+    .appTitle {
+        max-width: 72%;
+    }
+
+    .details {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        padding-bottom: 2% !important;
+    }
+
+    .content {
+        margin-left: 20%;
+    }
+
+    .footer {
+        padding-top: 4px;
+        padding-right: 4px;
+        float: right;
+    }
+
+    .exclusiveToggle {
+        margin-top: 6px !important;
+        margin-left: -14px !important;
+    }
+}
+
+/*
+  ##Device = Tablets, Ipads (portrait)
+  ##Screen = B/w 768px to 1024px
+*/
+@media (min-width: 768px) and (max-width: 1024px) {
+    .content {
+        margin-left: 40%;
+        margin-top: 64px;
+        z-index: 1000 !important;
+    }
+
+    .contentShift {
+        margin-top: 64px !important;
+    }
+
+    #drawer {
+        z-index: 999 !important;
+    }
+
+    #drawer > div {
+        width: 40% !important;
+        margin-top: 64px !important;
+        height: calc(99vh - 80px);
+    }
+
+    .media {
+        height: 400px !important;
+        width: 25% !important;
+    }
+
+    .issuePreview {
+        margin-bottom: 10px;
+        min-width: 53vw;
+        max-width: 53vw;
+    }
+
+    .appTitle {
+        max-width: 72%;
+    }
+
+    .details {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        padding-bottom: 2% !important;
+    }
+
+    .media {
+        height: 400px !important;
+        width: 50% !important;
+    }
+
+    .footer {
+        padding-top: 2px;
+        padding-right: 4px;
+        float: right;
+    }
+
+    .storyAdd > :first-child {
+        display: block !important;
+    }
+
+    .formButtons {
+        width: 100% !important;
+    }
+
+    .exclusiveToggle {
+        margin-top: 6px !important;
+        margin-left: -14px !important;
+    }
+}
+
+/*
+  ##Device = Tablets, Ipads (landscape)
+  ##Screen = B/w 768px to 1024px
+*/
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+    /*Nothing special*/
+}
+
+/*
+  ##Device = Low Resolution Tablets, Mobiles (Landscape)
+  ##Screen = B/w 481px to 767px
+*/
+@media (min-width: 481px) and (max-width: 767px) {
+    .content {
+        margin-left: 40%;
+        margin-top: 64px;
+        z-index: 1000 !important;
+    }
+
+    .contentShift {
+        margin-top: 64px !important;
+    }
+
+    #drawer {
+        z-index: 999 !important;
+    }
+
+    #drawer > div {
+        width: 40% !important;
+        margin-top: 64px !important;
+        height: calc(99vh - 80px);
+    }
+
+    .details {
+        display: flex;
+        flex-direction: column-reverse!important;
+        justify-content: center;
+        padding-bottom: 2%!important;
+        justify-items: center;
+        align-items: center;
+    }
+
+    .media {
+        margin-bottom: 10px !important;
+        height: 200px !important;
+        width: 99% !important;
+    }
+
+    .detailsPaper {
+        margin-right: -3px !important;
+        width: 98.5% !important;
+    }
+
+    .issuePreview {
+        margin-bottom: 10px;
+        min-width: 53vw;
+        max-width: 53vw;
+    }
+
+    .appTitle {
+        max-width: 65%;
+    }
+
+    .details {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        padding-bottom: 2% !important;
+    }
+
+    .media {
+        height: 400px !important;
+        width: 50% !important;
+    }
+
+    .footer {
+        padding-top: 0px;
+        padding-right: 4px;
+        float: right;
+    }
+
+    .formButtons {
+        width: 100% !important;
+    }
+
+    .exclusiveToggle {
+        margin-top: 6px !important;
+        margin-left: -14px !important;
+    }
+}
+
+/*
+  ##Device = Most of the Smartphones Mobiles (Portrait)
+  ##Screen = B/w 320px to 479px
+*/
+@media (min-width: 320px) and (max-width: 480px) {
     .content > div, .contentShift > div {
         width: 100vw;
         height: calc(99vh - 80px);
@@ -151,7 +434,10 @@
     }
 
     .details {
-        flex-direction: column-reverse !important;
+        display: flex;
+        flex-direction: column-reverse!important;
+        justify-content: center;
+        padding-bottom: 2%!important;
         justify-items: center;
         align-items: center;
     }
@@ -192,40 +478,24 @@
     div[class^="MuiSnackbar-root-"] {
         top: 0 !important;
     }
-}
 
-@media (min-width: 0px) and (orientation: landscape) {
-    .content {
-        margin-top: 64px;
-        z-index: 1000 !important;
+    .footer {
+        padding-top: 5px;
+        padding-right: 4px;
+        float: right;
     }
 
-    .contentShift {
-        margin-top: 64px !important;
+    .storyAdd > :first-child {
+        display: block !important;
     }
 
-    .media {
-        height: 400px !important;
-        width: 25% !important;
+    .formButtons {
+        width: 100% !important;
     }
 
-    .issuePreview {
-        margin-bottom: 10px;
-        width: 50%;
-    }
-    
-    #drawer {
-        z-index: 999 !important;
-    }
-
-    #drawer > div {
-        width: 20% !important;
-        margin-top: 64px !important;
-        height: calc(99vh - 80px);
-    }
-
-    .appTitle {
-        max-width: 72%;
+    .exclusiveToggle {
+        margin-top: 6px !important;
+        margin-left: -14px !important;
     }
 }
 
@@ -300,13 +570,6 @@
     align-self: center !important;
 }
 
-.details {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    padding-bottom: 2% !important;
-}
-
 .media {
     background-size: contain !important;
     background-position: center !important;
@@ -320,6 +583,10 @@
 
 .media:hover {
     cursor: pointer;
+}
+
+.mobileCover {
+    padding-right: 7px;
 }
 
 .detailsPaper {
@@ -490,10 +757,6 @@ div[class^="MuiExpansionPanelSummary-content-"] {
     margin-right: 6px !important;
 }
 
-.field100 {
-    width: 100%;
-}
-
 .fieldFileUpload > div > div {
     width: 100% !important;
 }
@@ -514,6 +777,18 @@ div[class^="MuiExpansionPanelSummary-content-"] {
     width: 25%;
 }
 
+.field73 {
+    width: 69%;
+}
+
+.field75 {
+    width: 71%;
+}
+
+.field95 {
+    width: 93%;
+}
+
 .field15 {
     width: 15%;
 }
@@ -528,6 +803,10 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 
 .field3 {
     width: 3%;
+}
+
+.field60 {
+    width: 59%;
 }
 
 .addWith {

@@ -110,21 +110,3 @@ export function generateLabel(item) {
     if (item.issue)
         return item.issue.series.title + ' #' + item.issue.number;
 }
-
-export function compare(a, b) {
-    if (a.__typename !== b.__typename)
-        return false;
-
-    let type = a.__typename;
-
-    switch (type) {
-        case "Publisher":
-            return a.name === b.name;
-        case "Series":
-            return a.title === b.title && a.volume === b.volume;
-        case "Issue":
-            return a.number === b.number;
-        default:
-            return false;
-    }
-}

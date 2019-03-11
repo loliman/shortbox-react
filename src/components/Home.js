@@ -32,6 +32,8 @@ function Home(props) {
 
                 <Typography variant="h6">Letzte Änderungen</Typography>
 
+                <br />
+                
                 <div className="history">
                     <Query query={lastEdited}>
                         {({loading, error, data}) => {

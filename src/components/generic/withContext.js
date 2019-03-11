@@ -55,7 +55,7 @@ function createAppTitle(params, url) {
         else
             title = "Verlag";
 
-        title += " anlegen";
+        title += " erstellen";
     } else {
         title = generateLabel(params.selected);
     }

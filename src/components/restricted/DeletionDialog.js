@@ -11,7 +11,8 @@ import Typography from "@material-ui/core/es/Typography/Typography";
 import {stripItem} from "../../util/util";
 import {withContext} from "../generic";
 import {getListQuery} from "../../graphql/queries";
-import {compare, generateLabel, generateUrl, getHierarchyLevel, HierarchyLevel} from "../../util/hierarchy";
+import {generateLabel, generateUrl, getHierarchyLevel, HierarchyLevel} from "../../util/hierarchy";
+import {removeFromCache} from "./editor/Editor";
 
 function DeletionDialog(props) {
     let {level} = props;
@@ -51,20 +52,7 @@ function DeletionDialog(props) {
                 <Mutation mutation={deleteMutation}
                           update={(cache) => {
                               try {
-                                  let data = cache.readQuery({
-                                      query: getQuery,
-                                      variables: parent
-                                  });
-
-                                  let queryName = getQuery.definitions[0].name.value.toLowerCase();
-
-                                  data[queryName] = data[queryName].filter((e) => !compare(e, item));
-
-                                  cache.writeQuery({
-                                      query: getQuery,
-                                      variables: parent,
-                                      data: data
-                                  });
+                                  removeFromCache(cache, getQuery, parent, item);
                               } catch (e) {
                                   //ignore cache exception;
                               }
@@ -94,8 +82,6 @@ function DeletionDialog(props) {
                             }
                             else
                                 toDelete = item;
-
-                            console.log( stripItem(toDelete));
 
                             deleteMutation({
                                 variables: {

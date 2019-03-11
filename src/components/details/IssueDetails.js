@@ -57,11 +57,11 @@ function IssueDetails(props) {
                                         }/>
 
                             <CardContent className="cardContent">
-                                <IssueDetailsVariants issue={data.issue}/>
+                                <Variants issue={data.issue}/>
 
                                 <div className="details">
-                                    <IssueDetailsTable issue={issue} details={props.details} us={us}/>
-                                    <IssueDetailsCover issue={issue}/>
+                                    <DetailsTable issue={issue} details={props.details} us={us}/>
+                                    <Cover issue={issue}/>
                                 </div>
 
                                 {props.bottom ?
@@ -80,7 +80,7 @@ function IssueDetails(props) {
     );
 }
 
-function IssueDetailsTable(props) {
+function DetailsTable(props) {
     return (
         <Paper className="detailsPaper">
             <Table className="table">
@@ -94,7 +94,7 @@ function IssueDetailsTable(props) {
     );
 }
 
-export function IssueDetailsRow(props) {
+export function DetailsRow(props) {
     return (
         <TableRow>
             <TableCell align="left">{props.label}</TableCell>
@@ -103,7 +103,7 @@ export function IssueDetailsRow(props) {
     )
 }
 
-class IssueDetailsCover extends React.Component {
+class Cover extends React.Component {
     constructor(props) {
         super(props);
 
@@ -139,7 +139,7 @@ class IssueDetailsCover extends React.Component {
     }
 }
 
-export function IssueContains(props) {
+export function Contains(props) {
     return (
         <div className="stories">
             <CardHeader title={props.header}/>
@@ -148,15 +148,15 @@ export function IssueContains(props) {
                 <Typography className="noRelationsWarning">{props.noEntriesHint}</Typography> :
                 props.items.map((item, idx) => {
                     if (!props.itemDetails)
-                        return <IssueContainsSimpleItem {...props} key={idx} item={item}/>;
+                        return <ContainsSimpleItem {...props} key={idx} item={item}/>;
                     else
-                        return <IssueContainsItem {...props} key={idx} item={item}/>;
+                        return <ContainsItem {...props} key={idx} item={item}/>;
                 })}
         </div>
     );
 }
 
-function IssueContainsSimpleItem(props) {
+function ContainsSimpleItem(props) {
     return (
         <ExpansionPanel className="story" expanded={false}>
             <ExpansionPanelSummary className="summary">
@@ -166,7 +166,7 @@ function IssueContainsSimpleItem(props) {
     );
 }
 
-function IssueContainsItem(props) {
+function ContainsItem(props) {
     return (
         <ExpansionPanel className="story">
             <ExpansionPanelSummary className="summary" expandIcon={<ExpandMoreIcon/>}>
@@ -179,7 +179,7 @@ function IssueContainsItem(props) {
     );
 }
 
-export function IssueContainsTitleSimple(props) {
+export function ContainsTitleSimple(props) {
     return (
         <div className={props.simple ? "storyTitle storyTitleSimple" : "storyTitle"}>
             <div className="headingContainer">
@@ -192,14 +192,14 @@ export function IssueContainsTitleSimple(props) {
     )
 }
 
-export function IssueContainsTitleDetailed(props) {
+export function ContainsTitleDetailed(props) {
     let issue = props.item.parent ? props.item.parent.issue : props.item;
     if(issue && issue.issue) {
         issue.number = issue.issue.number;
         issue.series = issue.issue.series;
     }
 
-    let exclusive = !props.item.parent && !props.item.issue && !props.us;
+    let exclusive = props.item.exclusive && !props.us;
 
     return (
         <div className={props.simple ? "storyTitle storyTitleSimple" : "storyTitle"}>
@@ -214,7 +214,7 @@ export function IssueContainsTitleDetailed(props) {
             <div className="chips">
                 {
                     props.item.url && props.item.number === 0 ?
-                        Math.max(document.documentElement.clientWidth, window.innerWidth || 0) > 600 ?
+                        !(props.mobile || props.mobileLandscape) ?
                             <Chip className="chip" label="Cover" color="default"/>
                             : <Chip className="chip" label="C" color="default"/>
                         : null
@@ -222,7 +222,7 @@ export function IssueContainsTitleDetailed(props) {
 
                 {
                     props.item.parent && props.item.parent.children.length < 2 ?
-                        Math.max(document.documentElement.clientWidth, window.innerWidth || 0) > 600 ?
+                        !(props.mobile || props.mobileLandscape) ?
                             <Chip className="chip" label="Einzige Ausgabe" color="secondary"
                                   icon={<PriorityHighIcon/>}/>
                             : <Chip className="chip" label={<PriorityHighIcon className="
@@ -234,14 +234,14 @@ export function IssueContainsTitleDetailed(props) {
                 {
                     props.item.firstapp && props.item.parent ?
                         <Chip className="chip"
-                              label={Math.max(document.documentElement.clientWidth, window.innerWidth || 0) > 600 ? "Erstausgabe" : "1."}
+                              label={!(props.mobile || props.mobileLandscape) ? "Erstausgabe" : "1."}
                               color="primary"/>
                         : null
                 }
 
                 {
                     exclusive ?
-                        Math.max(document.documentElement.clientWidth, window.innerWidth || 0) > 600 ?
+                        !(props.mobile || props.mobileLandscape) ?
                             <Chip className="chip" label="Exklusiv" color="secondary"
                                   icon={<PriorityHighIcon/>}/>
                             : <Chip className="chip" label={<PriorityHighIcon className="
@@ -264,7 +264,7 @@ export function IssueContainsTitleDetailed(props) {
     )
 }
 
-function IssueDetailsVariants(props) {
+function Variants(props) {
     if (props.issue.variants.length === 1)
         return null;
 
@@ -277,7 +277,7 @@ function IssueDetailsVariants(props) {
             <div className="coverGallery">
                 <GridList className="gridList" cols={2.5}>
                     {props.issue.variants.map((variant, idx) => {
-                            return (<IssueDetailsVariant to={generateUrl(variant, false)}
+                            return (<Variant to={generateUrl(variant, false)}
                                                            key={idx} variant={variant}/>);
                     })}
                 </GridList>
@@ -286,7 +286,7 @@ function IssueDetailsVariants(props) {
     );
 }
 
-function IssueDetailsVariant(props) {
+function Variant(props) {
     let coverUrl = (props.variant.cover && props.variant.cover.url && props.variant.cover.url !== '') ? props.variant.cover.url : "/nocover.jpg";
 
     return (

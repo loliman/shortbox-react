@@ -25,7 +25,7 @@ class AddFab extends React.Component {
                 <ClickAwayListener onClickAway={this.handleClose}>
                     <div className="speedDialContainer">
                         <SpeedDial
-                            ariaLabel="Anlegen"
+                            ariaLabel="Erstellen"
                             className="speedDial"
                             icon={<SpeedDialIcon/>}
                             onClick={this.handleClick}

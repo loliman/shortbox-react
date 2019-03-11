@@ -2,16 +2,18 @@ import React from "react";
 import Typography from "@material-ui/core/Typography/Typography";
 import {withContext} from "../generic";
 import IssueDetails, {
-    IssueContains,
-    IssueContainsTitleDetailed,
-    IssueContainsTitleSimple,
-    IssueDetailsRow
+    Contains,
+    ContainsTitleDetailed,
+    ContainsTitleSimple,
+    DetailsRow
 } from "./IssueDetails";
 import {toIndividualList} from "../../util/util";
 import Paper from "@material-ui/core/Paper/Paper";
 
+var dateFormat = require('dateformat');
+
 function IssueDetailsDE(props) {
-    return <IssueDetails bottom={<Bottom/>}
+    return <IssueDetails bottom={<Bottom {...props}/>}
                          details={<Details/>}
                          subheader/>
 }
@@ -19,18 +21,18 @@ function IssueDetailsDE(props) {
 function Details(props) {
     return (
         <React.Fragment>
-            <IssueDetailsRow key="format" label="Format" value={props.issue.format}/>
+            <DetailsRow key="format" label="Format" value={props.issue.format}/>
             {
                 props.issue.limitation && props.issue.limitation > 0 ?
-                    <IssueDetailsRow key="limitation" label="Limitierung"
-                                     value={props.issue.limitation + " Exemplare"}/> :
+                    <DetailsRow key="limitation" label="Limitierung"
+                                value={props.issue.limitation + " Exemplare"}/> :
                     null
             }
-            <IssueDetailsRow key="pages" label="Seiten" value={props.issue.pages}/>
-            <IssueDetailsRow key="releasedate" label="Erscheinungsdatum"
-                             value={props.issue.releasedate}/>
-            <IssueDetailsRow key="price" label="Preis"
-                             value={props.issue.price + ' ' + props.issue.currency}/>
+            <DetailsRow key="pages" label="Seiten" value={props.issue.pages}/>
+            <DetailsRow key="releasedate" label="Erscheinungsdatum"
+                        value={dateFormat(new Date(props.issue.releasedate), "dd.mm.yyyy")}/>
+            <DetailsRow key="price" label="Preis"
+                        value={props.issue.price + ' ' + props.issue.currency}/>
         </React.Fragment>
     );
 }
@@ -52,31 +54,31 @@ function Bottom(props) {
             <br/>
             <br/>
 
-            <IssueContains {...props} header="Geschichten"
-                           noEntriesHint="Dieser Ausgabe sind noch keine Geschichten zugeordnet."
-                           items={props.issue.stories} itemTitle={<IssueContainsTitleDetailed/>}
-                           itemDetails={<IssueStoryDetails/>}/>
+            <Contains {...props} header="Geschichten"
+                      noEntriesHint="Dieser Ausgabe sind noch keine Geschichten zugeordnet."
+                      items={props.issue.stories} itemTitle={<ContainsTitleDetailed {...props}/>}
+                      itemDetails={<StoryDetails/>}/>
 
             <br/>
             <br/>
 
-            <IssueContains {...props} header="Weitere Inhalte"
-                           noEntriesHint="Dieser Ausgabe sind noch keine weiteren Inhalte zugeordnet."
-                           items={props.issue.features} itemTitle={<IssueContainsTitleSimple/>}
-                           itemDetails={<IssueFeatureDetails/>}/>
+            <Contains {...props} header="Weitere Inhalte"
+                      noEntriesHint="Dieser Ausgabe sind noch keine weiteren Inhalte zugeordnet."
+                      items={props.issue.features} itemTitle={<ContainsTitleSimple/>}
+                      itemDetails={<FeatureDetails/>}/>
 
             <br/>
             <br/>
 
-            <IssueContains {...props} header="Covergalerie"
-                           noEntriesHint="Dieser Ausgabe sind noch keine Cover zugeordnet."
-                           items={props.issue.covers} itemTitle={<IssueContainsTitleDetailed/>}
-                           itemDetails={<IssueCoversDetails/>}/>
+            <Contains {...props} header="Covergalerie"
+                      noEntriesHint="Dieser Ausgabe sind noch keine Cover zugeordnet."
+                      items={props.issue.covers} itemTitle={<ContainsTitleDetailed {...props}/>}
+                      itemDetails={<CoverDetails/>}/>
         </React.Fragment>
     );
 }
 
-function IssueCoversDetails(props) {
+function CoverDetails(props) {
     return (
         <div>
             <Typography><b>Artist</b> {toIndividualList(props.item.parent ? props.item.parent.artists : props.item.artists)}
@@ -85,7 +87,7 @@ function IssueCoversDetails(props) {
     );
 }
 
-function IssueFeatureDetails(props) {
+function FeatureDetails(props) {
     return (
         <div>
             <Typography><b>Autor</b> {toIndividualList(props.item.writers)}</Typography>
@@ -98,7 +100,7 @@ function IssueFeatureDetails(props) {
     );
 }
 
-function IssueStoryDetails(props) {
+function StoryDetails(props) {
     return (
         <div>
             <Typography><b>Autor</b> {toIndividualList(props.item.parent.writers)}</Typography>

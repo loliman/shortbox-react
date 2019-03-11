@@ -2,13 +2,20 @@ import React from "react";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener/ClickAwayListener";
 import Menu from "@material-ui/core/Menu/Menu";
 import MenuItem from "@material-ui/core/MenuItem/MenuItem";
-import {generateUrl} from "../../util/hierarchy";
+import {generateLabel, generateUrl, HierarchyLevel} from "../../util/hierarchy";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 import Typography from "@material-ui/core/es/Typography/Typography";
 import ListItemIcon from "@material-ui/core/es/ListItemIcon/ListItemIcon";
 import DeletionDialog from "./DeletionDialog";
 import {withContext} from "../generic";
+import {updateInCache} from "./editor/Editor";
+import {Mutation} from "react-apollo";
+import {issue} from "../../graphql/queries";
+import {verifyIssue} from "../../graphql/mutations";
+import {stripItem, wrapItem} from "../../util/util";
 
 class Dropdown extends React.Component {
     constructor(props) {
@@ -37,6 +44,11 @@ class Dropdown extends React.Component {
                                 width: 200,
                             },
                         }}>
+                        {
+                            this.props.level === HierarchyLevel.ISSUE ?
+                                <VerifyMenuItem item={this.props.EditDropdown.item} enqueueSnackbar={this.props.enqueueSnackbar} /> : null
+                        }
+
                         <MenuItem key="edit"
                                   onClick={() => {
                                       this.props.history.push("/edit" + generateUrl(this.props.EditDropdown.item).substring(3));
@@ -83,6 +95,55 @@ class Dropdown extends React.Component {
             deletionOpen: false
         })
     };
+}
+
+function VerifyMenuItem(props) {
+    let item = stripItem(props.item);
+    let variables = {};
+    variables.number = item.number;
+    variables.series = item.series;
+    if(item.variant !== "") {
+        variables.format = item.format;
+        variables.variant = item.variant;
+    }
+
+    return (
+        <Mutation mutation={verifyIssue}
+                  update={(cache, result) => {
+                      let update = JSON.parse(JSON.stringify(props.item));
+                      update.series.publisher.us = false;
+                      update.verified = !update.verified;
+
+                      //try {
+                      updateInCache(cache, issue, wrapItem(variables), item, {issue: update});
+                      //} catch (e) {
+                      //ignore cache exception;
+                      // }
+                  }}
+                  onCompleted={(data) => {
+                      props.enqueueSnackbar(generateLabel(item) + " erfolgreich " + (item.verified ? "falsifiziert" : "verifiziert"), {variant: 'success'});
+                  }}
+                  onError={() => {
+                      props.enqueueSnackbar("Ausgabe konnte nicht " + (item.verified ? "falsifiziert" : "verifiziert") + " werden", {variant: 'error'});
+                  }}>
+            {(verifyIssue, {error}) => (
+                <MenuItem key="verify" onClick={() => {
+                    verifyIssue({
+                        variables: {
+                            item: variables
+                        }
+                    })
+                }}>
+                    <ListItemIcon>
+                        {item.verified ? <CheckCircleIcon/> : <CheckCircleOutlineIcon/>}
+                    </ListItemIcon>
+                    <Typography variant="inherit" noWrap>
+                        {item.verified ? "Falsifizieren" : "Verifizieren"}
+                    </Typography>
+                </MenuItem>
+            )}
+        </Mutation>
+    )
 }
 
 export default withContext(Dropdown);

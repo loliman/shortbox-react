@@ -12,20 +12,20 @@ const logout = gql`mutation Logout($user: UserInput!){
     logout(user: $user)
 }`;
 
-const deletePublishers = gql`mutation DeletePublishers($item: PublisherInput!){
-    deletePublishers(item: $item)
+const deleteIssue = gql`mutation DeleteItem($item: IssueInput!){
+    deleteItem(item: $item)
 }`;
 
 const deleteSeries = gql`mutation DeleteSeries($item: SeriesInput!){
     deleteSeries(item: $item)
 }`;
 
-const deleteIssues = gql`mutation DeleteIssues($item: IssueInput!){
-    deleteIssues(item: $item)
+const deletePublisher = gql`mutation DeletePublisher($item: PublisherInput!){
+    deletePublisher(item: $item)
 }`;
 
-const createPublisher = gql`mutation CreatePublisher($publisher: PublisherInput!){
-   createPublisher(publisher: $publisher) {
+const createPublisher = gql`mutation CreatePublisher($item: PublisherInput!){
+   createPublisher(item: $item) {
         id,
         name,
         addinfo,
@@ -33,8 +33,8 @@ const createPublisher = gql`mutation CreatePublisher($publisher: PublisherInput!
    }
 }`;
 
-const createSeries = gql`mutation CreateSeries($series: SeriesInput!){
-   createSeries(series: $series) {
+const createSeries = gql`mutation CreateSeries($item: SeriesInput!){
+   createSeries(item: $item) {
         id,
         title,
         startyear,
@@ -49,8 +49,8 @@ const createSeries = gql`mutation CreateSeries($series: SeriesInput!){
    }
 }`;
 
-const createIssue = gql`mutation CreateIssue($issue: IssueInput!){
-   createIssue(issue: $issue) {
+const createIssue = gql`mutation CreateIssue($item: IssueInput!){
+   createIssue(item: $item) {
         id,
         number,
         series {
@@ -69,17 +69,48 @@ const createIssue = gql`mutation CreateIssue($issue: IssueInput!){
    }
 }`;
 
-const editPublisher = gql`mutation EditPublisher($old: PublisherInput!, $edit: PublisherInput!){
-   editPublisher(old: $old, edit: $edit) {
+const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
+   editIssue(old: $old, item: $item) {
         id,
-        name,
-        us,
-        addinfo,
+        number,
+        series {
+            id,
+            title,
+            startyear,
+            endyear,
+            volume,
+            addinfo,
+            publisher {
+                id,
+                name,
+                us
+            } 
+        }  
    }
 }`;
 
-const editSeries = gql`mutation EditSeries($old: SeriesInput!, $edit: SeriesInput!){
-   editSeries(old: $old, edit: $edit) {
+const verifyIssue = gql`mutation VerifyIssue($item: IssueInput!){
+   verifyIssue(item: $item) {
+        id,
+        number,
+        series {
+            id,
+            title,
+            startyear,
+            endyear,
+            volume,
+            addinfo,
+            publisher {
+                id,
+                name,
+                us
+            } 
+        }  
+   }
+}`;
+
+const editSeries = gql`mutation EditSeries($old: SeriesInput!, $item: SeriesInput!){
+   editSeries(old: $old, item: $item) {
         id,
         title,
         volume,
@@ -94,15 +125,27 @@ const editSeries = gql`mutation EditSeries($old: SeriesInput!, $edit: SeriesInpu
    }
 }`;
 
+const editPublisher = gql`mutation EditPublisher($old: PublisherInput!, $item: PublisherInput!){
+   editPublisher(old: $old, item: $item) {
+        id,
+        name,
+        us,
+        addinfo,
+   }
+}`;
+
 function getDeleteMutation(level) {
     switch (level) {
         case HierarchyLevel.PUBLISHER:
-            return deletePublishers;
+            return deletePublisher;
         case HierarchyLevel.SERIES:
             return deleteSeries;
         default:
-            return deleteIssues;
+            return deleteIssue;
     }
 }
 
-export {login, logout, getDeleteMutation, editPublisher, createPublisher, createSeries, createIssue, editSeries}
+export {login, logout, getDeleteMutation,
+    createIssue, createSeries, createPublisher,
+    editIssue, editSeries, editPublisher,
+    verifyIssue}

@@ -71,7 +71,7 @@ function TypeListEntry(props) {
     const {us, item, level, mobile, toogleDrawer} = props;
 
     return (
-        <div id={item.id} className="itemContainer">
+        <div className="itemContainer">
             <ListItem component={Link}
                       to={generateUrl(item, us)}
                       onClick={() => {

@@ -13,7 +13,7 @@ import PublisherCreate from "./restricted/create/PublisherCreate";
 import SeriesCreate from "./restricted/create/SeriesCreate";
 import PublisherEdit from "./restricted/edit/PublisherEdit";
 import SeriesEdit from "./restricted/edit/SeriesEdit";
-import IssueEdit from "./restricted/edit/IssueEdit";
+import IssueEditor from "./restricted/edit/IssueEdit";
 import Home from "./Home";
 import AppContextProvider from "./generic/AppContext";
 import IssueDetailsUS from "./details/IssueDetailsUS";
@@ -59,8 +59,8 @@ class App extends React.Component {
 
                         <PrivateRoute exact session={session} path="/edit/:publisher" component={PublisherEdit}/>
                         <PrivateRoute exact session={session} path="/edit/:publisher/:series" component={SeriesEdit}/>
-                        <PrivateRoute exact session={session} path="/edit/:publisher/:series/:issue" component={IssueEdit}/>
-                        <PrivateRoute exact session={session} path="/edit/:publisher/:series/:issue/:variant" component={IssueEdit}/>
+                        <PrivateRoute exact session={session} path="/edit/:publisher/:series/:issue" component={IssueEditor}/>
+                        <PrivateRoute exact session={session} path="/edit/:publisher/:series/:issue/:variant" component={IssueEditor}/>
 
                         <Route render={() => <Redirect to="/de" />} />
                     </Switch>

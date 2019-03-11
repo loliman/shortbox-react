@@ -9,8 +9,21 @@ class AppContextProvider extends React.Component {
     constructor(props) {
         super(props);
         let mobile = window.innerWidth <= 600;
+        let mobileLandscape = (window.innerWidth <= 767
+            && (window.screen.orientation.angle === 90 || window.screen.orientation.angle === 180));
+
+        let tablet = window.innerWidth <= 1024;
+        let tableLandscape = (window.innerWidth <= 1024
+            && (window.screen.orientation.angle === 90 || window.screen.orientation.angle === 180));
+
+        let desktop = !mobile && !mobileLandscape && !tablet && !tableLandscape;
+
         this.state = {
             mobile: mobile,
+            mobileLandscape: mobileLandscape,
+            tablet: tablet,
+            tabletLandscape: tableLandscape,
+            desktop: desktop,
             drawerOpen: !mobile
         };
     }
@@ -23,7 +36,11 @@ class AppContextProvider extends React.Component {
                 session: this.props.cookies.get('session'),
                 handleLogin: this.handleLogin,
                 handleLogout: this.handleLogout,
-                mobile: this.state.mobile
+                mobile: this.state.mobile,
+                mobileLandscape: this.state.mobileLandscape,
+                tablet: this.state.tablet,
+                tabletLandscape: this.state.tabletLandscape,
+                desktop: this.state.desktop
             }}>
                 {this.props.children}
             </AppContext.Provider>

@@ -10,11 +10,13 @@ import {Link} from "react-router-dom";
 import {withContext} from "../generic";
 import {generateLabel, generateUrl} from "../../util/hierarchy";
 import IssueDetails, {
-    IssueContains,
-    IssueContainsTitleDetailed,
-    IssueContainsTitleSimple,
-    IssueDetailsRow
+    Contains,
+    ContainsTitleDetailed,
+    ContainsTitleSimple,
+    DetailsRow
 } from "./IssueDetails";
+
+var dateFormat = require('dateformat');
 
 function IssueDetailsUS(props) {
     return <IssueDetails bottom={<Bottom/>}
@@ -25,12 +27,12 @@ function IssueDetailsUS(props) {
 function Details(props) {
     return (
         <React.Fragment>
-            <IssueDetailsRow key="releasedate" label="Erscheinungsdatum"
-                             value={props.issue.releasedate}/>
-            <IssueDetailsRow key="coverartists" label="Cover Artists"
-                             value={toIndividualList(props.issue.cover.artists)}/>
-            <IssueDetailsRow key="editor" label="Editor"
-                             value={toIndividualList(props.issue.editors)}/>
+            <DetailsRow key="releasedate" label="Erscheinungsdatum"
+                        value={dateFormat(new Date(props.issue.releasedate), "dd.mm.yyyy")}/>
+            <DetailsRow key="coverartists" label="Cover Artists"
+                        value={toIndividualList(props.issue.cover.artists)}/>
+            <DetailsRow key="editor" label="Editor"
+                        value={toIndividualList(props.issue.editors)}/>
         </React.Fragment>
     );
 }
@@ -41,18 +43,18 @@ function Bottom(props) {
             <br/>
             <br/>
 
-            <IssueContains {...props} header="Geschichten"
-                           noEntriesHint="Dieser Ausgabe sind noch keine Geschichten zugeordnet."
-                           items={props.issue.stories} itemTitle={<IssueContainsTitleSimple/>}
-                           itemDetails={<IssueStoryDetails/>}/>
+            <Contains {...props} header="Geschichten"
+                      noEntriesHint="Dieser Ausgabe sind noch keine Geschichten zugeordnet."
+                      items={props.issue.stories} itemTitle={<ContainsTitleSimple/>}
+                      itemDetails={<StoryDetails/>}/>
 
             <br/>
             <br/>
 
-            <IssueContains {...props} header="Cover erschienen in"
-                           noEntriesHint="Dieser Ausgabe sind noch keine Cover zugeordnet."
-                           items={props.issue.covers[0].children.map(c => c.issue)}
-                           itemTitle={<IssueContainsTitleDetailed/>}/>
+            <Contains {...props} header="Cover erschienen in"
+                      noEntriesHint="Dieser Ausgabe sind noch keine Cover zugeordnet."
+                      items={props.issue.covers[0].children.map(c => c.issue)}
+                      itemTitle={<ContainsTitleDetailed/>}/>
 
             <br/>
             <br/>
@@ -79,7 +81,7 @@ function generateMarvelDbUrl(issue) {
     return url.replace(new RegExp(" ", 'g'), "_");
 }
 
-function IssueStoryDetails(props) {
+function StoryDetails(props) {
     return (
         <div className="usStoryContainer">
             <div className="usStoryDetails">

@@ -28,7 +28,9 @@ const issues = gql`query Issues($series: SeriesInput!){
             publisher {
                 name
             }
-        }
+        },
+        format,
+        variant
     }
 }`;
 
@@ -52,17 +54,6 @@ export const lastEdited = gql`query LastEdited {
         }
     }
 }`;
-
-function getListQuery(level) {
-    switch (level) {
-        case HierarchyLevel.ROOT:
-            return publishers;
-        case HierarchyLevel.PUBLISHER:
-            return series;
-        default:
-            return issues;
-    }
-}
 
 const publisher = gql`query Publisher($publisher: PublisherInput!){
     publisher(publisher: $publisher) {
@@ -110,6 +101,7 @@ const issue = gql`query Issue($issue: IssueInput!){
         features {
             title,
             addinfo,
+            number,
             writers {
                 name
             },
@@ -120,6 +112,7 @@ const issue = gql`query Issue($issue: IssueInput!){
         stories {
             title,
             addinfo,
+            number,
             parent {
                 issue {
                     number,
@@ -159,11 +152,13 @@ const issue = gql`query Issue($issue: IssueInput!){
 			translators {
 				name
 			},
-            firstapp
+            firstapp,
+            exclusive
         },
         covers {
             url,
             addinfo,
+            number,
             parent {
                 issue {
                     variant,
@@ -187,7 +182,8 @@ const issue = gql`query Issue($issue: IssueInput!){
                     name
                 }
             }
-            firstapp
+            firstapp,
+            exclusive
         },
         variants {
             format,
@@ -300,4 +296,17 @@ const issue_us = gql`query Issue($issue: IssueInput!){
     }
 }`;
 
-export {getListQuery, issue, issue_us, publisher, seriesd, publishers, series, issues, individuals};
+function getListQuery(level) {
+    switch (level) {
+        case HierarchyLevel.ROOT:
+            return publishers;
+        case HierarchyLevel.PUBLISHER:
+            return series;
+        default:
+            return issues;
+    }
+}
+
+export {getListQuery,
+    publisher, seriesd, issue, issue_us,
+    publishers, series, issues, individuals};
