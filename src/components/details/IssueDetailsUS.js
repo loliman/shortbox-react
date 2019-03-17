@@ -89,7 +89,7 @@ function StoryDetails(props) {
                 <Typography><b>Zeichner</b> {toIndividualList(props.item.pencilers)}</Typography>
                 <Typography><b>Inker</b> {toIndividualList(props.item.inkers)}</Typography>
                 <Typography><b>Kolorist</b> {toIndividualList(props.item.colourists)}</Typography>
-                <Typography><b>Letterer</b> {toIndividualList(props.item.letteres)}</Typography>
+                <Typography><b>Letterer</b> {toIndividualList(props.item.letterers)}</Typography>
                 <Typography><b>Editor</b> {toIndividualList(props.item.editors)}</Typography>
             </div>
 
@@ -102,7 +102,7 @@ function StoryDetails(props) {
                             return null;
 
                         return (
-                            <ListItem key={idx} className="issueStoryIssueItem" divider>
+                            <ListItem key={idx} className="issueStoryIssueItem" divider={props.item.children.length-1 !== idx}>
                                 <div>
                                     <Typography
                                         className="issueStoryIssue">{generateLabel(child.issue.series) + " #" + child.issue.number}</Typography>

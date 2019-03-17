@@ -21,6 +21,7 @@ const series = gql`query Series($publisher: PublisherInput!){
 
 const issues = gql`query Issues($series: SeriesInput!){
     issues(series: $series) {
+        title,
         number,
         series {
             title,
@@ -77,8 +78,8 @@ const seriesd = gql`query Seriesd($series: SeriesInput!){
     }
 }`;
 
-const issue = gql`query Issue($issue: IssueInput!){
-    issue(issue: $issue) {
+const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
+    issue(issue: $issue, edit: $edit) {
         title,
         number,
         format,
@@ -104,9 +105,6 @@ const issue = gql`query Issue($issue: IssueInput!){
             number,
             writers {
                 name
-            },
-            translators {
-                name
             }
         },
         stories {
@@ -125,11 +123,10 @@ const issue = gql`query Issue($issue: IssueInput!){
                             name,
                             us
                         }
-                    }   
-                },
-                children {
-                    id
-                },
+                    },
+                    format,
+                    variant   
+                }
                 pencilers {
                     name
                 },
@@ -152,6 +149,7 @@ const issue = gql`query Issue($issue: IssueInput!){
 			translators {
 				name
 			},
+			onlyapp,
             firstapp,
             exclusive
         },
@@ -174,14 +172,12 @@ const issue = gql`query Issue($issue: IssueInput!){
                             us
                         }
                     }   
-                },
-                children {
-                    id
-                },
+                }
                 artists {
                     name
                 }
             }
+            onlyapp,
             firstapp,
             exclusive
         },
@@ -245,7 +241,9 @@ const issue_us = gql`query Issue($issue: IssueInput!){
                             name,
 							us
                         }
-                    }
+                    },
+                    format,
+                    variant
                 }
             },
             pencilers {
@@ -289,6 +287,15 @@ const issue_us = gql`query Issue($issue: IssueInput!){
         variants {
             format,
             variant,
+            number,
+            series {
+                title,
+                volume,
+                publisher {
+                    name,
+                    us
+                }
+            },
             cover {
                 url
             }

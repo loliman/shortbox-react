@@ -20,7 +20,7 @@ function Home(props) {
             <CardContent className="cardContent">
                 <Typography>
                     Shortbox.de ist ein 2018 gestartetes, privates Projekt von Marvel Fans für Marvel Fans, welches
-                        den Anspruch hat jede je erschienene deutsche Marvel-Veröffentlichung detailiert zu katalogisieren.<br />
+                        den Anspruch hat, jede je erschienene deutsche Marvel-Veröffentlichung detailliert zu katalogisieren.<br />
                     Alle auf Shortbox.de gelisteten Informationen unterliegen der&nbsp;
                         <a href="https://creativecommons.org/licenses/by/3.0/de/" rel="noopener noreferrer nofollow"
                            target="_blank">Creative Commons License 3.0</a> und stehen somit, unter Angabe der Quelle,

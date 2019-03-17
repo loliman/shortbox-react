@@ -57,7 +57,7 @@ function IssueDetails(props) {
                                         }/>
 
                             <CardContent className="cardContent">
-                                <Variants issue={data.issue}/>
+                                <Variants us={us} issue={data.issue}/>
 
                                 <div className="details">
                                     <DetailsTable issue={issue} details={props.details} us={us}/>
@@ -200,12 +200,13 @@ export function ContainsTitleDetailed(props) {
     }
 
     let exclusive = props.item.exclusive && !props.us;
+    let variant = (!props.us && issue.variant && issue.variant !== '') ? ' [' + issue.variant + ']' : '';
 
     return (
         <div className={props.simple ? "storyTitle storyTitleSimple" : "storyTitle"}>
             <div className="headingContainer">
                 <Typography
-                    className="heading">{generateItemTitle(props.item.issue ? props.item.issue : props.item)}</Typography>
+                    className="heading">{generateItemTitle(props.item.issue ? props.item.issue : props.item) + variant}</Typography>
                 <Typography className="heading headingAddInfo">
                     {props.item.addinfo ? props.item.addinfo : null}
                 </Typography>
@@ -221,7 +222,7 @@ export function ContainsTitleDetailed(props) {
                 }
 
                 {
-                    props.item.parent && props.item.parent.children.length < 2 ?
+                    props.item.onlyapp && props.item.parent ?
                         !(props.mobile || props.mobileLandscape) ?
                             <Chip className="chip" label="Einzige Ausgabe" color="secondary"
                                   icon={<PriorityHighIcon/>}/>
@@ -277,7 +278,7 @@ function Variants(props) {
             <div className="coverGallery">
                 <GridList className="gridList" cols={2.5}>
                     {props.issue.variants.map((variant, idx) => {
-                            return (<Variant to={generateUrl(variant, false)}
+                            return (<Variant to={generateUrl(variant, props.us)}
                                                            key={idx} variant={variant}/>);
                     })}
                 </GridList>

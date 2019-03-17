@@ -20,6 +20,7 @@ import IssueDetailsUS from "./details/IssueDetailsUS";
 import IssueDetailsDE from "./details/IssueDetailsDE";
 import Impress from "./Impress";
 import Privacy from "./Privacy";
+import Contact from "./Contact";
 
 class App extends React.Component {
     static propTypes = {
@@ -47,9 +48,11 @@ class App extends React.Component {
                         <Route exact path="/us/:publisher" component={PublisherDetails}/>
                         <Route exact path="/us/:publisher/:series" component={SeriesDetails}/>
                         <Route exact path="/us/:publisher/:series/:issue" component={IssueDetailsUS}/>
+                        <Route exact path="/us/:publisher/:series/:issue/:variant" component={IssueDetailsUS}/>
 
                         <Route exact path="/login" component={Login}/>
 
+                        <Route exact path="/contact" component={Contact}/>
                         <Route exact path="/impress" component={Impress}/>
                         <Route exact path="/privacy" component={Privacy}/>
 

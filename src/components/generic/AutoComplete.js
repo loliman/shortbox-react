@@ -42,7 +42,6 @@ function AutoComplete(props) {
         for (const [key, value] of Object.entries(style))
             acTheme.container[key] = value;
 
-
     return (
         <Query query={query}
            variables={variables}>

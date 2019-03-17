@@ -91,11 +91,6 @@ function FeatureDetails(props) {
     return (
         <div>
             <Typography><b>Autor</b> {toIndividualList(props.item.writers)}</Typography>
-            {
-                props.item.translators.length > 0 ?
-                <Typography><b>Übersetzer</b> {toIndividualList(props.item.translators)}</Typography> :
-                null
-            }
         </div>
     );
 }
@@ -107,7 +102,7 @@ function StoryDetails(props) {
             <Typography><b>Zeichner</b> {toIndividualList(props.item.parent.pencilers)}</Typography>
             <Typography><b>Inker</b> {toIndividualList(props.item.parent.inkers)}</Typography>
             <Typography><b>Kolorist</b> {toIndividualList(props.item.parent.colourists)}</Typography>
-            <Typography><b>Letterer</b> {toIndividualList(props.item.parent.letteres)}</Typography>
+            <Typography><b>Letterer</b> {toIndividualList(props.item.parent.letterers)}</Typography>
             {
                 props.item.translators.length > 0 ?
                     <Typography><b>Übersetzer</b> {toIndividualList(props.item.translators)}</Typography> :

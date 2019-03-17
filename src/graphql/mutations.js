@@ -12,8 +12,8 @@ const logout = gql`mutation Logout($user: UserInput!){
     logout(user: $user)
 }`;
 
-const deleteIssue = gql`mutation DeleteItem($item: IssueInput!){
-    deleteItem(item: $item)
+const deleteIssue = gql`mutation DeleteIssue($item: IssueInput!){
+    deleteIssue(item: $item)
 }`;
 
 const deleteSeries = gql`mutation DeleteSeries($item: SeriesInput!){
@@ -51,41 +51,251 @@ const createSeries = gql`mutation CreateSeries($item: SeriesInput!){
 
 const createIssue = gql`mutation CreateIssue($item: IssueInput!){
    createIssue(item: $item) {
-        id,
+        title,
         number,
+        format,
+        limitation,
+        pages,
+        releasedate,
+        price,
+        currency
+        cover {
+            url
+        },
         series {
-            id,
             title,
-            startyear,
-            endyear,
             volume,
-            addinfo,
             publisher {
-                id,
                 name,
                 us
-            } 
-        }  
+            }
+        },
+        features {
+            title,
+            addinfo,
+            number,
+            writers {
+                name
+            }
+        },
+        stories {
+            title,
+            addinfo,
+            number,
+            parent {
+                issue {
+                    number,
+                    series {
+                        title,
+                        startyear,
+                        endyear,
+                        volume,
+                        publisher {
+                            name,
+                            us
+                        }
+                    },
+                    format,
+                    variant   
+                }
+                pencilers {
+                    name
+                },
+                writers {
+                    name
+                },
+                inkers {
+                    name
+                },
+                colourists {
+                    name
+                },
+                letterers {
+                    name
+                },
+                editors {
+                    name
+                }
+            },
+			translators {
+				name
+			},
+			onlyapp,
+            firstapp,
+            exclusive
+        },
+        covers {
+            url,
+            addinfo,
+            number,
+            parent {
+                issue {
+                    variant,
+                    format,
+                    number,
+                    series {
+                        title,
+                        startyear,
+                        endyear,
+                        volume,
+                        publisher {
+                            name,
+                            us
+                        }
+                    }   
+                }
+                artists {
+                    name
+                }
+            }
+            onlyapp,
+            firstapp,
+            exclusive
+        },
+        variants {
+            format,
+            variant,
+            number,
+            series {
+                title,
+                volume,
+                publisher {
+                    name,
+                    us
+                }
+            },
+            cover {
+                url
+            }
+        },
+        variant,
+        verified,
+        addinfo
    }
 }`;
 
 const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
    editIssue(old: $old, item: $item) {
-        id,
+        title,
         number,
+        format,
+        limitation,
+        pages,
+        releasedate,
+        price,
+        currency
+        cover {
+            url
+        },
         series {
-            id,
             title,
-            startyear,
-            endyear,
             volume,
-            addinfo,
             publisher {
-                id,
                 name,
                 us
-            } 
-        }  
+            }
+        },
+        features {
+            title,
+            addinfo,
+            number,
+            writers {
+                name
+            }
+        },
+        stories {
+            title,
+            addinfo,
+            number,
+            parent {
+                issue {
+                    number,
+                    series {
+                        title,
+                        startyear,
+                        endyear,
+                        volume,
+                        publisher {
+                            name,
+                            us
+                        }
+                    },
+                    format,
+                    variant   
+                }
+                pencilers {
+                    name
+                },
+                writers {
+                    name
+                },
+                inkers {
+                    name
+                },
+                colourists {
+                    name
+                },
+                letterers {
+                    name
+                },
+                editors {
+                    name
+                }
+            },
+			translators {
+				name
+			},
+			onlyapp,
+            firstapp,
+            exclusive
+        },
+        covers {
+            url,
+            addinfo,
+            number,
+            parent {
+                issue {
+                    variant,
+                    format,
+                    number,
+                    series {
+                        title,
+                        startyear,
+                        endyear,
+                        volume,
+                        publisher {
+                            name,
+                            us
+                        }
+                    }   
+                }
+                artists {
+                    name
+                }
+            }
+            onlyapp,
+            firstapp,
+            exclusive
+        },
+        variants {
+            format,
+            variant,
+            number,
+            series {
+                title,
+                volume,
+                publisher {
+                    name,
+                    us
+                }
+            },
+            cover {
+                url
+            }
+        },
+        variant,
+        verified,
+        addinfo
    }
 }`;
 

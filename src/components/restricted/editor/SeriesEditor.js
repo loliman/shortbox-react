@@ -10,7 +10,7 @@ import Button from "@material-ui/core/Button";
 import withContext from "../../generic/withContext";
 import CardHeader from "@material-ui/core/CardHeader";
 import {publishers, series} from "../../../graphql/queries";
-import {decapitalize, stripItem} from "../../../util/util";
+import {decapitalize, stripItem, wrapItem} from "../../../util/util";
 import AutoComplete from "../../generic/AutoComplete";
 import {addToCache, removeFromCache} from "./Editor";
 
@@ -25,9 +25,9 @@ class SeriesEditor extends React.Component {
                 publisher: {
                     name: ''
                 },
-                volume: 0,
-                startyear: 0,
-                endyear: 0,
+                volume: 1,
+                startyear: 1900,
+                endyear: 1900,
                 addinfo: ''
             };
 
@@ -58,9 +58,11 @@ class SeriesEditor extends React.Component {
             <Mutation mutation={mutation}
                       update={(cache, result) => {
                           let res = result.data[mutationName];
+                          let publisher = res.publisher;
+                          publisher.us = undefined;
 
                           try {
-                              addToCache(cache, series, res.publisher, res);
+                            addToCache(cache, series, stripItem(wrapItem(publisher)), res);
                           } catch (e) {
                               //ignore cache exception;
                           }

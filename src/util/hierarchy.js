@@ -42,7 +42,8 @@ export function generateUrl(item, us) {
             + "/"
             + encodeURIComponent(item.issue.series.title.replace(/%/g, '%25') + "_Vol_" + item.issue.series.volume)
             + "/"
-            + encodeURIComponent(item.issue.number.replace(/%/g, '%25'));
+            + encodeURIComponent(item.issue.number.replace(/%/g, '%25'))
+            + (item.issue.format ? ("/" + encodeURIComponent(item.issue.format)) : "");
 
     return url
         + encodeURIComponent(item.issue.series.publisher.name.replace(/%/g, '%25'))
@@ -81,8 +82,12 @@ export function getSelected(params, us) {
     }
     if (params.variant) {
         let variant = decodeURIComponent(params.variant);
-        selected.issue.format = variant.substring(0, variant.indexOf("_"));
-        selected.issue.variant = variant.substring(variant.lastIndexOf("_") + 1, variant.length)
+        if(variant.indexOf('_') === -1) {
+            selected.issue.format = variant;
+        } else {
+            selected.issue.format = variant.substring(0, variant.indexOf("_"));
+            selected.issue.variant = variant.substring(variant.lastIndexOf("_") + 1, variant.length)
+        }
     }
 
     return selected;

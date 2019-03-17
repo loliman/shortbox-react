@@ -16,7 +16,11 @@ export function generateItemTitle(item) {
 }
 
 export function generateIssueSubHeader(item) {
-    let header = item.title;
+    let header = '';
+
+    if(item.title)
+        header += item.title;
+
     if (item.format) {
         header += " [" + item.format;
         if (item.variant)

@@ -102,8 +102,8 @@ function VerifyMenuItem(props) {
     let variables = {};
     variables.number = item.number;
     variables.series = item.series;
+    variables.format = item.format;
     if(item.variant !== "") {
-        variables.format = item.format;
         variables.variant = item.variant;
     }
 
@@ -114,11 +114,11 @@ function VerifyMenuItem(props) {
                       update.series.publisher.us = false;
                       update.verified = !update.verified;
 
-                      //try {
-                      updateInCache(cache, issue, wrapItem(variables), item, {issue: update});
-                      //} catch (e) {
-                      //ignore cache exception;
-                      // }
+                      try {
+                        updateInCache(cache, issue, wrapItem(variables), item, {issue: update});
+                      } catch (e) {
+                        //ignore cache exception;
+                      }
                   }}
                   onCompleted={(data) => {
                       props.enqueueSnackbar(generateLabel(item) + " erfolgreich " + (item.verified ? "falsifiziert" : "verifiziert"), {variant: 'success'});

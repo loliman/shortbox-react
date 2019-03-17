@@ -72,7 +72,7 @@ export function compare(a, b) {
         case "Series":
             return (a.title.toLowerCase() + a.volume).localeCompare((b.title.toLowerCase() + b.volume));
         case "Issue":
-            return a.number.toLowerCase().localeCompare(b.toLowerCase());
+            return a.number.toLowerCase().localeCompare(b.number.toLowerCase());
         default:
             return false;
     }

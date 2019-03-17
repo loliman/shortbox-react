@@ -70,6 +70,14 @@ class List extends React.Component {
 function TypeListEntry(props) {
     const {us, item, level, mobile, toogleDrawer} = props;
 
+    let label = generateLabel(item);
+    if(level === HierarchyLevel.SERIES || level === HierarchyLevel.ISSUE) {
+        if(item.title && item.title !== '')
+            label = '#' + item.number + ' ' + item.title;
+        else
+            label = '#' + item.number + ' ' + item.series.title;
+    }
+
     return (
         <div className="itemContainer">
             <ListItem component={Link}
@@ -80,7 +88,7 @@ function TypeListEntry(props) {
                       }}
                       button>
                 <ListItemText className="itemText"
-                              primary={generateLabel(item)}
+                              primary={label}
                 />
             </ListItem>
         </div>

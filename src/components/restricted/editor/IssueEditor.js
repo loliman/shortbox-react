@@ -10,7 +10,7 @@ import Button from "@material-ui/core/Button";
 import withContext from "../../generic/withContext";
 import CardHeader from "@material-ui/core/CardHeader";
 import {individuals, issue, issues, publishers, series} from "../../../graphql/queries";
-import {decapitalize, stripItem} from "../../../util/util";
+import {decapitalize, stripItem, wrapItem} from "../../../util/util";
 import AutoComplete from "../../generic/AutoComplete";
 import {addToCache, removeFromCache, updateInCache} from "./Editor";
 import CardMedia from "@material-ui/core/CardMedia";
@@ -48,12 +48,12 @@ class IssueEditor extends React.Component {
                 number: '',
                 variant: '',
                 cover: '',
-                format: '',
+                format: formats[0],
                 limitation: 0,
                 pages: 0,
                 releasedate: '1900-01-01',
                 price: '',
-                currency: 'EUR',
+                currency: currencies[0],
                 addinfo: '',
                 stories: [],
                 features: [],
@@ -88,23 +88,52 @@ class IssueEditor extends React.Component {
                       update={(cache, result) => {
                           let res = result.data[mutationName];
 
-                          try {
-                              addToCache(cache, issues, res.series, res);
-                          } catch (e) {
-                              //ignore cache exception;
+                          if(edit) {
+                              let defVariables = {issue: {}};
+                              defVariables.issue.series = stripItem(defaultValues.series);
+                              defVariables.issue.series.publisher.us = undefined;
+                              defVariables.issue.number = defaultValues.number;
+                              defVariables.issue.format = defaultValues.format;
+                              if(defaultValues.variant !== '')
+                                  defVariables.issue.variant = defaultValues.variant;
+
+                              res.series.publisher.us = false;
+
+                              try {
+                                updateInCache(cache, issue, defVariables, defVariables, wrapItem(res));
+                              } catch (e) {
+                                //ignore cache exception;
+                              }
+
+                              try {
+                                  let variables = JSON.parse(JSON.stringify(defVariables.issue));
+                                  variables.__typename = "Issue";
+                                  removeFromCache(cache, issues, {series: defVariables.issue.series}, variables);
+                              } catch (e) {
+                                  //ignore cache exception;
+                              }
+
+                              try {
+                                  let variables = JSON.parse(JSON.stringify(defVariables));
+                                  variables.edit = true;
+                                  updateInCache(cache, issue, variables, variables, wrapItem(res));
+                              } catch (e) {
+                                  //ignore cache exception;
+                              }
                           }
 
-                          if(edit) {
-                              try {
-                                  updateInCache(cache, issue, res, res, res);
-                              } catch (e) {
-                                  //ignore cache exception;
-                              }
-                              try {
-                                  removeFromCache(cache, issues, defaultValues.series, defaultValues);
-                              } catch (e) {
-                                  //ignore cache exception;
-                              }
+                          try {
+                              let item = {};
+                              item.title = res.title;
+                              item.number = res.number;
+                              item.series = res.series;
+                              item.series.publisher.us = undefined;
+                              item.format = res.format;
+                              item.variant = res.variant;
+                              item.__typename = 'Issue';
+                              addToCache(cache, issues, stripItem(wrapItem(res.series)), item);
+                          } catch (e) {
+                              //ignore cache exception;
                           }
                       }}
                       onCompleted={(data) => {
@@ -124,12 +153,13 @@ class IssueEditor extends React.Component {
                             let stories = values.stories.map(e => {
                                 if(e.exclusive) {
                                     e.parent = undefined;
+                                    e.translator = undefined;
                                 } else {
                                     e.writer = undefined;
                                     e.penciler = undefined;
                                     e.inker = undefined;
                                     e.colourist = undefined;
-                                    e.letter = undefined;
+                                    e.letterer = undefined;
                                     e.editor = undefined;
                                 }
 
@@ -148,6 +178,7 @@ class IssueEditor extends React.Component {
 
                             let variables = {};
                             variables.item = stripItem(values);
+                            variables.item.cover = values.cover;
                             variables.item.stories = stories;
                             variables.item.covers = covers;
                             if(edit)
@@ -236,7 +267,9 @@ class IssueEditor extends React.Component {
                                             name="cover"
                                             label="Cover"
                                             component={SimpleFileUpload}
-                                            onChange={() => false}
+                                            onChange={(cover) => {
+                                                setFieldValue("cover", cover, true);
+                                            }}
                                         />
                                     </div>
 
@@ -454,6 +487,7 @@ function StoryFields(props) {
                 className="field field3"
                 name={"stories[" + props.index + "].number"}
                 label="#"
+                type="number"
                 component={TextField}
             />
 
@@ -479,16 +513,14 @@ function StoryFields(props) {
 }
 
 function StoryFieldsNonExclusive(props) {
-    const {items, index, setFieldValue} = props;
+    const {index, setFieldValue} = props;
 
     return (
         <React.Fragment>
             <AutoComplete
                 query={series}
                 variables={{
-                    publisher: items[index].parent.issue.series.publisher.name === '' ?
-                        {name: "*", us: true} :
-                        {name: items[index].parent.issue.series.publisher.name}
+                    publisher: {name: "*", us: true}
                 }}
                 name={"stories[" + index + "].parent.issue.series.title"}
                 label="Serie"
@@ -496,7 +528,7 @@ function StoryFieldsNonExclusive(props) {
                     setFieldValue("stories[" + index + "].parent.issue.series", stripItem(value), true);
                 }}
                 style={{
-                    "width": props.desktop ? "25%" : "93%"
+                    "width": props.desktop ? "25%" : "92.6%"
                 }}
                 generateLabel={generateLabel}
             />
@@ -555,7 +587,7 @@ function StoryFieldsExclusive(props) {
                     setFieldValue("stories[" + index + "].writer", stripItem(value), true);
                 }}
                 style={{
-                    "width": props.desktop ? "20%" : "93%"
+                    "width": props.desktop ? "20%" : "92.6%"
                 }}
                 generateLabel={(e) => e.name}
             />
@@ -650,6 +682,7 @@ function FeatureFields(props) {
                 className="field field3"
                 name={"features[" + props.index + "].number"}
                 label="#"
+                type="number"
                 component={TextField}
             />
 
@@ -657,13 +690,6 @@ function FeatureFields(props) {
                 className={props.desktop ? "field field35" : "field field95"}
                 name={"features[" + props.index + "].title"}
                 label="Titel"
-                component={TextField}
-            />
-
-            <Field
-                className={props.desktop ? "field field35" : "field field100"}
-                name={"features[" + props.index + "].addinfo"}
-                label="Weitere Informationen"
                 component={TextField}
             />
 
@@ -679,6 +705,13 @@ function FeatureFields(props) {
                     "width": props.desktop ? "20%" : "110%"
                 }}
                 generateLabel={(e) => e.name}
+            />
+
+            <Field
+                className={props.desktop ? "field field35" : "field field100"}
+                name={"features[" + props.index + "].addinfo"}
+                label="Weitere Informationen"
+                component={TextField}
             />
         </React.Fragment>
     );
@@ -710,12 +743,14 @@ function CoverFields(props) {
                     name={"covers[" + props.index + "].number"}
                     label="#"
                     disabled
+                    type="number"
                     component={TextField}
                 /> :
                 <Field
                     className="field field3"
                     name={"covers[" + props.index + "].number"}
                     label="#"
+                    type="number"
                     component={TextField}
                 />
             }
@@ -735,16 +770,14 @@ function CoverFields(props) {
 }
 
 function CoverFieldsNonExclusive(props) {
-    const {items, index, setFieldValue} = props;
+    const {index, setFieldValue} = props;
 
     return (
         <React.Fragment>
             <AutoComplete
                 query={series}
                 variables={{
-                    publisher: items[index].parent.issue.series.publisher.name === '' ?
-                        {name: "*", us: true} :
-                        {name: items[index].parent.issue.series.publisher.name}
+                    publisher: {name: "*", us: true}
                 }}
                 name={"covers[" + index + "].parent.issue.series.title"}
                 label="Serie"
@@ -752,7 +785,7 @@ function CoverFieldsNonExclusive(props) {
                     setFieldValue("covers[" + index + "].parent.issue.series", stripItem(value), true);
                 }}
                 style={{
-                    "width": props.desktop ? "25%" : "93%"
+                    "width": props.desktop ? "25%" : "92.6%"
                 }}
                 generateLabel={generateLabel}
             />
@@ -796,7 +829,7 @@ function CoverFieldsExclusive(props) {
                     setFieldValue("covers[" + index + "].artist", stripItem(value), true);
                 }}
                 style={{
-                    "width": props.desktop ? "20%" : "93%"
+                    "width": props.desktop ? "20%" : "92.6%"
                 }}
                 generateLabel={(e) => e.name}
             />
@@ -880,8 +913,8 @@ const storyDefault = {
                 publisher: {
                     name: ''
                 },
-                number: ''
-            }
+            },
+            number: 0
         },
         number: 0
     },
@@ -916,7 +949,7 @@ const featureDefault = {
     writer: {
         name: ''
     },
-    exclusive: false,
+    number: 0
 };
 
 const coverDefault = {
@@ -928,8 +961,9 @@ const coverDefault = {
                 publisher: {
                     name: ''
                 },
-                number: ''
-            }
+            },
+            number: 0,
+            variant: ''
         },
         number: 0
     },
@@ -937,6 +971,7 @@ const coverDefault = {
         name: ''
     },
     addinfo: '',
+    number: 0,
     exclusive: false,
 };
 export default withContext(IssueEditor);
