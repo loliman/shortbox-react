@@ -38,7 +38,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build-prod": "REACT_APP_ENV=production && react-scripts build"
+    "build": "react-scripts build"
   },
   "eslintConfig": {
     "extends": "react-app"
