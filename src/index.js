@@ -1,3 +1,7 @@
+import "@babel/polyfill";
+import 'core-js/es6/map';
+import 'core-js/es6/set';
+import 'raf/polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ApolloClient from "apollo-client";
@@ -14,9 +18,6 @@ import {ScrollContext} from 'react-router-scroll-4';
 import {LastLocationProvider} from "react-router-last-location";
 import Button from "@material-ui/core/Button/Button";
 import {createUploadLink} from "apollo-upload-client";
-import 'core-js/es6/map';
-import 'core-js/es6/set';
-import 'raf/polyfill';
 
 const uploadLink = createUploadLink({
     uri: 'http://localhost:4000'
