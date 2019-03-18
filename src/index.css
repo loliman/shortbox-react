@@ -898,6 +898,12 @@ div[class^="MuiExpansionPanelSummary-content-"] {
     overflow: inherit !important;
 }
 
+/*Hamburger for IE11*/
+.menuButton {
+    margin-left: 12px;
+    margin-right: 20px;
+}
+
 /*!
  * Hamburgers
  * @description Tasty CSS-animated hamburgers

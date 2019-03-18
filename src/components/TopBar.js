@@ -11,20 +11,35 @@ import {logout} from "../graphql/mutations";
 import {generateLabel, generateUrl, HierarchyLevel} from "../util/hierarchy";
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
+import MenuIcon from "@material-ui/icons/Menu";
 import Hamburger from 'react-hamburgers';
 import Link from "react-router-dom/es/Link";
 import {withContext} from "./generic";
+import IconButton from "@material-ui/core/IconButton";
 
 function TopBar(props) {
     const {drawerOpen, toogleDrawer, us, history, session, mobile} = props;
 
+    let isIE = /*@cc_on!@*/false || !!document.documentMode;
+
     return (
         <AppBar position="fixed" className="appBar">
             <Toolbar>
-                <Hamburger
-                    active={drawerOpen}
-                    type="slider"
-                    onClick={() => toogleDrawer()}/>
+                {
+                    isIE ?
+                        <IconButton
+                            color="inherit"
+                            onClick={() => toogleDrawer()}
+                            className="menuButton"
+                        >
+                            <MenuIcon />
+                        </IconButton> :
+                        <Hamburger
+                            active={drawerOpen}
+                            type="slider"
+                            onClick={() => toogleDrawer()}/>
+                }
+
                 <Typography variant="h6" color="inherit" className="appTitle" noWrap>
                     {
                         mobile ?
