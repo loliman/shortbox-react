@@ -10,9 +10,9 @@ import {Mutation} from "react-apollo";
 import Typography from "@material-ui/core/es/Typography/Typography";
 import {stripItem} from "../../util/util";
 import {withContext} from "../generic";
-import {getListQuery} from "../../graphql/queries";
+import {getListQuery, issue} from "../../graphql/queries";
 import {generateLabel, generateUrl, getHierarchyLevel, HierarchyLevel} from "../../util/hierarchy";
-import {removeFromCache} from "./editor/Editor";
+import {removeFromCache, updateInCache} from "./editor/Editor";
 
 function DeletionDialog(props) {
     let {level} = props;
@@ -51,11 +51,39 @@ function DeletionDialog(props) {
 
                 <Mutation mutation={deleteMutation}
                           update={(cache) => {
-                              try {
-                                  removeFromCache(cache, getQuery, parent, item);
-                              } catch (e) {
-                                  //ignore cache exception;
+                              if(level === HierarchyLevel.ISSUE && item.variants.length > 1) {
+                                  let variants = item.variants.filter((variant) => {
+                                      return (item.number + item.format + item.variant).toLowerCase()
+                                          .localeCompare(variant.number + variant.format + variant.variant.toLowerCase()) !== 0;
+                                  });
+
+                                  try {
+                                      item.variants.forEach(variant => {
+                                          let oldVariant = {issue: {}};
+                                          oldVariant.issue.series = stripItem(variant.series);
+                                          oldVariant.issue.series.publisher.us = undefined;
+                                          oldVariant.issue.number = variant.number;
+                                          oldVariant.issue.format = variant.format;
+                                          if(oldVariant.variant !== '')
+                                              oldVariant.issue.variant = variant.variant;
+
+                                          let newVariant = {issue: JSON.parse(JSON.stringify(variant))};
+                                          newVariant.issue.variants = variants;
+
+                                          updateInCache(cache, issue, oldVariant, oldVariant, newVariant);
+                                      });
+                                  } catch (e) {
+                                      //ignore cache exception;
+                                  }
+
+                                  parent = {issue: stripItem(variants[0])};
                               }
+                              else
+                                  try {
+                                    removeFromCache(cache, getQuery, parent, item);
+                                  } catch (e) {
+                                      //ignore cache exception;
+                                  }
                           }}
                           onCompleted={(data) => {
                               history.push(generateUrl(parent));
