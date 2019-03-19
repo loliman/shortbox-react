@@ -597,6 +597,12 @@
     border-radius: 0 !important;
 }
 
+.detailsPaper > table > tbody > :last-child > td
+{
+    border-color: white !important;
+    border: none !important;
+}
+
 .stories {
     width: 100%;
 }
