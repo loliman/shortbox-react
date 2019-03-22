@@ -35,7 +35,7 @@ function Home(props) {
                 <br />
                 
                 <div className="history">
-                    <Query query={lastEdited}>
+                    <Query query={lastEdited} variables={{us: props.us}}>
                         {({loading, error, data}) => {
                             if (loading || error || !data.lastEdited)
                                 return <QueryResult loading={loading} error={error} />;
@@ -57,7 +57,7 @@ function IssuePreview(props) {
     let time = props.issue.updatedAt.split(" ")[1];
 
     return (
-        <Card className="issuePreview" onClick={() => props.history.push(generateUrl(props.issue), false)}>
+        <Card className="issuePreview" onClick={() => props.history.push(generateUrl(props.issue, props.us), false)}>
             <CardContent>
                 <Typography variant="subtitle1">{generateLabel(props.issue.series) + " #" + props.issue.number}</Typography>
                 <Typography variant="caption">{generateLabel(props.issue.series.publisher)}</Typography>

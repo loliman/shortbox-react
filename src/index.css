@@ -516,6 +516,11 @@
     color: white;
 }
 
+.switchEditor span {
+    font-weight: 500;
+    color: black;
+}
+
 .scroll-horizontal {
     overflow: auto !important;
     overflow-y: hidden !important;

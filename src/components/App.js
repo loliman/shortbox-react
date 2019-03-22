@@ -60,10 +60,15 @@ class App extends React.Component {
                         <PrivateRoute exact session={session} path="/create/series" component={SeriesCreate}/>
                         <PrivateRoute exact session={session} path="/create/issue" component={IssueCreate}/>
 
-                        <PrivateRoute exact session={session} path="/edit/:publisher" component={PublisherEdit}/>
-                        <PrivateRoute exact session={session} path="/edit/:publisher/:series" component={SeriesEdit}/>
-                        <PrivateRoute exact session={session} path="/edit/:publisher/:series/:issue" component={IssueEditor}/>
-                        <PrivateRoute exact session={session} path="/edit/:publisher/:series/:issue/:variant" component={IssueEditor}/>
+                        <PrivateRoute exact session={session} path="/edit/de/:publisher" component={PublisherEdit}/>
+                        <PrivateRoute exact session={session} path="/edit/de/:publisher/:series" component={SeriesEdit}/>
+                        <PrivateRoute exact session={session} path="/edit/de/:publisher/:series/:issue" component={IssueEditor}/>
+                        <PrivateRoute exact session={session} path="/edit/de/:publisher/:series/:issue/:variant" component={IssueEditor}/>
+
+                        <PrivateRoute exact session={session} path="/edit/us/:publisher" component={PublisherEdit}/>
+                        <PrivateRoute exact session={session} path="/edit/us/:publisher/:series" component={SeriesEdit}/>
+                        <PrivateRoute exact session={session} path="/edit/us/:publisher/:series/:issue" component={IssueEditor}/>
+                        <PrivateRoute exact session={session} path="/edit/us/:publisher/:series/:issue/:variant" component={IssueEditor}/>
 
                         <Route render={() => <Redirect to="/de" />} />
                     </Switch>

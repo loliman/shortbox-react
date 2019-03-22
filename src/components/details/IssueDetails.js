@@ -1,6 +1,6 @@
 import Layout from "../Layout";
 import {Query} from "react-apollo";
-import {issue, issue_us} from "../../graphql/queries";
+import {issue} from "../../graphql/queries";
 import QueryResult from "../generic/QueryResult";
 import React from "react";
 import CardHeader from "@material-ui/core/CardHeader/CardHeader";
@@ -36,7 +36,7 @@ function IssueDetails(props) {
 
     return (
         <Layout>
-            <Query query={us ? issue_us : issue} variables={selected}>
+            <Query query={issue} variables={selected}>
                 {({loading, error, data}) => {
                     if (loading || error || !data.issue)
                         return <QueryResult loading={loading} error={error} data={data.issue} selected={selected}/>;

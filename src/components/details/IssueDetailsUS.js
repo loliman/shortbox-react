@@ -30,7 +30,7 @@ function Details(props) {
             <DetailsRow key="releasedate" label="Erscheinungsdatum"
                         value={dateFormat(new Date(props.issue.releasedate), "dd.mm.yyyy")}/>
             <DetailsRow key="coverartists" label="Cover Artists"
-                        value={toIndividualList(props.issue.cover.artists)}/>
+                        value={toIndividualList(props.issue.cover ? props.issue.cover.artists : null)}/>
             <DetailsRow key="editor" label="Editor"
                         value={toIndividualList(props.issue.editors)}/>
         </React.Fragment>
@@ -52,8 +52,8 @@ function Bottom(props) {
             <br/>
 
             <Contains {...props} header="Cover erschienen in"
-                      noEntriesHint="Dieser Ausgabe sind noch keine Cover zugeordnet."
-                      items={props.issue.covers[0].children.map(c => c.issue)}
+                      noEntriesHint="Dieser Ausgabe ist noch kein Cover zugeordnet."
+                      items={props.issue.covers[0] ? props.issue.covers[0].children.map(c => c.issue) : []}
                       itemTitle={<ContainsTitleDetailed/>}/>
 
             <br/>

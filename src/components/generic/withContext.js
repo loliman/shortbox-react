@@ -14,7 +14,7 @@ function withContext(WrappedComponent) {
     const WithContext = props => (
         <AppContext.Consumer>
             {(context) => {
-                let us = props.match.url.indexOf("/us") === 0;
+                let us = props.match.url.indexOf("/us") === 0 || props.match.url.indexOf("/edit/us") === 0;
                 let selected = getSelected(props.match.params, us);
 
                 let params = {

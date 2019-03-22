@@ -18,9 +18,9 @@ class AddFab extends React.Component {
     }
 
     render() {
-        const {session, us, history} = this.props;
+        const {session, history} = this.props;
 
-        if (session && !us)
+        if (session)
             return (
                 <ClickAwayListener onClickAway={this.handleClose}>
                     <div className="speedDialContainer">

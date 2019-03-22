@@ -13,6 +13,9 @@ import {publishers, series} from "../../../graphql/queries";
 import {decapitalize, stripItem, wrapItem} from "../../../util/util";
 import AutoComplete from "../../generic/AutoComplete";
 import {addToCache, removeFromCache} from "./Editor";
+import Tooltip from "@material-ui/core/Tooltip";
+import Switch from "@material-ui/core/Switch";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 class SeriesEditor extends React.Component {
     constructor(props) {
@@ -23,7 +26,8 @@ class SeriesEditor extends React.Component {
             defaultValues = {
                 title: '',
                 publisher: {
-                    name: ''
+                    name: '',
+                    us: false
                 },
                 volume: 1,
                 startyear: 1900,
@@ -49,7 +53,7 @@ class SeriesEditor extends React.Component {
     }
 
     render() {
-        const {lastLocation, history, enqueueSnackbar, edit, mutation, us} = this.props;
+        const {lastLocation, history, enqueueSnackbar, edit, mutation} = this.props;
         const {defaultValues, header, submitLabel, successMessage, errorMessage} = this.state;
 
         let mutationName = decapitalize(mutation.definitions[0].name.value);
@@ -58,25 +62,27 @@ class SeriesEditor extends React.Component {
             <Mutation mutation={mutation}
                       update={(cache, result) => {
                           let res = result.data[mutationName];
-                          let publisher = res.publisher;
-                          publisher.us = undefined;
 
                           try {
-                            addToCache(cache, series, stripItem(wrapItem(publisher)), res);
+                              let publisher = res.publisher;
+                              publisher.us = undefined;
+                              addToCache(cache, series, stripItem(wrapItem(publisher)), res);
                           } catch (e) {
                               //ignore cache exception;
                           }
 
                           if(edit)
                               try {
-                                  removeFromCache(cache, series, defaultValues.publisher, defaultValues);
+                                  let publisher = defaultValues.publisher;
+                                  publisher.us = undefined;
+                                  removeFromCache(cache, series, stripItem(wrapItem(publisher)), defaultValues);
                               } catch (e) {
                                   //ignore cache exception;
                               }
                       }}
                       onCompleted={(data) => {
                           enqueueSnackbar(generateLabel(data[mutationName]) + successMessage, {variant: 'success'});
-                          history.push(generateUrl(data[mutationName]));
+                          history.push(generateUrl(data[mutationName], data[mutationName].publisher.us));
                       }}
                       onError={() => {
                           enqueueSnackbar(errorMessage, {variant: 'error'});
@@ -103,7 +109,22 @@ class SeriesEditor extends React.Component {
                         }}>
                         {({values, resetForm, submitForm, isSubmitting, setFieldValue}) => (
                             <Form>
-                                <CardHeader title={header} />
+                                <CardHeader title={header}
+                                            action={
+                                                <FormControlLabel
+                                                    className="switchEditor"
+                                                    control={
+                                                        <Tooltip title={(values.publisher.us ? "Deutscher" : "US") + " Serie"}>
+                                                            <Switch
+                                                                disabled={edit}
+                                                                checked={values.publisher.us}
+                                                                onChange={() => setFieldValue("publisher.us", !values.publisher.us)}
+                                                                color="secondary"/>
+                                                        </Tooltip>
+                                                    }
+                                                    label="US"
+                                                />
+                                            }/>
 
                                 <CardContent className="cardContent">
                                     <Field
@@ -117,7 +138,7 @@ class SeriesEditor extends React.Component {
                                     <AutoComplete
                                         id="publisher"
                                         query={publishers}
-                                        variables={{us: us}}
+                                        variables={{us: values.publisher.us}}
                                         name="publisher.name"
                                         label="Verlag"
                                         onChange={(value) => {

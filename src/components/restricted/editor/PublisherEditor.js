@@ -12,6 +12,9 @@ import CardHeader from "@material-ui/core/CardHeader";
 import {publishers} from "../../../graphql/queries";
 import {decapitalize, stripItem} from "../../../util/util";
 import {addToCache, updateInCache} from "./Editor";
+import Switch from "@material-ui/core/Switch";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Tooltip from "@material-ui/core/Tooltip";
 
 class PublisherEditor extends React.Component {
     constructor(props) {
@@ -21,7 +24,8 @@ class PublisherEditor extends React.Component {
         if(!defaultValues)
             defaultValues = {
                 name: '',
-                addinfo: ''
+                addinfo: '',
+                us: false
             };
 
         this.state = {
@@ -42,7 +46,7 @@ class PublisherEditor extends React.Component {
     }
 
     render() {
-        const {lastLocation, history, enqueueSnackbar, edit, mutation, us} = this.props;
+        const {lastLocation, history, enqueueSnackbar, edit, mutation} = this.props;
         const {defaultValues, header, submitLabel, successMessage, errorMessage} = this.state;
 
         let mutationName = decapitalize(mutation.definitions[0].name.value);
@@ -54,16 +58,16 @@ class PublisherEditor extends React.Component {
                               let res = result.data[mutationName];
 
                               if(!edit)
-                                  addToCache(cache, publishers, {us: us}, res);
+                                  addToCache(cache, publishers, {us: res.us}, res);
                               else
-                                  updateInCache(cache, publishers, {us: us}, defaultValues, res);
+                                  updateInCache(cache, publishers, {us: res.us}, defaultValues, {publisher: res});
                           } catch (e) {
                               //ignore cache exception;
                           }
                       }}
                       onCompleted={(data) => {
                           enqueueSnackbar(generateLabel(data[mutationName]) + successMessage, {variant: 'success'});
-                          history.push(generateUrl(data[mutationName]));
+                          history.push(generateUrl(data[mutationName], data[mutationName].us));
                       }}
                       onError={() => {
                           enqueueSnackbar(errorMessage, {variant: 'error'});
@@ -88,9 +92,25 @@ class PublisherEditor extends React.Component {
                             if(error)
                                 actions.resetForm();
                         }}>
-                        {({values, resetForm, submitForm, isSubmitting}) => (
+                        {({values, resetForm, submitForm, isSubmitting, setFieldValue}) => (
                             <Form>
-                                <CardHeader title={header} />
+                                <CardHeader title={header}
+                                            action={
+                                                <FormControlLabel
+                                                    className="switchEditor"
+                                                    control={
+                                                        <Tooltip title={(values.us ? "Deutscher" : "US") + " Verlag"}>
+                                                            <Switch
+                                                                disabled={edit}
+                                                                checked={values.us}
+                                                                onChange={() => setFieldValue("us", !values.us)}
+                                                                color="secondary"/>
+                                                        </Tooltip>
+                                                    }
+                                                    label="US"
+                                                />
+                                            }
+                                />
 
                                 <CardContent className="cardContent">
                                     <Field

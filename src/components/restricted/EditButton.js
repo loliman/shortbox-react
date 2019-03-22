@@ -17,7 +17,7 @@ class EditButton extends React.Component {
     }
 
     render() {
-        if (this.props.session && !this.props.us)
+        if (this.props.session)
             return (
                 <div className="editButton">
                     <IconButton

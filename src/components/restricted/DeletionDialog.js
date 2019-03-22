@@ -16,19 +16,19 @@ import {removeFromCache, updateInCache} from "./editor/Editor";
 
 function DeletionDialog(props) {
     let {level} = props;
-    const {item, open, handleClose, history, enqueueSnackbar, us} = props;
+    const {item, open, handleClose, history, enqueueSnackbar} = props;
 
     let parent;
     if (item.__typename === "Issue") {
-        parent = {series: item.series};
+        parent = {series: JSON.parse(JSON.stringify(item.series))};
         parent.series.publisher.us = undefined;
     }
     else if (item.__typename === "Series") {
-        parent = {publisher: item.publisher};
+        parent = {publisher: JSON.parse(JSON.stringify(item.publisher))};
         parent.publisher.us = undefined;
     }
     else
-        parent = {us: us};
+        parent = {us: item.us};
     parent = stripItem(parent);
 
     let deleteMutation = getDeleteMutation(level);
@@ -86,7 +86,7 @@ function DeletionDialog(props) {
                                   }
                           }}
                           onCompleted={(data) => {
-                              history.push(generateUrl(parent));
+                              history.push(generateUrl(parent, parent.us));
 
                               let mutationName = deleteMutation.definitions[0].name.value.toLowerCase();
 

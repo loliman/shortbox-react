@@ -47,7 +47,6 @@ export const SeriesSchema = Yup.object().shape({
 
 export const IssueSchema = Yup.object().shape({
     title: Yup.string()
-        .required('Pflichtfeld')
         .max(255, 'Maximal 255 Zeichen'),
     series: Yup.object().shape({
         title: Yup.string()

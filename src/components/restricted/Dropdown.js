@@ -27,8 +27,17 @@ class Dropdown extends React.Component {
     }
 
     render() {
-        if (!this.props.EditDropdown.item || !this.props.session || this.props.us)
+        if (!this.props.EditDropdown.item || !this.props.session)
             return null;
+
+        let canDelete = true;
+
+        if(this.props.level === HierarchyLevel.ISSUE && this.props.EditDropdown.item.series.publisher.us) {
+            this.props.EditDropdown.item.stories.forEach(story => {
+                if(canDelete)
+                    canDelete = story.children.length === 0;
+            })
+        }
 
         return (
             <ClickAwayListener onClickAway={this.props.handleClose}>
@@ -44,14 +53,16 @@ class Dropdown extends React.Component {
                                 width: 200,
                             },
                         }}>
+
                         {
                             this.props.level === HierarchyLevel.ISSUE ?
-                                <VerifyMenuItem item={this.props.EditDropdown.item} enqueueSnackbar={this.props.enqueueSnackbar} /> : null
+                                <VerifyMenuItem item={this.props.EditDropdown.item}
+                                                enqueueSnackbar={this.props.enqueueSnackbar} /> : null
                         }
 
                         <MenuItem key="edit"
                                   onClick={() => {
-                                      this.props.history.push("/edit" + generateUrl(this.props.EditDropdown.item).substring(3));
+                                      this.props.history.push("/edit" + generateUrl(this.props.EditDropdown.item, this.props.EditDropdown.item.series.publisher.us));
                                       if(this.props.mobile)
                                           this.props.toogleDrawer();
                                       this.props.handleClose();
@@ -64,7 +75,7 @@ class Dropdown extends React.Component {
                             </Typography>
                         </MenuItem>
 
-                        <MenuItem key="delete" onClick={() => this.handleDelete()}>
+                        <MenuItem disabled={!canDelete} key="delete" onClick={() => this.handleDelete()}>
                             <ListItemIcon>
                                 <DeleteIcon/>
                             </ListItemIcon>
@@ -98,10 +109,11 @@ class Dropdown extends React.Component {
 }
 
 function VerifyMenuItem(props) {
-    let item = stripItem(props.item);
+    let item = stripItem(JSON.parse(JSON.stringify(props.item)));
     let variables = {};
     variables.number = item.number;
     variables.series = item.series;
+    variables.series.publisher.us = undefined;
     variables.format = item.format;
     if(item.variant !== "") {
         variables.variant = item.variant;
@@ -111,7 +123,6 @@ function VerifyMenuItem(props) {
         <Mutation mutation={verifyIssue}
                   update={(cache, result) => {
                       let update = JSON.parse(JSON.stringify(props.item));
-                      update.series.publisher.us = false;
                       update.verified = !update.verified;
 
                       try {

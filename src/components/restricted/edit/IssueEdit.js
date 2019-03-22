@@ -24,27 +24,32 @@ function IssueEdit(props) {
 
                     defaultValues.variants = undefined;
                     defaultValues.verified = undefined;
-                    defaultValues.editors = undefined;
                     defaultValues.createdAt = undefined;
                     defaultValues.updatedAt = undefined;
                     defaultValues.cover = defaultValues.cover ? defaultValues.cover : '';
+                    defaultValues.editor = (defaultValues.editors && defaultValues.editors.length > 0 ? stripItem(defaultValues.editors[0]) : {name: ''});
+                    defaultValues.pages = defaultValues.pages ? defaultValues.pages : 0;
+                    defaultValues.limitation = defaultValues.limitation ? defaultValues.limitation : 0;
+                    defaultValues.editors = undefined;
 
                     let oldStories = [];
                     defaultValues.stories.forEach(story => {
+                        let exclusive = story.exclusive || defaultValues.series.publisher.us;
+
                         oldStories.push({
                             title: story.title,
                             number: story.number,
                             addinfo: story.addinfo,
-                            exclusive: story.exclusive,
-                            translator: story.exclusive ? undefined : stripItem(story.translators[0]),
-                            writer: !story.exclusive ? undefined : stripItem(story.writers[0]),
-                            penciler: !story.exclusive ? undefined : stripItem(story.pencilers[0]),
-                            inker: !story.exclusive ? undefined : stripItem(story.inkers[0]),
-                            colourist: !story.exclusive ? undefined : stripItem(story.colourists[0]),
-                            letterer: !story.exclusive ? undefined : stripItem(story.letterers[0]),
-                            editor: !story.exclusive ? undefined : stripItem(story.editors[0]),
-                            parent: story.exclusive ? undefined : {
-                                number: 0,
+                            exclusive: exclusive,
+                            translator: exclusive ? undefined : (story.translators && story.translators.length > 0 ? stripItem(story.translators[0]) : {name: ''}),
+                            writer: !exclusive ? undefined : (story.writers && story.writers.length > 0 ? stripItem(story.writers[0]) : {name: ''}),
+                            penciler: !exclusive ? undefined : (story.pencilers && story.pencilers.length > 0 ? stripItem(story.pencilers[0]) : {name: ''}),
+                            inker: !exclusive ? undefined : (story.inkers && story.inkers.length > 0 ? stripItem(story.inkers[0]) : {name: ''}),
+                            colourist: !exclusive ? undefined : (story.colourists && story.colourists.length > 0 ? stripItem(story.colourists[0]) : {name: ''}),
+                            letterer: !exclusive ? undefined : (story.letterers && story.letterers.length > 0 ? stripItem(story.letterers[0]) : {name: ''}),
+                            editor: !exclusive ? undefined : (story.editors && story.editors.length > 0 ? stripItem(story.editors[0]) : {name: ''}),
+                            parent: exclusive ? undefined : {
+                                number: story.parent.number,
                                 issue: {
                                     series: {
                                         title: story.parent.issue.series.title,
@@ -52,7 +57,8 @@ function IssueEdit(props) {
                                     },
                                     number: story.parent.issue.number
                                 }
-                            }
+                            },
+                            children: story.children
                         })
                     });
                     defaultValues.stories = oldStories;
@@ -63,19 +69,21 @@ function IssueEdit(props) {
                             title: feature.title,
                             number: feature.number,
                             addinfo: feature.addinfo,
-                            writer: stripItem(feature.writers[0])
+                            writer: (feature.writers && feature.writers.length > 0 ? stripItem(feature.writers[0]) : {name: ''})
                         })
                     });
                     defaultValues.features = oldFeatures;
 
                     let oldCovers = [];
                     defaultValues.covers.forEach(cover => {
+                        let exclusive = cover.exclusive || defaultValues.series.publisher.us;
+
                         oldCovers.push({
                             number: cover.number,
                             addinfo: cover.addinfo,
-                            exclusive: cover.exclusive,
-                            artist: !cover.exclusive ? undefined : (cover.artists ? stripItem(cover.artists[0]) : {name: ''}),
-                            parent: cover.exclusive ? undefined : {
+                            exclusive: exclusive,
+                            artist: !exclusive ? undefined : (cover.artists && cover.artists.length > 0 ? stripItem(cover.artists[0]) : {name: ''}),
+                            parent: exclusive ? undefined : {
                                 number: 0,
                                 issue: {
                                     series: {
@@ -85,7 +93,8 @@ function IssueEdit(props) {
                                     number: cover.parent.issue.number,
                                     variant: cover.parent.issue.variant
                                 }
-                            }
+                            },
+                            children: cover.children
                         })
                     });
                     defaultValues.covers = oldCovers;

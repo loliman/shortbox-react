@@ -98,17 +98,17 @@ function FeatureDetails(props) {
 function StoryDetails(props) {
     return (
         <div>
-            <Typography><b>Autor</b> {toIndividualList(props.item.parent.writers)}</Typography>
-            <Typography><b>Zeichner</b> {toIndividualList(props.item.parent.pencilers)}</Typography>
-            <Typography><b>Inker</b> {toIndividualList(props.item.parent.inkers)}</Typography>
-            <Typography><b>Kolorist</b> {toIndividualList(props.item.parent.colourists)}</Typography>
-            <Typography><b>Letterer</b> {toIndividualList(props.item.parent.letterers)}</Typography>
+            <Typography><b>Autor</b> {toIndividualList(props.item.parent ? props.item.parent.writers : props.item.writers)}</Typography>
+            <Typography><b>Zeichner</b> {toIndividualList(props.item.parent ? props.item.parent.pencilers : props.item.pencilers)}</Typography>
+            <Typography><b>Inker</b> {toIndividualList(props.item.parent ? props.item.parent.inkers : props.item.inkers)}</Typography>
+            <Typography><b>Kolorist</b> {toIndividualList(props.item.parent ? props.item.parent.colourists : props.item.colourists)}</Typography>
+            <Typography><b>Letterer</b> {toIndividualList(props.item.parent ? props.item.parent.letterers : props.item.letterers)}</Typography>
             {
                 props.item.translators.length > 0 ?
                     <Typography><b>Übersetzer</b> {toIndividualList(props.item.translators)}</Typography> :
                     null
             }
-            <Typography><b>Editor</b> {toIndividualList(props.item.parent.editors)}</Typography>
+            <Typography><b>Editor</b> {toIndividualList(props.item.parent ? props.item.parent.editors : props.item.editors)}</Typography>
         </div>
     );
 }

@@ -25,6 +25,7 @@ import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import MenuItem from "@material-ui/core/MenuItem";
+import Tooltip from "@material-ui/core/Tooltip";
 
 const formats = ['Heft', 'Mini Heft', 'Magazin', 'Prestige', 'Softcover', 'Hardcover', 'Taschenbuch', 'Album',
     'Album Hardcover'];
@@ -42,7 +43,8 @@ class IssueEditor extends React.Component {
                     title: '',
                     volume: 0,
                     publisher: {
-                        name: ''
+                        name: '',
+                        us: false
                     }
                 },
                 number: '',
@@ -54,6 +56,7 @@ class IssueEditor extends React.Component {
                 releasedate: '1900-01-01',
                 price: '',
                 currency: currencies[0],
+                editor: {name: ''},
                 addinfo: '',
                 stories: [],
                 features: [],
@@ -78,7 +81,7 @@ class IssueEditor extends React.Component {
     }
 
     render() {
-        const {lastLocation, history, enqueueSnackbar, edit, mutation, us} = this.props;
+        const {lastLocation, history, enqueueSnackbar, edit, mutation} = this.props;
         const {defaultValues, header, submitLabel, successMessage, errorMessage} = this.state;
 
         let mutationName = decapitalize(mutation.definitions[0].name.value);
@@ -86,14 +89,15 @@ class IssueEditor extends React.Component {
         return (
             <Mutation mutation={mutation}
                       update={(cache, result) => {
-                          let res = result.data[mutationName];
+                          let res = JSON.parse(JSON.stringify(result.data[mutationName]));
 
                           if(edit) {
                               let defVariables = {issue: {}};
                               defVariables.issue.series = stripItem(defaultValues.series);
                               defVariables.issue.series.publisher.us = undefined;
                               defVariables.issue.number = defaultValues.number;
-                              defVariables.issue.format = defaultValues.format;
+                              if(defaultValues.format !== '')
+                                defVariables.issue.format = defaultValues.format;
                               if(defaultValues.variant !== '')
                                   defVariables.issue.variant = defaultValues.variant;
 
@@ -138,7 +142,7 @@ class IssueEditor extends React.Component {
                       }}
                       onCompleted={(data) => {
                           enqueueSnackbar(generateLabel(data[mutationName]) + successMessage, {variant: 'success'});
-                          history.push(generateUrl(data[mutationName]));
+                          history.push(generateUrl(data[mutationName], data[mutationName].series.publisher.us));
                       }}
                       onError={() => {
                           enqueueSnackbar(errorMessage, {variant: 'error'});
@@ -151,7 +155,7 @@ class IssueEditor extends React.Component {
                             actions.setSubmitting(true);
 
                             let stories = values.stories.map(e => {
-                                if(e.exclusive) {
+                                if(e.exclusive || values.series.publisher.us) {
                                     e.parent = undefined;
                                     e.translator = undefined;
                                 } else {
@@ -162,16 +166,18 @@ class IssueEditor extends React.Component {
                                     e.letterer = undefined;
                                     e.editor = undefined;
                                 }
+                                e.children = undefined;
 
                                 return e;
                             });
 
                             let covers = values.covers.map(e => {
-                                if(e.exclusive) {
+                                if(e.exclusive || values.series.publisher.us) {
                                     e.parent = undefined;
                                 } else {
                                     e.artist = undefined;
                                 }
+                                e.children = undefined;
 
                                 return e;
                             });
@@ -181,8 +187,24 @@ class IssueEditor extends React.Component {
                             variables.item.cover = values.cover;
                             variables.item.stories = stories;
                             variables.item.covers = covers;
-                            if(edit)
-                                variables.old = stripItem(defaultValues);
+
+                            if(!variables.item.series.publisher.us)
+                                variables.item.editor = undefined;
+                            else {
+                                variables.item.format = undefined;
+                                variables.item.limitation = undefined;
+                                variables.item.pages = undefined;
+                                variables.item.price = undefined;
+                                variables.item.currency = undefined;
+                            }
+
+                            if(edit) {
+                                variables.old = {};
+                                variables.old.series = stripItem(defaultValues.series);
+                                variables.old.number = defaultValues.number;
+                                variables.old.format = defaultValues.format;
+                                variables.old.variant = defaultValues.variant;
+                            }
 
                             await mutation({
                                 variables: variables
@@ -194,7 +216,22 @@ class IssueEditor extends React.Component {
                         }}>
                         {({values, resetForm, submitForm, isSubmitting, setFieldValue}) => (
                             <Form>
-                                <CardHeader title={header} />
+                                <CardHeader title={header}
+                                            action={
+                                                <FormControlLabel
+                                                    className="switchEditor"
+                                                    control={
+                                                        <Tooltip title={(values.series.publisher.us ? "Deutsche" : "US") + " Ausgabe"}>
+                                                            <Switch
+                                                                disabled={edit}
+                                                                checked={values.series.publisher.us}
+                                                                onChange={() => setFieldValue("series.publisher.us", !values.series.publisher.us)}
+                                                                color="secondary"/>
+                                                        </Tooltip>
+                                                    }
+                                                    label="US"
+                                                />
+                                            }/>
 
                                 <CardContent className="cardContent">
                                     {
@@ -212,7 +249,7 @@ class IssueEditor extends React.Component {
                                     <AutoComplete
                                         id="publisher"
                                         query={publishers}
-                                        variables={{us: us}}
+                                        variables={{us: values.series.publisher.us ? values.series.publisher.us : false}}
                                         name="series.publisher.name"
                                         label="Verlag"
                                         onChange={(value) => {
@@ -281,22 +318,28 @@ class IssueEditor extends React.Component {
                                             </React.Fragment> : null
                                     }
 
-                                    <Field
-                                        type="text"
-                                        name="format"
-                                        label="Format"
-                                        select
-                                        component={TextField}
-                                        className={this.props.desktop ? "field field35" : "field field100"}
-                                        InputLabelProps={{
-                                            shrink: true,
-                                        }}
-                                    >
-                                        {formats.map(e => (
-                                            <MenuItem key={e} value={e}>{e}</MenuItem>
-                                        ))}
-                                    </Field>
-                                    <br/>
+                                    {
+                                        !values.series.publisher.us ?
+                                            <React.Fragment>
+                                                <Field
+                                                    type="text"
+                                                    name="format"
+                                                    label="Format"
+                                                    select
+                                                    component={TextField}
+                                                    className={this.props.desktop ? "field field35" : "field field100"}
+                                                    InputLabelProps={{
+                                                        shrink: true,
+                                                    }}
+                                                >
+                                                    {formats.map(e => (
+                                                        <MenuItem key={e} value={e}>{e}</MenuItem>
+                                                    ))}
+                                                </Field>
+                                                <br/>
+                                            </React.Fragment> : null
+                                    }
+
                                     <Field
                                         className={this.props.desktop ? "field field35" : "field field100"}
                                         name="variant"
@@ -304,22 +347,29 @@ class IssueEditor extends React.Component {
                                         component={TextField}
                                     />
                                     <br/>
-                                    <Field
-                                        className={this.props.desktop ? "field field35" : "field field100"}
-                                        name="limitation"
-                                        label="Limitierung"
-                                        type="number"
-                                        component={TextField}
-                                    />
-                                    <br/>
-                                    <Field
-                                        className={this.props.desktop ? "field field35" : "field field100"}
-                                        name="pages"
-                                        label="Seiten"
-                                        type="number"
-                                        component={TextField}
-                                    />
-                                    <br/>
+
+                                    {
+                                        !values.series.publisher.us ?
+                                            <React.Fragment>
+                                                <Field
+                                                    className={this.props.desktop ? "field field35" : "field field100"}
+                                                    name="limitation"
+                                                    label="Limitierung"
+                                                    type="number"
+                                                    component={TextField}
+                                                />
+                                                <br/>
+                                                <Field
+                                                    className={this.props.desktop ? "field field35" : "field field100"}
+                                                    name="pages"
+                                                    label="Seiten"
+                                                    type="number"
+                                                    component={TextField}
+                                                />
+                                                <br/>
+                                            </React.Fragment> : null
+                                    }
+
                                     <Field
                                         className={this.props.desktop ? "field field35" : "field field100"}
                                         name="releasedate"
@@ -329,29 +379,48 @@ class IssueEditor extends React.Component {
                                         component={TextField}
                                     />
                                     <br/>
-                                    <Field
-                                        className={this.props.desktop ? "field field25" : "field field75"}
-                                        name="price"
-                                        label="Preis"
-                                        component={TextField}
-                                    />
 
-                                    <Field
-                                        type="text"
-                                        name="currency"
-                                        label="Währung"
-                                        select
-                                        component={TextField}
-                                        className={this.props.desktop ? "field field10" : "field field25"}
-                                        InputLabelProps={{
-                                            shrink: true
-                                        }}
-                                    >
-                                        {currencies.map(e => (
-                                            <MenuItem key={e} value={e}>{e}</MenuItem>
-                                        ))}
-                                    </Field>
-                                    <br/>
+                                    {
+                                        !values.series.publisher.us ?
+                                            <React.Fragment>
+                                                <Field
+                                                    className={this.props.desktop ? "field field25" : "field field75"}
+                                                    name="price"
+                                                    label="Preis"
+                                                    component={TextField}
+                                                />
+
+                                                <Field
+                                                    type="text"
+                                                    name="currency"
+                                                    label="Währung"
+                                                    select
+                                                    component={TextField}
+                                                    className={this.props.desktop ? "field field10" : "field field25"}
+                                                    InputLabelProps={{
+                                                        shrink: true
+                                                    }}
+                                                >
+                                                    {currencies.map(e => (
+                                                        <MenuItem key={e} value={e}>{e}</MenuItem>
+                                                    ))}
+                                                </Field>
+                                                <br/>
+                                            </React.Fragment> :
+                                            <AutoComplete
+                                                id="editor"
+                                                query={individuals}
+                                                name={"editor.name"}
+                                                label="Editor"
+                                                onChange={(value) => {
+                                                    setFieldValue("editor", stripItem(value), true);
+                                                }}
+                                                style={{
+                                                    "width": this.props.desktop ? "35%" : "100%"
+                                                }}
+                                                generateLabel={(e) => e.name}
+                                            />
+                                    }
 
                                     <Field
                                         className={this.props.desktop ? "field field35" : "field field100"}
@@ -365,15 +434,22 @@ class IssueEditor extends React.Component {
                                     <br/>
                                     <br/>
 
-                                    <Stories setFieldValue={setFieldValue} items={values.stories} {...this.props}/>
+                                    <Stories setFieldValue={setFieldValue} items={values.stories} {...this.props}
+                                        us={values.series.publisher.us}/>
 
                                     <br/>
 
-                                    <Features setFieldValue={setFieldValue} items={values.features} {...this.props}/>
+                                    {
+                                        !values.series.publisher.us ?
+                                            <React.Fragment>
+                                                <Features setFieldValue={setFieldValue} items={values.features} {...this.props}/>
 
-                                    <br/>
+                                                <br/>
+                                            </React.Fragment> : null
+                                    }
 
-                                    <Covers setFieldValue={setFieldValue} items={values.covers} {...this.props}/>
+                                    <Covers setFieldValue={setFieldValue} items={values.covers} {...this.props}
+                                        us={values.series.publisher.us}/>
 
                                     <br/>
 
@@ -479,7 +555,9 @@ function Stories(props) {
 }
 
 function StoryFields(props) {
-    let extended = props.items[props.index].exclusive ? <StoryFieldsExclusive {...props} /> : <StoryFieldsNonExclusive {...props} />;
+    let extended = (props.items[props.index].exclusive || props.us) ?
+        <StoryFieldsExclusive {...props} /> :
+        <StoryFieldsNonExclusive {...props} />;
 
     return (
         <React.Fragment>
@@ -507,7 +585,7 @@ function StoryFields(props) {
                 component={TextField}
             />
 
-            <ExclusiveToggle {...props}/>
+            {!props.us ? <ExclusiveToggle {...props}/> : null}
         </React.Fragment>
     );
 }
@@ -722,7 +800,7 @@ function Covers(props) {
         <React.Fragment>
             <div>
                 <CardHeader className="left" title="Covergalerie"/>
-                <AddContainsButton type="covers" default={coverDefault} {...props} />
+                <AddContainsButton disabled={props.us} type="covers" default={coverDefault} {...props} />
             </div>
 
             <br />
@@ -764,7 +842,7 @@ function CoverFields(props) {
                 component={TextField}
             />
 
-            <ExclusiveToggle {...props}/>
+            {!props.us ? <ExclusiveToggle {...props}/> : null}
         </React.Fragment>
     );
 }
@@ -843,7 +921,8 @@ function Contains(props) {
 
     return props.items.map((item, index) => (
         <div key={index} className="storyAddContainer">
-            <RemoveContainsButton index={index} {...props}/>
+            <RemoveContainsButton disabled={props.items[index].children && props.items[index].children.length > 0}
+                                  index={index} {...props}/>
 
             <ExpansionPanel className="storyAddPanel" key={index} expanded={true}>
                 <ExpansionPanelSummary className="storyAdd">
@@ -859,7 +938,7 @@ function Contains(props) {
 
 function AddContainsButton(props) {
     return (
-        <IconButton className="addBtn" aria-label="Hinzufügen"
+        <IconButton disabled={props.disabled} className="addBtn" aria-label="Hinzufügen"
                     onClick={() => {
                         let items = props.items;
                         let def = JSON.parse(JSON.stringify(props.default));
@@ -874,7 +953,7 @@ function AddContainsButton(props) {
 
 function RemoveContainsButton(props) {
     return (
-        <IconButton className="removeBtn" aria-label="Entfernen"
+        <IconButton disabled={props.disabled} className="removeBtn" aria-label="Entfernen"
                     onClick={() => {
                         let items = props.items.filter((e, i) => i !== props.index);
                         props.setFieldValue(props.type, items, true);

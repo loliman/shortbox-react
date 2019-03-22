@@ -3,7 +3,8 @@ import {HierarchyLevel} from "../util/hierarchy";
 
 const publishers = gql`query Publishers($us: Boolean!){
     publishers(us: $us) {
-        name
+        name,
+        us
     }
 }`;
 
@@ -14,7 +15,8 @@ const series = gql`query Series($publisher: PublisherInput!){
         startyear,
         endyear,
         publisher {
-            name
+            name,
+            us
         }
     }
 }`;
@@ -41,8 +43,8 @@ const individuals = gql`query Individuals {
     }
 }`;
 
-export const lastEdited = gql`query LastEdited {
-    lastEdited {
+export const lastEdited = gql`query LastEdited($us: Boolean) {
+    lastEdited(us: $us) {
         number,
         createdAt,
         updatedAt,
@@ -87,9 +89,15 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
         pages,
         releasedate,
         price,
-        currency
+        currency,
+        editors {
+            name
+        },
         cover {
-            url
+            url,
+            artists {
+                name
+            }
         },
         series {
             title,
@@ -111,7 +119,44 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
             title,
             addinfo,
             number,
+            ,
+            children {
+                issue {
+                    number,
+                    series {
+                        title,
+                        volume,
+                        startyear,
+                        endyear,
+                        publisher {
+                            name,
+							us
+                        }
+                    },
+                    format,
+                    variant
+                }
+            },
+            pencilers {
+                name
+            },
+            writers {
+                name
+            },
+            inkers {
+                name
+            },
+            colourists {
+                name
+            },
+            letterers {
+                name
+            },
+            editors {
+                name
+            },
             parent {
+                number,
                 issue {
                     number,
                     series {
@@ -157,6 +202,23 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
             url,
             addinfo,
             number,
+            children {
+                issue {
+                    number,
+                    format,
+                    variant,
+                    series {
+                        title,
+                        volume,
+                        startyear,
+                        endyear,
+                        publisher {
+                            name,
+                            us
+                        }
+                    }
+                } 
+            },
             parent {
                 issue {
                     variant,
@@ -179,7 +241,10 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
             }
             onlyapp,
             firstapp,
-            exclusive
+            exclusive,
+            artists {
+                name
+            }
         },
         variants {
             format,
@@ -203,106 +268,6 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
     }
 }`;
 
-const issue_us = gql`query Issue($issue: IssueInput!){
-    issue(issue: $issue) {
-        title,
-        number,
-        releasedate,
-        editors {
-            name
-        },
-        cover {
-            url,
-            artists {
-                name
-            }
-        },
-        series {
-            title,
-            volume,
-            publisher {
-                name,
-                us
-            }
-        },
-        stories {
-            title,
-            number,
-            addinfo,
-            children {
-                issue {
-                    number,
-                    series {
-                        title,
-                        volume,
-                        startyear,
-                        endyear,
-                        publisher {
-                            name,
-							us
-                        }
-                    },
-                    format,
-                    variant
-                }
-            },
-            pencilers {
-                name
-            },
-            writers {
-                name
-            },
-            inkers {
-                name
-            },
-            colourists {
-                name
-            },
-            letterers {
-                name
-            },
-            editors {
-                name
-            }
-        },
-        covers {
-            children {
-                issue {
-                    number,
-                    format,
-                    variant,
-                    series {
-                        title,
-                        volume,
-                        startyear,
-                        endyear,
-                        publisher {
-                            name,
-                            us
-                        }
-                    }
-                } 
-            }
-        },
-        variants {
-            format,
-            variant,
-            number,
-            series {
-                title,
-                volume,
-                publisher {
-                    name,
-                    us
-                }
-            },
-            cover {
-                url
-            }
-        },
-    }
-}`;
-
 function getListQuery(level) {
     switch (level) {
         case HierarchyLevel.ROOT:
@@ -315,5 +280,5 @@ function getListQuery(level) {
 }
 
 export {getListQuery,
-    publisher, seriesd, issue, issue_us,
+    publisher, seriesd, issue,
     publishers, series, issues, individuals};
