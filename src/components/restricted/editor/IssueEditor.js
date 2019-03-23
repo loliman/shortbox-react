@@ -56,7 +56,7 @@ class IssueEditor extends React.Component {
                 releasedate: '1900-01-01',
                 price: '',
                 currency: currencies[0],
-                editor: {name: ''},
+                editors: [],
                 addinfo: '',
                 stories: [],
                 features: [],
@@ -79,6 +79,12 @@ class IssueEditor extends React.Component {
                 "Ausgabe konnte nicht erstellt werden"
         }
     }
+
+    toogleUs = () => {
+        let newDefaultValues = this.state.defaultValues;
+        newDefaultValues.series.publisher.us = !newDefaultValues.series.publisher.us;
+        this.setState({defaultValues: newDefaultValues});
+    };
 
     render() {
         const {lastLocation, history, enqueueSnackbar, edit, mutation} = this.props;
@@ -157,14 +163,14 @@ class IssueEditor extends React.Component {
                             let stories = values.stories.map(e => {
                                 if(e.exclusive || values.series.publisher.us) {
                                     e.parent = undefined;
-                                    e.translator = undefined;
+                                    e.translators = undefined;
                                 } else {
-                                    e.writer = undefined;
-                                    e.penciler = undefined;
-                                    e.inker = undefined;
-                                    e.colourist = undefined;
-                                    e.letterer = undefined;
-                                    e.editor = undefined;
+                                    e.writers = undefined;
+                                    e.pencilers = undefined;
+                                    e.inkers = undefined;
+                                    e.colourists = undefined;
+                                    e.letterers = undefined;
+                                    e.editors = undefined;
                                 }
                                 e.children = undefined;
 
@@ -175,7 +181,7 @@ class IssueEditor extends React.Component {
                                 if(e.exclusive || values.series.publisher.us) {
                                     e.parent = undefined;
                                 } else {
-                                    e.artist = undefined;
+                                    e.artists = undefined;
                                 }
                                 e.children = undefined;
 
@@ -189,7 +195,7 @@ class IssueEditor extends React.Component {
                             variables.item.covers = covers;
 
                             if(!variables.item.series.publisher.us)
-                                variables.item.editor = undefined;
+                                variables.item.editors = undefined;
                             else {
                                 variables.item.format = undefined;
                                 variables.item.limitation = undefined;
@@ -225,7 +231,10 @@ class IssueEditor extends React.Component {
                                                             <Switch
                                                                 disabled={edit}
                                                                 checked={values.series.publisher.us}
-                                                                onChange={() => setFieldValue("series.publisher.us", !values.series.publisher.us)}
+                                                                onChange={() => {
+                                                                    this.toogleUs();
+                                                                    resetForm();
+                                                                }}
                                                                 color="secondary"/>
                                                         </Tooltip>
                                                     }
@@ -247,16 +256,18 @@ class IssueEditor extends React.Component {
                                     <br/>
 
                                     <AutoComplete
-                                        id="publisher"
                                         query={publishers}
-                                        variables={{us: values.series.publisher.us ? values.series.publisher.us : false}}
+                                        variables={{us: defaultValues.series.publisher.us ? defaultValues.series.publisher.us : false}}
                                         name="series.publisher.name"
                                         label="Verlag"
-                                        onChange={(value) => {
-                                            setFieldValue("series.publisher", value, true);
+                                        onChange={(option) => {
+                                            if(option)
+                                                setFieldValue("series.publisher", option);
+                                            else
+                                                setFieldValue("series", {title: '', volume: '', publisher: {name : '', us: defaultValues.series.publisher.us}});
                                         }}
                                         style={{
-                                            "width": this.props.desktop ? "35%" : "100%"
+                                            width: this.props.desktop ? "35.7%" : "100%"
                                         }}
                                         generateLabel={generateLabel}
                                     />
@@ -264,18 +275,16 @@ class IssueEditor extends React.Component {
                                     <br/>
 
                                     <AutoComplete
-                                        disabled={!values.series.publisher.name ||
-                                        values.series.publisher.name.trim().length === 0}
-                                        id="series"
+                                        disabled={!values.series.publisher.name || values.series.publisher.name.trim().length === 0}
                                         query={series}
                                         variables={{publisher: {name: values.series.publisher.name}}}
                                         name="series.title"
                                         label="Serie"
-                                        onChange={(value) => {
-                                            setFieldValue("series", value, true);
+                                        onChange={(option) => {
+                                            setFieldValue("series", option ? option : {title: '', volume: '', publisher: {name : values.series.publisher.name, us: values.series.publisher.us}})
                                         }}
                                         style={{
-                                            "width": this.props.desktop ? "25%" : "71%"
+                                            width: this.props.desktop ? "25.7%" : "71%"
                                         }}
                                         generateLabel={generateLabel}
                                     />
@@ -407,16 +416,16 @@ class IssueEditor extends React.Component {
                                                 </Field>
                                                 <br/>
                                             </React.Fragment> :
+
                                             <AutoComplete
-                                                id="editor"
                                                 query={individuals}
-                                                name={"editor.name"}
+                                                name="editors"
+                                                nameField="name"
                                                 label="Editor"
-                                                onChange={(value) => {
-                                                    setFieldValue("editor", stripItem(value), true);
-                                                }}
+                                                isMulti
+                                                onChange={(option) => setFieldValue("editors", option)}
                                                 style={{
-                                                    "width": this.props.desktop ? "35%" : "100%"
+                                                    width: this.props.desktop ? "35.7%" : "100%"
                                                 }}
                                                 generateLabel={(e) => e.name}
                                             />
@@ -561,31 +570,33 @@ function StoryFields(props) {
 
     return (
         <React.Fragment>
-            <Field
-                className="field field3"
-                name={"stories[" + props.index + "].number"}
-                label="#"
-                type="number"
-                component={TextField}
-            />
+            <div className="storyAddInputContainer">
+                <Field
+                    className="field field3"
+                    name={"stories[" + props.index + "].number"}
+                    label="#"
+                    type="number"
+                    component={TextField}
+                />
+
+                <Field
+                    className={props.desktop ? "field field35" : "field field95"}
+                    name={"stories[" + props.index + "].title"}
+                    label="Titel"
+                    component={TextField}
+                />
+
+                <Field
+                    className={props.desktop ? "field field35" : "field field100"}
+                    name={"stories[" + props.index + "].addinfo"}
+                    label="Weitere Informationen"
+                    component={TextField}
+                />
+
+                {!props.us ? <ExclusiveToggle {...props}/> : null}
+            </div>
 
             {extended}
-
-            <Field
-                className={props.desktop ? "field field25" : "field field100"}
-                name={"stories[" + props.index + "].title"}
-                label="Titel"
-                component={TextField}
-            />
-
-            <Field
-                className={props.desktop ? "field fiel25" : "field field100"}
-                name={"stories[" + props.index + "].addinfo"}
-                label="Weitere Informationen"
-                component={TextField}
-            />
-
-            {!props.us ? <ExclusiveToggle {...props}/> : null}
         </React.Fragment>
     );
 }
@@ -594,22 +605,20 @@ function StoryFieldsNonExclusive(props) {
     const {index, setFieldValue} = props;
 
     return (
-        <React.Fragment>
+        <div className="storyAddInputContainer">
             <AutoComplete
-                query={series}
-                variables={{
-                    publisher: {name: "*", us: true}
-                }}
-                name={"stories[" + index + "].parent.issue.series.title"}
-                label="Serie"
-                onChange={(value) => {
-                    setFieldValue("stories[" + index + "].parent.issue.series", stripItem(value), true);
-                }}
-                style={{
-                    "width": props.desktop ? "25%" : "92.6%"
-                }}
-                generateLabel={generateLabel}
-            />
+                    query={series}
+                    variables={{publisher: {name: "*", us: true}}}
+                    name={"stories[" + index + "].parent.issue.series.title"}
+                    label="Serie"
+                    onChange={(option) => {
+                        setFieldValue("stories[" + index + "].parent.issue.series", option ? option : {title: '', volume: '', publisher: {name : '', us: true}});
+                    }}
+                    style={{
+                        width: props.desktop ? "40%" : "99%"
+                    }}
+                    generateLabel={generateLabel}
+                />
 
             <Field
                 className={props.desktop ? "field field5" : "field field25"}
@@ -635,19 +644,17 @@ function StoryFieldsNonExclusive(props) {
             />
 
             <AutoComplete
-                id="translator"
                 query={individuals}
-                name={"stories[" + index + "].translator.name"}
+                name={"stories[" + index + "].translators.name"}
                 label="Übersetzer"
-                onChange={(value) => {
-                    setFieldValue("stories[" + index + "].translator", stripItem(value), true);
-                }}
+                isMulti
+                onChange={(option) => setFieldValue("stories[" + index + "].translators", option)}
                 style={{
-                    "width": props.desktop ? "20%" : "100%"
+                    width: props.desktop ? "35%" : "100%"
                 }}
                 generateLabel={(e) => e.name}
             />
-        </React.Fragment>
+        </div>
     );
 }
 
@@ -656,84 +663,82 @@ function StoryFieldsExclusive(props) {
 
     return (
         <React.Fragment>
-            <AutoComplete
-                id="writer"
-                query={individuals}
-                name={"stories[" + index + "].writer.name"}
-                label="Autor"
-                onChange={(value) => {
-                    setFieldValue("stories[" + index + "].writer", stripItem(value), true);
-                }}
-                style={{
-                    "width": props.desktop ? "20%" : "92.6%"
-                }}
-                generateLabel={(e) => e.name}
-            />
-            <AutoComplete
-                id="penciler"
-                query={individuals}
-                name={"stories[" + index + "].penciler.name"}
-                label="Zeichner"
-                onChange={(value) => {
-                    setFieldValue("stories[" + index + "].penciler", stripItem(value), true);
-                }}
-                style={{
-                    "width": props.desktop ? "20%" : "100%"
-                }}
-                generateLabel={(e) => e.name}
-            />
-            <AutoComplete
-                id="inker"
-                query={individuals}
-                name={"stories[" + index + "].inker.name"}
-                label="Inker"
-                onChange={(value) => {
-                    setFieldValue("stories[" + index + "].inker", stripItem(value), true);
-                }}
-                style={{
-                    "width": props.desktop ? "20%" : "100%"
-                }}
-                generateLabel={(e) => e.name}
-            />
-            <AutoComplete
-                id="colourist"
-                query={individuals}
-                name={"stories[" + index + "].colourist.name"}
-                label="Kolorist"
-                onChange={(value) => {
-                    setFieldValue("stories[" + index + "].colourist", stripItem(value), true);
-                }}
-                style={{
-                    "width": props.desktop ? "20%" : "100%"
-                }}
-                generateLabel={(e) => e.name}
-            />
-            <AutoComplete
-                id="letterer"
-                query={individuals}
-                name={"stories[" + index + "].letterer.name"}
-                label="Letterer"
-                onChange={(value) => {
-                    setFieldValue("stories[" + index + "].letterer", stripItem(value), true);
-                }}
-                style={{
-                    "width": props.desktop ? "20%" : "100%"
-                }}
-                generateLabel={(e) => e.name}
-            />
-            <AutoComplete
-                id="editor"
-                query={individuals}
-                name={"stories[" + index + "].editor.name"}
-                label="Editor"
-                onChange={(value) => {
-                    setFieldValue("stories[" + index + "].editor", stripItem(value), true);
-                }}
-                style={{
-                    "width": props.desktop ? "20%" : "100%"
-                }}
-                generateLabel={(e) => e.name}
-            />
+            <div className="storyAddInputContainer">
+                <AutoComplete
+                    query={individuals}
+                    name={"stories[" + index + "].writers"}
+                    nameField="name"
+                    label="Autor"
+                    isMulti
+                    onChange={(option) => setFieldValue("stories[" + index + "].writers", option)}
+                    style={{
+                        width: props.desktop ? "33.3%" : "99%"
+                    }}
+                    generateLabel={(e) => e.name}
+                />
+                <AutoComplete
+                    query={individuals}
+                    name={"stories[" + index + "].pencilers"}
+                    nameField="name"
+                    label="Zeichner"
+                    isMulti
+                    onChange={(option) => setFieldValue("stories[" + index + "].pencilers", option)}
+                    style={{
+                        width: props.desktop ? "33.3%" : "100%"
+                    }}
+                    generateLabel={(e) => e.name}
+                />
+                <AutoComplete
+                    query={individuals}
+                    name={"stories[" + index + "].inkers"}
+                    nameField="name"
+                    label="Inker"
+                    isMulti
+                    onChange={(option) => setFieldValue("stories[" + index + "].inkers", option)}
+                    style={{
+                        width: props.desktop ? "33.3%" : "100%"
+                    }}
+                    generateLabel={(e) => e.name}
+                />
+            </div>
+            <div className="storyAddInputContainer">
+                <AutoComplete
+                    query={individuals}
+                    name={"stories[" + index + "].colourists"}
+                    nameField="name"
+                    label="Kolorist"
+                    isMulti
+                    onChange={(option) => setFieldValue("stories[" + index + "].colourists", option)}
+                    style={{
+                        width: props.desktop ? "33.3%" : "100%"
+                    }}
+                    generateLabel={(e) => e.name}
+                />
+                <AutoComplete
+                    query={individuals}
+                    name={"stories[" + index + "].letterers"}
+                    nameField="name"
+                    label="Letterer"
+                    isMulti
+                    onChange={(option) => setFieldValue("stories[" + index + "].letterers", option)}
+                    style={{
+                        width: props.desktop ? "33.3%" : "100%"
+                    }}
+                    generateLabel={(e) => e.name}
+                />
+                <AutoComplete
+                    query={individuals}
+                    name={"stories[" + index + "].editors"}
+                    nameField="name"
+                    label="Editor"
+                    isMulti
+                    onChange={(option) => setFieldValue("stories[" + index + "].editors", option)}
+                    style={{
+                        width: props.desktop ? "33.3%" : "100%"
+                    }}
+                    generateLabel={(e) => e.name}
+                />
+            </div>
         </React.Fragment>
     );
 }
@@ -755,7 +760,7 @@ function Features(props) {
 
 function FeatureFields(props) {
     return (
-        <React.Fragment>
+        <div className="storyAddInputContainer">
             <Field
                 className="field field3"
                 name={"features[" + props.index + "].number"}
@@ -765,33 +770,32 @@ function FeatureFields(props) {
             />
 
             <Field
-                className={props.desktop ? "field field35" : "field field95"}
+                className={props.desktop ? "field field30" : "field field95"}
                 name={"features[" + props.index + "].title"}
                 label="Titel"
                 component={TextField}
             />
 
             <AutoComplete
-                id="writer"
                 query={individuals}
-                name={"features[" + props.index + "].writer.name"}
+                name={"features[" + props.index + "].writers"}
+                nameField="name"
                 label="Autor"
-                onChange={(value) => {
-                    props.setFieldValue("features[" + props.index + "].writer", stripItem(value), true);
-                }}
+                isMulti
+                onChange={(option) => props.setFieldValue("features[" + props.index + "].writers", option)}
                 style={{
-                    "width": props.desktop ? "20%" : "110%"
+                    width: props.desktop ? "30%" : "110%"
                 }}
                 generateLabel={(e) => e.name}
             />
 
             <Field
-                className={props.desktop ? "field field35" : "field field100"}
+                className={props.desktop ? "field field30" : "field field100"}
                 name={"features[" + props.index + "].addinfo"}
                 label="Weitere Informationen"
                 component={TextField}
             />
-        </React.Fragment>
+        </div>
     );
 }
 
@@ -815,34 +819,36 @@ function CoverFields(props) {
 
     return (
         <React.Fragment>
-            {props.items[props.index].number === 0 ?
+            <div className="storyAddInputContainer">
+                {props.items[props.index].number === 0 ?
+                    <Field
+                        className="field field3"
+                        name={"covers[" + props.index + "].number"}
+                        label="#"
+                        disabled
+                        type="number"
+                        component={TextField}
+                    /> :
+                    <Field
+                        className="field field3"
+                        name={"covers[" + props.index + "].number"}
+                        label="#"
+                        type="number"
+                        component={TextField}
+                    />
+                }
                 <Field
-                    className="field field3"
-                    name={"covers[" + props.index + "].number"}
-                    label="#"
-                    disabled
-                    type="number"
-                    component={TextField}
-                /> :
-                <Field
-                    className="field field3"
-                    name={"covers[" + props.index + "].number"}
-                    label="#"
-                    type="number"
+                    className={props.desktop ? "field field75" : "field field95"}
+                    name={"covers[" + props.index + "].addinfo"}
+                    label="Weitere Informationen"
                     component={TextField}
                 />
-            }
+
+                {!props.us ? <ExclusiveToggle {...props}/> : null}
+            </div>
 
             {extended}
 
-            <Field
-                className={props.desktop ? "field field25" : "field field100"}
-                name={"covers[" + props.index + "].addinfo"}
-                label="Weitere Informationen"
-                component={TextField}
-            />
-
-            {!props.us ? <ExclusiveToggle {...props}/> : null}
         </React.Fragment>
     );
 }
@@ -851,19 +857,17 @@ function CoverFieldsNonExclusive(props) {
     const {index, setFieldValue} = props;
 
     return (
-        <React.Fragment>
+        <div className="storyAddInputContainer">
             <AutoComplete
                 query={series}
-                variables={{
-                    publisher: {name: "*", us: true}
-                }}
+                variables={{publisher: {name: "*", us: true}}}
                 name={"covers[" + index + "].parent.issue.series.title"}
                 label="Serie"
-                onChange={(value) => {
-                    setFieldValue("covers[" + index + "].parent.issue.series", stripItem(value), true);
+                onChange={(option) => {
+                    setFieldValue("covers[" + index + "].parent.issue.series", option ? option : {title: '', volume: '', publisher: {name : '', us: true}});
                 }}
                 style={{
-                    "width": props.desktop ? "25%" : "92.6%"
+                    width: props.desktop ? "40%" : "99%"
                 }}
                 generateLabel={generateLabel}
             />
@@ -884,12 +888,12 @@ function CoverFieldsNonExclusive(props) {
             />
 
             <Field
-                className={props.desktop ? "field field5" : "field field100"}
+                className={props.desktop ? "field field30" : "field field100"}
                 name={"covers[" + index + "].parent.issue.variant"}
                 label="Variante"
                 component={TextField}
             />
-        </React.Fragment>
+        </div>
     );
 }
 
@@ -898,16 +902,15 @@ function CoverFieldsExclusive(props) {
 
     return (
         <React.Fragment>
-
             <AutoComplete
                 query={individuals}
-                name={"covers[" + index + "].artist.name"}
+                name={"covers[" + index + "].artists"}
+                nameField="name"
                 label="Artist"
-                onChange={(value) => {
-                    setFieldValue("covers[" + index + "].artist", stripItem(value), true);
-                }}
+                isMulti
+                onChange={(option) => setFieldValue("covers[" + index + "].artists", option)}
                 style={{
-                    "width": props.desktop ? "20%" : "92.6%"
+                    width: props.desktop ? "40%" : "99%"
                 }}
                 generateLabel={(e) => e.name}
             />
@@ -997,27 +1000,13 @@ const storyDefault = {
         },
         number: 0
     },
-    translator: {
-        name: ''
-    },
-    writer: {
-        name: ''
-    },
-    penciler: {
-        name: ''
-    },
-    inker: {
-        name: ''
-    },
-    colourist: {
-        name: ''
-    },
-    letterer: {
-        name: ''
-    },
-    editor: {
-        name: ''
-    },
+    translators: [],
+    writers: [],
+    pencilers: [],
+    inkers: [],
+    colourists: [],
+    letterers: [],
+    editors: [],
     addinfo: '',
     exclusive: false,
 };
@@ -1025,9 +1014,7 @@ const storyDefault = {
 const featureDefault = {
     title: '',
     addinfo: '',
-    writer: {
-        name: ''
-    },
+    writers: [],
     number: 0
 };
 
@@ -1046,9 +1033,7 @@ const coverDefault = {
         },
         number: 0
     },
-    artist: {
-        name: ''
-    },
+    artists: [],
     addinfo: '',
     number: 0,
     exclusive: false,

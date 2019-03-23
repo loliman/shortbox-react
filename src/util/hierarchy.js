@@ -94,6 +94,9 @@ export function getSelected(params, us) {
 }
 
 export function generateLabel(item) {
+    if(!item)
+        return '';
+
     if (item.__typename)
         item = wrapItem(item);
 

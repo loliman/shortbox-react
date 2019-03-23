@@ -79,6 +79,10 @@ export const IssueSchema = Yup.object().shape({
         .max(3, 'Maximal 3 Zeichen'),
     addinfo: Yup.string()
         .max(2500, 'Maximal 2500 Zeichen'),
+    editors: Yup.array().of(Yup.object().shape({
+        name: Yup.string()
+            .max(255, 'Maximal 255 Zeichen')
+    })),
     stories: Yup.array().of(Yup.object().shape({
         number: Yup.number("Bitte geben Sie eine Zahl ein")
             .required('Pflichtfeld')
@@ -98,34 +102,34 @@ export const IssueSchema = Yup.object().shape({
             number: Yup.number("Bitte geben Sie eine Zahl ein")
                 .integer("Bitte geben Sie eine Zahl ein")
         }),
-        translator: Yup.object().shape({
+        translators: Yup.array().of(Yup.object().shape({
             name: Yup.string()
                 .max(255, 'Maximal 255 Zeichen')
-        }),
-        writer: Yup.object().shape({
+        })),
+        writers: Yup.array().of(Yup.object().shape({
             name: Yup.string()
                 .max(255, 'Maximal 255 Zeichen')
-        }),
-        penciler: Yup.object().shape({
+        })),
+        pencilers: Yup.array().of(Yup.object().shape({
             name: Yup.string()
                 .max(255, 'Maximal 255 Zeichen')
-        }),
-        inker: Yup.object().shape({
+        })),
+        inkers: Yup.array().of(Yup.object().shape({
             name: Yup.string()
                 .max(255, 'Maximal 255 Zeichen')
-        }),
-        colourist: Yup.object().shape({
+        })),
+        colourists: Yup.array().of(Yup.object().shape({
             name: Yup.string()
                 .max(255, 'Maximal 255 Zeichen')
-        }),
-        letterer: Yup.object().shape({
+        })),
+        letterers: Yup.array().of(Yup.object().shape({
             name: Yup.string()
                 .max(255, 'Maximal 255 Zeichen')
-        }),
-        editor: Yup.object().shape({
+        })),
+        editors: Yup.array().of(Yup.object().shape({
             name: Yup.string()
                 .max(255, 'Maximal 255 Zeichen')
-        }),
+        })),
         title: Yup.string()
             .max(255, 'Maximal 255 Zeichen'),
         addinfo: Yup.string()
@@ -136,10 +140,10 @@ export const IssueSchema = Yup.object().shape({
         number: Yup.number("Bitte geben Sie eine Zahl ein")
             .required('Pflichtfeld')
             .integer("Bitte geben Sie eine Zahl ein"),
-        writer: Yup.object().shape({
+        writers: Yup.array().of(Yup.object().shape({
             name: Yup.string()
                 .max(255, 'Maximal 255 Zeichen')
-        }),
+        })),
         title: Yup.string()
             .max(255, 'Maximal 255 Zeichen'),
         addinfo: Yup.string()
@@ -163,10 +167,10 @@ export const IssueSchema = Yup.object().shape({
                     .max(255, 'Maximal 255 Zeichen')
             }),
         }),
-        artist: Yup.object().shape({
+        artists: Yup.array().of(Yup.object().shape({
             name: Yup.string()
                 .max(255, 'Maximal 255 Zeichen')
-        }),
+        })),
         addinfo: Yup.string()
             .max(2500, 'Maximal 2500 Zeichen'),
     }))

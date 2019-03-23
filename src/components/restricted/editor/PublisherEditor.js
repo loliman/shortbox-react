@@ -45,6 +45,12 @@ class PublisherEditor extends React.Component {
         }
     }
 
+    toogleUs = () => {
+        let newDefaultValues = this.state.defaultValues;
+        newDefaultValues.us = !newDefaultValues.us;
+        this.setState({defaultValues: newDefaultValues});
+    };
+
     render() {
         const {lastLocation, history, enqueueSnackbar, edit, mutation} = this.props;
         const {defaultValues, header, submitLabel, successMessage, errorMessage} = this.state;
@@ -102,8 +108,11 @@ class PublisherEditor extends React.Component {
                                                         <Tooltip title={(values.us ? "Deutscher" : "US") + " Verlag"}>
                                                             <Switch
                                                                 disabled={edit}
-                                                                checked={values.us}
-                                                                onChange={() => setFieldValue("us", !values.us)}
+                                                                checked={defaultValues.us}
+                                                                onChange={() => {
+                                                                    this.toogleUs();
+                                                                    resetForm();
+                                                                }}
                                                                 color="secondary"/>
                                                         </Tooltip>
                                                     }

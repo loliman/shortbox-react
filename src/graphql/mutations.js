@@ -58,9 +58,15 @@ const createIssue = gql`mutation CreateIssue($item: IssueInput!){
         pages,
         releasedate,
         price,
-        currency
+        currency,
+        editors {
+            name
+        },
         cover {
-            url
+            url,
+            artists {
+                name
+            }
         },
         series {
             title,
@@ -82,7 +88,44 @@ const createIssue = gql`mutation CreateIssue($item: IssueInput!){
             title,
             addinfo,
             number,
+            ,
+            children {
+                issue {
+                    number,
+                    series {
+                        title,
+                        volume,
+                        startyear,
+                        endyear,
+                        publisher {
+                            name,
+							us
+                        }
+                    },
+                    format,
+                    variant
+                }
+            },
+            pencilers {
+                name
+            },
+            writers {
+                name
+            },
+            inkers {
+                name
+            },
+            colourists {
+                name
+            },
+            letterers {
+                name
+            },
+            editors {
+                name
+            },
             parent {
+                number,
                 issue {
                     number,
                     series {
@@ -128,6 +171,23 @@ const createIssue = gql`mutation CreateIssue($item: IssueInput!){
             url,
             addinfo,
             number,
+            children {
+                issue {
+                    number,
+                    format,
+                    variant,
+                    series {
+                        title,
+                        volume,
+                        startyear,
+                        endyear,
+                        publisher {
+                            name,
+                            us
+                        }
+                    }
+                } 
+            },
             parent {
                 issue {
                     variant,
@@ -150,7 +210,10 @@ const createIssue = gql`mutation CreateIssue($item: IssueInput!){
             }
             onlyapp,
             firstapp,
-            exclusive
+            exclusive,
+            artists {
+                name
+            }
         },
         variants {
             format,
@@ -183,9 +246,15 @@ const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
         pages,
         releasedate,
         price,
-        currency
+        currency,
+        editors {
+            name
+        },
         cover {
-            url
+            url,
+            artists {
+                name
+            }
         },
         series {
             title,
@@ -207,7 +276,44 @@ const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
             title,
             addinfo,
             number,
+            ,
+            children {
+                issue {
+                    number,
+                    series {
+                        title,
+                        volume,
+                        startyear,
+                        endyear,
+                        publisher {
+                            name,
+							us
+                        }
+                    },
+                    format,
+                    variant
+                }
+            },
+            pencilers {
+                name
+            },
+            writers {
+                name
+            },
+            inkers {
+                name
+            },
+            colourists {
+                name
+            },
+            letterers {
+                name
+            },
+            editors {
+                name
+            },
             parent {
+                number,
                 issue {
                     number,
                     series {
@@ -253,6 +359,23 @@ const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
             url,
             addinfo,
             number,
+            children {
+                issue {
+                    number,
+                    format,
+                    variant,
+                    series {
+                        title,
+                        volume,
+                        startyear,
+                        endyear,
+                        publisher {
+                            name,
+                            us
+                        }
+                    }
+                } 
+            },
             parent {
                 issue {
                     variant,
@@ -275,7 +398,10 @@ const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
             }
             onlyapp,
             firstapp,
-            exclusive
+            exclusive,
+            artists {
+                name
+            }
         },
         variants {
             format,

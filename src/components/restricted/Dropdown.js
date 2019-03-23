@@ -62,7 +62,19 @@ class Dropdown extends React.Component {
 
                         <MenuItem key="edit"
                                   onClick={() => {
-                                      this.props.history.push("/edit" + generateUrl(this.props.EditDropdown.item, this.props.EditDropdown.item.series.publisher.us));
+                                      let us = false;
+                                      switch (this.props.level) {
+                                          case HierarchyLevel.ISSUE:
+                                              us = this.props.EditDropdown.item.series.publisher.us;
+                                              break;
+                                          case HierarchyLevel.SERIES:
+                                              us = this.props.EditDropdown.item.publisher.us;
+                                              break;
+                                          default:
+                                              us = this.props.EditDropdown.item.us;
+                                      }
+
+                                      this.props.history.push("/edit" + generateUrl(this.props.EditDropdown.item, us));
                                       if(this.props.mobile)
                                           this.props.toogleDrawer();
                                       this.props.handleClose();

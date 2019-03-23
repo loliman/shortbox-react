@@ -52,6 +52,12 @@ class SeriesEditor extends React.Component {
         }
     }
 
+    toogleUs = () => {
+        let newDefaultValues = this.state.defaultValues;
+        newDefaultValues.publisher.us = !newDefaultValues.publisher.us;
+        this.setState({defaultValues: newDefaultValues});
+    };
+
     render() {
         const {lastLocation, history, enqueueSnackbar, edit, mutation} = this.props;
         const {defaultValues, header, submitLabel, successMessage, errorMessage} = this.state;
@@ -107,113 +113,117 @@ class SeriesEditor extends React.Component {
                             if(error)
                                 actions.resetForm();
                         }}>
-                        {({values, resetForm, submitForm, isSubmitting, setFieldValue}) => (
-                            <Form>
-                                <CardHeader title={header}
-                                            action={
-                                                <FormControlLabel
-                                                    className="switchEditor"
-                                                    control={
-                                                        <Tooltip title={(values.publisher.us ? "Deutscher" : "US") + " Serie"}>
-                                                            <Switch
-                                                                disabled={edit}
-                                                                checked={values.publisher.us}
-                                                                onChange={() => setFieldValue("publisher.us", !values.publisher.us)}
-                                                                color="secondary"/>
-                                                        </Tooltip>
-                                                    }
-                                                    label="US"
-                                                />
-                                            }/>
+                        {({values, resetForm, submitForm, isSubmitting, setFieldValue}) => {
+                            return (
+                                <Form>
+                                    <CardHeader title={header}
+                                                action={
+                                                    <FormControlLabel
+                                                        className="switchEditor"
+                                                        control={
+                                                            <Tooltip title={(defaultValues.publisher.us ? "Deutscher" : "US") + " Serie"}>
+                                                                <Switch
+                                                                    disabled={edit}
+                                                                    checked={defaultValues.publisher.us}
+                                                                    onChange={() => {
+                                                                        this.toogleUs();
+                                                                        resetForm();
+                                                                    }}
+                                                                    color="secondary"/>
+                                                            </Tooltip>
+                                                        }
+                                                        label="US"
+                                                    />
+                                                }/>
 
-                                <CardContent className="cardContent">
-                                    <Field
-                                        className={this.props.desktop ? "field field35" : "field field100"}
-                                        name="title"
-                                        label="Titel"
-                                        component={TextField}
-                                    />
-                                    <br/>
+                                    <CardContent className="cardContent">
+                                        <Field
+                                            className={this.props.desktop ? "field field35" : "field field100"}
+                                            name="title"
+                                            label="Titel"
+                                            component={TextField}
+                                        />
+                                        <br/>
 
-                                    <AutoComplete
-                                        id="publisher"
-                                        query={publishers}
-                                        variables={{us: values.publisher.us}}
-                                        name="publisher.name"
-                                        label="Verlag"
-                                        onChange={(value) => {
-                                            setFieldValue("publisher", value, true);
-                                        }}
-                                        style={{
-                                            "width": this.props.desktop ? "35%" : "100%"
-                                        }}
-                                        generateLabel={generateLabel}
-                                    />
-                                    <br/>
-                                    <Field
-                                        className={this.props.desktop ? "field field35" : "field field100"}
-                                        name="volume"
-                                        label="Volume"
-                                        type="number"
-                                        component={TextField}
-                                    />
-                                    <br/>
-                                    <Field
-                                        className={this.props.desktop ? "field field35" : "field field100"}
-                                        name="startyear"
-                                        label="Startjahr"
-                                        type="number"
-                                        component={TextField}
-                                    />
-                                    <br/>
-                                    <Field
-                                        className={this.props.desktop ? "field field35" : "field field100"}
-                                        name="endyear"
-                                        label="Endjahr"
-                                        type="number"
-                                        component={TextField}
-                                    />
-                                    <br/>
-                                    <Field
-                                        className={this.props.desktop ? "field field35" : "field field100"}
-                                        name="addinfo"
-                                        label="Weitere Informationen"
-                                        multiline
-                                        rows={10}
-                                        component={TextField}
-                                    />
+                                        <AutoComplete
+                                            query={publishers}
+                                            variables={{us: defaultValues.publisher.us}}
+                                            name="publisher.name"
+                                            label="Verlag"
+                                            onChange={(option) => {
+                                                setFieldValue("publisher", option ? option : {name : '', us: defaultValues.publisher.us})
+                                            }}
+                                            style={{
+                                                width: this.props.desktop ? "35.7%" : "100%"
+                                            }}
+                                            generateLabel={generateLabel}
+                                        />
+                                        <br/>
+                                        <Field
+                                            className={this.props.desktop ? "field field35" : "field field100"}
+                                            name="volume"
+                                            label="Volume"
+                                            type="number"
+                                            component={TextField}
+                                        />
+                                        <br/>
+                                        <Field
+                                            className={this.props.desktop ? "field field35" : "field field100"}
+                                            name="startyear"
+                                            label="Startjahr"
+                                            type="number"
+                                            component={TextField}
+                                        />
+                                        <br/>
+                                        <Field
+                                            className={this.props.desktop ? "field field35" : "field field100"}
+                                            name="endyear"
+                                            label="Endjahr"
+                                            type="number"
+                                            component={TextField}
+                                        />
+                                        <br/>
+                                        <Field
+                                            className={this.props.desktop ? "field field35" : "field field100"}
+                                            name="addinfo"
+                                            label="Weitere Informationen"
+                                            multiline
+                                            rows={10}
+                                            component={TextField}
+                                        />
 
-                                    <br/>
-                                    <br/>
+                                        <br/>
+                                        <br/>
 
-                                    <div className="formButtons">
-                                        <Button disabled={isSubmitting}
-                                                onClick={() => {
-                                                    values = defaultValues;
-                                                    resetForm();
-                                                }}
-                                                color="secondary">
-                                            Zurücksetzen
-                                        </Button>
+                                        <div className="formButtons">
+                                            <Button disabled={isSubmitting}
+                                                    onClick={() => {
+                                                        values = defaultValues;
+                                                        resetForm();
+                                                    }}
+                                                    color="secondary">
+                                                Zurücksetzen
+                                            </Button>
 
-                                        <Button disabled={isSubmitting}
-                                                component={Link}
-                                                to={lastLocation ? lastLocation : "/"}
+                                            <Button disabled={isSubmitting}
+                                                    component={Link}
+                                                    to={lastLocation ? lastLocation : "/"}
+                                                    color="primary">
+                                                Abbrechen
+                                            </Button>
+
+                                            <Button
+                                                className="createButton"
+                                                disabled={isSubmitting}
+                                                onClick={submitForm}
                                                 color="primary">
-                                            Abbrechen
-                                        </Button>
-
-                                        <Button
-                                            className="createButton"
-                                            disabled={isSubmitting}
-                                            onClick={submitForm}
-                                            color="primary">
-                                            {submitLabel}
-                                        </Button>
-                                    </div>
-                                </CardContent>
-                            </Form>
-                        )}
+                                                {submitLabel}
+                                            </Button>
+                                        </div>
+                                    </CardContent>
+                                </Form>
+                            )
+                        }}
                     </Formik>
                 )}
             </Mutation>

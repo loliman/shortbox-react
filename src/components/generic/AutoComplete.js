@@ -1,184 +1,296 @@
 import React from 'react';
-import Autosuggest from 'react-autosuggest';
-import {fieldToTextField} from 'formik-material-ui';
+import Select from 'react-select';
 import {Field} from "formik";
 import Paper from "@material-ui/core/Paper/Paper";
 import MenuItem from "@material-ui/core/MenuItem/MenuItem";
-import TextField from "@material-ui/core/TextField/TextField";
 import {Query} from "react-apollo";
-
-const theme = {
-    container: {
-        display: 'inline-block',
-        position: 'relative',
-        marginRight: 6 + 'px',
-        width: 100 + '%'
-    },
-    suggestionsContainerOpen: {
-        position: 'absolute',
-        zIndex: 1,
-        left: 0,
-        right: 0,
-        overflow: 'auto',
-        maxHeight: 50 + 'vh',
-    },
-    suggestion: {
-        display: 'block',
-        width: 99 + '%'
-    },
-    suggestionsList: {
-        margin: 0,
-        padding: 0,
-        listStyleType: 'none',
-    }
-};
+import Typography from "@material-ui/core/Typography";
+import Chip from "@material-ui/core/Chip";
+import CancelIcon from "@material-ui/icons/Cancel";
+import TextField from "@material-ui/core/TextField";
+import AutosizeInput from "react-input-autosize";
+import CreatableSelect from 'react-select/lib/Creatable';
+import {stripItem} from "../../util/util";
 
 function AutoComplete(props) {
-    const {query, variables, style, ...rest} = props;
-    let {disabled, label} = props;
+    const {query, variables, onChange} = props;
+    let {disabled, label, nameField} = props;
 
-    let acTheme = JSON.parse(JSON.stringify(theme));
-    if(style)
-        for (const [key, value] of Object.entries(style))
-            acTheme.container[key] = value;
+    if(!nameField) {
+        let split = props.name.split('.');
+        nameField = split[split.length-1];
+    }
 
     return (
         <Query query={query}
            variables={variables}>
             {({loading, error, data}) => {
-                if(!disabled && loading)
-                    label += " (Lade...)";
-                else if(error)
-                    label  = " (Fehler!)";
+                let options = data[query.definitions[0].name.value.toLowerCase()];
 
-                let suggestions = data[query.definitions[0].name.value.toLowerCase()];
-
-                return <AutoCompleteContainer
-                    suggestions={suggestions}
-                    label={label}
-                    theme={acTheme}
-                    disabled={disabled}
-                    {...rest}
-                />
+                return <Field {...props}
+                  component={AutoCompleteContainer}
+                  options={options}
+                  label={label}
+                  nameField={nameField}
+                  loadingError={error}
+                  disabled={disabled}
+                  onChange={onChange}
+                  loading={!disabled && loading}/>;
             }}
         </Query>
     );
 }
 
 class AutoCompleteContainer extends React.Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            search: "",
-            suggestions: []
-        }
-    }
-
     render() {
-        return (
-            <Autosuggest
-                   suggestions={this.state.suggestions}
-                   onSuggestionSelected={(_, {suggestion}) => {
-                       this.props.onChange(suggestion);
-                   }}
-                   onSuggestionsFetchRequested={this.handleSuggestionsFetchRequested}
-                   onSuggestionsClearRequested={this.handleSuggestionsClearRequested}
-                   getSuggestionValue={(suggestion) => this.props.generateLabel(suggestion)}
-                   renderSuggestion={this.renderSuggestion}
-                   inputProps={{
-                       value: this.state.search,
-                       onChange: this.handleChange('search'),
-                   }}
-                   theme={this.props.theme}
-                   renderInputComponent={(inputProps) => {
-                       const {inputRef = () => {}, ref, ...other} = inputProps;
-                       const {error, id, label, name, type, disabled} = this.props;
+        console.log(this.props);
+        let error = this.checkObj(this.props.form.errors, this.props.field.name);
+        let touched = this.checkObj(this.props.form.touched, this.props.field.name);
 
-                       return (
-                           <Field
-                               InputProps={{
-                                   inputRef: node => {
-                                       ref(node);
-                                       inputRef(node);
-                                   }
-                               }}
-                               component={AutoCompleteTextField}
-                               {...other}
-                               disabled={disabled}
-                               error={error}
-                               id={id}
-                               label={label}
-                               name={name}
-                               type={type}
-                           />
-                       );
-                   }}
-                   renderSuggestionsContainer={(options) => {
-                       return (
-                           <Paper {...options.containerProps} square>
-                               {options.children}
-                           </Paper>
-                       );
-                   }}
-               />
+        let style = {paddingTop: '8px', width: '100%', display: 'inline-block', position: 'relative', paddingRight: '4px'};
+        if(this.props.style)
+            for (const [key, value] of Object.entries(this.props.style))
+                style[key] = value;
+
+        let props = {
+            name: this.props.field.name,
+            error: error,
+            touched: touched,
+            textFieldProps: {
+                label: this.props.label,
+                    InputLabelProps: {
+                    shrink: true,
+                        style: this.props.error && this.props.touched ? {color: '#f44336'} : {}
+                }
+            },
+
+            options: this.props.options,
+            onChange: (option) => {
+                if(this.props.isMulti) {
+                    let strippedOptions = [];
+                    option.forEach(o => strippedOptions.push(o ? stripItem(o) : o));
+                    this.props.onChange(strippedOptions);
+                } else
+                    this.props.onChange(option ? stripItem(option) : option);
+            },
+            onBlur: this.props.field.onBlur,
+
+            getOptionValue: (option) => {
+                return option[this.props.nameField];
+            },
+            getOptionLabel: (option) => this.props.generateLabel(option),
+
+            isSearchable: true,
+            isClearable: true,
+            isDisabled: this.props.disabled,
+            isLoading: this.props.loading,
+            hideSelectedOptions: true,
+
+            placeholder: (!this.props.loadingError ? 'Bitte wählen...' : 'Fehler!'),
+            components: components
+        };
+        return (
+            <div style={style}>
+                {
+                    !this.props.isMulti ?
+                        <Select {...props}
+                            value={this.props.field.value !== '' && this.props.options ?
+                                this.props.options.find(option => {
+                                    if(option[this.props.nameField] && this.props.field.value)
+                                        return option[this.props.nameField].toLowerCase() === this.props.field.value.toLowerCase();
+                                    else
+                                       return false;
+                                }) : ''
+                            }
+                            noOptionsMessage={() => 'Keine Einträge gefunden'}
+                        /> :
+                        <CreatableSelect {...props}
+                            value={this.props.field.value}
+                            isMulti
+                            isValidNewOption={(value) => {
+                                let isNew = false;
+                                if(value !== '' && this.props.options) {
+                                    let option = this.props.options.find(option => {
+                                        if(option[this.props.fieldName] && value)
+                                            return option[this.props.fieldName].toLowerCase() === value.toLowerCase();
+                                        else
+                                            return false;
+                                    });
+
+                                    if(!option) isNew = true;
+                                }
+
+                                return isNew;
+                            }}
+                            getNewOptionData={(value) => {return {name: value}}}
+                        />
+                }
+
+                {
+                    (error && touched) ?
+                        <div style={{
+                            color: '#f44336',
+                            margin: '0',
+                            fontSize: '0.75rem',
+                            textAlign: 'left',
+                            marginTop: '8px',
+                            minHeight: '1em',
+                            fontFamily: '"Roboto", "Helvetica", "Arial", "sans-serif"',
+                            lineHeight: '1em'
+                        }}>{error}</div> : null
+                }
+            </div>
         );
     }
 
-    handleSuggestionsFetchRequested = ({value}) => {
-        this.setState({
-            suggestions: this.getSuggestions(value),
-        });
+    checkObj = (obj, field) => {
+        let splitted = field.split('.');
+        var args = Array.prototype.slice.call(splitted);
+
+        for (var i = 0; i < args.length; i++) {
+            if (!obj || !obj.hasOwnProperty(args[i])) {
+                return null;
+            }
+            obj = obj[args[i]];
+        }
+
+        return obj;
     };
-
-    handleSuggestionsClearRequested = () => {
-        this.setState({
-            suggestions: [],
-        });
-    };
-
-    handleChange = () => (event, { newValue }) => {
-        this.setState({
-            search: newValue,
-        });
-    };
-
-    getSuggestions = (value) => {
-        const inputValue = value.trim().toLowerCase();
-
-        return inputValue.length === 0 || !this.props.suggestions ? [] :
-            this.props.suggestions.filter(suggestion => {
-                return this.props.generateLabel(suggestion).toLowerCase().indexOf(inputValue) !== -1;
-            }).slice(0, 49);
-    };
-
-    renderSuggestion = (suggestion, { query, isHighlighted }) => {
-        return (
-            <MenuItem selected={isHighlighted} component="div">
-                <div>
-                    <span>{this.props.generateLabel(suggestion)}</span>
-                </div>
-            </MenuItem>
-        );
-    }
 }
 
-function AutoCompleteTextField(props) {
-    return(
+function NoOptionsMessage(props) {
+    return (
+        <Typography
+            color="textSecondary"
+            className="noOptionsMessage"
+            {...props.innerProps}
+        >
+            {props.children}
+        </Typography>
+    );
+}
+
+function inputComponent({ inputRef, ...props }) {
+    return <div ref={inputRef} {...props}/>;
+}
+
+function Control(props) {
+    return (
         <TextField
-            {...fieldToTextField(props)}
+            error={props.selectProps.error && props.selectProps.touched}
             fullWidth
-            className="field"
-            onChange={event => {
-                props.onChange(event);
-                props.field.onChange(event);
+            InputProps={{
+                inputComponent,
+                inputProps: {
+                    className: "autoSuggestField",
+                    inputRef: props.innerRef,
+                    children: props.children,
+                    ...props.innerProps,
+                },
             }}
-            onBlur={event => {
-                props.onBlur();
-                props.field.onBlur(event);
-            }}
+            {...props.selectProps.textFieldProps}
         />
     );
 }
+
+function Option(props) {
+    return (
+        <MenuItem
+            buttonRef={props.innerRef}
+            selected={props.isFocused}
+            component="div"
+            style={{
+                fontWeight: props.isSelected ? 500 : 400,
+            }}
+            {...props.innerProps}
+        >
+            {props.children}
+        </MenuItem>
+    );
+}
+
+function Placeholder(props) {
+    return (
+        <Typography
+            color="textSecondary"
+            style={props.selectProps.error && props.selectProps.touched ? {color: '#f44336'} : {}}
+            className="placeholder"
+            {...props.innerProps}
+        >
+            {props.children}
+        </Typography>
+    );
+}
+
+function SingleValue(props) {
+    return (
+        <Typography className="singleValue" {...props.innerProps}>
+            {props.children}
+        </Typography>
+    );
+}
+
+function ValueContainer(props) {
+    return <div className="valueContainer">{props.children}</div>;
+}
+
+const inputStyle = isHidden => ({
+    background: 0,
+    border: 0,
+    fontSize: 'inherit',
+    opacity: isHidden ? 0 : 1,
+    outline: 0,
+    padding: 0,
+    color: 'inherit',
+});
+
+function Input(props) {
+    const {className, cx, id, innerRef, isHidden, isDisabled, selectProps, getStyles, ...rest} = props;
+
+    return (
+        <div className="autoSuggestInput">
+            <AutosizeInput
+                id={selectProps.name ? selectProps.name : id}
+                className={cx(null, { 'input': true }, className)}
+                inputRef={innerRef}
+                inputStyle={inputStyle(isHidden)}
+                disabled={isDisabled}
+                {...rest}
+            />
+        </div>
+    );
+}
+
+function MultiValue(props) {
+    return (
+        <Chip
+            tabIndex={-1}
+            label={props.children}
+            className={props.isFocused ? "chip chipFocused" : "chip"}
+            onDelete={props.removeProps.onClick}
+            deleteIcon={<CancelIcon {...props.removeProps} />}
+        />
+    );
+}
+
+function Menu(props) {
+    return (
+        <Paper square className="paper" {...props.innerProps}>
+            {props.children}
+        </Paper>
+    );
+}
+
+const components = {
+    Control,
+    Menu,
+    MultiValue,
+    NoOptionsMessage,
+    Option,
+    Placeholder,
+    SingleValue,
+    ValueContainer,
+    Input
+};
 
 export default AutoComplete;

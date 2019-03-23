@@ -164,6 +164,7 @@
     }
 
     .exclusiveToggle {
+        float: right;
         margin-top: 6px !important;
         margin-left: auto !important;
     }
@@ -622,14 +623,23 @@
     padding-bottom: 10px !important;
 }
 
+
+.storyAdd > :first-child {
+    flex-direction: column;
+    align-items: baseline;
+    width: 100%;
+}
+
+.storyAddInputContainer {
+    width: 100%;
+    justify-content: space-around;
+    padding-right: 0 !important;
+}
+
 .storyAddPanel {
     width: 100% !important;
     margin-top: 0 !important;
     margin-bottom: 16px !important;
-}
-
-.storyAdd > :last-child > :last-child {
-    margin-right: -20px !important;
 }
 
 .storyAddContainer {
@@ -664,7 +674,8 @@
 }
 
 .chip {
-    height: 29px !important;
+    max-width: 93%;
+    height: 27px !important;
     margin-right: 5px !important;
     align-self: center;
 }
@@ -770,6 +781,10 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 
 .fieldFileUpload > div > div {
     width: 100% !important;
+}
+
+.field30 {
+    width: calc(30% + 6px);
 }
 
 .field35 {
@@ -907,6 +922,60 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 
 .createCardBoxes {
     overflow: inherit !important;
+}
+
+/*Autosuggest Theme*/
+.noOptionsMessage {
+    padding: 10px;
+}
+
+.singleValue {
+    font-size: 16px !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 95% !important;
+}
+
+.placeholder {
+    font-size: 16px !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 95% !important;
+}
+
+.paper {
+    position: absolute;
+    z-index: 1;
+    left: 0;
+    right: 0;
+}
+
+.valueContainer {
+    display: flex;
+    flex-wrap: wrap;
+    flex: 1;
+    align-items: center;
+    overflow: hidden;
+}
+
+.autoSuggestField {
+    display: flex !important;
+    padding: 0 !important;
+    margin-top: -6px !important;
+}
+
+.autoSuggestInput {
+    box-sizing: content-box;
+    width: 2px;
+    background: 0px center;
+    border: 0px;
+    font-size: inherit;
+    opacity: 1;
+    outline: 0px;
+    padding: 0px;
+    color: inherit;
 }
 
 /*Hamburger for IE11*/

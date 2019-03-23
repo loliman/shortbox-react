@@ -27,10 +27,9 @@ function IssueEdit(props) {
                     defaultValues.createdAt = undefined;
                     defaultValues.updatedAt = undefined;
                     defaultValues.cover = defaultValues.cover ? defaultValues.cover : '';
-                    defaultValues.editor = (defaultValues.editors && defaultValues.editors.length > 0 ? stripItem(defaultValues.editors[0]) : {name: ''});
+                    defaultValues.editors = (defaultValues.editors && defaultValues.editors.length > 0 ? defaultValues.editors.map(individual => stripItem(individual)) : []);
                     defaultValues.pages = defaultValues.pages ? defaultValues.pages : 0;
                     defaultValues.limitation = defaultValues.limitation ? defaultValues.limitation : 0;
-                    defaultValues.editors = undefined;
 
                     let oldStories = [];
                     defaultValues.stories.forEach(story => {
@@ -41,13 +40,13 @@ function IssueEdit(props) {
                             number: story.number,
                             addinfo: story.addinfo,
                             exclusive: exclusive,
-                            translator: exclusive ? undefined : (story.translators && story.translators.length > 0 ? stripItem(story.translators[0]) : {name: ''}),
-                            writer: !exclusive ? undefined : (story.writers && story.writers.length > 0 ? stripItem(story.writers[0]) : {name: ''}),
-                            penciler: !exclusive ? undefined : (story.pencilers && story.pencilers.length > 0 ? stripItem(story.pencilers[0]) : {name: ''}),
-                            inker: !exclusive ? undefined : (story.inkers && story.inkers.length > 0 ? stripItem(story.inkers[0]) : {name: ''}),
-                            colourist: !exclusive ? undefined : (story.colourists && story.colourists.length > 0 ? stripItem(story.colourists[0]) : {name: ''}),
-                            letterer: !exclusive ? undefined : (story.letterers && story.letterers.length > 0 ? stripItem(story.letterers[0]) : {name: ''}),
-                            editor: !exclusive ? undefined : (story.editors && story.editors.length > 0 ? stripItem(story.editors[0]) : {name: ''}),
+                            translators: exclusive ? undefined : (story.translators && story.translators.length > 0 ? story.translators.map(individual => stripItem(individual)) : []),
+                            writers: !exclusive ? undefined : (story.writers && story.writers.length > 0 ? story.writers.map(individual => stripItem(individual)) : []),
+                            pencilers: !exclusive ? undefined : (story.pencilers && story.pencilers.length > 0 ? story.pencilers.map(individual => stripItem(individual)) : []),
+                            inkers: !exclusive ? undefined : (story.inkers && story.inkers.length > 0 ? story.inkers.map(individual => stripItem(individual)) : []),
+                            colourists: !exclusive ? undefined : (story.colourists && story.colourists.length > 0 ? story.colourists.map(individual => stripItem(individual)) : []),
+                            letterers: !exclusive ? undefined : (story.letterers && story.letterers.length > 0 ? story.letterers.map(individual => stripItem(individual)) : []),
+                            editors: !exclusive ? undefined : (story.editors && story.editors.length > 0 ? story.editors.map(individual => stripItem(individual)) : []),
                             parent: exclusive ? undefined : {
                                 number: story.parent.number,
                                 issue: {
@@ -69,7 +68,7 @@ function IssueEdit(props) {
                             title: feature.title,
                             number: feature.number,
                             addinfo: feature.addinfo,
-                            writer: (feature.writers && feature.writers.length > 0 ? stripItem(feature.writers[0]) : {name: ''})
+                            writers: (feature.writers && feature.writers.length > 0 ? feature.writers.map(individual => stripItem(individual)) : [])
                         })
                     });
                     defaultValues.features = oldFeatures;
@@ -82,7 +81,7 @@ function IssueEdit(props) {
                             number: cover.number,
                             addinfo: cover.addinfo,
                             exclusive: exclusive,
-                            artist: !exclusive ? undefined : (cover.artists && cover.artists.length > 0 ? stripItem(cover.artists[0]) : {name: ''}),
+                            artists: !exclusive ? undefined : (cover.artists && cover.artists.length > 0 ? cover.artists.map(individual => stripItem(individual)) : []),
                             parent: exclusive ? undefined : {
                                 number: 0,
                                 issue: {
