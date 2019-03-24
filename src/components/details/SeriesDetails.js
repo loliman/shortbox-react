@@ -26,7 +26,7 @@ function SeriesDetails(props) {
                                         action={<EditButton item={data.seriesd}/>}/>
 
                             <CardContent className="cardContent">
-                                <Typography>{data.seriesd.addinfo}</Typography>
+                                <Typography dangerouslySetInnerHTML={{__html: data.seriesd.addinfo}} />
                             </CardContent>
                         </React.Fragment>
                     );

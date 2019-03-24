@@ -45,7 +45,7 @@ function Bottom(props) {
                     <React.Fragment>
                         <br/>
                         <Paper className="detailsPaper">
-                            <Typography>{props.issue.addinfo}</Typography>
+                            <Typography dangerouslySetInnerHTML={{__html: props.issue.addinfo}} />
                         </Paper>
                     </React.Fragment>:
                     null

@@ -121,7 +121,11 @@ class AutoCompleteContainer extends React.Component {
 
                                 return isNew;
                             }}
-                            getNewOptionData={(value) => {return {name: value}}}
+                            getNewOptionData={(value) => {
+                                let newOption = {};
+                                newOption[this.props.fieldName] = value;
+                                return newOption;
+                            }}
                         />
                 }
 

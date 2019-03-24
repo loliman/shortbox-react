@@ -9,10 +9,10 @@ import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import withContext from "../../generic/withContext";
 import CardHeader from "@material-ui/core/CardHeader";
-import {publishers, series} from "../../../graphql/queries";
+import {publishers, series, seriesd} from "../../../graphql/queries";
 import {decapitalize, stripItem, wrapItem} from "../../../util/util";
 import AutoComplete from "../../generic/AutoComplete";
-import {addToCache, removeFromCache} from "./Editor";
+import {addToCache, removeFromCache, updateInCache} from "./Editor";
 import Tooltip from "@material-ui/core/Tooltip";
 import Switch from "@material-ui/core/Switch";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -77,14 +77,29 @@ class SeriesEditor extends React.Component {
                               //ignore cache exception;
                           }
 
-                          if(edit)
+                          if(edit) {
+                              let publisher = {
+                                  name: defaultValues.publisher.name
+                              };
+
                               try {
-                                  let publisher = defaultValues.publisher;
-                                  publisher.us = undefined;
-                                  removeFromCache(cache, series, stripItem(wrapItem(publisher)), defaultValues);
+                                  let series = {
+                                      title: defaultValues.title,
+                                      volume: defaultValues.volume,
+                                      publisher: publisher
+                                  };
+
+                                  updateInCache(cache, seriesd, {series: series}, defaultValues, {seriesd: res});
+                              } catch (e) {
+                                //ignore cache exception;
+                              }
+
+                              try {
+                                  removeFromCache(cache, series, {publisher: publisher}, defaultValues);
                               } catch (e) {
                                   //ignore cache exception;
                               }
+                          }
                       }}
                       onCompleted={(data) => {
                           enqueueSnackbar(generateLabel(data[mutationName]) + successMessage, {variant: 'success'});

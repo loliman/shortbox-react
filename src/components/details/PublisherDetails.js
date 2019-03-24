@@ -26,7 +26,7 @@ function PublisherDetails(props) {
                                         action={<EditButton item={data.publisher}/>}/>
 
                             <CardContent className="cardContent">
-                                <Typography>{data.publisher.addinfo}</Typography>
+                                <Typography dangerouslySetInnerHTML={{__html: data.publisher.addinfo}} />
                             </CardContent>
                         </React.Fragment>
                     );

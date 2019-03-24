@@ -9,7 +9,7 @@ import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import withContext from "../../generic/withContext";
 import CardHeader from "@material-ui/core/CardHeader";
-import {publishers} from "../../../graphql/queries";
+import {publisher, publishers} from "../../../graphql/queries";
 import {decapitalize, stripItem} from "../../../util/util";
 import {addToCache, updateInCache} from "./Editor";
 import Switch from "@material-ui/core/Switch";
@@ -60,15 +60,30 @@ class PublisherEditor extends React.Component {
         return (
             <Mutation mutation={mutation}
                       update={(cache, result) => {
-                          try {
-                              let res = result.data[mutationName];
+                          let res = result.data[mutationName];
 
-                              if(!edit)
+                          if(!edit) {
+                              try {
                                   addToCache(cache, publishers, {us: res.us}, res);
-                              else
-                                  updateInCache(cache, publishers, {us: res.us}, defaultValues, {publisher: res});
-                          } catch (e) {
-                              //ignore cache exception;
+                              }   catch (e) {
+                                  //ignore cache exception;
+                              }
+                          } else {
+                              try {
+                                  let pub = {
+                                      name: defaultValues.name
+                                  };
+
+                                  updateInCache(cache, publisher, {publisher: pub}, defaultValues, {publisher: res});
+                              } catch (e) {
+                                  //ignore cache exception;
+                              }
+
+                              try {
+                                updateInCache(cache, publishers, {us: res.us}, defaultValues, {publisher: res});
+                              } catch (e) {
+                                  //ignore cache exception;
+                              }
                           }
                       }}
                       onCompleted={(data) => {

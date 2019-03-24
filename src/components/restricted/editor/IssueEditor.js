@@ -284,7 +284,7 @@ class IssueEditor extends React.Component {
                                             setFieldValue("series", option ? option : {title: '', volume: '', publisher: {name : values.series.publisher.name, us: values.series.publisher.us}})
                                         }}
                                         style={{
-                                            width: this.props.desktop ? "25.7%" : "71%"
+                                            width: this.props.desktop ? "25.7%" : "73.3%"
                                         }}
                                         generateLabel={generateLabel}
                                     />
@@ -784,7 +784,7 @@ function FeatureFields(props) {
                 isMulti
                 onChange={(option) => props.setFieldValue("features[" + props.index + "].writers", option)}
                 style={{
-                    width: props.desktop ? "30%" : "110%"
+                    width: props.desktop ? "30%" : "100%"
                 }}
                 generateLabel={(e) => e.name}
             />
