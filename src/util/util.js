@@ -3,7 +3,7 @@ export function wrapItem(item) {
         return {us: (item.us ? item.us : false), publisher: item};
 
     if (item.__typename === "Series")
-        return {us: (item.publisher.us ? item.publisher.us : false), series: item};
+        return {us: (item.publisher && item.publisher.us ? item.publisher.us : false), series: item};
 
     return {us: (item.series.publisher.us ? item.series.publisher.us : false), issue: item};
 }

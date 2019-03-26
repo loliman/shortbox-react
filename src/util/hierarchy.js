@@ -112,7 +112,7 @@ export function generateLabel(item) {
         if (item.series.startyear)
             year = ' (' + item.series.startyear + ' - ' + ((!item.series.endyear || item.series.endyear === 0) ? '...' : item.series.endyear) + ')';
 
-        return item.series.title + ' (Vol. ' + romanize(item.series.volume) + ')' + (year ? year : "");
+        return item.series.title + (item.series.publisher ? ' (Vol. ' + romanize(item.series.volume) + ')' : '') + (year ? year : "");
     }
 
     if (item.issue)

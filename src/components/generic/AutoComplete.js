@@ -10,7 +10,6 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import TextField from "@material-ui/core/TextField";
 import AutosizeInput from "react-input-autosize";
 import CreatableSelect from 'react-select/lib/Creatable';
-import {stripItem} from "../../util/util";
 
 function AutoComplete(props) {
     const {query, variables, onChange} = props;
@@ -46,6 +45,10 @@ class AutoCompleteContainer extends React.Component {
         let error = this.checkObj(this.props.form.errors, this.props.field.name);
         let touched = this.checkObj(this.props.form.touched, this.props.field.name);
 
+        let typename;
+        if(this.props.options && this.props.options.length > 0)
+            typename = this.props.options[0].__typename;
+
         let style = {paddingTop: '8px', width: '100%', display: 'inline-block', position: 'relative', paddingRight: '4px'};
         if(this.props.style)
             for (const [key, value] of Object.entries(this.props.style))
@@ -64,14 +67,7 @@ class AutoCompleteContainer extends React.Component {
             },
 
             options: this.props.options,
-            onChange: (option) => {
-                if(this.props.isMulti) {
-                    let strippedOptions = [];
-                    option.forEach(o => strippedOptions.push(o ? stripItem(o) : o));
-                    this.props.onChange(strippedOptions);
-                } else
-                    this.props.onChange(option ? stripItem(option) : option);
-            },
+            onChange: (option) => this.props.onChange(option),
             onBlur: this.props.field.onBlur,
 
             getOptionValue: (option) => {
@@ -91,7 +87,7 @@ class AutoCompleteContainer extends React.Component {
         return (
             <div style={style}>
                 {
-                    !this.props.isMulti ?
+                    !this.props.creatable ?
                         <Select {...props}
                             value={this.props.field.value !== '' && this.props.options ?
                                 this.props.options.find(option => {
@@ -105,13 +101,13 @@ class AutoCompleteContainer extends React.Component {
                         /> :
                         <CreatableSelect {...props}
                             value={this.props.field.value}
-                            isMulti
+                            isMulti={this.props.isMulti}
                             isValidNewOption={(value) => {
                                 let isNew = false;
                                 if(value !== '' && this.props.options) {
                                     let option = this.props.options.find(option => {
-                                        if(option[this.props.fieldName] && value)
-                                            return option[this.props.fieldName].toLowerCase() === value.toLowerCase();
+                                        if(option[this.props.nameField] && value)
+                                            return option[this.props.nameField].toLowerCase() === value.toLowerCase();
                                         else
                                             return false;
                                     });
@@ -123,7 +119,8 @@ class AutoCompleteContainer extends React.Component {
                             }}
                             getNewOptionData={(value) => {
                                 let newOption = {};
-                                newOption[this.props.fieldName] = value;
+                                newOption[this.props.nameField] = value;
+                                newOption.__typename = typename;
                                 return newOption;
                             }}
                         />
