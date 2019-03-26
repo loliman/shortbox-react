@@ -41,11 +41,12 @@ function AutoComplete(props) {
 }
 
 class AutoCompleteContainer extends React.Component {
+
     render() {
         let error = this.checkObj(this.props.form.errors, this.props.field.name);
         let touched = this.checkObj(this.props.form.touched, this.props.field.name);
 
-        let typename;
+        let typename = this.props.nameField === "name" ? "Individual" : "Series"; //Default Series, just because... :)
         if(this.props.options && this.props.options.length > 0)
             typename = this.props.options[0].__typename;
 
@@ -60,20 +61,24 @@ class AutoCompleteContainer extends React.Component {
             touched: touched,
             textFieldProps: {
                 label: this.props.label,
-                    InputLabelProps: {
+                InputLabelProps: {
                     shrink: true,
-                        style: this.props.error && this.props.touched ? {color: '#f44336'} : {}
+                    style: this.props.error && this.props.touched ? {color: '#f44336'} : {}
                 }
             },
 
             options: this.props.options,
             onChange: (option) => this.props.onChange(option),
-            onBlur: this.props.field.onBlur,
 
             getOptionValue: (option) => {
                 return option[this.props.nameField];
             },
-            getOptionLabel: (option) => this.props.generateLabel(option),
+            getOptionLabel: (option) => {
+                if (option[this.props.nameField] === this.props.field.value)
+                    return option[this.props.nameField];
+                else
+                    return this.props.generateLabel(option);
+            },
 
             isSearchable: true,
             isClearable: true,
@@ -89,18 +94,35 @@ class AutoCompleteContainer extends React.Component {
                 {
                     !this.props.creatable ?
                         <Select {...props}
-                            value={this.props.field.value !== '' && this.props.options ?
-                                this.props.options.find(option => {
-                                    if(option[this.props.nameField] && this.props.field.value)
-                                        return option[this.props.nameField].toLowerCase() === this.props.field.value.toLowerCase();
-                                    else
-                                       return false;
-                                }) : ''
+                            onBlur={this.props.field.onBlur}
+                            value={
+                                this.props.field.value !== '' && this.props.options ?
+                                    this.props.options.find(option => {
+                                        if(option[this.props.nameField] && this.props.field.value)
+                                            return option[this.props.nameField].toLowerCase() === this.props.field.value.toLowerCase();
+                                        else
+                                           return false;
+                                    }) : ''
                             }
                             noOptionsMessage={() => 'Keine Einträge gefunden'}
                         /> :
                         <CreatableSelect {...props}
-                            value={this.props.field.value}
+                            /*
+                            I don't know why, but the onBlur method seems to destroy the Series object.
+                            But we don't need validation in that case anyways, so let's just ignore it.
+                             */
+                            onBlur={this.props.isMulti ? this.props.field.onBlur : false}
+                            value={
+                                this.props.isMulti ?
+                                    this.props.field.value :
+                                    (this.props.field.value !== '' && this.props.options ?
+                                        this.props.options.find(option => {
+                                            if(option[this.props.nameField] && this.props.field.value)
+                                                return option[this.props.nameField].toLowerCase() === this.props.field.value.toLowerCase();
+                                            else
+                                                return false;
+                                        }) : '')
+                            }
                             isMulti={this.props.isMulti}
                             isValidNewOption={(value) => {
                                 let isNew = false;
