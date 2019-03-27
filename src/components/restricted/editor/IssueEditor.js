@@ -699,7 +699,8 @@ function StoryFieldsNonExclusive(props) {
 
             <AutoComplete
                 query={individuals}
-                name={"stories[" + index + "].translators.name"}
+                name={"stories[" + index + "].translators"}
+                nameField="name"
                 label="Übersetzer"
                 isMulti
                 creatable
