@@ -41,7 +41,6 @@ function AutoComplete(props) {
 }
 
 class AutoCompleteContainer extends React.Component {
-
     render() {
         let error = this.checkObj(this.props.form.errors, this.props.field.name);
         let touched = this.checkObj(this.props.form.touched, this.props.field.name);
@@ -74,7 +73,9 @@ class AutoCompleteContainer extends React.Component {
                 return option[this.props.nameField];
             },
             getOptionLabel: (option) => {
-                if (option[this.props.nameField] === this.props.field.value)
+                if (option[this.props.nameField] === (this.props.creatable ?
+                    (this.props.field.value ? this.props.field.value[this.props.nameField] : "")
+                    : this.props.field.value))
                     return option[this.props.nameField];
                 else
                     return this.props.generateLabel(option);
@@ -89,6 +90,7 @@ class AutoCompleteContainer extends React.Component {
             placeholder: (!this.props.loadingError ? 'Bitte wählen...' : 'Fehler!'),
             components: components
         };
+
         return (
             <div style={style}>
                 {
@@ -112,17 +114,7 @@ class AutoCompleteContainer extends React.Component {
                             But we don't need validation in that case anyways, so let's just ignore it.
                              */
                             onBlur={this.props.isMulti ? this.props.field.onBlur : false}
-                            value={
-                                this.props.isMulti ?
-                                    this.props.field.value :
-                                    (this.props.field.value !== '' && this.props.options ?
-                                        this.props.options.find(option => {
-                                            if(option[this.props.nameField] && this.props.field.value)
-                                                return option[this.props.nameField].toLowerCase() === this.props.field.value.toLowerCase();
-                                            else
-                                                return false;
-                                        }) : '')
-                            }
+                            value={this.props.field.value}
                             isMulti={this.props.isMulti}
                             isValidNewOption={(value) => {
                                 let isNew = false;

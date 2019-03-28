@@ -212,15 +212,15 @@ class IssueEditor extends React.Component {
                                 variables.old.variant = defaultValues.variant;
                             }
 
-                            if(variables.publisher)
-                                variables.publisher = stripItem(variables.publisher);
-                            if(variables.series)
-                                variables.series = stripItem(variables.series);
-                            if(variables.editors)
-                                variables.editors = variables.editors.map(item => stripItem(item));
+                            if(variables.item.publisher)
+                                variables.item.publisher = stripItem(variables.item.publisher);
+                            if(variables.item.series)
+                                variables.item.series = stripItem(variables.item.series);
+                            if(variables.item.editors)
+                                variables.item.editors = variables.item.editors.map(item => stripItem(item));
 
-                            if(variables.stories)
-                                variables.stories = variables.stories.map(story => {
+                            if(variables.item.stories)
+                                variables.item.stories = variables.item.stories.map(story => {
                                    if(story.series)
                                        story.series = stripItem(story.series);
                                    if(story.translators)
@@ -237,25 +237,27 @@ class IssueEditor extends React.Component {
                                        story.letterers = story.letterers.map(item => stripItem(item));
                                    if(story.editors)
                                        story.editors = story.editors.map(item => stripItem(item));
-
+                                   if(story.parent && story.parent.issue && story.parent.issue.series)
+                                       story.parent.issue.series = stripItem(story.parent.issue.series);
                                    return story;
                                 });
 
-                            if(variables.features)
-                                variables.features = variables.features.map(feature => {
+                            if(variables.item.features)
+                                variables.item.features = variables.item.features.map(feature => {
                                     if(feature.writers)
                                         feature.writers= feature.writers.map(item => stripItem(item));
 
                                     return feature;
                                 });
 
-                            if(variables.covers)
-                                variables.covers = variables.covers.map(cover => {
+                            if(variables.item.covers)
+                                variables.item.covers = variables.item.covers.map(cover => {
                                     if(cover.series)
                                         cover.series = stripItem(cover.series);
                                     if(cover.artists)
                                         cover.artists = cover.artists.map(item => stripItem(item));
-
+                                    if(cover.parent && cover.parent.issue && cover.parent.issue.series)
+                                        cover.parent.issue.series = stripItem(cover.parent.issue.series);
                                     return cover;
                                 });
 
@@ -662,7 +664,6 @@ function StoryFieldsNonExclusive(props) {
                     label="Serie"
                     creatable
                     onChange={(option) => {
-                        console.log(option);
                         if(option && !option.volume)
                             option.volume = 0;
 
