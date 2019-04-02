@@ -991,21 +991,30 @@ function Contains(props) {
     if(!props.items || props.items.length === 0)
         return <Typography className="noRelationsWarning">Hinzufügen mit '+'</Typography>;
 
-    return props.items.map((item, index) => (
-        <div key={index} className="storyAddContainer">
-            <RemoveContainsButton disabled={props.items[index].children && props.items[index].children.length > 0}
-                                  index={index} {...props}/>
+    return props.items.map((item, index) => <ContainsItem key={index} {...props} item={item} index={index} />);
+}
 
-            <ExpansionPanel className="storyAddPanel" key={index} expanded={true}>
-                <ExpansionPanelSummary className="storyAdd">
-                    {React.cloneElement(props.fields, {
-                        index: index,
-                        ...props
-                    })}
-                </ExpansionPanelSummary>
-            </ExpansionPanel>
-        </div>
-    ));
+class ContainsItem extends React.Component {
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        return JSON.stringify(this.props.item) !== JSON.stringify(nextProps.item);
+    }
+
+    render() {
+        return (
+            <div key={this.props.index} className="storyAddContainer">
+                <RemoveContainsButton disabled={this.props.item.children && this.props.item.children.length > 0}
+                                      {...this.props}/>
+
+                <ExpansionPanel className="storyAddPanel" key={this.props.index} expanded={true}>
+                    <ExpansionPanelSummary className="storyAdd">
+                        {React.cloneElement(this.props.fields, {
+                            ...this.props
+                        })}
+                    </ExpansionPanelSummary>
+                </ExpansionPanel>
+            </div>
+        );
+    }
 }
 
 function AddContainsButton(props) {

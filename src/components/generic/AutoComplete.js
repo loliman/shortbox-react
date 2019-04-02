@@ -11,33 +11,39 @@ import TextField from "@material-ui/core/TextField";
 import AutosizeInput from "react-input-autosize";
 import CreatableSelect from 'react-select/lib/Creatable';
 
-function AutoComplete(props) {
-    const {query, variables, onChange} = props;
-    let {disabled, label, nameField} = props;
-
-    if(!nameField) {
-        let split = props.name.split('.');
-        nameField = split[split.length-1];
+class AutoComplete extends React.Component {
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        return JSON.stringify(this.props.variables) !== JSON.stringify(nextProps.variables);
     }
 
-    return (
-        <Query query={query}
-           variables={variables}>
-            {({loading, error, data}) => {
-                let options = data[query.definitions[0].name.value.toLowerCase()];
+    render() {
+        const {query, variables, onChange} = this.props;
+        let {disabled, label, nameField} = this.props;
 
-                return <Field {...props}
-                  component={AutoCompleteContainer}
-                  options={options}
-                  label={label}
-                  nameField={nameField}
-                  loadingError={error}
-                  disabled={disabled}
-                  onChange={onChange}
-                  loading={!disabled && loading}/>;
-            }}
-        </Query>
-    );
+        if(!nameField) {
+            let split = this.props.name.split('.');
+            nameField = split[split.length-1];
+        }
+
+        return (
+            <Query query={query}
+                   variables={variables}>
+                {({loading, error, data}) => {
+                    let options = data[query.definitions[0].name.value.toLowerCase()];
+
+                    return <Field {...this.props}
+                                  component={AutoCompleteContainer}
+                                  options={options}
+                                  label={label}
+                                  nameField={nameField}
+                                  loadingError={error}
+                                  disabled={disabled}
+                                  onChange={onChange}
+                                  loading={!disabled && loading}/>;
+                }}
+            </Query>
+        );
+    }
 }
 
 class AutoCompleteContainer extends React.Component {

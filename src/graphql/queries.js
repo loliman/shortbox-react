@@ -46,6 +46,8 @@ const individuals = gql`query Individuals {
 export const lastEdited = gql`query LastEdited($us: Boolean) {
     lastEdited(us: $us) {
         number,
+        format,
+        variant,
         createdAt,
         updatedAt,
         series {

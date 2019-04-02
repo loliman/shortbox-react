@@ -18,7 +18,7 @@ function IssueEdit(props) {
             <Query query={issue} variables={variables}>
                 {({loading, error, data}) => {
                     if (loading || error || !data.issue)
-                        return <QueryResult loading={loading} error={error} data={data.issue} selected={selected}/>;
+                        return <QueryResult loading={loading} error={error} data={data ? data.issue : null} selected={selected}/>;
 
                     let defaultValues = JSON.parse(JSON.stringify(data.issue));
 

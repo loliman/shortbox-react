@@ -52,7 +52,7 @@ function Bottom(props) {
             <br/>
 
             <Contains {...props} header="Cover erschienen in"
-                      noEntriesHint="Dieser Ausgabe ist noch kein Cover zugeordnet."
+                      noEntriesHint="Das Cover ist noch keinen deutschen Ausgaben zugeordnet."
                       items={props.issue.covers[0] ? props.issue.covers[0].children.map(c => c.issue) : []}
                       itemTitle={<ContainsTitleDetailed/>}/>
 
@@ -77,7 +77,7 @@ function Bottom(props) {
 }
 
 function generateMarvelDbUrl(issue) {
-    let url = "https://marvel.fandom.com/wiki/" + issue.series.title + "_Vol_" + issue.series.volume + "_" + issue.number;
+    let url = "https://marvel.fandom.com/wiki/" + encodeURIComponent(issue.series.title) + "_Vol_" + issue.series.volume + "_" + issue.number;
     return url.replace(new RegExp(" ", 'g'), "_");
 }
 
@@ -93,36 +93,39 @@ function StoryDetails(props) {
                 <Typography><b>Editor</b> {toIndividualList(props.item.editors)}</Typography>
             </div>
 
-            <br/>
+            {props.item.children.length === 0 ? null :
+            <React.Fragment>
+                <br/>
 
-            <List className="issueStoryIssueList">
-                {
-                    props.item.children.map((child, idx) => {
-                        if (!child.issue)
-                            return null;
+                <List className="issueStoryIssueList">
+                    {
+                        props.item.children.map((child, idx) => {
+                            if (!child.issue)
+                                return null;
 
-                        return (
-                            <ListItem key={idx} className="issueStoryIssueItem" divider={props.item.children.length-1 !== idx}>
-                                <div>
-                                    <Typography
-                                        className="issueStoryIssue">{generateLabel(child.issue.series) + " #" + child.issue.number}</Typography>
-                                    <Typography className="issueStoryIssue issueStoryIssuePublisher">
-                                        {generateLabel(child.issue.series.publisher)}
-                                    </Typography>
-                                </div>
-                                <Tooltip title="Zur Ausgabe">
-                                    <IconButton className="detailsIcon issueStoryIssueButton"
-                                                component={Link}
-                                                to={generateUrl(child.issue)}
-                                                aria-label="Details">
-                                        <SearchIcon fontSize="small"/>
-                                    </IconButton>
-                                </Tooltip>
-                            </ListItem>
-                        );
-                    })
-                }
-            </List>
+                            return (
+                                <ListItem key={idx} className="issueStoryIssueItem" divider={props.item.children.length-1 !== idx}>
+                                    <div>
+                                        <Typography
+                                            className="issueStoryIssue">{generateLabel(child.issue.series) + " #" + child.issue.number}</Typography>
+                                        <Typography className="issueStoryIssue issueStoryIssuePublisher">
+                                            {generateLabel(child.issue.series.publisher)}
+                                        </Typography>
+                                    </div>
+                                    <Tooltip title="Zur Ausgabe">
+                                        <IconButton className="detailsIcon issueStoryIssueButton"
+                                                    component={Link}
+                                                    to={generateUrl(child.issue)}
+                                                    aria-label="Details">
+                                            <SearchIcon fontSize="small"/>
+                                        </IconButton>
+                                    </Tooltip>
+                                </ListItem>
+                            );
+                        })
+                    }
+                </List>
+            </React.Fragment>}
         </div>
     )
 }

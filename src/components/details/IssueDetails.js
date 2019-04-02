@@ -39,7 +39,7 @@ function IssueDetails(props) {
             <Query query={issue} variables={selected}>
                 {({loading, error, data}) => {
                     if (loading || error || !data.issue)
-                        return <QueryResult loading={loading} error={error} data={data.issue} selected={selected}/>;
+                        return <QueryResult loading={loading} error={error} data={data ? data.issue : null} selected={selected}/>;
 
                     let issue = JSON.parse(JSON.stringify(data.issue));
 
@@ -188,6 +188,16 @@ export function ContainsTitleSimple(props) {
                     {props.item.addinfo ? props.item.addinfo : null}
                 </Typography>
             </div>
+
+            <div className="chips">
+                {
+                    props.us && props.item.children.length === 0 ?
+                        !(props.mobile || props.mobileLandscape) ?
+                            <Chip className="chip" label="Nicht auf deutsch erschienen" color="default"/>
+                            : <Chip className="chip" label="n/a" color="default"/>
+                        : null
+                }
+            </div>
         </div>
     )
 }
@@ -288,7 +298,7 @@ function Variants(props) {
 }
 
 function Variant(props) {
-    let coverUrl = (props.variant.cover && props.variant.cover.url && props.variant.cover.url !== '') ? props.variant.cover.url : "/nocover.jpg";
+    let coverUrl = (props.variant.cover && props.variant.cover.url && props.variant.cover.url !== '') ? props.variant.cover.url : "/nocover_simple.jpg";
 
     return (
         <GridListTile component={Link} to={props.to} className="tile">
