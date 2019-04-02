@@ -19,7 +19,6 @@ import {ScrollContext} from 'react-router-scroll-4';
 import {LastLocationProvider} from "react-router-last-location";
 import Button from "@material-ui/core/Button/Button";
 import {createUploadLink} from "apollo-upload-client";
-import {whyDidYouUpdate} from "why-did-you-update";
 
 const uploadLink = createUploadLink({
     uri: 'http://localhost:4000'
@@ -46,7 +45,7 @@ const client = new ApolloClient({
     cache: new InMemoryCache()
 });
 
-whyDidYouUpdate(React);
+//whyDidYouUpdate(React);
 
 ReactDOM.render(
     <BrowserRouter>

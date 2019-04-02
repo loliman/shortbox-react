@@ -17,6 +17,10 @@ class AddFab extends React.Component {
         };
     }
 
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        return nextState.open !== this.state.open;
+    }
+
     render() {
         const {session, history} = this.props;
 

@@ -1,5 +1,5 @@
 import {SeriesSchema} from "../../../util/yupSchema";
-import {Field, Form, Formik} from "formik";
+import {FastField, Form, Formik} from "formik";
 import {TextField} from "formik-material-ui";
 import Link from "react-router-dom/es/Link";
 import React from "react";
@@ -152,7 +152,7 @@ class SeriesEditor extends React.Component {
                                                 }/>
 
                                     <CardContent className="cardContent">
-                                        <Field
+                                        <FastField
                                             className={this.props.desktop ? "field field35" : "field field100"}
                                             name="title"
                                             label="Titel"
@@ -174,7 +174,7 @@ class SeriesEditor extends React.Component {
                                             generateLabel={generateLabel}
                                         />
                                         <br/>
-                                        <Field
+                                        <FastField
                                             className={this.props.desktop ? "field field35" : "field field100"}
                                             name="volume"
                                             label="Volume"
@@ -182,7 +182,7 @@ class SeriesEditor extends React.Component {
                                             component={TextField}
                                         />
                                         <br/>
-                                        <Field
+                                        <FastField
                                             className={this.props.desktop ? "field field35" : "field field100"}
                                             name="startyear"
                                             label="Startjahr"
@@ -190,7 +190,7 @@ class SeriesEditor extends React.Component {
                                             component={TextField}
                                         />
                                         <br/>
-                                        <Field
+                                        <FastField
                                             className={this.props.desktop ? "field field35" : "field field100"}
                                             name="endyear"
                                             label="Endjahr"
@@ -198,7 +198,7 @@ class SeriesEditor extends React.Component {
                                             component={TextField}
                                         />
                                         <br/>
-                                        <Field
+                                        <FastField
                                             className={this.props.desktop ? "field field35" : "field field100"}
                                             name="addinfo"
                                             label="Weitere Informationen"

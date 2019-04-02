@@ -1,5 +1,5 @@
 import {PublisherSchema} from "../../../util/yupSchema";
-import {Field, Form, Formik} from "formik";
+import {FastField, Form, Formik} from "formik";
 import {TextField} from "formik-material-ui";
 import Link from "react-router-dom/es/Link";
 import React from "react";
@@ -137,7 +137,7 @@ class PublisherEditor extends React.Component {
                                 />
 
                                 <CardContent className="cardContent">
-                                    <Field
+                                    <FastField
                                         className={this.props.desktop ? "field field35" : "field field100"}
                                         name="name"
                                         label="Name"
@@ -146,7 +146,7 @@ class PublisherEditor extends React.Component {
 
                                     <br />
 
-                                    <Field
+                                    <FastField
                                         className={this.props.desktop ? "field field35" : "field field100"}
                                         name="addinfo"
                                         label="Weitere Informationen"

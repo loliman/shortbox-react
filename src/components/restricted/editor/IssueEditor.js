@@ -1,5 +1,5 @@
 import {IssueSchema} from "../../../util/yupSchema";
-import {Field, Form, Formik} from "formik";
+import {FastField, Form, Formik} from "formik";
 import {TextField} from "formik-material-ui";
 import Link from "react-router-dom/es/Link";
 import React from "react";
@@ -296,7 +296,7 @@ class IssueEditor extends React.Component {
                                         this.props.desktop ? <Cover {...this.props} cover={values.cover} onDelete={() => setFieldValue('cover', '', true)}/> : null
                                     }
 
-                                    <Field
+                                    <FastField
                                         className={this.props.desktop ? "field field35" : "field field100"}
                                         name="title"
                                         label="Titel"
@@ -339,7 +339,7 @@ class IssueEditor extends React.Component {
                                         generateLabel={generateLabel}
                                     />
 
-                                    <Field
+                                    <FastField
                                         disabled={!values.series.publisher.name ||
                                         values.series.publisher.name.trim().length === 0}
                                         className={this.props.desktop ? "field field10" : "field field25"}
@@ -349,7 +349,7 @@ class IssueEditor extends React.Component {
                                         component={TextField}
                                     />
                                     <br/>
-                                    <Field
+                                    <FastField
                                         className={this.props.desktop ? "field field35" : "field field100"}
                                         name="number"
                                         label="Nummer"
@@ -359,7 +359,7 @@ class IssueEditor extends React.Component {
 
                                     <div className={this.props.desktop ? "field field35 fieldFileUpload addBtn" :
                                         "field field100 fieldFileUpload addBtn"}>
-                                        <Field
+                                        <FastField
                                             name="cover"
                                             label="Cover"
                                             component={SimpleFileUpload}
@@ -380,7 +380,7 @@ class IssueEditor extends React.Component {
                                     {
                                         !values.series.publisher.us ?
                                             <React.Fragment>
-                                                <Field
+                                                <FastField
                                                     type="text"
                                                     name="format"
                                                     label="Format"
@@ -394,12 +394,12 @@ class IssueEditor extends React.Component {
                                                     {formats.map(e => (
                                                         <MenuItem key={e} value={e}>{e}</MenuItem>
                                                     ))}
-                                                </Field>
+                                                </FastField>
                                                 <br/>
                                             </React.Fragment> : null
                                     }
 
-                                    <Field
+                                    <FastField
                                         className={this.props.desktop ? "field field35" : "field field100"}
                                         name="variant"
                                         label="Variante"
@@ -410,7 +410,7 @@ class IssueEditor extends React.Component {
                                     {
                                         !values.series.publisher.us ?
                                             <React.Fragment>
-                                                <Field
+                                                <FastField
                                                     className={this.props.desktop ? "field field35" : "field field100"}
                                                     name="limitation"
                                                     label="Limitierung"
@@ -418,7 +418,7 @@ class IssueEditor extends React.Component {
                                                     component={TextField}
                                                 />
                                                 <br/>
-                                                <Field
+                                                <FastField
                                                     className={this.props.desktop ? "field field35" : "field field100"}
                                                     name="pages"
                                                     label="Seiten"
@@ -429,7 +429,7 @@ class IssueEditor extends React.Component {
                                             </React.Fragment> : null
                                     }
 
-                                    <Field
+                                    <FastField
                                         className={this.props.desktop ? "field field35" : "field field100"}
                                         name="releasedate"
                                         label="Erscheinungsdatum"
@@ -442,14 +442,14 @@ class IssueEditor extends React.Component {
                                     {
                                         !values.series.publisher.us ?
                                             <React.Fragment>
-                                                <Field
+                                                <FastField
                                                     className={this.props.desktop ? "field field25" : "field field75"}
                                                     name="price"
                                                     label="Preis"
                                                     component={TextField}
                                                 />
 
-                                                <Field
+                                                <FastField
                                                     type="text"
                                                     name="currency"
                                                     label="Währung"
@@ -463,7 +463,7 @@ class IssueEditor extends React.Component {
                                                     {currencies.map(e => (
                                                         <MenuItem key={e} value={e}>{e}</MenuItem>
                                                     ))}
-                                                </Field>
+                                                </FastField>
                                                 <br/>
                                             </React.Fragment> :
 
@@ -481,7 +481,7 @@ class IssueEditor extends React.Component {
                                             />
                                     }
 
-                                    <Field
+                                    <FastField
                                         className={this.props.desktop ? "field field35" : "field field100"}
                                         name="addinfo"
                                         label="Weitere Informationen"
@@ -621,7 +621,7 @@ function StoryFields(props) {
     return (
         <React.Fragment>
             <div className="storyAddInputContainer">
-                <Field
+                <FastField
                     className="field field3"
                     name={"stories[" + props.index + "].number"}
                     label="#"
@@ -629,14 +629,14 @@ function StoryFields(props) {
                     component={TextField}
                 />
 
-                <Field
+                <FastField
                     className={props.desktop ? "field field35" : "field field95"}
                     name={"stories[" + props.index + "].title"}
                     label="Titel"
                     component={TextField}
                 />
 
-                <Field
+                <FastField
                     className={props.desktop ? "field field35" : "field field100"}
                     name={"stories[" + props.index + "].addinfo"}
                     label="Weitere Informationen"
@@ -667,7 +667,7 @@ function StoryFieldsNonExclusive(props) {
                         if(option && !option.volume)
                             option.volume = 0;
 
-                        setFieldValue("stories[" + index + "].parent.issue.series", option ? option : null);
+                        setFieldValue("stories[" + index + "].parent.issue.series", option ? option : {title: '', volume: 0});
                     }}
                     style={{
                         width: props.desktop ? "40%" : "99%"
@@ -675,7 +675,7 @@ function StoryFieldsNonExclusive(props) {
                     generateLabel={generateLabel}
                 />
 
-            <Field
+            <FastField
                 className={props.desktop ? "field field5" : "field field25"}
                 name={"stories[" + index + "].parent.issue.series.volume"}
                 label="Volume"
@@ -683,14 +683,14 @@ function StoryFieldsNonExclusive(props) {
                 component={TextField}
             />
 
-            <Field
+            <FastField
                 className={props.desktop ? "field field5" : "field field60"}
                 name={"stories[" + index + "].parent.issue.number"}
                 label="Nummer"
                 component={TextField}
             />
 
-            <Field
+            <FastField
                 className={props.desktop ? "field field5" : "field field10"}
                 name={"stories[" + index + "].parent.number"}
                 label="#"
@@ -824,7 +824,7 @@ function Features(props) {
 function FeatureFields(props) {
     return (
         <div className="storyAddInputContainer">
-            <Field
+            <FastField
                 className="field field3"
                 name={"features[" + props.index + "].number"}
                 label="#"
@@ -832,7 +832,7 @@ function FeatureFields(props) {
                 component={TextField}
             />
 
-            <Field
+            <FastField
                 className={props.desktop ? "field field30" : "field field95"}
                 name={"features[" + props.index + "].title"}
                 label="Titel"
@@ -853,7 +853,7 @@ function FeatureFields(props) {
                 generateLabel={(e) => e.name}
             />
 
-            <Field
+            <FastField
                 className={props.desktop ? "field field30" : "field field100"}
                 name={"features[" + props.index + "].addinfo"}
                 label="Weitere Informationen"
@@ -885,7 +885,7 @@ function CoverFields(props) {
         <React.Fragment>
             <div className="storyAddInputContainer">
                 {props.items[props.index].number === 0 ?
-                    <Field
+                    <FastField
                         className="field field3"
                         name={"covers[" + props.index + "].number"}
                         label="#"
@@ -893,7 +893,7 @@ function CoverFields(props) {
                         type="number"
                         component={TextField}
                     /> :
-                    <Field
+                    <FastField
                         className="field field3"
                         name={"covers[" + props.index + "].number"}
                         label="#"
@@ -901,7 +901,7 @@ function CoverFields(props) {
                         component={TextField}
                     />
                 }
-                <Field
+                <FastField
                     className={props.desktop ? "field field75" : "field field95"}
                     name={"covers[" + props.index + "].addinfo"}
                     label="Weitere Informationen"
@@ -932,7 +932,7 @@ function CoverFieldsNonExclusive(props) {
                 onChange={(option) => {
                     if(option && !option.volume)
                         option.volume = 0;
-                    setFieldValue("covers[" + index + "].parent.issue.series", option ? option : null);
+                    setFieldValue("covers[" + index + "].parent.issue.series", option ? option : {title: '', volume: 0});
                 }}
                 style={{
                     width: props.desktop ? "40%" : "99%"
@@ -940,7 +940,7 @@ function CoverFieldsNonExclusive(props) {
                 generateLabel={generateLabel}
             />
 
-            <Field
+            <FastField
                 className={props.desktop ? "field field5" : "field field25"}
                 name={"covers[" + index + "].parent.issue.series.volume"}
                 label="Volume"
@@ -948,14 +948,14 @@ function CoverFieldsNonExclusive(props) {
                 component={TextField}
             />
 
-            <Field
+            <FastField
                 className={props.desktop ? "field field5" : "field field73"}
                 name={"covers[" + index + "].parent.issue.number"}
                 label="Nummer"
                 component={TextField}
             />
 
-            <Field
+            <FastField
                 className={props.desktop ? "field field30" : "field field100"}
                 name={"covers[" + index + "].parent.issue.variant"}
                 label="Variante"

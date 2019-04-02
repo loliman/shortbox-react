@@ -65,7 +65,7 @@ function IssuePreview(props) {
     }
 
     return (
-        <Card className="issuePreview" onClick={() => props.history.push(generateUrl(props.issue, props.us), false)}>
+        <Card className="issuePreview" onClick={() => props.history.push(generateUrl(props.issue, props.us))}>
             <CardContent>
                 <Typography variant="subtitle1">{generateLabel(props.issue.series) + " #" + props.issue.number + variant}</Typography>
                 <Typography variant="caption">{generateLabel(props.issue.series.publisher)}</Typography>

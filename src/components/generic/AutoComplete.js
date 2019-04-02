@@ -1,6 +1,6 @@
 import React from 'react';
 import Select from 'react-select';
-import {Field} from "formik";
+import {FastField} from "formik";
 import Paper from "@material-ui/core/Paper/Paper";
 import MenuItem from "@material-ui/core/MenuItem/MenuItem";
 import {Query} from "react-apollo";
@@ -31,7 +31,7 @@ class AutoComplete extends React.Component {
                 {({loading, error, data}) => {
                     let options = data[query.definitions[0].name.value.toLowerCase()];
 
-                    return <Field {...this.props}
+                    return <FastField {...this.props}
                                   component={AutoCompleteContainer}
                                   options={options}
                                   label={label}
@@ -73,7 +73,9 @@ class AutoCompleteContainer extends React.Component {
             },
 
             options: this.props.options,
-            onChange: (option) => this.props.onChange(option),
+            onChange: (option) => {
+                this.props.onChange(option)
+            },
 
             getOptionValue: (option) => {
                 return option[this.props.nameField];
