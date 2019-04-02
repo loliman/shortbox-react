@@ -20,6 +20,14 @@ function Contact(props) {
                     bei mir. <br />
                     Schreibt dazu bitte eine Mail mit dem Betreff <b>[Shortbox]</b> und einer kurzen Beschreibung des Fehlers/
                     des Vorschlags an <a href='mailto:christian.riese@gmail.com'>christian.riese@gmail.com</a>.<br/>
+
+                    <br />
+                    <Typography variant="h6">Unterstützen</Typography>
+
+                    Shortbox.de ist und bleibt eine kostenlose Datenbank, die von jedem jederzeit kostenlos genutzt werden kann. <br/>
+                    Dennoch verursacht Shortbox.de laufend Kosten, die ich privat trage. Wenn ihr das Projekt unterstützen wollt,
+                    so bin ich für jede kleine finanzielle Unterstützung über <a href="https://paypal.me/ChristianRiese">paypal.me/ChristianRiese</a>
+                    &nbsp;dankbar!
                 </Typography>
             </CardContent>
         </Layout>
