@@ -243,6 +243,10 @@
         z-index: 1000 !important;
     }
 
+    .content > div, .contentShift > div {
+        width: 100% !important;
+    }
+
     .contentShift {
         margin-top: 64px !important;
     }
@@ -254,7 +258,7 @@
     #drawer > div {
         width: 40% !important;
         margin-top: 64px !important;
-        height: calc(99vh - 80px);
+        height: calc(84vh - 2px);
     }
 
     .media {
@@ -334,7 +338,7 @@
     #drawer > div {
         width: 40% !important;
         margin-top: 64px !important;
-        height: calc(99vh - 80px);
+        height: calc(84vh - 2px);
     }
 
     .details {
