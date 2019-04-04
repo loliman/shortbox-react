@@ -258,7 +258,7 @@
     #drawer > div {
         width: 40% !important;
         margin-top: 64px !important;
-        height: calc(84vh - 2px);
+        height: calc(90vh - 2px);
     }
 
     .media {
