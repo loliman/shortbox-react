@@ -10,9 +10,6 @@ class AppContextProvider extends React.Component {
         super(props);
         let mobile = window.innerWidth <= 767 && window.innerWidth > 1024;
 
-        console.log("innerwidth: " + window.innerWidth);
-        console.log("window.screen.orientation: " + window.screen.orientation);
-        console.log("window.orientation: " + window.orientation);
         let mobileLandscape = false;
         if(mobile) {
             if(window.screen.orientation)
@@ -21,7 +18,7 @@ class AppContextProvider extends React.Component {
                 mobileLandscape = (window.orientation === 90 || window.orientation === -90);
         }
 
-        let tablet = window.innerWidth <= 1024 && window.innerWidth > 1281;
+        let tablet = window.innerWidth <= 1023 && window.innerWidth > 1281;
 
         let tableLandscape = false;
         if(tablet) {
@@ -30,11 +27,6 @@ class AppContextProvider extends React.Component {
             else if(window.orientation)
                 tableLandscape = (window.orientation === 90 || window.orientation === -90);
         }
-
-        console.log("mobile: " + mobile);
-        console.log("mobileLandscape: " + mobileLandscape);
-        console.log("tablet: " + tablet);
-        console.log("tableLandscape: " + tableLandscape);
 
         let desktop = !mobile && !mobileLandscape && !tablet && !tableLandscape;
 
