@@ -8,7 +8,7 @@ export const AppContext = React.createContext();
 class AppContextProvider extends React.Component {
     constructor(props) {
         super(props);
-        let mobile = window.innerWidth <= 767 && window.innerWidth > 1024;
+        let mobile = window.innerWidth >= 767 && window.innerWidth < 1023;
 
         let mobileLandscape = false;
         if(mobile) {
@@ -18,7 +18,7 @@ class AppContextProvider extends React.Component {
                 mobileLandscape = (window.orientation === 90 || window.orientation === -90);
         }
 
-        let tablet = window.innerWidth <= 1023 && window.innerWidth > 1281;
+        let tablet = window.innerWidth >= 1023 && window.innerWidth < 1281;
 
         let tableLandscape = false;
         if(tablet) {
