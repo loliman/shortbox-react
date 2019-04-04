@@ -9,12 +9,24 @@ class AppContextProvider extends React.Component {
     constructor(props) {
         super(props);
         let mobile = window.innerWidth <= 600;
-        let mobileLandscape = (window.innerWidth <= 767 && window.screen.orientation
-            && (window.screen.orientation.angle === 90 || window.screen.orientation.angle === 180));
+
+        let mobileLandscape = false;
+        if(window.innerWidth <= 767 ) {
+            if(window.screen.orientation)
+                mobileLandscape = (window.screen.orientation.angle === 90 || window.screen.orientation.angle === 180);
+            else if(window.orientation)
+                mobileLandscape = (window.orientation === 90 || window.orientation === -90);
+        }
 
         let tablet = window.innerWidth <= 1024;
-        let tableLandscape = (window.innerWidth <= 1024 && window.screen.orientation
-            && (window.screen.orientation.angle === 90 || window.screen.orientation.angle === 180));
+
+        let tableLandscape = false;
+        if(window.innerWidth <= 1024 ) {
+            if(window.screen.orientation)
+                tableLandscape = (window.screen.orientation.angle === 90 || window.screen.orientation.angle === 180);
+            else if(window.orientation)
+                tableLandscape = (window.orientation === 90 || window.orientation === -90);
+        }
 
         let desktop = !mobile && !mobileLandscape && !tablet && !tableLandscape;
 
