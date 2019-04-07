@@ -22,7 +22,7 @@ class List extends React.Component {
     }
 
     render() {
-        const {drawerOpen, toogleDrawer, mobile, handleMenuOpen} = this.props;
+        const {drawerOpen, toogleDrawer, mobile, mobileLandscape, handleMenuOpen} = this.props;
         let {selected, level} = this.props;
 
         if (level === HierarchyLevel.ISSUE) {
@@ -36,11 +36,11 @@ class List extends React.Component {
         return (
             <SwipeableDrawer
                 disableDiscovery={true}
-                variant={mobile ? 'temporary' : 'persistent'}
+                variant={(mobile && !mobileLandscape) ? 'temporary' : 'persistent'}
                 open={drawerOpen}
                 onClose={() => toogleDrawer()}
                 onOpen={() => toogleDrawer()}
-                className="drawer"
+                className={drawerOpen ? 'drawer-open' : 'drawer-close'}
                 id="drawer">
                 <ScrollContainer scrollKey={this.state.scrollKey}>
                     <MuiList id="list">
@@ -68,7 +68,7 @@ class List extends React.Component {
 }
 
 function TypeListEntry(props) {
-    const {us, item, level, mobile, toogleDrawer} = props;
+    const {us, item, level, mobile, mobileLandscape, toogleDrawer} = props;
 
     let label = generateLabel(item);
     if(level === HierarchyLevel.SERIES || level === HierarchyLevel.ISSUE) {
@@ -83,7 +83,7 @@ function TypeListEntry(props) {
             <ListItem component={Link}
                       to={generateUrl(item, us)}
                       onClick={() => {
-                          if (mobile && level === HierarchyLevel.SERIES)
+                          if ((mobile && !mobileLandscape) && level === HierarchyLevel.SERIES)
                               toogleDrawer();
                       }}
                       button>

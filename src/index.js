@@ -21,7 +21,7 @@ import Button from "@material-ui/core/Button/Button";
 import {createUploadLink} from "apollo-upload-client";
 
 const uploadLink = createUploadLink({
-    uri: 'http://localhost:4000'
+    uri: 'http://192.168.0.94:4000'
 });
 
 const authLink = setContext((_, {headers}) => {

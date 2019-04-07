@@ -75,7 +75,7 @@ class Dropdown extends React.Component {
                                       }
 
                                       this.props.history.push("/edit" + generateUrl(this.props.EditDropdown.item, us));
-                                      if(this.props.mobile)
+                                      if(this.props.mobile && !this.props.mobileLandscape)
                                           this.props.toogleDrawer();
                                       this.props.handleClose();
                                   }}>

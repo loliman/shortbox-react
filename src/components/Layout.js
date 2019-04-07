@@ -22,25 +22,35 @@ class Layout extends React.Component {
             <React.Fragment>
                 <TopBar/>
 
-                <List/>
+                <div id="main">
+                    <List/>
 
-                <main className={drawerOpen ? 'content' : 'contentShift'}>
-                    <Card>
-                        {children}
-                    </Card>
+                    <div id="content" className={drawerOpen ? 'content-show' : 'content-hide'}>
+                        <Card>
+                            {children}
 
-                    <Typography className="footer">
+
+                            <br />
+                            <br />
+                            <br />
+                        </Card>
+                    </div>
+
+                    <AddFab us={us}/>
+                </div>
+
+                <div id="footer">
+                    <Typography>
                         <span className="spanLink"
-                              onClick={() => this.props.history.push("/contact")}>Kontakt/Fehler melden/Unterstützen</span> | &nbsp;
+                              onClick={() => this.props.history.push("/contact")}>Kontakt/Fehler melden
+                            {!this.props.isMobile ? "" : "/Unterstützen"}
+                        </span>|
                         <span className="spanLink"
-                              onClick={() => this.props.history.push("/impress")}>Impressum</span> | &nbsp;
+                              onClick={() => this.props.history.push("/impress")}>Impressum</span>|
                         <span className="spanLink"
                               onClick={() => this.props.history.push("/privacy")}>Datenschutz</span>
                     </Typography>
-                </main>
-
-                <AddFab us={us}/>
-
+                </div>
             </React.Fragment>
         );
     }

@@ -8,27 +8,36 @@ export const AppContext = React.createContext();
 class AppContextProvider extends React.Component {
     constructor(props) {
         super(props);
-        let mobile = window.innerWidth <= 767;
+        let landscape = false;
 
-        let mobileLandscape = false;
-        if(mobile) {
-            if(window.screen.orientation)
-                mobileLandscape = (window.screen.orientation.angle === 90 || window.screen.orientation.angle === 180);
-            else if(window.orientation)
-                mobileLandscape = (window.orientation === 90 || window.orientation === -90);
-        }
+        if(window.screen.orientation)
+            landscape = (window.screen.orientation.angle === 90 || window.screen.orientation.angle === 270);
+        else if(window.orientation)
+            landscape = (window.orientation === 90 || window.orientation === -90);
 
-        let tablet = window.innerWidth > 767 && window.innerWidth <= 1024;
+        let width = window.innerWidth;
 
-        let tableLandscape = false;
-        if(tablet) {
-            if(window.screen.orientation)
-                tableLandscape = (window.screen.orientation.angle === 90 || window.screen.orientation.angle === 180);
-            else if(window.orientation)
-                tableLandscape = (window.orientation === 90 || window.orientation === -90);
-        }
+        let mobile = (!landscape ? (width >= 320 && width <= 480) : (width >= 481 && width <= 861));
+        let tablet = (!landscape ? (width >= 768 && width <= 1024) : (width >= 861 && width <= 1024));
+
+        let mobileLandscape = mobile && landscape;
+        let tableLandscape = tablet && landscape;
 
         let desktop = !mobile && !mobileLandscape && !tablet && !tableLandscape;
+
+        if(mobile || mobileLandscape) {
+            window.onorientationchange = function() {
+                let landscape = false;
+
+                if(window.screen.orientation)
+                    landscape = (window.screen.orientation.angle === 90 || window.screen.orientation.angle === 270);
+                else if(window.orientation)
+                    landscape = (window.orientation === 90 || window.orientation === -90);
+
+                if((!mobileLandscape && landscape) || (mobileLandscape && !landscape))
+                    window.location.reload();
+            };
+        }
 
         this.state = {
             mobile: mobile,
@@ -36,7 +45,7 @@ class AppContextProvider extends React.Component {
             tablet: tablet,
             tabletLandscape: tableLandscape,
             desktop: desktop,
-            drawerOpen: !mobile
+            drawerOpen: !mobile || mobileLandscape
         };
     }
 

@@ -1,100 +1,22 @@
-.root {
-    display: flex !important;
-    padding-bottom: 0 !important;
-    padding-left: 10px !important;
-    padding-right: 10px !important;
-    padding-top: 10px !important;
-}
-
-#loginForm {
-    width: 100%;
+#root {
+    height: 100%;
     display: flex;
-    align-content: center;
-    justify-content: center;
-    margin-top: 10%;
+    flex-direction: column;
 }
 
-#loginButtons {
-    margin-top: 24px;
-    margin-left: 20%;
+#header > div {
+    display: flex;
+    flex-shrink: 0;
 }
 
-.appBar {
-    z-index: 1201 !important;
-}
-
-.copyright {
-    color: gray !important;
-    margin-top: auto !important;
-}
-
-.copyright > a {
-    text-decoration: none;
-}
-
-#drawer {
-    z-index: 999 !important;
-}
-
-#drawer > div {
-    overflow: unset;
-    flex-shrink: 0 !important;
-    padding: 0 !important;
-    width: 25%;
-    margin-top: 64px !important;
-    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-}
-
-::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(117, 117, 117, 0.8);
-}
-
-::-webkit-scrollbar-thumb {
-    background: rgba(117, 117, 117, 0.8);
-    -webkit-box-shadow: inset 0 0 6px rgba(117, 117, 117, 0.5);
-}
-
-::-webkit-scrollbar-thumb:window-inactive {
-    background: rgba(117, 117, 117, 0.8);
-}
-
-#list {
-    overflow: auto;
-}
-
-.content > div, .contentShift > div {
-    overflow: auto;
-    height: calc(99vh - 90px);
-}
-
-.content {
-    flex-grow: 1 !important;
-    transition: ease-in 150ms;
-    margin-top: 64px;
-    z-index: 1000 !important;
-}
-
-.contentShift {
-    flex-grow: 1 !important;
-    margin-left: 0;
-    transition: ease-out 200ms;
-    margin-top: 64px;
-    z-index: 1000 !important;
-}
-
-.footer > a {
-    text-decoration: none;
+#headerRight {
+    flex-shrink: 0;
 }
 
 .appTitle {
-    margin-top: -1px;
-    max-width: 80%;
+    flex-shrink: 1;
+    padding-left: 15px;
+    padding-right: 15px;
 }
 
 .appTitle > a {
@@ -107,60 +29,122 @@
     text-decoration: none;
 }
 
+.grow {
+    flex-grow: 1;
+}
+
+#main {
+    display: flex;
+    height: 90vh;
+    justify-content: flex-end;
+}
+
+#drawer {
+    margin-right: 1px;
+    width: 20%;
+    transition: all 150ms ease-in-out !important;
+    height: 100%;
+    box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 2px 1px -1px rgba(0,0,0,0.12);
+}
+
+.drawer-close {
+    width: 0 !important;
+}
+
+#drawer > div {
+    width: 100%;
+    position: inherit;
+}
+
+#content {
+    box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 2px 1px -1px rgba(0,0,0,0.12);
+    height: 100%;
+    flex-grow: 1;
+}
+
+#content > div {
+    overflow: auto;
+    height: 100%;
+    box-shadow: none;
+}
+
+.speedDialContainer {
+    float: right;
+}
+
+.speedDial {
+    bottom: 15px;
+    right: 15px;
+    position: fixed;
+    align-self: end;
+}
+
+#footer {
+    display: flex;
+    flex-direction: row-reverse;
+    padding-top: 3px;
+}
+
+.spanLink {
+    padding-left: 10px;
+    padding-right: 10px;
+    color: blue;
+}
+
+.spanLink:hover {
+    cursor: pointer;
+}
+
+#loginForm {
+    width: 100%;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    margin-top: 10%;
+}
+
+#loginForm > div {
+    display: flex;
+    flex-direction: column;
+}
+
+#loginButtons {
+    margin-top: 24px;
+    margin-left: 20%;
+}
+
+.details {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap-reverse;
+    justify-content: center;
+    padding-bottom: 2% !important;
+}
+
+.detailsPaper {
+    margin-top: 10px !important;
+    width: auto !important;
+    flex-shrink: 0;
+    margin-right: -3px !important;
+}
+
+.media {
+    align-self: center;
+    margin-top: 10px !important;
+    height: 55vh !important;
+    width: 47.5vh !important;
+    flex-shrink: 0;
+}
+
 /*
   ##Device = Desktops
   ##Screen = 1281px to higher resolution desktops
 */
 @media (min-width: 1281px) {
-    .content {
-        margin-top: 64px;
-        z-index: 1000 !important;
-    }
-
-    .contentShift {
-        margin-top: 64px !important;
-    }
-
-    .media {
-        height: 400px !important;
-        width: 25% !important;
-    }
-
     .issuePreview {
         margin-bottom: 10px;
         min-width: 40vw;
         max-width: 40vw;
-    }
-
-    #drawer {
-        z-index: 999 !important;
-    }
-
-    #drawer > div {
-        width: 20% !important;
-        margin-top: 64px !important;
-        height: calc(99vh - 80px);
-    }
-
-    .appTitle {
-        max-width: 72%;
-    }
-
-    .details {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        padding-bottom: 2% !important;
-    }
-
-    .content {
-        margin-left: 20%;
-    }
-
-    .footer {
-        padding-top: 4px;
-        padding-right: 4px;
-        float: right;
     }
 
     .exclusiveToggle {
@@ -175,55 +159,10 @@
   ##Screen = B/w 1025px to 1280px
 */
 @media (min-width: 1025px) and (max-width: 1280px) {
-    .content {
-        margin-top: 64px;
-        z-index: 1000 !important;
-    }
-
-    .contentShift {
-        margin-top: 64px !important;
-    }
-
-    .media {
-        height: 400px !important;
-        width: 25% !important;
-    }
-
     .issuePreview {
         margin-bottom: 10px;
         min-width: 40vw;
         max-width: 40vw;
-    }
-
-    #drawer {
-        z-index: 999 !important;
-    }
-
-    #drawer > div {
-        width: 20% !important;
-        margin-top: 64px !important;
-        height: calc(99vh - 80px);
-    }
-
-    .appTitle {
-        max-width: 72%;
-    }
-
-    .details {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        padding-bottom: 2% !important;
-    }
-
-    .content {
-        margin-left: 20%;
-    }
-
-    .footer {
-        padding-top: 4px;
-        padding-right: 4px;
-        float: right;
     }
 
     .exclusiveToggle {
@@ -236,62 +175,28 @@
   ##Device = Tablets, Ipads (portrait)
   ##Screen = B/w 768px to 1024px
 */
-@media (min-width: 768px) and (max-width: 1024px) {
-    .content {
-        margin-left: 40%;
-        margin-top: 64px;
-        z-index: 1000 !important;
-    }
-
-    .content > div, .contentShift > div {
-        width: 100% !important;
-    }
-
-    .contentShift {
-        margin-top: 64px !important;
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    #main {
+        height: 88vh !important;
     }
 
     #drawer {
-        z-index: 999 !important;
+        width: 40%;
     }
 
-    #drawer > div {
-        width: 40% !important;
-        margin-top: 64px !important;
-        height: calc(90vh - 2px);
+    .detailsPaper {
+        max-width: 39vh;
     }
 
     .media {
-        height: 400px !important;
-        width: 25% !important;
+        height: 30vh !important;
+        width: 32.5vh !important;
     }
 
     .issuePreview {
         margin-bottom: 10px;
         min-width: 53vw;
         max-width: 53vw;
-    }
-
-    .appTitle {
-        max-width: 72%;
-    }
-
-    .details {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        padding-bottom: 2% !important;
-    }
-
-    .media {
-        height: 400px !important;
-        width: 50% !important;
-    }
-
-    .footer {
-        padding-top: 2px;
-        padding-right: 4px;
-        float: right;
     }
 
     .storyAdd > :first-child {
@@ -312,53 +217,18 @@
   ##Device = Tablets, Ipads (landscape)
   ##Screen = B/w 768px to 1024px
 */
-@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
-    /*Nothing special*/
-}
-
-/*
-  ##Device = Low Resolution Tablets, Mobiles (Landscape)
-  ##Screen = B/w 481px to 767px
-*/
-@media (min-width: 481px) and (max-width: 767px) {
-    .content {
-        margin-left: 40%;
-        margin-top: 64px;
-        z-index: 1000 !important;
-    }
-
-    .contentShift {
-        margin-top: 64px !important;
+@media (min-width: 861px) and (max-width: 1024px) and (orientation: landscape) {
+    #main {
+        height: 84vh !important;
     }
 
     #drawer {
-        z-index: 999 !important;
-    }
-
-    #drawer > div {
-        width: 40% !important;
-        margin-top: 64px !important;
-        height: calc(84vh - 2px);
-    }
-
-    .details {
-        display: flex;
-        flex-direction: column-reverse!important;
-        justify-content: center;
-        padding-bottom: 2%!important;
-        justify-items: center;
-        align-items: center;
+        width: 30%;
     }
 
     .media {
-        margin-bottom: 10px !important;
-        height: 200px !important;
-        width: 99% !important;
-    }
-
-    .detailsPaper {
-        margin-right: -3px !important;
-        width: 98.5% !important;
+        height: 35vh !important;
+        width: 32.5vh !important;
     }
 
     .issuePreview {
@@ -367,26 +237,78 @@
         max-width: 53vw;
     }
 
-    .appTitle {
-        max-width: 65%;
+    .storyAdd > :first-child {
+        display: block !important;
     }
 
-    .details {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        padding-bottom: 2% !important;
+    .formButtons {
+        width: 100% !important;
+    }
+
+    .exclusiveToggle {
+        margin-top: 6px !important;
+        margin-left: -14px !important;
+    }
+}
+
+/*
+  ##Device = Mobiles (landscape)
+  ##Screen = B/w 768px to 1024px
+*/
+@media (min-width: 768px) and (max-width: 861px) and (orientation: landscape) {
+    #main {
+        height: 62vh !important;
+    }
+
+    #drawer {
+        width: 30%;
     }
 
     .media {
-        height: 400px !important;
-        width: 50% !important;
+        height: 53vh !important;
+        width: 32.5vh !important;
     }
 
-    .footer {
-        padding-top: 0px;
-        padding-right: 4px;
-        float: right;
+    .detailsPaper {
+        max-width: 94vh;
+    }
+
+    .issuePreview {
+        margin-bottom: 10px;
+        min-width: 53vw;
+        max-width: 53vw;
+    }
+
+    .storyAdd > :first-child {
+        display: block !important;
+    }
+
+    .formButtons {
+        width: 100% !important;
+    }
+
+    .exclusiveToggle {
+        margin-top: 6px !important;
+        margin-left: -14px !important;
+    }
+}
+
+/*
+  ##Device = Low Resolution Tablets, Mobiles (Landscape)
+  ##Screen = B/w 481px to 767px
+*/
+@media (min-width: 481px) and (max-width: 767px) and (orientation: landscape) {
+    #main {
+        height: 10.5vh !important;
+    }
+
+    #drawer {
+        width: 40% !important;
+    }
+
+    .issuePreview {
+        min-width: 53vw;
+        max-width: 53vw;
     }
 
     .formButtons {
@@ -403,63 +325,22 @@
   ##Device = Most of the Smartphones Mobiles (Portrait)
   ##Screen = B/w 320px to 479px
 */
-@media (min-width: 320px) and (max-width: 480px) {
-    .content > div, .contentShift > div {
-        width: 100vw;
-        height: calc(99vh - 80px);
-        margin-left: -10px;
+@media (min-width: 320px) and (max-width: 480px) and (orientation: portrait) {
+    #main {
+        height: 81.5vh !important;
     }
 
-    .content {
-        width: 102.5%;
-        margin-top: 48px;
-        z-index: 1000 !important;
-        margin-bottom: -10px;
-        margin-left: 0 !important;
+    .drawer-open {
+        padding-top: 20%;
     }
 
-    .contentShift {
-        margin-left: 0 !important;
-        margin-top: 48px !important;
+    #drawer > :last-child {
+        width: 80%;
     }
 
     .issuePreview {
         margin-bottom: 10px;
         width: 100%;
-    }
-
-    #drawer {
-        z-index: 1200 !important;
-    }
-
-    #drawer > div {
-        width: 100% !important;
-        margin-top: 56px !important;
-        height: calc(100% - 51px);
-    }
-
-    .details {
-        display: flex;
-        flex-direction: column-reverse!important;
-        justify-content: center;
-        padding-bottom: 2%!important;
-        justify-items: center;
-        align-items: center;
-    }
-
-    .media {
-        margin-bottom: 10px !important;
-        height: 200px !important;
-        width: 99% !important;
-    }
-
-    .detailsPaper {
-        margin-right: -3px !important;
-        width: 98.5% !important;
-    }
-
-    .appTitle {
-        width: 34%;
     }
 
     #loginForm {
@@ -484,12 +365,6 @@
         top: 0 !important;
     }
 
-    .footer {
-        padding-top: 5px;
-        padding-right: 4px;
-        float: right;
-    }
-
     .storyAdd > :first-child {
         display: block !important;
     }
@@ -512,9 +387,6 @@
     padding-left: 5px;
 }
 
-.grow {
-    flex-grow: 1;
-}
 
 .switch span {
     font-weight: 500;
@@ -587,7 +459,7 @@
     border-width: 1px !important;
     border-color: darkgray !important;
     border-style: solid !important;
-    margin-left: 5px;
+    margin-left: 10px;
     box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12);
 }
 
@@ -602,9 +474,9 @@
 .detailsPaper {
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
     display: flex;
-    margin-right: 5px;
     padding: 5px;
     border-radius: 0 !important;
+    margin-left: 5px
 }
 
 .detailsPaper > table > tbody > :last-child > td
@@ -626,7 +498,6 @@
     padding-top: 10px !important;
     padding-bottom: 10px !important;
 }
-
 
 .storyAdd > :first-child {
     flex-direction: column;
@@ -666,15 +537,7 @@
 }
 
 .cardContent {
-    min-height: 81vh;
-}
-
-.spanLink {
-    color: blue;
-}
-
-.spanLink:hover {
-    cursor: pointer;
+    height: 84%;
 }
 
 .chip {
@@ -747,17 +610,6 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 .itemContainer {
     display: flex !important;
     justify-content: space-between;
-}
-
-.speedDialContainer {
-    float: right;
-}
-
-.speedDial {
-    bottom: 15px;
-    right: 15px;
-    position: fixed;
-    align-self: end;
 }
 
 .editButton {
@@ -981,6 +833,32 @@ div[class^="MuiExpansionPanelSummary-content-"] {
     color: inherit;
 }
 
+
+
+
+
+
+
+
+/*Scrollbar tweaks*/
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(117, 117, 117, 0.8);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(117, 117, 117, 0.8);
+    -webkit-box-shadow: inset 0 0 6px rgba(117, 117, 117, 0.5);
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+    background: rgba(117, 117, 117, 0.8);
+}
+
 /*Hamburger for IE11*/
 .menuButton {
     margin-left: 12px;
@@ -996,7 +874,6 @@ div[class^="MuiExpansionPanelSummary-content-"] {
  */
 .hamburger {
     padding-top: 11px;
-    padding-right: 15px;
     display: inline-block;
     cursor: pointer;
     transition-property: opacity, filter;

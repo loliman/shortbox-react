@@ -18,12 +18,12 @@ import {withContext} from "./generic";
 import IconButton from "@material-ui/core/IconButton";
 
 function TopBar(props) {
-    const {drawerOpen, toogleDrawer, us, history, session, mobile} = props;
+    const {drawerOpen, toogleDrawer, us, history, session, mobile, mobileLandscape} = props;
 
     let isIE = /*@cc_on!@*/false || !!document.documentMode;
 
     return (
-        <AppBar position="fixed" className="appBar">
+        <AppBar position="sticky" id="header">
             <Toolbar>
                 {
                     isIE ?
@@ -42,13 +42,13 @@ function TopBar(props) {
 
                 <Typography variant="h6" color="inherit" className="appTitle" noWrap>
                     {
-                        mobile ?
+                        (mobile && !mobileLandscape) ?
                             <BreadCrumbMenu {...props} /> :
                             <BreadCrumbMenuMobile {...props} />
                     }
                 </Typography>
                 <div className="grow"/>
-                <div>
+                <div id="headerRight">
                     <FormControlLabel
                         className="switch"
                         control={
@@ -57,7 +57,7 @@ function TopBar(props) {
                                     checked={us}
                                     onChange={() => {
                                         history.push(us ? "/de" : "/us");
-                                        if(!drawerOpen)
+                                        if(!drawerOpen && (!mobile || mobileLandscape))
                                             toogleDrawer();
                                     }}
                                     color="secondary"/>
@@ -155,7 +155,7 @@ function BreadCrumbLink(props) {
             <span className="breadCrumbLink"
                   onClick={() => {
                       props.history.push(props.to);
-                      if (!props.drawerOpen)
+                      if (!props.drawerOpen && (!props.mobile || props.mobileLandscape))
                           props.toogleDrawer();
                   }}>
                 {props.label}

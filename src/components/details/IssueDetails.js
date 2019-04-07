@@ -31,53 +31,56 @@ import GridListTile from "@material-ui/core/GridListTile/GridListTile";
 import GridListTileBar from "@material-ui/core/GridListTileBar/GridListTileBar";
 import EditButton from "../restricted/EditButton";
 
-function IssueDetails(props) {
-    const {selected, us} = props;
+class IssueDetails extends React.Component {
+    render() {
+        const {selected, us} = this.props;
 
-    return (
-        <Layout>
-            <Query query={issue} variables={selected}>
-                {({loading, error, data}) => {
-                    if (loading || error || !data.issue)
-                        return <QueryResult loading={loading} error={error} data={data ? data.issue : null} selected={selected}/>;
+        return (
+            <Layout>
+                <Query query={issue} variables={selected}>
+                    {({loading, error, data}) => {
+                        if (loading || error || !data.issue)
+                            return <QueryResult loading={loading} error={error} data={data ? data.issue : null}
+                                                selected={selected}/>;
 
-                    let issue = JSON.parse(JSON.stringify(data.issue));
+                        let issue = JSON.parse(JSON.stringify(data.issue));
 
-                    return (
-                        <React.Fragment>
-                            <CardHeader title={generateLabel(issue)}
-                                        subheader={props.subheader ? generateIssueSubHeader(issue) : ""}
-                                        action={
-                                            <div>
-                                                {issue.verified ?
-                                                    <img className="verifiedBadge" src="/verified_badge.png"
-                                                         alt="verifiziert" height="35"/> : null}
-                                                <EditButton item={data.issue}/>
-                                            </div>
-                                        }/>
+                        return (
+                            <React.Fragment>
+                                <CardHeader title={generateLabel(issue)}
+                                            subheader={this.props.subheader ? generateIssueSubHeader(issue) : ""}
+                                            action={
+                                                <div>
+                                                    {issue.verified ?
+                                                        <img className="verifiedBadge" src="/verified_badge.png"
+                                                             alt="verifiziert" height="35"/> : null}
+                                                    <EditButton item={data.issue}/>
+                                                </div>
+                                            }/>
 
-                            <CardContent className="cardContent">
-                                <Variants us={us} issue={data.issue}/>
+                                <CardContent className="cardContent">
+                                    <Variants us={us} issue={data.issue}/>
 
-                                <div className="details">
-                                    <DetailsTable issue={issue} details={props.details} us={us}/>
-                                    <Cover issue={issue}/>
-                                </div>
+                                    <div className="details">
+                                        <DetailsTable issue={issue} details={this.props.details} us={us}/>
+                                        <Cover issue={issue}/>
+                                    </div>
 
-                                {props.bottom ?
-                                    React.cloneElement(props.bottom, {
-                                        selected: data.issue,
-                                        issue: data.issue,
-                                        us: us
-                                    }) :
-                                    null}
-                            </CardContent>
-                        </React.Fragment>
-                    );
-                }}
-            </Query>
-        </Layout>
-    );
+                                    {this.props.bottom ?
+                                        React.cloneElement(this.props.bottom, {
+                                            selected: data.issue,
+                                            issue: data.issue,
+                                            us: us
+                                        }) :
+                                        null}
+                                </CardContent>
+                            </React.Fragment>
+                        );
+                    }}
+                </Query>
+            </Layout>
+        );
+    }
 }
 
 function DetailsTable(props) {
@@ -123,6 +126,7 @@ class Cover extends React.Component {
                     image={coverUrl}
                     title={generateLabel(issue)}
                     className="media"
+                    style={{width: '45vh'}}
                     onClick={() => this.triggerIsOpen()}/>
 
                 <Lightbox
@@ -180,6 +184,8 @@ function ContainsItem(props) {
 }
 
 export function ContainsTitleSimple(props) {
+    let smallChip = props.mobile || props.mobileLandscape || ((props.tablet || props.tabletLandscape) && props.drawerOpen);
+
     return (
         <div className={props.simple ? "storyTitle storyTitleSimple" : "storyTitle"}>
             <div className="headingContainer">
@@ -192,7 +198,7 @@ export function ContainsTitleSimple(props) {
             <div className="chips">
                 {
                     props.us && props.item.children.length === 0 ?
-                        !(props.mobile || props.mobileLandscape) ?
+                        !smallChip ?
                             <Chip className="chip" label="Nicht auf deutsch erschienen" color="default"/>
                             : <Chip className="chip" label="n/a" color="default"/>
                         : null
@@ -208,6 +214,8 @@ export function ContainsTitleDetailed(props) {
         issue.number = issue.issue.number;
         issue.series = issue.issue.series;
     }
+
+    let smallChip = props.mobile || props.mobileLandscape || ((props.tablet || props.tabletLandscape) && props.drawerOpen);
 
     let exclusive = props.item.exclusive && !props.us;
     let variant = (!props.us && issue.variant && issue.variant !== '') ? ' [' + issue.variant + ']' : '';
@@ -225,7 +233,7 @@ export function ContainsTitleDetailed(props) {
             <div className="chips">
                 {
                     props.item.url && props.item.number === 0 ?
-                        !(props.mobile || props.mobileLandscape) ?
+                        !smallChip ?
                             <Chip className="chip" label="Cover" color="default"/>
                             : <Chip className="chip" label="C" color="default"/>
                         : null
@@ -233,7 +241,7 @@ export function ContainsTitleDetailed(props) {
 
                 {
                     props.item.onlyapp && props.item.parent ?
-                        !(props.mobile || props.mobileLandscape) ?
+                        !smallChip ?
                             <Chip className="chip" label="Einzige Ausgabe" color="secondary"
                                   icon={<PriorityHighIcon/>}/>
                             : <Chip className="chip" label={<PriorityHighIcon className="
@@ -245,14 +253,14 @@ export function ContainsTitleDetailed(props) {
                 {
                     props.item.firstapp && props.item.parent ?
                         <Chip className="chip"
-                              label={!(props.mobile || props.mobileLandscape) ? "Erstausgabe" : "1."}
+                              label={!smallChip ? "Erstausgabe" : "1."}
                               color="primary"/>
                         : null
                 }
 
                 {
                     exclusive ?
-                        !(props.mobile || props.mobileLandscape) ?
+                        !smallChip ?
                             <Chip className="chip" label="Exklusiv" color="secondary"
                                   icon={<PriorityHighIcon/>}/>
                             : <Chip className="chip" label={<PriorityHighIcon className="

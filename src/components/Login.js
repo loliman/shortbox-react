@@ -64,18 +64,18 @@ function Login(props) {
                                         component={TextField}
                                     />
                                     <div id="loginButtons">
-                                    <Button disabled={isSubmitting}
-                                            component={Link}
-                                            to={props.lastLocation ? props.lastLocation : "/"}
-                                            color="secondary">
-                                        Abbrechen
-                                    </Button>
-                                    <Button
-                                        disabled={isSubmitting}
-                                        onClick={submitForm}
-                                        color="primary">
-                                        Login
-                                    </Button>
+                                        <Button disabled={isSubmitting}
+                                                component={Link}
+                                                to={props.lastLocation ? props.lastLocation : "/"}
+                                                color="secondary">
+                                            Abbrechen
+                                        </Button>
+                                        <Button
+                                            disabled={isSubmitting}
+                                            onClick={submitForm}
+                                            color="primary">
+                                            Login
+                                        </Button>
                                     </div>
                                 </CardContent>
                             </Card>

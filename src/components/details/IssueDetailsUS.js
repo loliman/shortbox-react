@@ -61,7 +61,7 @@ function Bottom(props) {
             <br/>
             <br/>
 
-            <Typography className="copyright">
+            <Typography className="spanLink">
                 Informationen über&nbsp;
                 <a href={generateMarvelDbUrl(props.issue)} rel="noopener noreferrer nofollow"
                    target="_blank">{generateLabel(props.issue.series) + " #" + props.issue.number}</a>
@@ -72,6 +72,8 @@ function Bottom(props) {
                 <a href="https://creativecommons.org/licenses/by/3.0/de/" rel="noopener noreferrer nofollow"
                    target="_blank">Creative Commons License 3.0</a>
             </Typography>
+
+            <br/>
         </React.Fragment>
     );
 }

@@ -74,6 +74,9 @@ function Bottom(props) {
                       noEntriesHint="Dieser Ausgabe sind noch keine Cover zugeordnet."
                       items={props.issue.covers} itemTitle={<ContainsTitleDetailed {...props}/>}
                       itemDetails={<CoverDetails/>}/>
+
+            <br />
+            <br />
         </React.Fragment>
     );
 }
