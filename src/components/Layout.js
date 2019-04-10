@@ -43,7 +43,7 @@ class Layout extends React.Component {
                     <Typography>
                         <span className="spanLink"
                               onClick={() => this.props.history.push("/contact")}>Kontakt/Fehler melden
-                            {!this.props.isMobile ? "" : "/Unterstützen"}
+                            {!this.props.mobile || this.props.mobileLandscape ? "/Unterstützen" : ""}
                         </span>|
                         <span className="spanLink"
                               onClick={() => this.props.history.push("/impress")}>Impressum</span>|

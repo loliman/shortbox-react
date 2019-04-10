@@ -35,7 +35,7 @@
 
 #main {
     display: flex;
-    height: 90vh;
+    height: calc(100vh - 89px);
     justify-content: flex-end;
 }
 
@@ -80,6 +80,7 @@
 }
 
 #footer {
+    height: 20px;
     display: flex;
     flex-direction: row-reverse;
     padding-top: 3px;
@@ -177,7 +178,7 @@
 */
 @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
     #main {
-        height: 88vh !important;
+        height: calc(100vh - 155px);
     }
 
     #drawer {
@@ -219,7 +220,7 @@
 */
 @media (min-width: 861px) and (max-width: 1024px) and (orientation: landscape) {
     #main {
-        height: 84vh !important;
+        height: calc(100vh - 155px);
     }
 
     #drawer {
@@ -257,7 +258,7 @@
 */
 @media (min-width: 768px) and (max-width: 861px) and (orientation: landscape) {
     #main {
-        height: 62vh !important;
+        height: calc(100vh - 145px);
     }
 
     #drawer {
@@ -299,7 +300,7 @@
 */
 @media (min-width: 481px) and (max-width: 767px) and (orientation: landscape) {
     #main {
-        height: 10.5vh !important;
+        height: calc(100vh - 145px);
     }
 
     #drawer {
@@ -327,7 +328,7 @@
 */
 @media (min-width: 320px) and (max-width: 480px) and (orientation: portrait) {
     #main {
-        height: 81.5vh !important;
+        height: calc(100vh - 135px);
     }
 
     .drawer-open {
