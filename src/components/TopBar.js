@@ -100,9 +100,9 @@ function BreadCrumbMenu(props) {
         default:
             return (
                 <React.Fragment>
-                    <BreadCrumbLink to={generateUrl(selected.issue.series, us)}
+                    <BreadCrumbLink to={generateUrl(selected.issue, us)}
                                     label={<KeyboardArrowLeftIcon className="navArrow navArrowLeft"/>} {...props}/>
-                    <BreadCrumbLabel label={generateLabel(selected.issue)}/>
+                    <BreadCrumbLabel label={generateLabel(selected.issue) + " #" + selected.issue.number}/>
                 </React.Fragment>
             );
     }
@@ -137,13 +137,19 @@ function BreadCrumbMenuMobile(props) {
         default:
             return (
                 <React.Fragment>
-                    <BreadCrumbLink to={us ? "/us" : "/de"} label="Shortbox" {...props}/>
-                    <KeyboardArrowRightIcon className="navArrow"/>
-                    <BreadCrumbLink to={generateUrl(selected.issue.series, us)}
-                                    label={generateLabel(selected.issue.series)}
-                                    {...props}/>
-                    <KeyboardArrowRightIcon className="navArrow"/>
-                    <BreadCrumbLabel label={generateLabel(selected.issue)}/>
+                    <React.Fragment>
+                        <BreadCrumbLink to={us ? "/us" : "/de"} label="Shortbox" {...props}/>
+                        <KeyboardArrowRightIcon className="navArrow"/>
+                        <BreadCrumbLink to={generateUrl(selected.issue.series, us)}
+                                        label={generateLabel(selected.issue.series)}
+                                        {...props}/>
+                        <KeyboardArrowRightIcon className="navArrow"/>
+                        <BreadCrumbLink to={generateUrl(selected.issue, us)}
+                                        label={generateLabel(selected.issue)}
+                                        {...props}/>
+                        <KeyboardArrowRightIcon className="navArrow"/>
+                        <BreadCrumbLabel label={"#" + selected.issue.number}/>
+                    </React.Fragment>
                 </React.Fragment>
             );
     }
