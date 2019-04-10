@@ -1,6 +1,6 @@
 import React from 'react';
 import Select from 'react-select';
-import {FastField} from "formik";
+import {Field} from "formik";
 import Paper from "@material-ui/core/Paper/Paper";
 import MenuItem from "@material-ui/core/MenuItem/MenuItem";
 import {Query} from "react-apollo";
@@ -12,10 +12,6 @@ import AutosizeInput from "react-input-autosize";
 import CreatableSelect from 'react-select/lib/Creatable';
 
 class AutoComplete extends React.Component {
-    shouldComponentUpdate(nextProps, nextState, nextContext) {
-        return JSON.stringify(this.props.variables) !== JSON.stringify(nextProps.variables);
-    }
-
     render() {
         const {query, variables, onChange} = this.props;
         let {disabled, label, nameField} = this.props;
@@ -31,7 +27,7 @@ class AutoComplete extends React.Component {
                 {({loading, error, data}) => {
                     let options = data[query.definitions[0].name.value.toLowerCase()];
 
-                    return <FastField {...this.props}
+                    return <Field {...this.props}
                                   component={AutoCompleteContainer}
                                   options={options}
                                   label={label}
@@ -92,7 +88,7 @@ class AutoCompleteContainer extends React.Component {
             isSearchable: true,
             isClearable: true,
             isDisabled: this.props.disabled,
-            isLoading: this.props.loading,
+            isLoading: false,
             hideSelectedOptions: true,
 
             placeholder: (!this.props.loadingError ? 'Bitte wählen...' : 'Fehler!'),

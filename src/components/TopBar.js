@@ -102,7 +102,7 @@ function BreadCrumbMenu(props) {
                 <React.Fragment>
                     <BreadCrumbLink to={generateUrl(selected.issue, us)}
                                     label={<KeyboardArrowLeftIcon className="navArrow navArrowLeft"/>} {...props}/>
-                    <BreadCrumbLabel label={generateLabel(selected.issue) + " #" + selected.issue.number}/>
+                    <BreadCrumbLabel label={"#" + selected.issue.number}/>
                 </React.Fragment>
             );
     }
