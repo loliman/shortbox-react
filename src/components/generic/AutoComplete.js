@@ -51,7 +51,6 @@ class AutoCompleteContainer extends React.Component {
     }
 
     render() {
-        console.log("render");
         let error = this.checkObj(this.props.form.errors, this.props.field.name);
         let touched = this.checkObj(this.props.form.touched, this.props.field.name);
 
