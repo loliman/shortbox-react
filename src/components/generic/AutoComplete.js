@@ -43,7 +43,15 @@ class AutoComplete extends React.Component {
 }
 
 class AutoCompleteContainer extends React.Component {
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        return JSON.stringify(this.props.field.value) !== JSON.stringify(nextProps.field.value) ||
+            JSON.stringify(this.props.options) !== JSON.stringify(nextProps.options) ||
+            this.props.disabled !== nextProps.disabled ||
+            this.props.loadingError !== nextProps.loadingError;
+    }
+
     render() {
+        console.log("render");
         let error = this.checkObj(this.props.form.errors, this.props.field.name);
         let touched = this.checkObj(this.props.form.touched, this.props.field.name);
 
