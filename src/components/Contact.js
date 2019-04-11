@@ -13,10 +13,10 @@ function Contact(props) {
             <CardContent className="cardContent">
                 <Typography>
                     Shortbox.de ist eine Eigenentwicklung von mir und wird ausschließlich von mir weiterentwickelt.
-                    Da ich Shortbox.de in meiner Freizeit entwickle und nur in einem kleinem Personenkreis teste werden
+                    Da ich Shortbox.de in meiner Freizeit entwickle und nur in einem kleinen Personenkreis teste, werden
                     hier und da Fehler auftauchen. Zwar versuche ich vor jedem neuen Release alle noch so kleinen Fehler
                     zu finden und zu beheben, aber wie jeder weiß: Es gibt keine Software ohne Fehler.<br/>
-                    Solltet ihr einen Fehler finden oder Vorschläge zur Verbesserung haben meldet euch bitte per Mail
+                    Solltet ihr einen Fehler finden oder Vorschläge zur Verbesserung haben, meldet euch bitte per Mail
                     bei mir. <br />
                     Schreibt dazu bitte eine Mail mit dem Betreff <b>[Shortbox]</b> und einer kurzen Beschreibung des
                     Fehlers/des Vorschlags an <a href='mailto:christian.riese@gmail.com'>christian.riese@gmail.com</a>.<br/>
