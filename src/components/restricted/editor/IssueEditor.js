@@ -473,6 +473,7 @@ class IssueEditor extends React.Component {
                                                 nameField="name"
                                                 label="Editor"
                                                 isMulti
+                                                creatable
                                                 onChange={(option) => setFieldValue("editors", option)}
                                                 style={{
                                                     width: this.props.desktop ? "35.7%" : "100%"
@@ -651,6 +652,17 @@ function StoryFields(props) {
     );
 }
 
+function generateSeriesLabelWithYears(series) {
+    let label = generateLabel(series);
+    label += " (" + series.startyear + " - ";
+    if(series.endyear === 0)
+        label += "...";
+    else
+        label = series.endyear;
+    label += ")";
+    return label;
+}
+
 function StoryFieldsNonExclusive(props) {
     const {index, setFieldValue} = props;
 
@@ -672,7 +684,7 @@ function StoryFieldsNonExclusive(props) {
                     style={{
                         width: props.desktop ? "40%" : "99%"
                     }}
-                    generateLabel={generateLabel}
+                    generateLabel={generateSeriesLabelWithYears}
                 />
 
             <FastField
@@ -937,7 +949,7 @@ function CoverFieldsNonExclusive(props) {
                 style={{
                     width: props.desktop ? "40%" : "99%"
                 }}
-                generateLabel={generateLabel}
+                generateLabel={generateSeriesLabelWithYears}
             />
 
             <FastField

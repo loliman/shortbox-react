@@ -69,10 +69,13 @@ class SeriesEditor extends React.Component {
                       update={(cache, result) => {
                           let res = result.data[mutationName];
 
+                          let newSeries = JSON.parse(JSON.stringify(res));
+                          newSeries.publisher.us = this.props.us;
+
                           try {
                               let publisher = res.publisher;
                               publisher.us = undefined;
-                              addToCache(cache, series, stripItem(wrapItem(publisher)), res);
+                              addToCache(cache, series, stripItem(wrapItem(publisher)), newSeries);
                           } catch (e) {
                               //ignore cache exception;
                           }
@@ -89,7 +92,7 @@ class SeriesEditor extends React.Component {
                                       publisher: publisher
                                   };
 
-                                  updateInCache(cache, seriesd, {series: series}, defaultValues, {seriesd: res});
+                                  updateInCache(cache, seriesd, {series: series}, defaultValues, {seriesd: newSeries});
                               } catch (e) {
                                 //ignore cache exception;
                               }

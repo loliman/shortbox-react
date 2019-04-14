@@ -80,7 +80,7 @@ class PublisherEditor extends React.Component {
                               }
 
                               try {
-                                updateInCache(cache, publishers, {us: res.us}, defaultValues, {publisher: res});
+                                updateInCache(cache, publishers, {us: res.us}, defaultValues, res);
                               } catch (e) {
                                   //ignore cache exception;
                               }

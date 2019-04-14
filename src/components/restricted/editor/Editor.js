@@ -7,7 +7,7 @@ export function addToCache(cache, query, variables, item) {
 
     data[queryName].push(item);
     data[queryName].sort((a, b) => {
-        return compare(a, b) === 0;
+        return compare(a, b);
     });
 
     cache.writeQuery({
@@ -40,7 +40,7 @@ export function updateInCache(cache, query, variables, update, item) {
         variables: variables
     });
 
-    if(data.length) {
+    if(data[queryName].length) {
         data[queryName].find((e, i) => {
             let found = compare(e, update) === 0;
             if(found)
