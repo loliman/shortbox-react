@@ -656,12 +656,16 @@ function StoryFields(props) {
 
 function generateSeriesLabelWithYears(series) {
     let label = generateLabel(series);
-    label += " (" + series.startyear + " - ";
-    if(series.endyear === 0)
-        label += "...";
-    else
-        label += series.endyear;
-    label += ")";
+
+    if(series.startyear) {
+        label += " (" + series.startyear + " - ";
+        if(series.endyear === 0)
+            label += "...";
+        else
+            label += series.endyear;
+        label += ")";
+    }
+
     return label;
 }
 
