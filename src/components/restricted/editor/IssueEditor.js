@@ -660,7 +660,7 @@ function generateSeriesLabelWithYears(series) {
     if(series.endyear === 0)
         label += "...";
     else
-        label = series.endyear;
+        label += series.endyear;
     label += ")";
     return label;
 }
