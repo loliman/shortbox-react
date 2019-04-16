@@ -331,7 +331,9 @@ class IssueEditor extends React.Component {
                                         name="series.title"
                                         label="Serie"
                                         onChange={(option) => {
-                                            setFieldValue("series", option ? option : {title: '', volume: '', publisher: {name : values.series.publisher.name, us: values.series.publisher.us}})
+                                            setFieldValue("series", option ?
+                                                {title: option.title, volume: option.volume, publisher: {name : values.series.publisher.name, us: values.series.publisher.us}} :
+                                                {title: '', volume: '', publisher: {name : values.series.publisher.name, us: values.series.publisher.us}})
                                         }}
                                         style={{
                                             width: this.props.desktop ? "25.7%" : "73.3%"
