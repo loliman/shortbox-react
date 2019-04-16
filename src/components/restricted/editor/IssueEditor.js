@@ -1083,14 +1083,14 @@ const storyDefault = {
         issue: {
             series: {
                 title: '',
-                volume: 0,
+                volume: 1,
                 publisher: {
                     name: ''
                 },
             },
             number: 0
         },
-        number: 0
+        number: 1
     },
     translators: [],
     writers: [],
@@ -1115,7 +1115,7 @@ const coverDefault = {
         issue: {
             series: {
                 title: '',
-                volume: 0,
+                volume: 1,
                 publisher: {
                     name: ''
                 },
