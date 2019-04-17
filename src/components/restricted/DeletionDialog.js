@@ -95,8 +95,8 @@ function DeletionDialog(props) {
 
                               handleClose();
                           }}
-                          onError={() => {
-                              enqueueSnackbar(generateLabel(item) + " konnte nicht gelöscht werden", {variant: 'error'});
+                          onError={(errors) => {
+                              enqueueSnackbar(generateLabel(item) + " konnte nicht gelöscht werden [" + errors[0].message + "]", {variant: 'error'});
                               handleClose();
                           }}>
                     {(deleteMutation) => (

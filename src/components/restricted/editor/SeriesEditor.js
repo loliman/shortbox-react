@@ -108,8 +108,8 @@ class SeriesEditor extends React.Component {
                           enqueueSnackbar(generateLabel(data[mutationName]) + successMessage, {variant: 'success'});
                           history.push(generateUrl(data[mutationName], data[mutationName].publisher.us));
                       }}
-                      onError={() => {
-                          enqueueSnackbar(errorMessage, {variant: 'error'});
+                      onError={(errors) => {
+                          enqueueSnackbar(errorMessage + ' [' + errors[0].message + ']', {variant: 'error'});
                       }}>
                 {(mutation, {error}) => (
                     <Formik

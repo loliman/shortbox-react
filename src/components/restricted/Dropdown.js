@@ -146,8 +146,8 @@ function VerifyMenuItem(props) {
                   onCompleted={(data) => {
                       props.enqueueSnackbar(generateLabel(item) + " erfolgreich " + (item.verified ? "falsifiziert" : "verifiziert"), {variant: 'success'});
                   }}
-                  onError={() => {
-                      props.enqueueSnackbar("Ausgabe konnte nicht " + (item.verified ? "falsifiziert" : "verifiziert") + " werden", {variant: 'error'});
+                  onError={(errors) => {
+                      props.enqueueSnackbar("Ausgabe konnte nicht " + (item.verified ? "falsifiziert" : "verifiziert") + " werden [" + errors[0].message + "]", {variant: 'error'});
                   }}>
             {(verifyIssue, {error}) => (
                 <MenuItem key="verify" onClick={() => {
