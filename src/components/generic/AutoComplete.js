@@ -10,8 +10,15 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import TextField from "@material-ui/core/TextField";
 import AutosizeInput from "react-input-autosize";
 import CreatableSelect from 'react-select/lib/Creatable';
+import matchSorter from "match-sorter";
 
 class AutoComplete extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {options: null};
+    }
+
     render() {
         const {query, variables, onChange} = this.props;
         let {disabled, label, nameField} = this.props;
@@ -25,7 +32,16 @@ class AutoComplete extends React.Component {
             <Query query={query}
                    variables={variables}>
                 {({loading, error, data}) => {
-                    let options = data[query.definitions[0].name.value.toLowerCase()];
+                    let optionsFromQuery = data[query.definitions[0].name.value.toLowerCase()];
+
+                    let options;
+                    if(this.state.options)
+                        options = this.state.options;
+                    else
+                        options = optionsFromQuery;
+
+                    if(options)
+                        options = options.slice(0, 25);
 
                     return <Field {...this.props}
                                   component={AutoCompleteContainer}
@@ -35,6 +51,10 @@ class AutoComplete extends React.Component {
                                   loadingError={error}
                                   disabled={disabled}
                                   onChange={onChange}
+                                  onChangeValue={(value) => {
+                                      let newOptions = matchSorter(optionsFromQuery, value, {keys: [nameField]});
+                                      this.setState({options: newOptions});
+                                  }}
                                   loading={!disabled && loading}/>;
                 }}
             </Query>
@@ -79,6 +99,10 @@ class AutoCompleteContainer extends React.Component {
             onChange: (option) => {
                 this.props.onChange(option)
             },
+            onChangeValue: (value) => {
+                this.props.onChangeValue(value);
+            },
+            filterOption: false,
 
             getOptionValue: (option) => {
                 return option[this.props.nameField];
@@ -107,47 +131,47 @@ class AutoCompleteContainer extends React.Component {
                 {
                     !this.props.creatable ?
                         <Select {...props}
-                            onBlur={this.props.field.onBlur}
-                            value={
-                                this.props.field.value !== '' && this.props.options ?
-                                    this.props.options.find(option => {
-                                        if(option[this.props.nameField] && this.props.field.value)
-                                            return option[this.props.nameField].toLowerCase() === this.props.field.value.toLowerCase();
-                                        else
-                                           return false;
-                                    }) : ''
-                            }
-                            noOptionsMessage={() => 'Keine Einträge gefunden'}
+                                onBlur={this.props.field.onBlur}
+                                value={
+                                    this.props.field.value !== '' && this.props.options ?
+                                        this.props.options.find(option => {
+                                            if(option[this.props.nameField] && this.props.field.value)
+                                                return option[this.props.nameField].toLowerCase() === this.props.field.value.toLowerCase();
+                                            else
+                                                return false;
+                                        }) : ''
+                                }
+                                noOptionsMessage={() => 'Keine Einträge gefunden'}
                         /> :
                         <CreatableSelect {...props}
                             /*
                             I don't know why, but the onBlur method seems to destroy the Series object.
                             But we don't need validation in that case anyways, so let's just ignore it.
                              */
-                            onBlur={this.props.isMulti ? this.props.field.onBlur : false}
-                            value={this.props.field.value}
-                            isMulti={this.props.isMulti}
-                            isValidNewOption={(value) => {
-                                let isNew = false;
-                                if(value !== '' && this.props.options) {
-                                    let option = this.props.options.find(option => {
-                                        if(option[this.props.nameField] && value)
-                                            return option[this.props.nameField].toLowerCase() === value.toLowerCase();
-                                        else
-                                            return false;
-                                    });
+                                         onBlur={this.props.isMulti ? this.props.field.onBlur : false}
+                                         value={this.props.field.value}
+                                         isMulti={this.props.isMulti}
+                                         isValidNewOption={(value) => {
+                                             let isNew = false;
+                                             if(value !== '' && this.props.options) {
+                                                 let option = this.props.options.find(option => {
+                                                     if(option[this.props.nameField] && value)
+                                                         return option[this.props.nameField].toLowerCase() === value.toLowerCase();
+                                                     else
+                                                         return false;
+                                                 });
 
-                                    if(!option) isNew = true;
-                                }
+                                                 if(!option) isNew = true;
+                                             }
 
-                                return isNew;
-                            }}
-                            getNewOptionData={(value) => {
-                                let newOption = {};
-                                newOption[this.props.nameField] = value;
-                                newOption.__typename = typename;
-                                return newOption;
-                            }}
+                                             return isNew;
+                                         }}
+                                         getNewOptionData={(value) => {
+                                             let newOption = {};
+                                             newOption[this.props.nameField] = value;
+                                             newOption.__typename = typename;
+                                             return newOption;
+                                         }}
                         />
                 }
 
@@ -199,23 +223,30 @@ function inputComponent({ inputRef, ...props }) {
     return <div ref={inputRef} {...props}/>;
 }
 
-function Control(props) {
-    return (
-        <TextField
-            error={props.selectProps.error && props.selectProps.touched}
-            fullWidth
-            InputProps={{
-                inputComponent,
-                inputProps: {
-                    className: "autoSuggestField",
-                    inputRef: props.innerRef,
-                    children: props.children,
-                    ...props.innerProps,
-                },
-            }}
-            {...props.selectProps.textFieldProps}
-        />
-    );
+class Control extends React.Component {
+    componentWillUpdate(nextProps, nextState, nextContext) {
+        if(nextProps.selectProps.inputValue !== this.props.selectProps.inputValue)
+            this.props.selectProps.onChangeValue(nextProps.selectProps.inputValue)
+    }
+
+    render() {
+        return (
+            <TextField
+                error={this.props.selectProps.error && this.props.selectProps.touched}
+                fullWidth
+                InputProps={{
+                    inputComponent,
+                    inputProps: {
+                        className: "autoSuggestField",
+                        inputRef: this.props.innerRef,
+                        children: this.props.children,
+                        ...this.props.innerProps,
+                    },
+                }}
+                {...this.props.selectProps.textFieldProps}
+            />
+        );
+    }
 }
 
 function Option(props) {

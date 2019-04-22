@@ -151,7 +151,7 @@ class IssueEditor extends React.Component {
                           history.push(generateUrl(data[mutationName], data[mutationName].series.publisher.us));
                       }}
                       onError={(errors) => {
-                          enqueueSnackbar(errorMessage + ' [' + errors[0].message + ']', {variant: 'error'});
+                          enqueueSnackbar(errorMessage + ' [' + errors.graphQLErrors[0].message + ']', {variant: 'error'});
                       }}>
                 {(mutation, {error}) => (
                     <Formik
