@@ -17,6 +17,7 @@
     "debounce": "^1.2.0",
     "es6-promise": "^4.2.6",
     "expand-tilde": "^2.0.2",
+    "fork-ts-checker-webpack-plugin-alt": "^0.4.14",
     "formik": "^1.5.1",
     "formik-material-ui": "0.0.16",
     "graphql": "^14.1.1",
