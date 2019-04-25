@@ -15,7 +15,7 @@ function SeriesEdit(props) {
             <Query query={seriesd} variables={selected}>
                 {({loading, error, data}) => {
                     if (loading || error || !data.seriesd)
-                        return <QueryResult loading={loading} error={error} data={data.seriesd} selected={selected}/>;
+                        return <QueryResult loading={loading} error={error} data={data ? data.seriesd : null} selected={selected}/>;
 
                     return (
                         <SeriesEditor edit

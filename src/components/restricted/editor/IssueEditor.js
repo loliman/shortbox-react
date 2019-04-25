@@ -54,7 +54,7 @@ class IssueEditor extends React.Component {
                 limitation: 0,
                 pages: 0,
                 releasedate: '1900-01-01',
-                price: '',
+                price: '0',
                 currency: currencies[0],
                 editors: [],
                 addinfo: '',
@@ -151,7 +151,8 @@ class IssueEditor extends React.Component {
                           history.push(generateUrl(data[mutationName], data[mutationName].series.publisher.us));
                       }}
                       onError={(errors) => {
-                          enqueueSnackbar(errorMessage + ' [' + errors.graphQLErrors[0].message + ']', {variant: 'error'});
+                          let message = (errors.graphQLErrors && errors.graphQLErrors.length > 0) ? ' [' + errors.graphQLErrors[0].message + ']' : '';
+                          enqueueSnackbar(errorMessage + message, {variant: 'error'});
                       }}>
                 {(mutation, {error}) => (
                     <Formik
@@ -1124,7 +1125,7 @@ const coverDefault = {
                     name: ''
                 },
             },
-            number: 0,
+            number: '0',
             variant: ''
         },
         number: 0

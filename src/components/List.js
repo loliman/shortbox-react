@@ -47,8 +47,14 @@ class List extends React.Component {
                         <Query query={query}
                                variables={selected}>
                             {({loading, error, data}) => {
-                                if (loading || error || !data[queryName])
+                                if (loading || error || !data[queryName]) {
+                                    if(error && error.message.indexOf("400") !== -1 && this.props.session) {
+                                        this.props.enqueueSnackbar("Deine Session ist abgelaufen oder ungültig, du wirst ausgeloggt.", {variant: 'warning'});
+                                        this.props.handleLogout();
+                                    }
+
                                     return <QueryResult loading={loading} error={error} />;
+                                }
 
                                 if (data[queryName].length === 0)
                                     return <NoEntries />;
@@ -72,7 +78,9 @@ function TypeListEntry(props) {
 
     let label = generateLabel(item);
     if(level === HierarchyLevel.SERIES || level === HierarchyLevel.ISSUE) {
-        if(item.title && item.title !== '')
+        if(level === HierarchyLevel.ISSUE && us)
+            label = '#' + item.number + ' ' + item.series.title;
+        else if(item.title && item.title !== '')
             label = '#' + item.number + ' ' + item.title;
         else
             label = '#' + item.number + ' ' + item.series.title;

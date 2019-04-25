@@ -52,8 +52,10 @@ class AutoComplete extends React.Component {
                                   disabled={disabled}
                                   onChange={onChange}
                                   onChangeValue={(value) => {
-                                      let newOptions = matchSorter(optionsFromQuery, value, {keys: [nameField]});
-                                      this.setState({options: newOptions});
+                                      if(optionsFromQuery) {
+                                          let newOptions = matchSorter(optionsFromQuery, value, {keys: [nameField]});
+                                          this.setState({options: newOptions});
+                                      }
                                   }}
                                   loading={!disabled && loading}/>;
                 }}
@@ -119,7 +121,7 @@ class AutoCompleteContainer extends React.Component {
             isSearchable: true,
             isClearable: true,
             isDisabled: this.props.disabled,
-            isLoading: false,
+            isLoading: this.props.loading,
             hideSelectedOptions: true,
 
             placeholder: (!this.props.loadingError ? 'Bitte wählen...' : 'Fehler!'),

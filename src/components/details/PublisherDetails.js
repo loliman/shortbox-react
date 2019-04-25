@@ -18,7 +18,7 @@ function PublisherDetails(props) {
             <Query query={publisher} variables={selected}>
                 {({loading, error, data}) => {
                     if (loading || error || !data.publisher)
-                        return <QueryResult loading={loading} error={error} data={data.publisher} selected={selected}/>;
+                        return <QueryResult loading={loading} error={error} data={data ? data.publisher : null} selected={selected}/>;
 
                     return (
                         <React.Fragment>

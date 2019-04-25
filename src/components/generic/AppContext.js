@@ -74,6 +74,7 @@ class AppContextProvider extends React.Component {
 
     handleLogout = () => {
         this.props.cookies.remove('session');
+        window.location.reload();
     };
 
 

@@ -196,7 +196,10 @@ function LogOut(props) {
                           handleLogout();
                       }
                   }}
-                  onError={(errors) => enqueueSnackbar("Logout fehlgeschlagen [" + errors.graphQLErrors[0].message + "]", {variant: 'error'})}
+                  onError={(errors) => {
+                      let message = (errors.graphQLErrors && errors.graphQLErrors.length > 0) ? ' [' + errors.graphQLErrors[0].message + ']' : '';
+                      enqueueSnackbar("Logout fehlgeschlagen" + message, {variant: 'error'});
+                  }}
                   ignoreResults>
             {(logout) => (
                 <Button color="secondary" onClick={() => {

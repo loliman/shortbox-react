@@ -21,7 +21,8 @@ function Login(props) {
                       props.history.push(props.lastLocation ? props.lastLocation : "/");
                   }}
                   onError={(errors) => {
-                      props.enqueueSnackbar("Login fehlgeschlagen [" + errors.graphQLErrors[0].message + "]", {variant: 'error'});
+                      let message = (errors.graphQLErrors && errors.graphQLErrors.length > 0) ? ' [' + errors.graphQLErrors[0].message + ']' : '';
+                      props.enqueueSnackbar("Login fehlgeschlagen" + message, {variant: 'error'});
                   }}>
             {(login) => (
                 <Formik

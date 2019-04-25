@@ -96,7 +96,8 @@ function DeletionDialog(props) {
                               handleClose();
                           }}
                           onError={(errors) => {
-                              enqueueSnackbar(generateLabel(item) + " konnte nicht gelöscht werden [" + errors.graphQLErrors[0].message + "]", {variant: 'error'});
+                              let message = (errors.graphQLErrors && errors.graphQLErrors.length > 0) ? ' [' + errors.graphQLErrors[0].message + ']' : '';
+                              enqueueSnackbar(generateLabel(item) + " konnte nicht gelöscht werden" + message, {variant: 'error'});
                               handleClose();
                           }}>
                     {(deleteMutation) => (
