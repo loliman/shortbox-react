@@ -73,7 +73,7 @@ class SeriesEditor extends React.Component {
                           newSeries.publisher.us = this.props.us;
 
                           try {
-                              let publisher = res.publisher;
+                              let publisher = JSON.parse(JSON.stringify(res.publisher));
                               publisher.us = undefined;
                               addToCache(cache, series, stripItem(wrapItem(publisher)), newSeries);
                           } catch (e) {

@@ -628,6 +628,7 @@ function StoryFields(props) {
                 <FastField
                     className="field field3"
                     name={"stories[" + props.index + "].number"}
+                    disabled={props.disabled}
                     label="#"
                     type="number"
                     component={TextField}
@@ -636,6 +637,7 @@ function StoryFields(props) {
                 <FastField
                     className={props.desktop ? "field field35" : "field field95"}
                     name={"stories[" + props.index + "].title"}
+                    disabled={props.disabled}
                     label="Titel"
                     component={TextField}
                 />
@@ -643,6 +645,7 @@ function StoryFields(props) {
                 <FastField
                     className={props.desktop ? "field field35" : "field field100"}
                     name={"stories[" + props.index + "].addinfo"}
+                    disabled={props.disabled}
                     label="Weitere Informationen"
                     component={TextField}
                 />
@@ -745,6 +748,7 @@ function StoryFieldsExclusive(props) {
                     name={"stories[" + index + "].writers"}
                     nameField="name"
                     label="Autor"
+                    disabled={props.disabled}
                     isMulti
                     creatable
                     onChange={(option) => setFieldValue("stories[" + index + "].writers", option)}
@@ -758,6 +762,7 @@ function StoryFieldsExclusive(props) {
                     name={"stories[" + index + "].pencilers"}
                     nameField="name"
                     label="Zeichner"
+                    disabled={props.disabled}
                     isMulti
                     creatable
                     onChange={(option) => setFieldValue("stories[" + index + "].pencilers", option)}
@@ -772,6 +777,7 @@ function StoryFieldsExclusive(props) {
                     nameField="name"
                     label="Inker"
                     isMulti
+                    disabled={props.disabled}
                     creatable
                     onChange={(option) => setFieldValue("stories[" + index + "].inkers", option)}
                     style={{
@@ -786,6 +792,7 @@ function StoryFieldsExclusive(props) {
                     name={"stories[" + index + "].colourists"}
                     nameField="name"
                     label="Kolorist"
+                    disabled={props.disabled}
                     isMulti
                     creatable
                     onChange={(option) => setFieldValue("stories[" + index + "].colourists", option)}
@@ -799,6 +806,7 @@ function StoryFieldsExclusive(props) {
                     name={"stories[" + index + "].letterers"}
                     nameField="name"
                     label="Letterer"
+                    disabled={props.disabled}
                     isMulti
                     creatable
                     onChange={(option) => setFieldValue("stories[" + index + "].letterers", option)}
@@ -812,6 +820,7 @@ function StoryFieldsExclusive(props) {
                     name={"stories[" + index + "].editors"}
                     nameField="name"
                     label="Editor"
+                    disabled={props.disabled}
                     isMulti
                     creatable
                     onChange={(option) => setFieldValue("stories[" + index + "].editors", option)}
@@ -916,6 +925,7 @@ function CoverFields(props) {
                         className="field field3"
                         name={"covers[" + props.index + "].number"}
                         label="#"
+                        disabled={props.disabled}
                         type="number"
                         component={TextField}
                     />
@@ -924,6 +934,7 @@ function CoverFields(props) {
                     className={props.desktop ? "field field75" : "field field95"}
                     name={"covers[" + props.index + "].addinfo"}
                     label="Weitere Informationen"
+                    disabled={props.disabled}
                     component={TextField}
                 />
 
@@ -996,6 +1007,7 @@ function CoverFieldsExclusive(props) {
                 label="Artist"
                 isMulti
                 creatable
+                disabled={props.disabled}
                 onChange={(option) => setFieldValue("covers[" + index + "].artists", option)}
                 style={{
                     width: props.desktop ? "40%" : "99%"
@@ -1015,7 +1027,8 @@ function Contains(props) {
 
 class ContainsItem extends React.Component {
     shouldComponentUpdate(nextProps, nextState, nextContext) {
-        return JSON.stringify(this.props.item) !== JSON.stringify(nextProps.item);
+        return JSON.stringify(this.props.item) !== JSON.stringify(nextProps.item) ||
+            JSON.stringify(this.props.items) !== JSON.stringify(nextProps.items);
     }
 
     render() {
@@ -1027,7 +1040,8 @@ class ContainsItem extends React.Component {
                 <ExpansionPanel className="storyAddPanel" key={this.props.index} expanded={true}>
                     <ExpansionPanelSummary className="storyAdd">
                         {React.cloneElement(this.props.fields, {
-                            ...this.props
+                            ...this.props,
+                            disabled: this.props.item.children && this.props.item.children.length > 0
                         })}
                     </ExpansionPanelSummary>
                 </ExpansionPanel>
@@ -1055,7 +1069,7 @@ function RemoveContainsButton(props) {
     return (
         <IconButton disabled={props.disabled} className="removeBtn" aria-label="Entfernen"
                     onClick={() => {
-                        let items = props.items.filter((e, i) => i !== props.index);
+                        let items = props.items.filter(e => JSON.stringify(e) !== JSON.stringify(props.item));
                         props.setFieldValue(props.type, items, true);
                     }}>
             <DeleteIcon/>
@@ -1095,7 +1109,7 @@ const storyDefault = {
             },
             number: 0
         },
-        number: 1
+        number: 0
     },
     translators: [],
     writers: [],
