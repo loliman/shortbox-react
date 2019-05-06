@@ -8,7 +8,6 @@ import IssueDetails, {
     DetailsRow
 } from "./IssueDetails";
 import {toIndividualList} from "../../util/util";
-import Paper from "@material-ui/core/Paper/Paper";
 
 var dateFormat = require('dateformat');
 
