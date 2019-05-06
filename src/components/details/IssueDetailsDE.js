@@ -40,17 +40,6 @@ function Details(props) {
 function Bottom(props) {
     return (
         <React.Fragment>
-            {
-                props.issue.addinfo && props.issue.addinfo !== "" ?
-                    <React.Fragment>
-                        <br/>
-                        <Paper className="detailsPaper">
-                            <Typography dangerouslySetInnerHTML={{__html: props.issue.addinfo}} />
-                        </Paper>
-                    </React.Fragment>:
-                    null
-            }
-
             <br/>
             <br/>
 
