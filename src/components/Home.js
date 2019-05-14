@@ -24,7 +24,7 @@ function Home(props) {
                     Alle auf Shortbox.de gelisteten Informationen unterliegen der&nbsp;
                         <a href="https://creativecommons.org/licenses/by/3.0/de/" rel="noopener noreferrer nofollow"
                            target="_blank">Creative Commons License 3.0</a> und stehen somit, unter Angabe der Quelle,
-                        jedem zu freien und kostenlosen Verfügung.
+                        jedem zur freien und kostenlosen Verfügung.
                 </Typography>
 
                 <br />

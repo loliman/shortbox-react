@@ -110,7 +110,10 @@ export function generateLabel(item) {
         let year;
 
         if (item.series.startyear)
-            year = ' (' + item.series.startyear + ' - ' + ((!item.series.endyear || item.series.endyear === 0) ? '...' : item.series.endyear) + ')';
+            if(item.series.startyear === item.series.endyear)
+                year = ' (' + item.series.startyear + ')';
+            else
+                year = ' (' + item.series.startyear + ' - ' + ((!item.series.endyear || item.series.endyear === 0) ? '...' : item.series.endyear) + ')';
 
         return item.series.title + (item.series.publisher ? ' (Vol. ' + romanize(item.series.volume) + ')' : '') + (year ? year : "");
     }
