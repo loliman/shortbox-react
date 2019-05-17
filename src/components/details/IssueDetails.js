@@ -218,7 +218,7 @@ export function ContainsTitleSimple(props) {
                 }
 
                 {
-                    !props.item.onlytb && !props.item.parent ?
+                    props.item.onlytb && !props.item.parent ?
                         <Chip className="chip"
                               label={!smallChip ? "Nur in Taschenbuch" : "TB"}
                               color="primary"/>
