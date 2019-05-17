@@ -8,7 +8,6 @@ import IssueDetails, {
     DetailsRow
 } from "./IssueDetails";
 import {toIndividualList} from "../../util/util";
-import Paper from "@material-ui/core/Paper/Paper";
 
 var dateFormat = require('dateformat');
 
@@ -40,17 +39,6 @@ function Details(props) {
 function Bottom(props) {
     return (
         <React.Fragment>
-            {
-                props.issue.addinfo && props.issue.addinfo !== "" ?
-                    <React.Fragment>
-                        <br/>
-                        <Paper className="detailsPaper">
-                            <Typography dangerouslySetInnerHTML={{__html: props.issue.addinfo}} />
-                        </Paper>
-                    </React.Fragment>:
-                    null
-            }
-
             <br/>
             <br/>
 

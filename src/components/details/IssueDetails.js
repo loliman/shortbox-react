@@ -66,13 +66,26 @@ class IssueDetails extends React.Component {
                                         <Cover issue={issue}/>
                                     </div>
 
-                                    {this.props.bottom ?
-                                        React.cloneElement(this.props.bottom, {
-                                            selected: data.issue,
-                                            issue: data.issue,
-                                            us: us
-                                        }) :
-                                        null}
+                                    {
+                                        data.issue.addinfo && data.issue.addinfo !== "" ?
+                                            <React.Fragment>
+                                                <br/>
+                                                <Paper className="detailsPaper">
+                                                    <Typography dangerouslySetInnerHTML={{__html: data.issue.addinfo}} />
+                                                </Paper>
+                                            </React.Fragment> :
+                                            null
+                                    }
+
+                                    {
+                                        this.props.bottom ?
+                                            React.cloneElement(this.props.bottom, {
+                                                selected: data.issue,
+                                                issue: data.issue,
+                                                us: us
+                                            }) :
+                                            null
+                                    }
                                 </CardContent>
                             </React.Fragment>
                         );
