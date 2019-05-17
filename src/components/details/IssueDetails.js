@@ -203,6 +203,14 @@ export function ContainsTitleSimple(props) {
                             : <Chip className="chip" label="n/a" color="default"/>
                         : null
                 }
+
+                {
+                    !props.item.onlytb && !props.item.parent ?
+                        <Chip className="chip"
+                              label={!smallChip ? "Nur in Taschenbuch" : "TB"}
+                              color="primary"/>
+                        : null
+                }
             </div>
         </div>
     )
@@ -255,6 +263,14 @@ export function ContainsTitleDetailed(props) {
                         <Chip className="chip"
                               label={!smallChip ? "Erstausgabe" : "1."}
                               color="primary"/>
+                        : null
+                }
+
+                {
+                    props.item.onlytb && props.item.parent ?
+                        <Chip className="chip"
+                              label={!smallChip ? "Sonst nur in Taschenbuch" : "TB"}
+                              color="default"/>
                         : null
                 }
 

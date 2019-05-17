@@ -121,7 +121,6 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
             title,
             addinfo,
             number,
-            ,
             children {
                 issue {
                     number,
@@ -198,6 +197,7 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
 			},
 			onlyapp,
             firstapp,
+            onlytb,
             exclusive
         },
         covers {
