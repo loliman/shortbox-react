@@ -1,6 +1,14 @@
 import gql from "graphql-tag";
 import {HierarchyLevel} from "../util/hierarchy";
 
+const search = gql`query Nodes($pattern: String!, $us: Boolean!){
+    nodes(pattern: $pattern, us: $us) {
+        type,
+        label,
+        url
+    }
+}`;
+
 const publishers = gql`query Publishers($us: Boolean!){
     publishers(us: $us) {
         name,
@@ -282,5 +290,5 @@ function getListQuery(level) {
 }
 
 export {getListQuery,
-    publisher, seriesd, issue,
+    publisher, seriesd, issue, search,
     publishers, series, issues, individuals};

@@ -16,6 +16,9 @@ import Hamburger from 'react-hamburgers';
 import Link from "react-router-dom/es/Link";
 import {withContext} from "./generic";
 import IconButton from "@material-ui/core/IconButton";
+import {search} from "../graphql/queries";
+import AutoComplete from "./generic/AutoComplete";
+import {Form, Formik} from "formik";
 
 function TopBar(props) {
     const {drawerOpen, toogleDrawer, us, history, session, mobile, mobileLandscape} = props;
@@ -48,6 +51,36 @@ function TopBar(props) {
                     }
                 </Typography>
                 <div className="grow"/>
+
+                <div id="headerSearch">
+                    <Formik initialValues={{pattern: ""}}
+                            onSubmit={false}>
+                        {({values, setFieldValue}) => {
+                            return (
+                                <Form>
+                                    <AutoComplete
+                                        query={search}
+                                        liveSearch
+                                        name="pattern"
+                                        variables={{pattern: values.pattern, us: us}}
+                                        label="Suchen..."
+                                        onChange={(node, live) => {
+                                            if(live)
+                                                setFieldValue("pattern", node);
+                                            else
+                                                history.push(node.url, us);
+                                        }}
+                                        style={{
+                                            width: "100%"
+                                        }}
+                                        generateLabel={(node) => node.label}
+                                    />
+                                </Form>
+                            );
+                        }}
+                    </Formik>
+                </div>
+
                 <div id="headerRight">
                     <FormControlLabel
                         className="switch"

@@ -13,6 +13,11 @@
     flex-shrink: 0;
 }
 
+#headerSearch {
+    flex-shrink: 0;
+    width: 25%;
+}
+
 .appTitle {
     flex-shrink: 1;
     padding-left: 15px;

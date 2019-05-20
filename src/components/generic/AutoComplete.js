@@ -52,7 +52,9 @@ class AutoComplete extends React.Component {
                                   disabled={disabled}
                                   onChange={onChange}
                                   onChangeValue={(value) => {
-                                      if(optionsFromQuery) {
+                                      if(this.props.liveSearch)
+                                          this.props.onChange(value, true);
+                                      else if(optionsFromQuery) {
                                           let newOptions = matchSorter(optionsFromQuery, value, {keys: [nameField]});
                                           this.setState({options: newOptions});
                                       }
