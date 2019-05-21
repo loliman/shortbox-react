@@ -11,6 +11,8 @@ import TextField from "@material-ui/core/TextField";
 import AutosizeInput from "react-input-autosize";
 import CreatableSelect from 'react-select/lib/Creatable';
 import matchSorter from "match-sorter";
+import debounceRender from 'react-debounce-render';
+import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 
 class AutoComplete extends React.Component {
     constructor(props) {
@@ -70,6 +72,7 @@ class AutoCompleteContainer extends React.Component {
     shouldComponentUpdate(nextProps, nextState, nextContext) {
         return JSON.stringify(this.props.field.value) !== JSON.stringify(nextProps.field.value) ||
             JSON.stringify(this.props.options) !== JSON.stringify(nextProps.options) ||
+            this.props.loading !== nextProps.loading ||
             this.props.disabled !== nextProps.disabled ||
             this.props.loadingError !== nextProps.loadingError;
     }
@@ -92,6 +95,7 @@ class AutoCompleteContainer extends React.Component {
             error: error,
             touched: touched,
             textFieldProps: {
+                variant: this.props.variant,
                 label: this.props.label,
                 InputLabelProps: {
                     shrink: true,
@@ -99,7 +103,7 @@ class AutoCompleteContainer extends React.Component {
                 }
             },
 
-            options: this.props.options,
+            options: this.props.loading ? [] : this.props.options,
             onChange: (option) => {
                 this.props.onChange(option)
             },
@@ -126,7 +130,9 @@ class AutoCompleteContainer extends React.Component {
             isLoading: this.props.loading,
             hideSelectedOptions: true,
 
-            placeholder: (!this.props.loadingError ? 'Bitte wählen...' : 'Fehler!'),
+            loadingMessage: () => 'Lade...',
+            dropdownIcon: this.props.dropdownIcon,
+            placeholder: (!this.props.loadingError ? this.props.placeholder ? this.props.placeholder : 'Bitte wählen...' : 'Fehler!'),
             components: components
         };
 
@@ -135,7 +141,9 @@ class AutoCompleteContainer extends React.Component {
                 {
                     !this.props.creatable ?
                         <Select {...props}
-                                onBlur={this.props.field.onBlur}
+                                onBlur={(e) => {
+                                    this.props.field.onBlur(e);
+                                }}
                                 value={
                                     this.props.field.value !== '' && this.props.options ?
                                         this.props.options.find(option => {
@@ -145,7 +153,7 @@ class AutoCompleteContainer extends React.Component {
                                                 return false;
                                         }) : ''
                                 }
-                                noOptionsMessage={() => 'Keine Einträge gefunden'}
+                                noOptionsMessage={() => 'Keine Ergebnisse gefunden'}
                         /> :
                         <CreatableSelect {...props}
                             /*
@@ -211,6 +219,18 @@ class AutoCompleteContainer extends React.Component {
     };
 }
 
+function LoadingMessage(props) {
+    return (
+        <Typography
+            color="textSecondary"
+            className="noOptionsMessage"
+            {...props.innerProps}
+        >
+            {props.children}
+        </Typography>
+    );
+}
+
 function NoOptionsMessage(props) {
     return (
         <Typography
@@ -254,6 +274,16 @@ class Control extends React.Component {
 }
 
 function Option(props) {
+    let regex = new RegExp("(?<=!!)(.*)(?=!!)");
+    let thick = regex.exec(props.children);
+    let label = props.children;
+
+    if(thick && thick.length > 0) {
+        let thickString = thick[0];
+        thick = (<Typography variant={"caption"} className="searchCaption">{thickString}</Typography>);
+        label = label.replace("!!" + thickString + "!!", "");
+    }
+
     return (
         <MenuItem
             buttonRef={props.innerRef}
@@ -261,10 +291,14 @@ function Option(props) {
             component="div"
             style={{
                 fontWeight: props.isSelected ? 500 : 400,
+                padding: 5
             }}
             {...props.innerProps}
         >
-            {props.children}
+            {thick}
+            <Typography title={label} noWrap={true}>
+                {label}
+            </Typography>
         </MenuItem>
     );
 }
@@ -283,9 +317,19 @@ function Placeholder(props) {
 }
 
 function SingleValue(props) {
+    let regex = new RegExp("(?<=!!)(.*)(?=!!)");
+    let thick = regex.exec(props.children);
+    let label = props.children;
+
+    if(thick && thick.length > 0) {
+        let thickString = thick[0];
+        thick = (<Typography variant={"caption"} className="searchCaption">{thickString}</Typography>);
+        label = label.replace("!!" + thickString + "!!", "");
+    }
+
     return (
         <Typography className="singleValue" {...props.innerProps}>
-            {props.children}
+            {label}
         </Typography>
     );
 }
@@ -341,6 +385,20 @@ function Menu(props) {
     );
 }
 
+function DropdownIndicator(props) {
+    let icon = <KeyboardArrowDownIcon />;
+    if(props.selectProps.dropdownIcon)
+        icon = props.selectProps.dropdownIcon;
+
+
+    return (
+        <div className="dropdownIndicator"
+            {...props.innerProps}>
+            {icon}
+        </div>
+    )
+}
+
 const components = {
     Control,
     Menu,
@@ -350,7 +408,9 @@ const components = {
     Placeholder,
     SingleValue,
     ValueContainer,
-    Input
+    Input,
+    DropdownIndicator,
+    LoadingMessage
 };
 
-export default AutoComplete;
+export default debounceRender(AutoComplete, 500, { leading: false });

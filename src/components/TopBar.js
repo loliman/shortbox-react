@@ -19,6 +19,7 @@ import IconButton from "@material-ui/core/IconButton";
 import {search} from "../graphql/queries";
 import AutoComplete from "./generic/AutoComplete";
 import {Form, Formik} from "formik";
+import SearchIcon from '@material-ui/icons/Search';
 
 function TopBar(props) {
     const {drawerOpen, toogleDrawer, us, history, session, mobile, mobileLandscape} = props;
@@ -55,25 +56,33 @@ function TopBar(props) {
                 <div id="headerSearch">
                     <Formik initialValues={{pattern: ""}}
                             onSubmit={false}>
-                        {({values, setFieldValue}) => {
+                        {({values, setFieldValue, resetForm}) => {
                             return (
                                 <Form>
                                     <AutoComplete
                                         query={search}
                                         liveSearch
                                         name="pattern"
+                                        placeholder="Suchen..."
+                                        variant="outlined"
                                         variables={{pattern: values.pattern, us: us}}
-                                        label="Suchen..."
                                         onChange={(node, live) => {
+                                            if(!node)
+                                                return;
+
                                             if(live)
                                                 setFieldValue("pattern", node);
-                                            else
+                                            else {
+                                                setFieldValue("pattern", node.label);
                                                 history.push(node.url, us);
+                                            }
+
                                         }}
+                                        dropdownIcon={<SearchIcon />}
                                         style={{
                                             width: "100%"
                                         }}
-                                        generateLabel={(node) => node.label}
+                                        generateLabel={(node) => getNodeType(node) + node.label}
                                     />
                                 </Form>
                             );
@@ -138,6 +147,17 @@ function BreadCrumbMenu(props) {
                     <BreadCrumbLabel label={"#" + selected.issue.number}/>
                 </React.Fragment>
             );
+    }
+}
+
+function getNodeType(node) {
+    switch (node.type) {
+        case "Publisher":
+            return "!!Verlag!!";
+        case "Series":
+            return "!!Serie!!";
+        default:
+            return "!!Ausgabe!!";
     }
 }
 
