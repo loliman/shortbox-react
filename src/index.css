@@ -36,6 +36,36 @@
     -o-transition: all 0.1s ease;
 }
 
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    #headerRight {
+        flex: inherit;
+    }
+
+    #headerLeft {
+        flex: inherit;
+    }
+}
+
+@supports (-ms-accelerator:true) {
+    #headerRight {
+        flex: inherit;
+    }
+
+    #headerLeft {
+        flex: inherit;
+    }
+}
+
+@supports (-ms-ime-align:auto) {
+    #headerRight {
+        flex: inherit;
+    }
+
+    #headerLeft {
+        flex: inherit;
+    }
+}
+
 #headerSearch {
     order: 2;
     flex: 0.1;
