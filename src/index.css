@@ -67,6 +67,7 @@
 }
 
 #headerSearch {
+    max-width: 100%;
     order: 2;
     flex: 0.1;
     margin-left: auto;
