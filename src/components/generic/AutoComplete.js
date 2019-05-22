@@ -132,7 +132,7 @@ class AutoCompleteContainer extends React.Component {
 
             loadingMessage: () => 'Lade...',
             dropdownIcon: this.props.dropdownIcon,
-            placeholder: (!this.props.loadingError ? this.props.placeholder ? this.props.placeholder : 'Bitte wählen...' : 'Fehler!'),
+            placeholder: (!this.props.loadingError ? this.props.placeholder ? this.props.placeholder.trim() : 'Bitte wählen...' : 'Fehler!'),
             components: components
         };
 
@@ -389,7 +389,6 @@ function DropdownIndicator(props) {
     let icon = <KeyboardArrowDownIcon />;
     if(props.selectProps.dropdownIcon)
         icon = props.selectProps.dropdownIcon;
-
 
     return (
         <div className="dropdownIndicator"

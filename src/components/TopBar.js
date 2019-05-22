@@ -22,37 +22,13 @@ import {Form, Formik} from "formik";
 import SearchIcon from '@material-ui/icons/Search';
 
 function TopBar(props) {
-    const {drawerOpen, toogleDrawer, us, history, session, mobile, mobileLandscape} = props;
+    const {drawerOpen, toogleDrawer, us, history, session, tablet, tableLandscape, mobile, mobileLandscape} = props;
 
     let isIE = /*@cc_on!@*/false || !!document.documentMode;
 
     return (
         <AppBar position="sticky" id="header">
-            <Toolbar>
-                {
-                    isIE ?
-                        <IconButton
-                            color="inherit"
-                            onClick={() => toogleDrawer()}
-                            className="menuButton"
-                        >
-                            <MenuIcon />
-                        </IconButton> :
-                        <Hamburger
-                            active={drawerOpen}
-                            type="slider"
-                            onClick={() => toogleDrawer()}/>
-                }
-
-                <Typography variant="h6" color="inherit" className="appTitle" noWrap>
-                    {
-                        (mobile && !mobileLandscape) ?
-                            <BreadCrumbMenu {...props} /> :
-                            <BreadCrumbMenuMobile {...props} />
-                    }
-                </Typography>
-                <div className="grow"/>
-
+            <Toolbar id="toolbar">
                 <div id="headerSearch">
                     <Formik initialValues={{pattern: ""}}
                             onSubmit={false}>
@@ -63,7 +39,7 @@ function TopBar(props) {
                                         query={search}
                                         liveSearch
                                         name="pattern"
-                                        placeholder="Suchen..."
+                                        placeholder={mobile || mobileLandscape ? " " : "Suchen..."}
                                         variant="outlined"
                                         variables={{pattern: values.pattern, us: us}}
                                         onChange={(node, live) => {
@@ -73,7 +49,11 @@ function TopBar(props) {
                                             if(live)
                                                 setFieldValue("pattern", node);
                                             else {
-                                                setFieldValue("pattern", node.label);
+                                                setFieldValue("pattern", "");
+                                                window.focus();
+                                                if (document.activeElement) {
+                                                    document.activeElement.blur();
+                                                }
                                                 history.push(node.url, us);
                                             }
 
@@ -88,6 +68,31 @@ function TopBar(props) {
                             );
                         }}
                     </Formik>
+                </div>
+
+                <div id="headerLeft">
+                    {
+                        isIE ?
+                            <IconButton
+                                color="inherit"
+                                onClick={() => toogleDrawer()}
+                                className="menuButton"
+                            >
+                                <MenuIcon />
+                            </IconButton> :
+                            <Hamburger
+                                active={drawerOpen}
+                                type="slider"
+                                onClick={() => toogleDrawer()}/>
+                    }
+
+                    <Typography variant="h6" color="inherit" className="appTitle" noWrap>
+                        {
+                            (mobile && !mobileLandscape) ?
+                                <BreadCrumbMenu {...props} /> :
+                                <BreadCrumbMenuMobile {...props} />
+                        }
+                    </Typography>
                 </div>
 
                 <div id="headerRight">

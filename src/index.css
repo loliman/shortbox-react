@@ -4,28 +4,64 @@
     flex-direction: column;
 }
 
-#header > div {
+#toolbar {
+    justify-content: space-between;
     display: flex;
-    flex-shrink: 0;
+    height: 1px;
+}
+
+#headerLeft {
+    order: 1;
+    flex: 1;
+    opacity: 1;
+    overflow: hidden;
+    min-width: auto;
+    max-width: fit-content;
+    transition:all 0.1s ease;
+    -webkit-transition: all 0.1s ease;
+    -moz-transition: all 0.1s ease;
+    -o-transition: all 0.1s ease;
 }
 
 #headerRight {
-    flex-shrink: 0;
+    order: 3;
+    flex: 1;
+    opacity: 1;
+    overflow: hidden;
+    min-width: fit-content;
+    max-width: fit-content;
+    transition:all 0.1s ease;
+    -webkit-transition: all 0.1s ease;
+    -moz-transition: all 0.1s ease;
+    -o-transition: all 0.1s ease;
 }
 
 #headerSearch {
-    flex-shrink: 0;
-    width: 12%;
-    margin-right: 20px;
+    order: 2;
+    flex: 0.1;
+    margin-left: auto;
+    padding-right: 20px;
     margin-bottom: 8px;
-    -webkit-transition: all 0.3s ease 0s;
-    -moz-transition: all 0.3s ease 0s;
-    -o-transition: all 0.3s ease 0s;
-    transition: all 0.3s ease 0s;
+    transition:flex 0.3s ease;
+    -webkit-transition: flex 0.3s ease;
+    -moz-transition: flex 0.3s ease;
+    -o-transition: flex 0.3s ease;
+}
+
+#headerSearch svg {
+    width: 1em;
+    height: 1em;
 }
 
 #headerSearch:focus-within {
-    width: 35%;
+    flex: 1;
+    padding-right: 0;
+}
+
+#headerSearch:focus-within ~ div {
+    min-width: 0;
+    flex: 0;
+    opacity: 0;
 }
 
 #headerSearch fieldset {
@@ -44,8 +80,6 @@
 
 #headerSearch .paper {
     border-radius: 4px;
-    width: 99%;
-    margin-left: 0.5%;
 }
 
 .searchCaption {
@@ -67,8 +101,11 @@
 
 .appTitle {
     flex-shrink: 1;
+    padding-top: 10px;
     padding-left: 15px;
     padding-right: 15px;
+    float: right;
+    max-width: calc(100% - 32px);
 }
 
 .appTitle > a {
@@ -205,6 +242,10 @@
         margin-top: 6px !important;
         margin-left: auto !important;
     }
+
+    #headerSearch:hover:not(:focus-within){
+        flex: 0.3;
+    }
 }
 
 /*
@@ -221,6 +262,10 @@
     .exclusiveToggle {
         margin-top: 6px !important;
         margin-left: -14px !important;
+    }
+
+    #headerSearch:hover and #headerSearch:not(:focus-within){
+        flex: 0.3;
     }
 }
 
@@ -332,6 +377,27 @@
         max-width: 53vw;
     }
 
+    #headerSearch {
+        padding-right: 10px;
+    }
+
+    #headerSearch fieldset {
+        background: transparent;
+        border: none;
+    }
+
+    #headerSearch .dropdownIndicator {
+        color: white;
+    }
+
+    #headerSearch:focus-within fieldset {
+        background: white;
+    }
+
+    #headerSearch:focus-within .dropdownIndicator {
+        color: gray;
+    }
+
     .storyAdd > :first-child {
         display: block !important;
     }
@@ -357,6 +423,27 @@
 
     #drawer {
         width: 40% !important;
+    }
+
+    #headerSearch {
+        padding-right: 10px;
+    }
+
+    #headerSearch fieldset {
+        background: transparent;
+        border: none;
+    }
+
+    #headerSearch .dropdownIndicator {
+        color: white;
+    }
+
+    #headerSearch:focus-within fieldset {
+        background: white;
+    }
+
+    #headerSearch:focus-within .dropdownIndicator {
+        color: gray;
     }
 
     .issuePreview {
@@ -389,6 +476,27 @@
 
     #drawer > :last-child {
         width: 80%;
+    }
+
+    #headerSearch {
+        padding-right: 10px;
+    }
+
+    #headerSearch fieldset {
+        background: transparent;
+        border: none;
+    }
+
+    #headerSearch .dropdownIndicator {
+        color: white;
+    }
+
+    #headerSearch:focus-within fieldset {
+        background: white;
+    }
+
+    #headerSearch:focus-within .dropdownIndicator {
+        color: gray;
     }
 
     .issuePreview {
