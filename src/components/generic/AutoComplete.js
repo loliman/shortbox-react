@@ -274,12 +274,12 @@ class Control extends React.Component {
 }
 
 function Option(props) {
-    let regex = new RegExp("(?<=!!)(.*)(?=!!)");
+    let regex = new RegExp("!!\\w*!!");
     let thick = regex.exec(props.children);
     let label = props.children;
 
     if(thick && thick.length > 0) {
-        let thickString = thick[0];
+        let thickString = thick[0].substr(2, thick[0].length-4);
         thick = (<Typography variant={"caption"} className="searchCaption">{thickString}</Typography>);
         label = label.replace("!!" + thickString + "!!", "");
     }
