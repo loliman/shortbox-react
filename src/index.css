@@ -136,7 +136,7 @@
     padding-left: 15px;
     padding-right: 15px;
     float: right;
-    max-width: calc(100% - 32px);
+    max-width: calc(100% - 50px);
 }
 
 .appTitle > a {
@@ -313,6 +313,27 @@
         width: 40%;
     }
 
+    #headerSearch {
+        padding-right: 10px;
+    }
+
+    #headerSearch fieldset {
+        background: transparent;
+        border: none;
+    }
+
+    #headerSearch .dropdownIndicator {
+        color: white;
+    }
+
+    #headerSearch:focus-within fieldset {
+        background: white;
+    }
+
+    #headerSearch:focus-within .dropdownIndicator {
+        color: gray;
+    }
+
     .detailsPaper {
         max-width: 39vh;
     }
@@ -358,6 +379,27 @@
     .media {
         height: 35vh !important;
         width: 32.5vh !important;
+    }
+
+    #headerSearch {
+        padding-right: 10px;
+    }
+
+    #headerSearch fieldset {
+        background: transparent;
+        border: none;
+    }
+
+    #headerSearch .dropdownIndicator {
+        color: white;
+    }
+
+    #headerSearch:focus-within fieldset {
+        background: white;
+    }
+
+    #headerSearch:focus-within .dropdownIndicator {
+        color: gray;
     }
 
     .issuePreview {

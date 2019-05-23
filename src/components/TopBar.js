@@ -22,7 +22,7 @@ import {Form, Formik} from "formik";
 import SearchIcon from '@material-ui/icons/Search';
 
 function TopBar(props) {
-    const {drawerOpen, toogleDrawer, us, history, session, tablet, tableLandscape, mobile, mobileLandscape} = props;
+    const {drawerOpen, toogleDrawer, us, history, session, mobile, mobileLandscape} = props;
 
     let isIE = /*@cc_on!@*/false || !!document.documentMode;
 
@@ -39,7 +39,7 @@ function TopBar(props) {
                                         query={search}
                                         liveSearch
                                         name="pattern"
-                                        placeholder={mobile || mobileLandscape ? " " : "Suchen..."}
+                                        placeholder={mobile || mobileLandscape || tablet || tableLandscape ? " " : "Suchen..."}
                                         variant="outlined"
                                         variables={{pattern: values.pattern, us: us}}
                                         onChange={(node, live) => {
