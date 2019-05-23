@@ -22,7 +22,7 @@ import {Form, Formik} from "formik";
 import SearchIcon from '@material-ui/icons/Search';
 
 function TopBar(props) {
-    const {drawerOpen, toogleDrawer, us, history, session, mobile, mobileLandscape} = props;
+    const {drawerOpen, toogleDrawer, us, history, session, mobile, mobileLandscape, tablet, tableLandscape} = props;
 
     let isIE = /*@cc_on!@*/false || !!document.documentMode;
 
