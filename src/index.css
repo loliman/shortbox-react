@@ -379,8 +379,8 @@ body {
         height: calc(100vh - 64px);
     }
 
-    .MuiDrawer-paperAnchorLeft-161 {
-        width: 40% !important;
+    #drawer > :last-child {
+        width: 50%;
     }
 
     #headerSearch fieldset {
@@ -501,8 +501,8 @@ body {
         height: calc(100vh - 64px);
     }
 
-    .MuiDrawer-paperAnchorLeft-161 {
-        width: 40% !important;
+    #drawer > :last-child {
+        width: 60%;
     }
 
     .media {
@@ -574,8 +574,8 @@ body {
         height: calc(100vh - 64px);
     }
 
-    .MuiDrawer-paperAnchorLeft-161 {
-        width: 40% !important;
+    #drawer > :last-child {
+        width: 60%;
     }
 
     #headerSearch fieldset {
@@ -634,12 +634,12 @@ body {
         min-height: 56px !important;
     }
 
-    #main {
-        height: calc(100vh - 56px);
+    #drawer > :last-child {
+        width: 80%;
     }
 
-    .MuiDrawer-paperAnchorLeft-161 {
-        width: 80% !important;
+    #main {
+        height: calc(100vh - 56px);
     }
 
     #headerSearch fieldset {
