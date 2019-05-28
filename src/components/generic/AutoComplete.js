@@ -135,7 +135,7 @@ class AutoCompleteContainer extends React.Component {
             loadingMessage: () => 'Lade...',
             dropdownIcon: this.props.dropdownIcon,
             placeholder: (!this.props.loadingError ? this.props.placeholder ? this.props.placeholder.trim() : 'Bitte wählen...' : 'Fehler!'),
-            components: components
+            components: components,
         };
 
         return (
@@ -143,7 +143,13 @@ class AutoCompleteContainer extends React.Component {
                 {
                     !this.props.creatable ?
                         <Select {...props}
+                                onFocus={(e) => {
+                                    if(this.props.onFocus)
+                                        this.props.onFocus(e);
+                                }}
                                 onBlur={(e) => {
+                                    if(this.props.onBlur)
+                                        this.props.onBlur(e);
                                     this.props.field.onBlur(e);
                                 }}
                                 value={
@@ -162,30 +168,30 @@ class AutoCompleteContainer extends React.Component {
                             I don't know why, but the onBlur method seems to destroy the Series object.
                             But we don't need validation in that case anyways, so let's just ignore it.
                              */
-                                         onBlur={this.props.isMulti ? this.props.field.onBlur : false}
-                                         value={this.props.field.value}
-                                         isMulti={this.props.isMulti}
-                                         isValidNewOption={(value) => {
-                                             let isNew = false;
-                                             if(value !== '' && this.props.options) {
-                                                 let option = this.props.options.find(option => {
-                                                     if(option[this.props.nameField] && value)
-                                                         return option[this.props.nameField].toLowerCase() === value.toLowerCase();
-                                                     else
-                                                         return false;
-                                                 });
+                             onBlur={this.props.isMulti ? this.props.field.onBlur : false}
+                             value={this.props.field.value}
+                             isMulti={this.props.isMulti}
+                             isValidNewOption={(value) => {
+                                 let isNew = false;
+                                 if(value !== '' && this.props.options) {
+                                     let option = this.props.options.find(option => {
+                                         if(option[this.props.nameField] && value)
+                                             return option[this.props.nameField].toLowerCase() === value.toLowerCase();
+                                         else
+                                             return false;
+                                     });
 
-                                                 if(!option) isNew = true;
-                                             }
+                                     if(!option) isNew = true;
+                                 }
 
-                                             return isNew;
-                                         }}
-                                         getNewOptionData={(value) => {
-                                             let newOption = {};
-                                             newOption[this.props.nameField] = value;
-                                             newOption.__typename = typename;
-                                             return newOption;
-                                         }}
+                                 return isNew;
+                             }}
+                             getNewOptionData={(value) => {
+                                 let newOption = {};
+                                 newOption[this.props.nameField] = value;
+                                 newOption.__typename = typename;
+                                 return newOption;
+                             }}
                         />
                 }
 

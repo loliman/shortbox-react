@@ -11,100 +11,75 @@ import KeyboardArrowLeftIcon from "@material-ui/icons/KeyboardArrowLeft";
 import MenuIcon from "@material-ui/icons/Menu";
 import {withContext} from "./generic";
 import IconButton from "@material-ui/core/IconButton";
-import {search} from "../graphql/queries";
-import AutoComplete from "./generic/AutoComplete";
-import {Form, Formik} from "formik";
-import SearchIcon from '@material-ui/icons/Search';
+import SearchBar from "./SearchBar";
 
-function TopBar(props) {
-    const {drawerOpen, toogleDrawer, us, history, mobile, mobileLandscape, tablet, tabletLandscape} = props;
+class TopBar extends React.Component {
+    constructor(props) {
+        super(props);
 
-    return (
-        <AppBar position="sticky" id="header">
-            <Toolbar id="toolbar">
-                <div id="headerSearch">
-                    <Formik initialValues={{pattern: ""}}
-                            onSubmit={false}>
-                        {({values, setFieldValue}) => {
-                            return (
-                                <Form>
-                                    <AutoComplete
-                                        query={search}
-                                        liveSearch
-                                        name="pattern"
-                                        placeholder={mobile || (tablet && !tabletLandscape) ? " " : "Suchen"}
-                                        variant="outlined"
-                                        variables={{pattern: values.pattern, us: us}}
-                                        onChange={(node, live) => {
-                                            if(!node)
-                                                return;
+        this.state = {
+            searchbarFocus: false
+        };
+    }
 
-                                            if(live)
-                                                setFieldValue("pattern", node);
-                                            else {
-                                                setFieldValue("pattern", "");
-                                                window.focus();
-                                                if (document.activeElement) {
-                                                    document.activeElement.blur();
-                                                }
-                                                history.push(node.url, us);
-                                            }
+    render() {
+        const {toogleDrawer, us, history, mobile, mobileLandscape, tablet, tabletLandscape} = this.props;
 
+        return (
+            <AppBar position="sticky" id="header">
+                <Toolbar id="toolbar" className={(mobile || (tablet && !tabletLandscape)) && this.state.searchbarFocus ? "headerSearchFocusedToolbar" : ""}>
+                    <SearchBar focus={this.state.searchbarFocus} onFocus={this.onFocus}/>
+
+                    <div id="headerLeft">
+                        <IconButton
+                            color="inherit"
+                            onClick={() => toogleDrawer()}
+                            className="menuButton"
+                        >
+                            <MenuIcon />
+                        </IconButton>
+
+                        <img onClick={() => this.props.history.push("/")}
+                             id="logo" src="/android-icon-192x192.png" alt="Shortbox" height="40"/>
+                        <Typography variant="h6" color="inherit" className="appTitle" noWrap>
+                            {
+                                (mobile && !mobileLandscape) ?
+                                    <BreadCrumbMenu {...this.props} /> :
+                                    <BreadCrumbMenuMobile {...this.props} />
+                            }
+                        </Typography>
+                    </div>
+
+                    <div id="headerRight">
+                        <FormControlLabel
+                            id="us"
+                            className="switch"
+                            control={
+                                <Tooltip title={"Wechseln zu " + (us ? "Deutsch" : "US")}>
+                                    <Switch
+                                        checked={us}
+                                        onChange={() => {
+                                            history.push(us ? "/de" : "/us");
                                         }}
-                                        dropdownIcon={<SearchIcon />}
-                                        style={{
-                                            width: "100%"
-                                        }}
-                                        generateLabel={(node) => getNodeType(node) + node.label}
-                                    />
-                                </Form>
-                            );
-                        }}
-                    </Formik>
-                </div>
+                                        color="secondary"/>
+                                </Tooltip>
+                            }
+                            label="US"
+                        />
+                    </div>
+                </Toolbar>
 
-                <div id="headerLeft">
-                    <IconButton
-                        color="inherit"
-                        onClick={() => toogleDrawer()}
-                        className="menuButton"
-                    >
-                        <MenuIcon />
-                    </IconButton>
+                {
+                    (mobile || (tablet && !tabletLandscape)) ? <div id="searchOverlay" class={this.state.searchbarFocus ? "" : "searchOverlayHidden"} onClick={(e) => this.onFocus(e, false)}/> : null
+                }
+            </AppBar>
+        );
+    }
 
-                    <img onClick={() => props.history.push("/")}
-                         id="logo" src="/android-icon-192x192.png" alt="Shortbox" height="40"/>
-                    <Typography variant="h6" color="inherit" className="appTitle" noWrap>
-                        {
-                            (mobile && !mobileLandscape) ?
-                                <BreadCrumbMenu {...props} /> :
-                                <BreadCrumbMenuMobile {...props} />
-                        }
-                    </Typography>
-                </div>
-
-                <div id="headerRight">
-                    <FormControlLabel
-                        id="us"
-                        className="switch"
-                        control={
-                            <Tooltip title={"Wechseln zu " + (us ? "Deutsch" : "US")}>
-                                <Switch
-                                    checked={us}
-                                    onChange={() => {
-                                        history.push(us ? "/de" : "/us");
-                                        if(!drawerOpen && (!mobile || mobileLandscape))
-                                            toogleDrawer();
-                                    }}
-                                    color="secondary"/>
-                            </Tooltip>
-                        }
-                        label="US"
-                    />
-                </div>
-            </Toolbar>
-        </AppBar>
-    );
+    onFocus = (e, focus) => {
+        this.setState({searchbarFocus: focus});
+        if(e) e.preventDefault();
+    }
 }
 
 function BreadCrumbMenu(props) {
@@ -137,17 +112,6 @@ function BreadCrumbMenu(props) {
                     <BreadCrumbLabel label={"#" + selected.issue.number}/>
                 </React.Fragment>
             );
-    }
-}
-
-function getNodeType(node) {
-    switch (node.type) {
-        case "Publisher":
-            return "!!Verlag!!";
-        case "Series":
-            return "!!Serie!!";
-        default:
-            return "!!Ausgabe!!";
     }
 }
 
@@ -204,8 +168,6 @@ function BreadCrumbLink(props) {
             <span className="breadCrumbLink"
                   onClick={() => {
                       props.history.push(props.to);
-                      if (!props.drawerOpen && (!props.mobile || props.mobileLandscape))
-                          props.toogleDrawer();
                   }}>
                 {props.label}
             </span>
