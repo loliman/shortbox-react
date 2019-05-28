@@ -239,7 +239,7 @@ export function ContainsTitleDetailed(props) {
     let smallChip = props.mobile || props.mobileLandscape || ((props.tablet || props.tabletLandscape) && props.drawerOpen);
 
     let exclusive = props.item.exclusive && !props.us;
-    let variant = (!props.us && issue.variant && issue.variant !== '') ? ' [' + issue.variant + ']' : '';
+    let variant = (!props.us && issue.variant && issue.variant !== '') ? ' '+ issue.variant : '';
 
     return (
         <div className={props.simple ? "storyTitle storyTitleSimple" : "storyTitle"}>

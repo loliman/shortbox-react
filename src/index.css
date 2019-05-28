@@ -1,12 +1,24 @@
+body {
+    font-family: Roboto,Arial,sans-serif;
+    background: white !important;
+}
+
 #root {
     height: 100%;
     display: flex;
     flex-direction: column;
 }
 
+#logo {
+    align-self: center;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
 #toolbar {
     justify-content: space-between;
     display: flex;
+    padding: 10px;
     height: 1px;
 }
 
@@ -14,9 +26,11 @@
     order: 1;
     flex: 1;
     opacity: 1;
+    padding-right: 20px;
     overflow: hidden;
     min-width: auto;
     max-width: fit-content;
+    align-self: center;
     transition:all 0.1s ease;
     -webkit-transition: all 0.1s ease;
     -moz-transition: all 0.1s ease;
@@ -28,6 +42,8 @@
     order: 3;
     flex: 1;
     opacity: 1;
+    padding-left: 20px;
+    align-self: center;
     overflow: hidden;
     min-width: fit-content;
     max-width: fit-content;
@@ -73,9 +89,9 @@
     order: 2;
     flex: 0.1;
     margin-left: auto;
-    padding-right: 20px;
     margin-bottom: 8px;
     transition:flex 0.3s ease;
+    align-self: center;
     -webkit-transition: flex 0.3s ease;
     -moz-transition: flex 0.3s ease;
     -o-transition: flex 0.3s ease;
@@ -87,18 +103,23 @@
 }
 
 #headerSearch:focus-within {
-    flex: 1;
-    padding-right: 0;
+    flex: 0.5;
+}
+
+#headerSearch:focus-within fieldset {
+    background: white;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-bottom: -2px;
 }
 
 #headerSearch:focus-within ~ div {
     min-width: 0;
-    flex: 0;
-    opacity: 0;
+    flex: 0.5;
 }
 
 #headerSearch fieldset {
-    background: white;
+    background: #f1f3f4;
 }
 
 #headerSearch .autoSuggestField {
@@ -109,10 +130,6 @@
 
 #headerSearch .autoSuggestField :last-child span {
     background: transparent;
-}
-
-#headerSearch .paper {
-    border-radius: 4px;
 }
 
 .searchCaption {
@@ -133,15 +150,19 @@
 }
 
 .appTitle {
+    align-self: center;
     flex-shrink: 1;
-    padding-top: 10px;
     padding-left: 15px;
-    padding-right: 15px;
 }
 
 .appTitle > a {
     color: white;
     text-decoration: none;
+}
+
+.appTitle > span {
+    font-size: 22px;
+    font-family: Arial,sans-serif !important;
 }
 
 .appTitle > a:hover {
@@ -155,37 +176,43 @@
 
 #main {
     display: flex;
-    height: calc(100vh - 89px);
+    height: calc(100vh - 64px);
     justify-content: flex-end;
 }
 
 #drawer {
-    margin-right: 1px;
     width: 20%;
     transition: all 150ms ease-in-out !important;
     height: 100%;
-    box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 2px 1px -1px rgba(0,0,0,0.12);
+}
+
+#drawer > div {
+    border: none;
 }
 
 .drawer-close {
     width: 0 !important;
 }
 
-#drawer > div {
-    width: 100%;
-    position: inherit;
+#drawer > span {
+    font-family: Roboto,Arial,sans-serif !important;
 }
 
 #content {
-    box-shadow: 0px 1px 3px 0px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 2px 1px -1px rgba(0,0,0,0.12);
     height: 100%;
     flex-grow: 1;
 }
 
 #content > div {
-    overflow: auto;
+    overflow: scroll;
     height: 100%;
     box-shadow: none;
+    display: flex;
+    flex-direction: column;
+}
+
+#contentChildren {
+    flex-grow: 1;
 }
 
 .speedDialContainer {
@@ -200,16 +227,24 @@
 }
 
 #footer {
-    height: 20px;
+    max-height: fit-content;
+    margin-top: 7px;
+    margin-bottom: 7px;
     display: flex;
     flex-direction: row-reverse;
-    padding-top: 3px;
 }
+
 
 .spanLink {
     padding-left: 10px;
     padding-right: 10px;
-    color: blue;
+    color: darkgray;
+}
+
+.spanDif {
+    padding-left: 5px;
+    padding-right: 5px;
+    color: darkgray;
 }
 
 .spanLink:hover {
@@ -268,6 +303,11 @@
         max-width: 40vw;
     }
 
+    #drawer > div {
+        width: 100%;
+        position: inherit;
+    }
+
     .exclusiveToggle {
         float: right;
         margin-top: 6px !important;
@@ -275,7 +315,7 @@
     }
 
     #headerSearch:hover:not(:focus-within){
-        flex: 0.3;
+        flex: 0.11;
     }
 }
 
@@ -290,13 +330,18 @@
         max-width: 40vw;
     }
 
+    #drawer > div {
+        width: 100%;
+        position: inherit;
+    }
+
     .exclusiveToggle {
         margin-top: 6px !important;
         margin-left: -14px !important;
     }
 
     #headerSearch:hover and #headerSearch:not(:focus-within){
-        flex: 0.3;
+        flex: 0.11;
     }
 }
 
@@ -306,15 +351,16 @@
 */
 @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
     #main {
-        height: calc(100vh - 155px);
+        height: calc(100vh - 127px);
     }
 
-    #drawer {
-        width: 40%;
+    .MuiDrawer-paperAnchorLeft-161 {
+        width: 40% !important;
     }
 
-    #headerSearch {
-        padding-right: 10px;
+    .paper {
+        left: 0 !important;
+        right: 0 !important;
     }
 
     #headerSearch fieldset {
@@ -326,8 +372,23 @@
         color: white;
     }
 
+    #headerSearch:focus-within {
+        z-index: 1000;
+        position: absolute;
+        left: 0;
+        right: 0;
+        width: 100vw;
+        height: 64px;
+        background: white;
+    }
+
     #headerSearch:focus-within fieldset {
         background: white;
+    }
+
+    .paper {
+        top: 50px !important;
+        right: -4px !important;
     }
 
     #headerSearch:focus-within .dropdownIndicator {
@@ -369,37 +430,38 @@
 */
 @media (min-width: 861px) and (max-width: 1024px) and (orientation: landscape) {
     #main {
-        height: calc(100vh - 155px);
+        height: calc(100vh - 127px);
     }
 
     #drawer {
         width: 30%;
     }
 
-    .media {
-        height: 35vh !important;
-        width: 32.5vh !important;
+    #drawer > div {
+        width: 100%;
+        position: inherit;
     }
 
     #headerSearch {
-        padding-right: 10px;
+        max-width: 100%;
+        order: 2;
+        flex: 0.15;
+        margin-left: auto;
+        margin-bottom: 8px;
+        transition:flex 0.3s ease;
+        align-self: center;
+        -webkit-transition: flex 0.3s ease;
+        -moz-transition: flex 0.3s ease;
+        -o-transition: flex 0.3s ease;
     }
 
-    #headerSearch fieldset {
-        background: transparent;
-        border: none;
+    .paper {
+        left: 2px !important;
     }
 
-    #headerSearch .dropdownIndicator {
-        color: white;
-    }
-
-    #headerSearch:focus-within fieldset {
-        background: white;
-    }
-
-    #headerSearch:focus-within .dropdownIndicator {
-        color: gray;
+    .media {
+        height: 35vh !important;
+        width: 32.5vh !important;
     }
 
     .issuePreview {
@@ -428,11 +490,11 @@
 */
 @media (min-width: 768px) and (max-width: 861px) and (orientation: landscape) {
     #main {
-        height: calc(100vh - 145px);
+        height: calc(100vh - 120px);
     }
 
-    #drawer {
-        width: 30%;
+    .MuiDrawer-paperAnchorLeft-161 {
+        width: 40% !important;
     }
 
     .media {
@@ -450,10 +512,6 @@
         max-width: 53vw;
     }
 
-    #headerSearch {
-        padding-right: 10px;
-    }
-
     #headerSearch fieldset {
         background: transparent;
         border: none;
@@ -463,8 +521,23 @@
         color: white;
     }
 
+    #headerSearch:focus-within {
+        z-index: 1000;
+        position: absolute;
+        left: 0;
+        right: 0;
+        width: 100vw;
+        height: 64px;
+        background: white;
+    }
+
     #headerSearch:focus-within fieldset {
         background: white;
+    }
+
+    .paper {
+        top: 50px !important;
+        right: -4px !important;
     }
 
     #headerSearch:focus-within .dropdownIndicator {
@@ -491,15 +564,11 @@
 */
 @media (min-width: 481px) and (max-width: 767px) and (orientation: landscape) {
     #main {
-        height: calc(100vh - 145px);
+        height: calc(100vh - 120px);
     }
 
-    #drawer {
+    .MuiDrawer-paperAnchorLeft-161 {
         width: 40% !important;
-    }
-
-    #headerSearch {
-        padding-right: 10px;
     }
 
     #headerSearch fieldset {
@@ -511,8 +580,23 @@
         color: white;
     }
 
+    #headerSearch:focus-within {
+        z-index: 1000;
+        position: absolute;
+        left: 0;
+        right: 0;
+        width: 100vw;
+        height: 64px;
+        background: white;
+    }
+
     #headerSearch:focus-within fieldset {
         background: white;
+    }
+
+    .paper {
+        top: 50px !important;
+        right: -4px !important;
     }
 
     #headerSearch:focus-within .dropdownIndicator {
@@ -540,19 +624,11 @@
 */
 @media (min-width: 320px) and (max-width: 480px) and (orientation: portrait) {
     #main {
-        height: calc(100vh - 135px);
+        height: calc(100vh - 115px);
     }
 
-    .drawer-open {
-        padding-top: 20%;
-    }
-
-    #drawer > :last-child {
-        width: 80%;
-    }
-
-    #headerSearch {
-        padding-right: 10px;
+    .MuiDrawer-paperAnchorLeft-161 {
+        width: 80% !important;
     }
 
     #headerSearch fieldset {
@@ -564,8 +640,23 @@
         color: white;
     }
 
+    #headerSearch:focus-within {
+        z-index: 1000;
+        position: absolute;
+        left: 0;
+        right: 0;
+        width: 100vw;
+        height: 64px;
+        background: white;
+    }
+
     #headerSearch:focus-within fieldset {
         background: white;
+    }
+
+    .paper {
+        top: 50px !important;
+        right: -4px !important;
     }
 
     #headerSearch:focus-within .dropdownIndicator {
@@ -621,6 +712,10 @@
     padding-left: 5px;
 }
 
+#us {
+    z-index: 1;
+    align-self: center;
+}
 
 .switch span {
     font-weight: 500;
@@ -633,7 +728,6 @@
 }
 
 .scroll-horizontal {
-    overflow: auto !important;
     overflow-y: hidden !important;
     padding: 0;
     padding-top: 5px;
@@ -768,10 +862,6 @@
 
 .cardContent a {
     text-decoration: none;
-}
-
-.cardContent {
-    height: 84%;
 }
 
 .chip {
@@ -955,6 +1045,7 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 }
 
 #list {
+    overflow: scroll;
     padding-top: 0 !important;
     padding-bottom: 0 !important;
 }
@@ -965,6 +1056,23 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 
 .issuePreview:hover {
     cursor: pointer;
+}
+
+#issuePreviewTitle {
+    float:left;
+}
+
+#issuePreviewTitleVariant {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#issuePreviewTitleContainer {
+    white-space: nowrap;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
 }
 
 .history {
@@ -1037,8 +1145,9 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 .paper {
     position: absolute;
     z-index: 1;
-    left: 0;
-    right: 0;
+    left: 3px;
+    right: 2px;;
+    box-shadow: 0px 1px 5px 0px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 3px 1px -2px rgba(0,0,0,0.12) !important;
 }
 
 .valueContainer {
@@ -1067,144 +1176,7 @@ div[class^="MuiExpansionPanelSummary-content-"] {
     color: inherit;
 }
 
-
-
-
-
-
-
-
-/*Scrollbar tweaks*/
-::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-}
-
-::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(117, 117, 117, 0.8);
-}
-
-::-webkit-scrollbar-thumb {
-    background: rgba(117, 117, 117, 0.8);
-    -webkit-box-shadow: inset 0 0 6px rgba(117, 117, 117, 0.5);
-}
-
-::-webkit-scrollbar-thumb:window-inactive {
-    background: rgba(117, 117, 117, 0.8);
-}
-
-/*Hamburger for IE11*/
 .menuButton {
     margin-left: 12px;
     margin-right: 20px;
-}
-
-/*!
- * Hamburgers
- * @description Tasty CSS-animated hamburgers
- * @author Jonathan Suh @jonsuh
- * @site https://jonsuh.com/hamburgers
- * @link https://github.com/jonsuh/hamburgers
- */
-.hamburger {
-    padding-top: 11px;
-    display: inline-block;
-    cursor: pointer;
-    transition-property: opacity, filter;
-    transition-duration: 0.15s;
-    transition-timing-function: linear;
-    font: inherit;
-    color: inherit;
-    text-transform: none;
-    background-color: transparent;
-    border: 0;
-    margin: 0;
-    margin-top: 6px;
-    overflow: visible;
-}
-
-.hamburger:hover {
-    opacity: 0.7;
-}
-
-.hamburger:focus {
-    outline: none;
-}
-
-.hamburger.is-active:hover {
-    opacity: 0.7;
-}
-
-.hamburger.is-active .hamburger-inner,
-.hamburger.is-active .hamburger-inner::before,
-.hamburger.is-active .hamburger-inner::after {
-    background-color: #fff;
-}
-
-.hamburger-box {
-    width: 20px;
-    height: 30px;
-    display: inline-block;
-    position: relative;
-}
-
-.hamburger-inner {
-    display: block;
-    top: 50%;
-    margin-top: -2px;
-}
-
-.hamburger-inner, .hamburger-inner::before, .hamburger-inner::after {
-    width: 22px;
-    height: 2px;
-    background-color: #fff;
-    border-radius: 4px;
-    position: absolute;
-    transition-property: transform;
-    transition-duration: 0.15s;
-    transition-timing-function: ease;
-}
-
-.hamburger-inner::before, .hamburger-inner::after {
-    content: "";
-    display: block;
-}
-
-.hamburger-inner::before {
-    top: -10px;
-}
-
-.hamburger-inner::after {
-    bottom: -10px;
-}
-
-/*
-   * Slider
-   */
-.hamburger--slider .hamburger-inner {
-    top: 2px;
-}
-
-.hamburger--slider .hamburger-inner::before {
-    top: 7px;
-    transition-property: transform, opacity;
-    transition-timing-function: ease;
-    transition-duration: 0.15s;
-}
-
-.hamburger--slider .hamburger-inner::after {
-    top: 14px;
-}
-
-.hamburger--slider.is-active .hamburger-inner {
-    transform: translate3d(0, 8px, 0) rotate(45deg);
-}
-
-.hamburger--slider.is-active .hamburger-inner::before {
-    transform: rotate(-45deg) translate3d(-5.71429px, -6px, 0);
-    opacity: 0;
-}
-
-.hamburger--slider.is-active .hamburger-inner::after {
-    transform: translate3d(0, -14px, 0) rotate(-90deg);
 }

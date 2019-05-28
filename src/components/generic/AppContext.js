@@ -21,11 +21,11 @@ class AppContextProvider extends React.Component {
         let tablet = (!landscape ? (width >= 768 && width <= 1024) : (width >= 861 && width <= 1024));
 
         let mobileLandscape = mobile && landscape;
-        let tableLandscape = tablet && landscape;
+        let tabletLandscape = tablet && landscape;
 
-        let desktop = !mobile && !mobileLandscape && !tablet && !tableLandscape;
+        let desktop = !mobile && !mobileLandscape && !tablet && !tabletLandscape;
 
-        if(mobile || mobileLandscape) {
+        if(mobile || mobileLandscape || tablet || tabletLandscape) {
             window.onorientationchange = function() {
                 let landscape = false;
 
@@ -34,7 +34,8 @@ class AppContextProvider extends React.Component {
                 else if(window.orientation)
                     landscape = (window.orientation === 90 || window.orientation === -90);
 
-                if((!mobileLandscape && landscape) || (mobileLandscape && !landscape))
+                if((!mobileLandscape && landscape) || (mobileLandscape && !landscape) ||
+                    (!tabletLandscape && landscape) || (tabletLandscape && !landscape))
                     window.location.reload();
             };
         }
@@ -43,9 +44,9 @@ class AppContextProvider extends React.Component {
             mobile: mobile,
             mobileLandscape: mobileLandscape,
             tablet: tablet,
-            tabletLandscape: tableLandscape,
+            tabletLandscape: tabletLandscape,
             desktop: desktop,
-            drawerOpen: !mobile || mobileLandscape
+            drawerOpen: desktop || tabletLandscape
         };
     }
 

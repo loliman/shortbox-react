@@ -58,16 +58,23 @@ function IssuePreview(props) {
 
     let variant = '';
     if (props.issue.format) {
-        variant += " [" + props.issue.format;
+        variant += props.issue.format;
         if (props.issue.variant)
-            variant += " " + props.issue.variant;
-        variant += "]"
+            variant += "/" + props.issue.variant;
     }
 
     return (
         <Card className="issuePreview" onClick={() => props.history.push(generateUrl(props.issue, props.us))}>
             <CardContent>
-                <Typography variant="subtitle1">{generateLabel(props.issue.series) + " #" + props.issue.number + variant}</Typography>
+                <div id="issuePreviewTitleContainer">
+                <Typography variant="subtitle1" id="issuePreviewTitle">{generateLabel(props.issue.series) + " #" + props.issue.number}</Typography>
+
+                </div>
+                {
+                    variant !== '' ?
+                        <Typography id="issuePreviewTitleVariant" variant={"caption"}>{variant}</Typography> :
+                        null
+                }
                 <Typography variant="caption">{generateLabel(props.issue.series.publisher)}</Typography>
 
                 <br />

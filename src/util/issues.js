@@ -22,10 +22,9 @@ export function generateIssueSubHeader(item) {
         header += item.title;
 
     if (item.format) {
-        header += " [" + item.format;
+        header += " " + item.format;
         if (item.variant)
             header += " " + item.variant;
-        header += "]"
     }
     return header;
 }

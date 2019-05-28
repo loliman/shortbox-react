@@ -22,7 +22,7 @@ class List extends React.Component {
     }
 
     render() {
-        const {drawerOpen, toogleDrawer, mobile, mobileLandscape, handleMenuOpen} = this.props;
+        const {drawerOpen, toogleDrawer, mobile, mobileLandscape, tablet, tabletLandscape, handleMenuOpen} = this.props;
         let {selected, level} = this.props;
 
         if (level === HierarchyLevel.ISSUE) {
@@ -33,10 +33,13 @@ class List extends React.Component {
         let query = getListQuery(level);
         let queryName = query.definitions[0].name.value.toLowerCase();
 
+        console.log(tabletLandscape);
+        console.log((mobile && !mobileLandscape) || (tablet && !tabletLandscape) );
+
         return (
             <SwipeableDrawer
                 disableDiscovery={true}
-                variant={(mobile && !mobileLandscape) ? 'temporary' : 'persistent'}
+                variant={mobile || (tablet && !tabletLandscape) ? 'temporary' : 'persistent'}
                 open={drawerOpen}
                 onClose={() => toogleDrawer()}
                 onOpen={() => toogleDrawer()}

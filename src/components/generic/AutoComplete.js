@@ -34,7 +34,9 @@ class AutoComplete extends React.Component {
             <Query query={query}
                    variables={variables}>
                 {({loading, error, data}) => {
-                    let optionsFromQuery = data[query.definitions[0].name.value.toLowerCase()];
+                    let optionsFromQuery = [];
+                    if(data)
+                        optionsFromQuery = data[query.definitions[0].name.value.toLowerCase()];
 
                     let options;
                     if(this.state.options)
@@ -280,7 +282,7 @@ function Option(props) {
 
     if(thick && thick.length > 0) {
         let thickString = thick[0].substr(2, thick[0].length-4);
-        thick = (<Typography variant={"caption"} className="searchCaption">{thickString}</Typography>);
+        thick = (<Typography variant={"caption"} className="searchCaption">&nbsp;&nbsp;{thickString}</Typography>);
         label = label.replace("!!" + thickString + "!!", "");
     }
 
@@ -295,10 +297,10 @@ function Option(props) {
             }}
             {...props.innerProps}
         >
-            {thick}
             <Typography title={label} noWrap={true}>
                 {label}
             </Typography>
+            {thick}
         </MenuItem>
     );
 }

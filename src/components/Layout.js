@@ -5,6 +5,8 @@ import List from "./List";
 import {withContext} from "./generic";
 import AddFab from "./restricted/AddFab";
 import Typography from "@material-ui/core/Typography";
+import {Mutation} from "react-apollo";
+import {logout} from "../graphql/mutations";
 
 class Layout extends React.Component {
     constructor(props) {
@@ -16,7 +18,7 @@ class Layout extends React.Component {
     }
 
     render() {
-        const {us, children, drawerOpen} = this.props;
+        const {us, children, drawerOpen, session} = this.props;
 
         return(
             <React.Fragment>
@@ -27,33 +29,82 @@ class Layout extends React.Component {
 
                     <div id="content" className={drawerOpen ? 'content-show' : 'content-hide'}>
                         <Card>
-                            {children}
+                            <div id="contentChildren">
+                                {children}
+                            </div>
 
+                            <div id="footer">
+                                <Typography>
+                                    <span className="spanLink"
+                                          onClick={() => this.props.history.push("/contact")}>Kontakt
+                                        {!this.props.mobile || this.props.mobileLandscape ? "/Fehler melden/Unterstützen" : ""}
+                                    </span>
+                                    <span className="spanDif">|</span>
+                                    <span className="spanLink"
+                                          onClick={() => this.props.history.push("/impress")}>Impressum</span>
+                                    <span className="spanDif">|</span>
+                                    <span className="spanLink"
+                                          onClick={() => this.props.history.push("/privacy")}>Datenschutz</span>
+                                    <span className="spanDif">|</span>
+                                    {
+                                        !session ? <LogIn {...this.props}/> : <LogOut {...this.props}/>
+                                    }
 
-                            <br />
-                            <br />
-                            <br />
+                                </Typography>
+                            </div>
                         </Card>
                     </div>
 
                     <AddFab us={us}/>
                 </div>
-
-                <div id="footer">
-                    <Typography>
-                        <span className="spanLink"
-                              onClick={() => this.props.history.push("/contact")}>Kontakt/Fehler melden
-                            {!this.props.mobile || this.props.mobileLandscape ? "/Unterstützen" : ""}
-                        </span>|
-                        <span className="spanLink"
-                              onClick={() => this.props.history.push("/impress")}>Impressum</span>|
-                        <span className="spanLink"
-                              onClick={() => this.props.history.push("/privacy")}>Datenschutz</span>
-                    </Typography>
-                </div>
             </React.Fragment>
         );
     }
+}
+
+function LogIn(props) {
+    return (
+        <span className="spanLink"
+                onClick={() => props.history.push("/login")}>
+            Login
+        </span>
+    );
+}
+
+function LogOut(props) {
+    const {session, enqueueSnackbar, handleLogout} = props;
+
+    return (
+        <Mutation mutation={logout}
+                  onCompleted={(data) => {
+                      if (!data.logout)
+                          enqueueSnackbar("Logout fehlgeschlagen", {variant: 'error'});
+                      else {
+                          enqueueSnackbar("Auf Wiedersehen!", {variant: 'success'});
+                          handleLogout();
+                      }
+                  }}
+                  onError={(errors) => {
+                      let message = (errors.graphQLErrors && errors.graphQLErrors.length > 0) ? ' [' + errors.graphQLErrors[0].message + ']' : '';
+                      enqueueSnackbar("Logout fehlgeschlagen" + message, {variant: 'error'});
+                  }}
+                  ignoreResults>
+            {(logout) => (
+                <span className="spanLink" onClick={() => {
+                    logout({
+                        variables: {
+                            user: {
+                                id: parseInt(session.id),
+                                sessionid: session.sessionid
+                            }
+                        }
+                    })
+                }}>
+                    Logout
+                </span>
+            )}
+        </Mutation>
+    );
 }
 
 export default withContext(Layout);

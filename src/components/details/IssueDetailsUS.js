@@ -44,7 +44,7 @@ function Bottom(props) {
             <br/>
 
             <Contains {...props} header="Geschichten"
-                      noEntriesHint="Dieser Ausgabe sind noch keine Geschichten zugeordnet."
+                      noEntriesHint="Dieser Ausgabe sind noch keine Geschichten zugeordnet"
                       items={props.issue.stories} itemTitle={<ContainsTitleSimple/>}
                       itemDetails={<StoryDetails/>}/>
 
@@ -52,12 +52,10 @@ function Bottom(props) {
             <br/>
 
             <Contains {...props} header="Cover erschienen in"
-                      noEntriesHint="Das Cover ist noch keinen deutschen Ausgaben zugeordnet."
+                      noEntriesHint="Das Cover ist noch keinen deutschen Ausgaben zugeordnet"
                       items={props.issue.covers[0] ? props.issue.covers[0].children.map(c => c.issue) : []}
                       itemTitle={<ContainsTitleDetailed/>}/>
 
-            <br/>
-            <br/>
             <br/>
             <br/>
 
@@ -72,15 +70,8 @@ function Bottom(props) {
                 <a href="https://creativecommons.org/licenses/by/3.0/de/" rel="noopener noreferrer nofollow"
                    target="_blank">Creative Commons License 3.0</a>
             </Typography>
-
-            <br/>
         </React.Fragment>
     );
-}
-
-function generateMarvelDbUrl(issue) {
-    let url = "https://marvel.fandom.com/wiki/" + encodeURIComponent(issue.series.title) + "_Vol_" + issue.series.volume + "_" + issue.number;
-    return url.replace(new RegExp(" ", 'g'), "_");
 }
 
 function StoryDetails(props) {
@@ -130,6 +121,11 @@ function StoryDetails(props) {
             </React.Fragment>}
         </div>
     )
+}
+
+function generateMarvelDbUrl(issue) {
+    let url = "https://marvel.fandom.com/wiki/" + encodeURIComponent(issue.series.title) + "_Vol_" + issue.series.volume + "_" + issue.number;
+    return url.replace(new RegExp(" ", 'g'), "_");
 }
 
 export default withContext(IssueDetailsUS);

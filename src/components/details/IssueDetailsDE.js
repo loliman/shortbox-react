@@ -43,7 +43,7 @@ function Bottom(props) {
             <br/>
 
             <Contains {...props} header="Geschichten"
-                      noEntriesHint="Dieser Ausgabe sind noch keine Geschichten zugeordnet."
+                      noEntriesHint="Dieser Ausgabe sind noch keine Geschichten zugeordnet"
                       items={props.issue.stories} itemTitle={<ContainsTitleDetailed {...props}/>}
                       itemDetails={<StoryDetails/>}/>
 
@@ -51,7 +51,7 @@ function Bottom(props) {
             <br/>
 
             <Contains {...props} header="Weitere Inhalte"
-                      noEntriesHint="Dieser Ausgabe sind noch keine weiteren Inhalte zugeordnet."
+                      noEntriesHint="Dieser Ausgabe sind noch keine weiteren Inhalte zugeordnet"
                       items={props.issue.features} itemTitle={<ContainsTitleSimple/>}
                       itemDetails={<FeatureDetails/>}/>
 
@@ -59,12 +59,9 @@ function Bottom(props) {
             <br/>
 
             <Contains {...props} header="Covergalerie"
-                      noEntriesHint="Dieser Ausgabe sind noch keine Cover zugeordnet."
+                      noEntriesHint="Dieser Ausgabe sind noch keine Cover zugeordnet"
                       items={props.issue.covers} itemTitle={<ContainsTitleDetailed {...props}/>}
                       itemDetails={<CoverDetails/>}/>
-
-            <br />
-            <br />
         </React.Fragment>
     );
 }
