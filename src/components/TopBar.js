@@ -70,7 +70,7 @@ class TopBar extends React.Component {
                 </Toolbar>
 
                 {
-                    (mobile || (tablet && !tabletLandscape)) ? <div id="searchOverlay" class={this.state.searchbarFocus ? "" : "searchOverlayHidden"} onClick={(e) => this.onFocus(e, false)}/> : null
+                    (mobile || (tablet && !tabletLandscape)) ? <div id="searchOverlay" className={this.state.searchbarFocus ? "" : "searchOverlayHidden"} onClick={(e) => this.onFocus(e, false)}/> : null
                 }
             </AppBar>
         );
