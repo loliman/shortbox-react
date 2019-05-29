@@ -417,7 +417,12 @@ body {
 
     .headerSearchFocused .dropdownIndicator {
         padding-top: 4px;
+        margin-top: 0 !important;
         color: gray !important;
+    }
+
+    .headerSearchFocused .autoSuggestField {
+        height: 64px !important;
     }
 
     .detailsPaper {
@@ -547,8 +552,13 @@ body {
     }
 
     .headerSearchFocused .dropdownIndicator {
-        padding-top: 3px;
+        padding-top: 4px;
+        margin-top: 0 !important;
         color: gray !important;
+    }
+
+    .headerSearchFocused .autoSuggestField {
+        height: 64px !important;
     }
 
     .storyAdd > :first-child {
@@ -675,8 +685,13 @@ body {
     }
 
     .headerSearchFocused .dropdownIndicator {
-        padding-top: 8px;
+        padding-top: 4px;
+        margin-top: 0 !important;
         color: gray !important;
+    }
+
+    .headerSearchFocused .autoSuggestField {
+        height: 56px !important;
     }
 
     #loginForm {
