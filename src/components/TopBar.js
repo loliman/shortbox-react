@@ -12,6 +12,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import {withContext} from "./generic";
 import IconButton from "@material-ui/core/IconButton";
 import SearchBar from "./SearchBar";
+import FilterListIcon from '@material-ui/icons/FilterList';
 
 class TopBar extends React.Component {
     constructor(props) {
@@ -51,6 +52,15 @@ class TopBar extends React.Component {
                     </div>
 
                     <div id="headerRight">
+                        <IconButton
+                            color="inherit"
+                            onClick={() => console.log("filter")}
+                            id="filterIcon"
+                        >
+                            <FilterListIcon />
+                        </IconButton>
+
+
                         <FormControlLabel
                             id="us"
                             className="switch"
