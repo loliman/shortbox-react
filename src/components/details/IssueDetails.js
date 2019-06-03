@@ -24,7 +24,6 @@ import PriorityHighIcon from "@material-ui/icons/PriorityHigh";
 import SearchIcon from "@material-ui/icons/Search";
 import Tooltip from "@material-ui/core/es/Tooltip/Tooltip";
 import IconButton from "@material-ui/core/IconButton/IconButton";
-import {Link} from "react-router-dom";
 import {generateLabel, generateUrl} from "../../util/hierarchy";
 import GridList from "@material-ui/core/GridList/GridList";
 import GridListTile from "@material-ui/core/GridListTile/GridListTile";
@@ -59,7 +58,7 @@ class IssueDetails extends React.Component {
                                             }/>
 
                                 <CardContent className="cardContent">
-                                    <Variants us={us} issue={data.issue}/>
+                                    <Variants us={us} issue={data.issue} navigate={this.props.navigate}/>
 
                                     <div className="details">
                                         <DetailsTable issue={issue} details={this.props.details} us={us}/>
@@ -80,6 +79,7 @@ class IssueDetails extends React.Component {
                                     {
                                         this.props.bottom ?
                                             React.cloneElement(this.props.bottom, {
+                                                navigate: this.props.navigate,
                                                 selected: data.issue,
                                                 issue: data.issue,
                                                 us: us
@@ -177,7 +177,7 @@ function ContainsSimpleItem(props) {
     return (
         <ExpansionPanel className="story" expanded={false}>
             <ExpansionPanelSummary className="summary">
-                {React.cloneElement(props.itemTitle, {item: props.item, us: props.us, simple: true})}
+                {React.cloneElement(props.itemTitle, {navigate: props.navigate, item: props.item, us: props.us, simple: true})}
             </ExpansionPanelSummary>
         </ExpansionPanel>
     );
@@ -187,10 +187,10 @@ function ContainsItem(props) {
     return (
         <ExpansionPanel className="story">
             <ExpansionPanelSummary className="summary" expandIcon={<ExpandMoreIcon/>}>
-                {React.cloneElement(props.itemTitle, {item: props.item, us: props.us})}
+                {React.cloneElement(props.itemTitle, {navigate: props.navigate, item: props.item, us: props.us})}
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
-                {React.cloneElement(props.itemDetails, {item: props.item})}
+                {React.cloneElement(props.itemDetails, {navigate: props.navigate, item: props.item})}
             </ExpansionPanelDetails>
         </ExpansionPanel>
     );
@@ -300,8 +300,7 @@ export function ContainsTitleDetailed(props) {
 
                 <Tooltip title="Zur Ausgabe">
                     <IconButton className="detailsIcon"
-                                component={Link}
-                                to={exclusive ? "" : generateUrl(issue, !props.us)}
+                                onClick={() => props.navigate(exclusive ? "" : generateUrl(issue, !props.us))}
                                 aria-label="Details"
                                 disabled={exclusive}>
                         <SearchIcon fontSize="small"/>
@@ -325,7 +324,7 @@ function Variants(props) {
             <div className="coverGallery">
                 <GridList className="gridList" cols={2.5}>
                     {props.issue.variants.map((variant, idx) => {
-                            return (<Variant to={generateUrl(variant, props.us)}
+                            return (<Variant to={generateUrl(variant, props.us)} navigate={props.navigate}
                                                            key={idx} variant={variant}/>);
                     })}
                 </GridList>
@@ -338,7 +337,7 @@ function Variant(props) {
     let coverUrl = (props.variant.cover && props.variant.cover.url && props.variant.cover.url !== '') ? props.variant.cover.url : "/nocover_simple.jpg";
 
     return (
-        <GridListTile component={Link} to={props.to} className="tile">
+        <GridListTile onClick={() => props.navigate(props.to)} className="tile">
             <img src={coverUrl}
                  alt={props.variant.variant + ' (' + props.variant.format + ')'}/>
             <GridListTileBar

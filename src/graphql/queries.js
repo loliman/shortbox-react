@@ -9,15 +9,15 @@ const search = gql`query Nodes($pattern: String!, $us: Boolean!){
     }
 }`;
 
-const publishers = gql`query Publishers($us: Boolean!){
-    publishers(us: $us) {
+const publishers = gql`query Publishers($us: Boolean!, $filter: Filter){
+    publishers(us: $us, filter: $filter) {
         name,
         us
     }
 }`;
 
-const series = gql`query Series($publisher: PublisherInput!){
-    series(publisher: $publisher) {
+const series = gql`query Series($publisher: PublisherInput!, $filter: Filter){
+    series(publisher: $publisher, filter: $filter) {
         title,
         volume,
         startyear,
@@ -29,8 +29,8 @@ const series = gql`query Series($publisher: PublisherInput!){
     }
 }`;
 
-const issues = gql`query Issues($series: SeriesInput!){
-    issues(series: $series) {
+const issues = gql`query Issues($series: SeriesInput!, $filter: Filter){
+    issues(series: $series, filter: $filter) {
         title,
         number,
         series {

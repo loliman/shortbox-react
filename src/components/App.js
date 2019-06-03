@@ -22,6 +22,7 @@ import Impress from "./Impress";
 import Privacy from "./Privacy";
 import Contact from "./Contact";
 import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import Filter from "./Filter";
 
 const theme = createMuiTheme({
     palette: {
@@ -58,6 +59,9 @@ class App extends React.Component {
                         <Route exact path="/us/:publisher/:series" component={SeriesDetails}/>
                         <Route exact path="/us/:publisher/:series/:issue" component={IssueDetailsUS}/>
                         <Route exact path="/us/:publisher/:series/:issue/:variant" component={IssueDetailsUS}/>
+
+                        <Route exact path="/filter/de" component={Filter}/>
+                        <Route exact path="/filter/us" component={Filter}/>
 
                         <Route exact path="/login" component={Login}/>
 

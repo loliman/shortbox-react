@@ -22,7 +22,7 @@ class AddFab extends React.Component {
     }
 
     render() {
-        const {session, history} = this.props;
+        const {session, navigate} = this.props;
 
         if (session)
             return (
@@ -42,7 +42,7 @@ class AddFab extends React.Component {
                                 tooltipTitle="Verlag"
                                 tooltipOpen
                                 onClick={() => {
-                                    history.push("/create/publisher");
+                                    navigate("/create/publisher");
                                     this.handleClick();
                                 }}
                             />
@@ -52,7 +52,7 @@ class AddFab extends React.Component {
                                 tooltipTitle="Serie"
                                 tooltipOpen
                                 onClick={() => {
-                                    history.push("/create/series");
+                                    navigate("/create/series");
                                     this.handleClick();
                                 }}
                             />
@@ -62,7 +62,7 @@ class AddFab extends React.Component {
                                 tooltipTitle="Ausgabe"
                                 tooltipOpen
                                 onClick={() => {
-                                    history.push("/create/issue");
+                                    navigate("/create/issue");
                                     this.handleClick();
                                 }}
                             />

@@ -7,7 +7,6 @@ import {getListQuery} from '../graphql/queries'
 import QueryResult from './generic/QueryResult';
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer/SwipeableDrawer";
 import Typography from "@material-ui/core/es/Typography/Typography";
-import {Link} from "react-router-dom";
 import {ScrollContainer} from "react-router-scroll-4";
 import {withContext} from "./generic";
 import {generateLabel, generateUrl, HierarchyLevel} from "../util/hierarchy";
@@ -25,6 +24,15 @@ class List extends React.Component {
         const {drawerOpen, toogleDrawer, mobile, tablet, tabletLandscape, handleMenuOpen} = this.props;
         let {selected, level} = this.props;
 
+        let filter;
+        if(this.props.query && this.props.query.filter) {
+            try {
+                filter = JSON.parse(this.props.query.filter);
+            } catch (e) {
+                //
+            }
+        }
+
         if (level === HierarchyLevel.ISSUE) {
             level = HierarchyLevel.SERIES;
             selected = selected.issue;
@@ -33,6 +41,7 @@ class List extends React.Component {
         let query = getListQuery(level);
         let queryName = query.definitions[0].name.value.toLowerCase();
 
+        selected.filter = filter;
         return (
             <SwipeableDrawer
                 disableDiscovery={true}
@@ -88,11 +97,11 @@ function TypeListEntry(props) {
 
     return (
         <div className="itemContainer">
-            <ListItem component={Link}
-                      to={generateUrl(item, us)}
-                      onClick={() => {
+            <ListItem onClick={() => {
                           if ((mobile && !mobileLandscape) && level === HierarchyLevel.SERIES)
                               toogleDrawer();
+
+                          props.navigate(generateUrl(item, us));
                       }}
                       button>
                 <ListItemText className="itemText"

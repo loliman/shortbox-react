@@ -16,7 +16,7 @@ import {removeFromCache, updateInCache} from "./editor/Editor";
 
 function DeletionDialog(props) {
     let {level} = props;
-    const {item, open, handleClose, history, enqueueSnackbar} = props;
+    const {item, open, handleClose, navigate, enqueueSnackbar} = props;
 
     let parent;
     if (item.__typename === "Issue") {
@@ -86,7 +86,7 @@ function DeletionDialog(props) {
                                   }
                           }}
                           onCompleted={(data) => {
-                              history.push(generateUrl(parent, parent.us));
+                              navigate(generateUrl(parent, parent.us));
 
                               let mutationName = deleteMutation.definitions[0].name.value.toLowerCase();
 

@@ -6,7 +6,6 @@ import IconButton from "@material-ui/core/IconButton/IconButton";
 import Tooltip from "@material-ui/core/es/Tooltip/Tooltip";
 import List from "@material-ui/core/List/List";
 import ListItem from "@material-ui/core/ListItem/ListItem";
-import {Link} from "react-router-dom";
 import {withContext} from "../generic";
 import {generateLabel, generateUrl} from "../../util/hierarchy";
 import IssueDetails, {
@@ -107,8 +106,7 @@ function StoryDetails(props) {
                                     </div>
                                     <Tooltip title="Zur Ausgabe">
                                         <IconButton className="detailsIcon issueStoryIssueButton"
-                                                    component={Link}
-                                                    to={generateUrl(child.issue)}
+                                                    onClick={() => props.navigate(generateUrl(child.issue))}
                                                     aria-label="Details">
                                             <SearchIcon fontSize="small"/>
                                         </IconButton>

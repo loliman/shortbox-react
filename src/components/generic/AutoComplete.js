@@ -22,12 +22,32 @@ class AutoComplete extends React.Component {
     }
 
     render() {
-        const {query, variables, onChange} = this.props;
+        const {query, variables, onChange, values} = this.props;
         let {disabled, label, nameField} = this.props;
 
         if(!nameField) {
             let split = this.props.name.split('.');
             nameField = split[split.length-1];
+        }
+
+        if(values) {
+            return <Field {...this.props}
+                          component={AutoCompleteContainer}
+                          options={values}
+                          label={label}
+                          nameField={nameField}
+                          loadingError={false}
+                          disabled={disabled}
+                          onChange={onChange}
+                          onChangeValue={(value) => {
+                              if(this.props.liveSearch)
+                                  this.props.onChange(value, true);
+                              else if(values) {
+                                  let newOptions = matchSorter(values, value, {keys: [nameField]});
+                                  this.setState({options: newOptions});
+                              }
+                          }}
+                          loading={!disabled && false}/>;
         }
 
         return (
@@ -118,12 +138,15 @@ class AutoCompleteContainer extends React.Component {
                 return option[this.props.nameField];
             },
             getOptionLabel: (option) => {
-                if (option[this.props.nameField] === (this.props.creatable ?
+                let label = "";
+                if (option[this.props.nameField] === (this.props.isMulti ?
                     (this.props.field.value ? this.props.field.value[this.props.nameField] : "")
                     : this.props.field.value))
-                    return option[this.props.nameField];
+                    label = option[this.props.nameField];
                 else
-                    return this.props.generateLabel(option);
+                    label = this.props.generateLabel(option);
+
+                return typeof label === "string" ? label : option[this.props.nameField];
             },
 
             isSearchable: true,
@@ -141,7 +164,7 @@ class AutoCompleteContainer extends React.Component {
         return (
             <div style={style}>
                 {
-                    !this.props.creatable ?
+                    !this.props.isMulti ?
                         <Select {...props}
                                 onFocus={(e) => {
                                     if(this.props.onFocus)
@@ -172,6 +195,9 @@ class AutoCompleteContainer extends React.Component {
                              value={this.props.field.value}
                              isMulti={this.props.isMulti}
                              isValidNewOption={(value) => {
+                                 if(!this.props.createable)
+                                     return false;
+
                                  let isNew = false;
                                  if(value !== '' && this.props.options) {
                                      let option = this.props.options.find(option => {

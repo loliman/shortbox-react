@@ -1030,6 +1030,14 @@ div[class^="MuiExpansionPanelSummary-content-"] {
     width: calc(35% + 6px);
 }
 
+.field40 {
+    width: calc(40% - 5px);
+}
+
+.field35 {
+    width: calc(40% + 6px);
+}
+
 .field50 {
     width: 50%;
 }
@@ -1154,6 +1162,16 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 .addBtn {
     left: -23px !important;
     top: 8px !important;
+}
+
+.addBtnFilter {
+    left: -5px !important;
+    top: 10px !important;
+}
+
+.withVariants {
+    margin-left: 5px !important;
+    padding-top: 5px !important;
 }
 
 .removeBtn {

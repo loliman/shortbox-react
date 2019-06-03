@@ -5,6 +5,7 @@ import {withLastLocation} from "react-router-last-location";
 import {withRouter} from "react-router-dom";
 import {AppContext} from "./AppContext";
 import {generateLabel, getHierarchyLevel, getSelected, HierarchyLevel} from "../../util/hierarchy";
+import * as queryString from "query-string";
 
 function getDisplayName(WrappedComponent) {
     return WrappedComponent.displayName || WrappedComponent.name || 'Component';
@@ -14,15 +15,18 @@ function withContext(WrappedComponent) {
     const WithContext = props => (
         <AppContext.Consumer>
             {(context) => {
-                let us = props.match.url.indexOf("/us") === 0 || props.match.url.indexOf("/edit/us") === 0;
+                let us = props.match.url.indexOf("/us") === 0 || props.match.url.indexOf("/edit/us") === 0 || props.match.url.indexOf("/filter/us") === 0;
                 let selected = getSelected(props.match.params, us);
+                let currentQuery = props.location.search ? queryString.parse(props.location.search) : null;
 
                 let params = {
                     edit: props.match.url.indexOf("/edit") === 0,
                     create: props.match.url.indexOf("/create") === 0,
                     us: us,
                     selected: selected,
-                    level: getHierarchyLevel(selected)
+                    query: currentQuery,
+                    level: getHierarchyLevel(selected),
+                    navigate: (url, query) => navigate(props, url, query, currentQuery)
                 };
 
                 document.title = createAppTitle(params, props.match.url);
@@ -41,6 +45,21 @@ function withContext(WrappedComponent) {
         withLastLocation,
         withRouter
     )(WithContext);
+}
+
+function navigate(props, url, query, currentQuery) {
+    let lastUrl = props.location ? props.location.pathname : null;
+    let q = currentQuery ? currentQuery : {};
+
+    if(query) {
+        for (let p in query) {
+            if (query.hasOwnProperty(p)) {
+                q[p] = query[p] ? query[p] : undefined;
+            }
+        }
+    }
+
+    props.history.push((lastUrl === url ? (props.us ? "/us" : "/de") : url) + "?" + queryString.stringify(q));
 }
 
 function createAppTitle(params, url) {

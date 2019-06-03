@@ -8,7 +8,6 @@ import {TextField} from 'formik-material-ui';
 import Card from "@material-ui/core/Card/Card";
 import CardHeader from "@material-ui/core/CardHeader/CardHeader";
 import CardContent from "@material-ui/core/CardContent/CardContent";
-import Link from "react-router-dom/es/Link";
 import {withContext} from "./generic";
 import {LoginSchema} from "../util/yupSchema";
 
@@ -18,7 +17,7 @@ function Login(props) {
                   onCompleted={(data) => {
                       props.enqueueSnackbar("Willkommen!", {variant: 'success'});
                       props.handleLogin(data.login);
-                      props.history.push(props.lastLocation ? props.lastLocation : "/");
+                      props.navigate(props.lastLocation ? props.lastLocation.pathname : "/");
                   }}
                   onError={(errors) => {
                       let message = (errors.graphQLErrors && errors.graphQLErrors.length > 0) ? ' [' + errors.graphQLErrors[0].message + ']' : '';
@@ -44,7 +43,7 @@ function Login(props) {
 
                         actions.setSubmitting(false);
                     }}>
-                    {({resetForm, submitForm, isSubmitting}) => (
+                    {({submitForm, isSubmitting}) => (
                         <Form id="loginForm">
                             <Card>
                                 <CardHeader title="Login"
@@ -66,8 +65,7 @@ function Login(props) {
                                     />
                                     <div id="loginButtons">
                                         <Button disabled={isSubmitting}
-                                                component={Link}
-                                                to={props.lastLocation ? props.lastLocation : "/"}
+                                                onClick={() => props.navigate(props.lastLocation ? props.lastLocation.pathname : "/")}
                                                 color="secondary">
                                             Abbrechen
                                         </Button>

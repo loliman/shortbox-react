@@ -36,15 +36,15 @@ class Layout extends React.Component {
                             <div id="footer">
                                 <Typography>
                                     <span className="spanLink"
-                                          onClick={() => this.props.history.push("/contact")}>Kontakt
+                                          onClick={() => this.props.navigate("/contact")}>Kontakt
                                         {!this.props.mobile || this.props.mobileLandscape ? "/Fehler melden/Unterstützen" : ""}
                                     </span>
                                     <span className="spanDif">|</span>
                                     <span className="spanLink"
-                                          onClick={() => this.props.history.push("/impress")}>Impressum</span>
+                                          onClick={() => this.props.navigate("/impress")}>Impressum</span>
                                     <span className="spanDif">|</span>
                                     <span className="spanLink"
-                                          onClick={() => this.props.history.push("/privacy")}>Datenschutz</span>
+                                          onClick={() => this.props.navigate("/privacy")}>Datenschutz</span>
                                     <span className="spanDif">|</span>
                                     {
                                         !session ? <LogIn {...this.props}/> : <LogOut {...this.props}/>
@@ -65,7 +65,7 @@ class Layout extends React.Component {
 function LogIn(props) {
     return (
         <span className="spanLink"
-                onClick={() => props.history.push("/login")}>
+                onClick={() => props.navigate("/login")}>
             Login
         </span>
     );

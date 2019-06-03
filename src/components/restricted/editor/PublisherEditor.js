@@ -1,7 +1,6 @@
 import {PublisherSchema} from "../../../util/yupSchema";
 import {FastField, Form, Formik} from "formik";
 import {TextField} from "formik-material-ui";
-import Link from "react-router-dom/es/Link";
 import React from "react";
 import {Mutation} from "react-apollo";
 import {generateLabel, generateUrl} from "../../../util/hierarchy";
@@ -52,7 +51,7 @@ class PublisherEditor extends React.Component {
     };
 
     render() {
-        const {lastLocation, history, enqueueSnackbar, edit, mutation} = this.props;
+        const {lastLocation, navigate, enqueueSnackbar, edit, mutation} = this.props;
         const {defaultValues, header, submitLabel, successMessage, errorMessage} = this.state;
 
         let mutationName = decapitalize(mutation.definitions[0].name.value);
@@ -88,7 +87,7 @@ class PublisherEditor extends React.Component {
                       }}
                       onCompleted={(data) => {
                           enqueueSnackbar(generateLabel(data[mutationName]) + successMessage, {variant: 'success'});
-                          history.push(generateUrl(data[mutationName], data[mutationName].us));
+                          navigate(generateUrl(data[mutationName], data[mutationName].us));
                       }}
                       onError={(errors) => {
                           let message = (errors.graphQLErrors && errors.graphQLErrors.length > 0) ? ' [' + errors.graphQLErrors[0].message + ']' : '';
@@ -170,8 +169,7 @@ class PublisherEditor extends React.Component {
                                         </Button>
 
                                         <Button disabled={isSubmitting}
-                                                component={Link}
-                                                to={lastLocation ? lastLocation : "/"}
+                                                onClick={() => this.props.navigate(lastLocation ? lastLocation.pathname : "/")}
                                                 color="primary">
                                             Abbrechen
                                         </Button>

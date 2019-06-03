@@ -32,6 +32,7 @@
     "object.omit": "^3.0.0",
     "parse-glob": "^3.0.4",
     "preserve": "^0.2.0",
+    "query-string": "^6.5.0",
     "react": "^16.8.4",
     "react-apollo": "^2.5.2",
     "react-cookie": "^3.1.1",

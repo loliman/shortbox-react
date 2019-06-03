@@ -24,7 +24,11 @@ class TopBar extends React.Component {
     }
 
     render() {
-        const {toogleDrawer, us, history, mobile, mobileLandscape, tablet, tabletLandscape} = this.props;
+        const {toogleDrawer, us, mobile, mobileLandscape, tablet, tabletLandscape} = this.props;
+
+        let isFilter;
+        if(this.props.query && this.props.query.filter)
+            isFilter = this.props.query.filter;
 
         return (
             <AppBar position="sticky" id="header">
@@ -40,7 +44,7 @@ class TopBar extends React.Component {
                             <MenuIcon />
                         </IconButton>
 
-                        <img onClick={() => this.props.history.push("/")}
+                        <img onClick={() => this.props.navigate("/", {filter: null})}
                              id="logo" src="/android-icon-192x192.png" alt="Shortbox" height="40"/>
                         <Typography variant="h6" color="inherit" className="appTitle" noWrap>
                             {
@@ -52,29 +56,28 @@ class TopBar extends React.Component {
                     </div>
 
                     <div id="headerRight">
-                        <IconButton
-                            color="inherit"
-                            onClick={() => console.log("filter")}
-                            id="filterIcon"
-                        >
-                            <FilterListIcon />
-                        </IconButton>
-
+                        <Tooltip title={isFilter ? "Filter aktiv" : "Filtern"}>
+                            <IconButton
+                                color={isFilter ? "secondary" : "inherit"}
+                                onClick={() => this.props.navigate(us ? "/filter/us" : "/filter/de")}
+                                id="filterIcon"
+                            >
+                                <FilterListIcon />
+                            </IconButton>
+                        </Tooltip>
 
                         <FormControlLabel
                             id="us"
                             className="switch"
+                            label={"US"}
                             control={
                                 <Tooltip title={"Wechseln zu " + (us ? "Deutsch" : "US")}>
                                     <Switch
                                         checked={us}
-                                        onChange={() => {
-                                            history.push(us ? "/de" : "/us");
-                                        }}
+                                        onChange={() => this.props.navigate(us ? "/de" : "/us", {filter: null})}
                                         color="secondary"/>
                                 </Tooltip>
                             }
-                            label="US"
                         />
                     </div>
                 </Toolbar>
@@ -177,7 +180,7 @@ function BreadCrumbLink(props) {
         <React.Fragment>
             <span className="breadCrumbLink"
                   onClick={() => {
-                      props.history.push(props.to);
+                      props.navigate(props.to);
                   }}>
                 {props.label}
             </span>

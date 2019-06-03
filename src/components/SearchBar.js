@@ -7,7 +7,7 @@ import SearchIcon from '@material-ui/icons/Search';
 
 class SearchBar extends React.Component {
     render() {
-        const {history, mobile, tablet, tabletLandscape, us} = this.props;
+        const {navigate, mobile, tablet, tabletLandscape, us} = this.props;
         return <div id="headerSearch" className={this.props.focus ? "headerSearchFocused" : ""}>
              <Formik initialValues={{pattern: ""}}
                            onSubmit={false}>
@@ -36,7 +36,7 @@ class SearchBar extends React.Component {
                                             document.activeElement.blur();
                                         }
                                         this.onFocus(null, false);
-                                        history.push(node.url, us);
+                                        navigate(node.url, us);
                                     }
 
                                 }}
