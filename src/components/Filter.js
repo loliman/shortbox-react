@@ -37,7 +37,7 @@ function Filter(props) {
             publishers: [],
             series: [],
             numbers: [{number: "", compare: ">"}],
-            authors: [],
+            writers: [],
             artists: [],
             inkers: [],
             colourists: [],
@@ -71,8 +71,8 @@ function Filter(props) {
             defaultValues.series = [];
         if(!defaultValues.numbers)
             defaultValues.numbers = [{number: "", compare: ">"}];
-        if(!defaultValues.authors)
-            defaultValues.authors = [];
+        if(!defaultValues.writers)
+            defaultValues.writers = [];
         if(!defaultValues.artists)
             defaultValues.artists = [];
         if(!defaultValues.inkers)
@@ -143,9 +143,9 @@ function Filter(props) {
                         if(v.numbers.length === 0)
                             v.numbers = undefined;
                     }
-                    if (values.authors.length > 0) {
-                        v.authors = [];
-                        values.authors.forEach((o) => v.authors.push(stripItem(o)));
+                    if (values.writers.length > 0) {
+                        v.writers = [];
+                        values.writers.forEach((o) => v.writers.push(stripItem(o)));
                     }
                     if (values.artists.length > 0) {
                         v.artists = [];
@@ -183,12 +183,6 @@ function Filter(props) {
                         v.onlyTb = true;
                     if (values.noPrint)
                         v.noPrint = true;
-
-
-                    if(v.formats || v.withVariants || v.releasedates || v.publishers || v.series || v.numbers ||
-                        v.authors || v.artists || v.inkers || v.colourists || v.letteres || v.editors || v.translators ||
-                        v.firstPrint || v.onlyPrint || v.otherTb || v.exclusive || v.onlyTb || v.noPrint)
-                        v.us = us;
 
                     let url = lastLocation ? lastLocation.pathname : "/";
                     props.navigate(url, {filter: JSON.stringify(v) !== "{}" ? JSON.stringify(v) : null});
@@ -301,7 +295,7 @@ function Filter(props) {
                                                     }}
                                                     color="secondary"/>
                                             }
-                                            label="Erstveröffentlichung"
+                                            label="Erstausgabe"
                                         />
 
                                         <FormControlLabel
@@ -317,7 +311,7 @@ function Filter(props) {
                                                     }}
                                                     color="secondary"/>
                                             }
-                                            label="Einzige Veröffentlichung"
+                                            label="Einzige Ausgabe"
                                         />
 
                                         <FormControlLabel
@@ -468,11 +462,11 @@ function Filter(props) {
 
                                 <AutoComplete
                                     query={individuals}
-                                    name={"authors"}
+                                    name={"writers"}
                                     nameField="name"
                                     label="Autor"
                                     isMulti
-                                    onChange={(option) => setFieldValue("authors", option)}
+                                    onChange={(option) => setFieldValue("writers", option)}
                                     style={{
                                         width: props.desktop ? "40%" : "99%"
                                     }}
@@ -581,7 +575,7 @@ function Filter(props) {
                                                     publishers: [],
                                                     series: [],
                                                     numbers: [{number: "", compare: ">"}],
-                                                    authors: [],
+                                                    writers: [],
                                                     artists: [],
                                                     inkers: [],
                                                     colourists: [],
@@ -624,4 +618,3 @@ function Filter(props) {
 }
 
 export default withContext(Filter);
-
