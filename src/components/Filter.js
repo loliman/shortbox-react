@@ -226,7 +226,7 @@ function Filter(props) {
                                             onChange={() => {
                                                 setFieldValue("withVariants", !values.withVariants);
                                             }}
-                                            color="primary"/>
+                                            color="secondary"/>
                                     }
                                     label="Mit Varianten"
                                 />
@@ -295,8 +295,11 @@ function Filter(props) {
                                                     checked={values.firstPrint}
                                                     onChange={() => {
                                                         setFieldValue("firstPrint", !values.firstPrint);
+                                                        setFieldValue("onlyPrint", false);
+                                                        setFieldValue("otherTb", false);
+                                                        setFieldValue("exclusive", false);
                                                     }}
-                                                    color="primary"/>
+                                                    color="secondary"/>
                                             }
                                             label="Erstveröffentlichung"
                                         />
@@ -307,9 +310,12 @@ function Filter(props) {
                                                 <Switch
                                                     checked={values.onlyPrint}
                                                     onChange={() => {
+                                                        setFieldValue("firstPrint", false);
                                                         setFieldValue("onlyPrint", !values.onlyPrint);
+                                                        setFieldValue("otherTb", false);
+                                                        setFieldValue("exclusive", false);
                                                     }}
-                                                    color="primary"/>
+                                                    color="secondary"/>
                                             }
                                             label="Einzige Veröffentlichung"
                                         />
@@ -320,9 +326,12 @@ function Filter(props) {
                                                 <Switch
                                                     checked={values.otherTb}
                                                     onChange={() => {
+                                                        setFieldValue("firstPrint", false);
+                                                        setFieldValue("onlyPrint", false);
                                                         setFieldValue("otherTb", !values.otherTb);
+                                                        setFieldValue("exclusive", false);
                                                     }}
-                                                    color="primary"/>
+                                                    color="secondary"/>
                                             }
                                             label="Sonst nur in TB"
                                         />
@@ -333,9 +342,12 @@ function Filter(props) {
                                                 <Switch
                                                     checked={values.exclusive}
                                                     onChange={() => {
+                                                        setFieldValue("firstPrint", false);
+                                                        setFieldValue("onlyPrint", false);
+                                                        setFieldValue("otherTb", false);
                                                         setFieldValue("exclusive", !values.exclusive);
                                                     }}
-                                                    color="primary"/>
+                                                    color="secondary"/>
                                             }
                                             label="Exklusiv"
                                         />
@@ -348,8 +360,9 @@ function Filter(props) {
                                                     checked={values.onlyTb}
                                                     onChange={() => {
                                                         setFieldValue("onlyTb", !values.onlyTb);
+                                                        setFieldValue("noPrint", false);
                                                     }}
-                                                    color="primary"/>
+                                                    color="secondary"/>
                                             }
                                             label="Nur in TB"
                                         />
@@ -360,9 +373,10 @@ function Filter(props) {
                                                 <Switch
                                                     checked={values.noPrint}
                                                     onChange={() => {
+                                                        setFieldValue("onlyTb", false);
                                                         setFieldValue("noPrint", !values.noPrint);
                                                     }}
-                                                    color="primary"/>
+                                                    color="secondary"/>
                                             }
                                             label="Nicht auf deutsch erschienen"
                                         />
