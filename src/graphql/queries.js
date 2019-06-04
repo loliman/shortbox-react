@@ -9,6 +9,10 @@ const search = gql`query Nodes($pattern: String!, $us: Boolean!){
     }
 }`;
 
+const exportQuery = gql`query Export($filter: Filter!){
+    export(filter: $filter)
+}`;
+
 const publishers = gql`query Publishers($us: Boolean!, $filter: Filter){
     publishers(us: $us, filter: $filter) {
         name,
@@ -291,4 +295,4 @@ function getListQuery(level) {
 
 export {getListQuery,
     publisher, seriesd, issue, search,
-    publishers, series, issues, individuals};
+    publishers, series, issues, individuals, exportQuery};

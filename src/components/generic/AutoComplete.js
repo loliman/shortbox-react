@@ -52,7 +52,8 @@ class AutoComplete extends React.Component {
 
         return (
             <Query query={query}
-                   variables={variables}>
+                   variables={variables}
+                   queryDeduplication={true}>
                 {({loading, error, data}) => {
                     let optionsFromQuery = [];
                     if(data)
