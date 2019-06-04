@@ -31,6 +31,9 @@ function Filter(props) {
 
     if(!defaultValues)
         defaultValues = {
+            story: true,
+            cover: false,
+            feature: false,
             formats: [],
             withVariants: false,
             releasedates: [{date: '1900-01-01', compare: ">"}],
@@ -41,7 +44,7 @@ function Filter(props) {
             artists: [],
             inkers: [],
             colourists: [],
-            letteres: [],
+            letterers: [],
             editors: [],
             translators: [],
             firstPrint: false,
@@ -52,6 +55,13 @@ function Filter(props) {
             noPrint: false
         };
     else {
+        if(!defaultValues.story)
+            defaultValues.story = false;
+        if(!defaultValues.cover)
+            defaultValues.cover = false;
+        if(!defaultValues.feature)
+            defaultValues.feature = false;
+
         if(!defaultValues.formats)
             defaultValues.formats = [];
         else {
@@ -69,6 +79,11 @@ function Filter(props) {
             defaultValues.publishers = [];
         if(!defaultValues.series)
             defaultValues.series = [];
+        else {
+            defaultValues.series.forEach(s => {
+                s.__typename = "Series";
+            });
+        }
         if(!defaultValues.numbers)
             defaultValues.numbers = [{number: "", compare: ">"}];
         if(!defaultValues.writers)
@@ -79,8 +94,8 @@ function Filter(props) {
             defaultValues.inkers = [];
         if(!defaultValues.colourists)
             defaultValues.colourists = [];
-        if(!defaultValues.letteres)
-            defaultValues.letteres = [];
+        if(!defaultValues.letterers)
+            defaultValues.letterers = [];
         if(!defaultValues.editors)
             defaultValues.editors = [];
         if(!defaultValues.translators)
@@ -159,9 +174,9 @@ function Filter(props) {
                         v.colourists = [];
                         values.colourists.forEach((o) => v.colourists.push(stripItem(o)));
                     }
-                    if (values.letteres.length > 0) {
-                        v.letteres = [];
-                        values.letteres.forEach((o) => v.letteres.push(stripItem(o)));
+                    if (values.letterers.length > 0) {
+                        v.letterers = [];
+                        values.letterers.forEach((o) => v.letterers.push(stripItem(o)));
                     }
                     if (values.editors.length > 0) {
                         v.editors = [];
@@ -184,6 +199,17 @@ function Filter(props) {
                     if (values.noPrint)
                         v.noPrint = true;
 
+                    if(JSON.stringify(v) !== "{}") {
+                        if (values.story)
+                            v.story = true;
+                        if (values.cover)
+                            v.cover = true;
+                        if (values.feature)
+                            v.feature = true;
+
+                        v.us = us;
+                    }
+
                     let url = lastLocation ? lastLocation.pathname : "/";
                     props.navigate(url, {filter: JSON.stringify(v) !== "{}" ? JSON.stringify(v) : null});
 
@@ -195,6 +221,58 @@ function Filter(props) {
                             <CardHeader title="Filter"/>
 
                             <CardContent className="cardContent">
+                                <Typography variant="h6">Filter nach</Typography>
+
+                                <FormControlLabel
+                                    className="switchEditor"
+                                    control={
+                                        <Switch
+                                            checked={values.story}
+                                            onChange={() => {
+                                                setFieldValue("story", !values.story);
+                                                setFieldValue("cover", false);
+                                                setFieldValue("feature", false);
+                                            }}
+                                            color="secondary"/>
+                                    }
+                                    label="Geschichten"
+                                />
+
+                                <FormControlLabel
+                                    className="switchEditor"
+                                    control={
+                                        <Switch
+                                            checked={values.cover}
+                                            onChange={() => {
+                                                setFieldValue("cover", !values.cover);
+                                                setFieldValue("story", false);
+                                                setFieldValue("feature", false);
+                                            }}
+                                            color="secondary"/>
+                                    }
+                                    label="Cover"
+                                />
+
+                                {!us ?
+                                <FormControlLabel
+                                    className="switchEditor"
+                                    control={
+                                        <Switch
+                                            checked={values.feature}
+                                            onChange={() => {
+                                                setFieldValue("feature", !values.feature);
+                                                setFieldValue("cover", false);
+                                                setFieldValue("story", false);
+                                            }}
+                                            color="secondary"/>
+                                    }
+                                    label="Sonstige Inhalte"
+                                /> : null}
+
+                                <br />
+                                <br />
+                                <br />
+
                                 <Typography variant="h6">Details</Typography>
 
                                 <AutoComplete
@@ -278,271 +356,285 @@ function Filter(props) {
                                 <br/>
                                 <br/>
 
-                                <Typography variant="h6">Enthält</Typography>
-
-                                { !us ?
-                                    <React.Fragment>
-                                        <FormControlLabel
-                                            className="switchEditor"
-                                            control={
-                                                <Switch
-                                                    checked={values.firstPrint}
-                                                    onChange={() => {
-                                                        setFieldValue("firstPrint", !values.firstPrint);
-                                                        setFieldValue("onlyPrint", false);
-                                                        setFieldValue("otherTb", false);
-                                                        setFieldValue("exclusive", false);
-                                                    }}
-                                                    color="secondary"/>
-                                            }
-                                            label="Erstausgabe"
-                                        />
-
-                                        <FormControlLabel
-                                            className="switchEditor"
-                                            control={
-                                                <Switch
-                                                    checked={values.onlyPrint}
-                                                    onChange={() => {
-                                                        setFieldValue("firstPrint", false);
-                                                        setFieldValue("onlyPrint", !values.onlyPrint);
-                                                        setFieldValue("otherTb", false);
-                                                        setFieldValue("exclusive", false);
-                                                    }}
-                                                    color="secondary"/>
-                                            }
-                                            label="Einzige Ausgabe"
-                                        />
-
-                                        <FormControlLabel
-                                            className="switchEditor"
-                                            control={
-                                                <Switch
-                                                    checked={values.otherTb}
-                                                    onChange={() => {
-                                                        setFieldValue("firstPrint", false);
-                                                        setFieldValue("onlyPrint", false);
-                                                        setFieldValue("otherTb", !values.otherTb);
-                                                        setFieldValue("exclusive", false);
-                                                    }}
-                                                    color="secondary"/>
-                                            }
-                                            label="Sonst nur in TB"
-                                        />
-
-                                        <FormControlLabel
-                                            className="switchEditor"
-                                            control={
-                                                <Switch
-                                                    checked={values.exclusive}
-                                                    onChange={() => {
-                                                        setFieldValue("firstPrint", false);
-                                                        setFieldValue("onlyPrint", false);
-                                                        setFieldValue("otherTb", false);
-                                                        setFieldValue("exclusive", !values.exclusive);
-                                                    }}
-                                                    color="secondary"/>
-                                            }
-                                            label="Exklusiv"
-                                        />
-                                    </React.Fragment> :
-                                    <React.Fragment>
-                                        <FormControlLabel
-                                            className="switchEditor"
-                                            control={
-                                                <Switch
-                                                    checked={values.onlyTb}
-                                                    onChange={() => {
-                                                        setFieldValue("onlyTb", !values.onlyTb);
-                                                        setFieldValue("noPrint", false);
-                                                    }}
-                                                    color="secondary"/>
-                                            }
-                                            label="Nur in TB"
-                                        />
-
-                                        <FormControlLabel
-                                            className="switchEditor"
-                                            control={
-                                                <Switch
-                                                    checked={values.noPrint}
-                                                    onChange={() => {
-                                                        setFieldValue("onlyTb", false);
-                                                        setFieldValue("noPrint", !values.noPrint);
-                                                    }}
-                                                    color="secondary"/>
-                                            }
-                                            label="Nicht auf deutsch erschienen"
-                                        />
-                                    </React.Fragment>
-                                }
-
-                                <br />
-
-                                <AutoComplete
-                                    query={publishers}
-                                    variables={{us: !us}}
-                                    name={"publishers"}
-                                    nameField="name"
-                                    label="Verlag"
-                                    isMulti
-                                    onChange={(option) => setFieldValue("publishers", option)}
-                                    style={{
-                                        width: props.desktop ? "40%" : "99%"
-                                    }}
-                                    generateLabel={(e) => e.name}
-                                />
-
-                                <AutoComplete
-                                    query={series}
-                                    variables={{publisher: {name: "*", us: !us}}}
-                                    name={"series"}
-                                    nameField="title"
-                                    label="Serie"
-                                    isMulti
-                                    onChange={(option) => setFieldValue("series", option)}
-                                    style={{
-                                        width: props.desktop ? "40%" : "99%"
-                                    }}
-                                    generateLabel={generateLabel}
-                                />
-
-                                <br />
-
                                 {
-                                    values.numbers.map((n, i) => {
-                                        return (
-                                            <React.Fragment key={i}>
-                                                <FastField
-                                                    className={props.desktop ? "field field40" : "field field90"}
-                                                    name={"numbers[" + i + "].number"}
-                                                    label="Nummer"
-                                                    component={TextField}
+                                    !values.feature ?
+                                    <React.Fragment>
+                                        <Typography variant="h6">Enthält</Typography>
+
+                                        { !us ?
+                                            <React.Fragment>
+                                                <FormControlLabel
+                                                    className="switchEditor"
+                                                    control={
+                                                        <Switch
+                                                            checked={values.firstPrint}
+                                                            onChange={() => {
+                                                                setFieldValue("firstPrint", !values.firstPrint);
+                                                                setFieldValue("onlyPrint", false);
+                                                                setFieldValue("otherTb", false);
+                                                                setFieldValue("exclusive", false);
+                                                            }}
+                                                            color="secondary"/>
+                                                    }
+                                                    label="Erstausgabe"
                                                 />
 
-                                                <FastField
-                                                    type="text"
-                                                    name={"numbers[" + i + "].compare"}
-                                                    label="ist"
-                                                    select
-                                                    component={TextField}
-                                                    className={"field field10"}
-                                                    InputLabelProps={{
-                                                        shrink: true,
-                                                    }}
-                                                >
-                                                    {[">", "<", "=", ">=", "<="].map(e => (
-                                                        <MenuItem key={e} value={e}>{e}</MenuItem>
-                                                    ))}
-                                                </FastField>
+                                                <FormControlLabel
+                                                    className="switchEditor"
+                                                    control={
+                                                        <Switch
+                                                            checked={values.onlyPrint}
+                                                            onChange={() => {
+                                                                setFieldValue("firstPrint", false);
+                                                                setFieldValue("onlyPrint", !values.onlyPrint);
+                                                                setFieldValue("otherTb", false);
+                                                                setFieldValue("exclusive", false);
+                                                            }}
+                                                            color="secondary"/>
+                                                    }
+                                                    label="Einzige Ausgabe"
+                                                />
 
-                                                {
-                                                    i === values.numbers.length-1 ?
-                                                        <IconButton className="addBtnFilter" aria-label="Hinzufügen"
-                                                                    onClick={() => {
-                                                                        let o = JSON.parse(JSON.stringify(values.numbers));
-                                                                        o.push({number: "", compare: ">"});
-                                                                        setFieldValue("numbers", o);
-                                                                    }}>
-                                                            <AddIcon/>
-                                                        </IconButton> : null
-                                                }
+                                                <FormControlLabel
+                                                    className="switchEditor"
+                                                    control={
+                                                        <Switch
+                                                            checked={values.otherTb}
+                                                            onChange={() => {
+                                                                setFieldValue("firstPrint", false);
+                                                                setFieldValue("onlyPrint", false);
+                                                                setFieldValue("otherTb", !values.otherTb);
+                                                                setFieldValue("exclusive", false);
+                                                            }}
+                                                            color="secondary"/>
+                                                    }
+                                                    label="Sonst nur in TB"
+                                                />
 
-                                                <br/>
+                                                <FormControlLabel
+                                                    className="switchEditor"
+                                                    control={
+                                                        <Switch
+                                                            checked={values.exclusive}
+                                                            onChange={() => {
+                                                                setFieldValue("firstPrint", false);
+                                                                setFieldValue("onlyPrint", false);
+                                                                setFieldValue("otherTb", false);
+                                                                setFieldValue("exclusive", !values.exclusive);
+                                                            }}
+                                                            color="secondary"/>
+                                                    }
+                                                    label="Exklusiv"
+                                                />
+                                            </React.Fragment> :
+                                            <React.Fragment>
+                                                <FormControlLabel
+                                                    className="switchEditor"
+                                                    control={
+                                                        <Switch
+                                                            checked={values.onlyTb}
+                                                            onChange={() => {
+                                                                setFieldValue("onlyTb", !values.onlyTb);
+                                                                setFieldValue("noPrint", false);
+                                                            }}
+                                                            color="secondary"/>
+                                                    }
+                                                    label="Nur in TB"
+                                                />
+
+                                                <FormControlLabel
+                                                    className="switchEditor"
+                                                    control={
+                                                        <Switch
+                                                            checked={values.noPrint}
+                                                            onChange={() => {
+                                                                setFieldValue("onlyTb", false);
+                                                                setFieldValue("noPrint", !values.noPrint);
+                                                            }}
+                                                            color="secondary"/>
+                                                    }
+                                                    label="Nicht auf deutsch erschienen"
+                                                />
                                             </React.Fragment>
-                                        )
-                                    })
-                                }
+                                        }
 
-                                <br/>
-                                <br/>
-                                <br/>
+                                        <br />
+
+                                        <AutoComplete
+                                            query={publishers}
+                                            variables={{us: !us}}
+                                            name={"publishers"}
+                                            nameField="name"
+                                            label="Verlag"
+                                            isMulti
+                                            onChange={(option) => setFieldValue("publishers", option)}
+                                            style={{
+                                                width: props.desktop ? "40%" : "99%"
+                                            }}
+                                            generateLabel={(e) => e.name}
+                                        />
+
+                                        <AutoComplete
+                                            query={series}
+                                            variables={{publisher: {name: "*", us: !us}}}
+                                            name={"series"}
+                                            nameField="title"
+                                            label="Serie"
+                                            isMulti
+                                            onChange={(option) => setFieldValue("series", option)}
+                                            style={{
+                                                width: props.desktop ? "40%" : "99%"
+                                            }}
+                                            generateLabel={generateLabel}
+                                        />
+
+                                        <br />
+
+                                        {
+                                            values.numbers.map((n, i) => {
+                                                return (
+                                                    <React.Fragment key={i}>
+                                                        <FastField
+                                                            className={props.desktop ? "field field40" : "field field90"}
+                                                            name={"numbers[" + i + "].number"}
+                                                            label="Nummer"
+                                                            component={TextField}
+                                                        />
+
+                                                        <FastField
+                                                            type="text"
+                                                            name={"numbers[" + i + "].compare"}
+                                                            label="ist"
+                                                            select
+                                                            component={TextField}
+                                                            className={"field field10"}
+                                                            InputLabelProps={{
+                                                                shrink: true,
+                                                            }}
+                                                        >
+                                                            {[">", "<", "=", ">=", "<="].map(e => (
+                                                                <MenuItem key={e} value={e}>{e}</MenuItem>
+                                                            ))}
+                                                        </FastField>
+
+                                                        {
+                                                            i === values.numbers.length-1 ?
+                                                                <IconButton className="addBtnFilter" aria-label="Hinzufügen"
+                                                                            onClick={() => {
+                                                                                let o = JSON.parse(JSON.stringify(values.numbers));
+                                                                                o.push({number: "", compare: ">"});
+                                                                                setFieldValue("numbers", o);
+                                                                            }}>
+                                                                    <AddIcon/>
+                                                                </IconButton> : null
+                                                        }
+
+                                                        <br/>
+                                                    </React.Fragment>
+                                                )
+                                            })
+                                        }
+
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                    </React.Fragment> : null
+                                }
 
                                 <Typography variant="h6">Mitwirkende</Typography>
 
-                                <AutoComplete
-                                    query={individuals}
-                                    name={"writers"}
-                                    nameField="name"
-                                    label="Autor"
-                                    isMulti
-                                    onChange={(option) => setFieldValue("writers", option)}
-                                    style={{
-                                        width: props.desktop ? "40%" : "99%"
-                                    }}
-                                    generateLabel={(e) => e.name}
-                                />
+                                {
+                                    !values.cover ?
+                                        <AutoComplete
+                                            query={individuals}
+                                            name={"writers"}
+                                            nameField="name"
+                                            label="Autor"
+                                            isMulti
+                                            onChange={(option) => setFieldValue("writers", option)}
+                                            style={{
+                                                width: props.desktop ? "40%" : "99%"
+                                            }}
+                                            generateLabel={(e) => e.name}
+                                        /> : null
+                                }
 
-                                <AutoComplete
-                                    query={individuals}
-                                    name={"artists"}
-                                    nameField="name"
-                                    label="Zeichner"
-                                    isMulti
-                                    onChange={(option) => setFieldValue("artists", option)}
-                                    style={{
-                                        width: props.desktop ? "40%" : "99%"
-                                    }}
-                                    generateLabel={(e) => e.name}
-                                />
+                                {
+                                    !values.feature ?
+                                        <AutoComplete
+                                            query={individuals}
+                                            name={"artists"}
+                                            nameField="name"
+                                            label="Zeichner"
+                                            isMulti
+                                            onChange={(option) => setFieldValue("artists", option)}
+                                            style={{
+                                                width: props.desktop ? "40%" : "99%"
+                                            }}
+                                            generateLabel={(e) => e.name}
+                                        /> : null
+                                }
 
                                 <br/>
 
-                                <AutoComplete
-                                    query={individuals}
-                                    name={"inkers"}
-                                    nameField="name"
-                                    label="Inker"
-                                    isMulti
-                                    onChange={(option) => setFieldValue("inkers", option)}
-                                    style={{
-                                        width: props.desktop ? "40%" : "99%"
-                                    }}
-                                    generateLabel={(e) => e.name}
-                                />
+                                { values.story ?
+                                    <React.Fragment>
+                                        <AutoComplete
+                                            query={individuals}
+                                            name={"inkers"}
+                                            nameField="name"
+                                            label="Inker"
+                                            isMulti
+                                            onChange={(option) => setFieldValue("inkers", option)}
+                                            style={{
+                                                width: props.desktop ? "40%" : "99%"
+                                            }}
+                                            generateLabel={(e) => e.name}
+                                        />
 
-                                <AutoComplete
-                                    query={individuals}
-                                    name={"colourists"}
-                                    nameField="name"
-                                    label="Kolorist"
-                                    isMulti
-                                    onChange={(option) => setFieldValue("colourists", option)}
-                                    style={{
-                                        width: props.desktop ? "40%" : "99%"
-                                    }}
-                                    generateLabel={(e) => e.name}
-                                />
+                                        <AutoComplete
+                                            query={individuals}
+                                            name={"colourists"}
+                                            nameField="name"
+                                            label="Kolorist"
+                                            isMulti
+                                            onChange={(option) => setFieldValue("colourists", option)}
+                                            style={{
+                                                width: props.desktop ? "40%" : "99%"
+                                            }}
+                                            generateLabel={(e) => e.name}
+                                        />
 
-                                <br />
+                                        <br />
 
-                                <AutoComplete
-                                    query={individuals}
-                                    name={"letterers"}
-                                    nameField="name"
-                                    label="Letterer"
-                                    isMulti
-                                    onChange={(option) => setFieldValue("letterers", option)}
-                                    style={{
-                                        width: props.desktop ? "40%" : "99%"
-                                    }}
-                                    generateLabel={(e) => e.name}
-                                />
+                                        <AutoComplete
+                                            query={individuals}
+                                            name={"letterers"}
+                                            nameField="name"
+                                            label="Letterer"
+                                            isMulti
+                                            onChange={(option) => setFieldValue("letterers", option)}
+                                            style={{
+                                                width: props.desktop ? "40%" : "99%"
+                                            }}
+                                            generateLabel={(e) => e.name}
+                                        />
 
-                                <AutoComplete
-                                    query={individuals}
-                                    name={"editors"}
-                                    nameField="name"
-                                    label="Editor"
-                                    isMulti
-                                    onChange={(option) => setFieldValue("editors", option)}
-                                    style={{
-                                        width: props.desktop ? "40%" : "99%"
-                                    }}
-                                    generateLabel={(e) => e.name}
-                                />
+                                        <AutoComplete
+                                            query={individuals}
+                                            name={"editors"}
+                                            nameField="name"
+                                            label="Editor"
+                                            isMulti
+                                            onChange={(option) => setFieldValue("editors", option)}
+                                            style={{
+                                                width: props.desktop ? "40%" : "99%"
+                                            }}
+                                            generateLabel={(e) => e.name}
+                                        />
+                                    </React.Fragment> : null }
 
-                                { !us ?
+                                { !us && values.story ?
                                     <React.Fragment>
                                         <br />
 
@@ -579,7 +671,7 @@ function Filter(props) {
                                                     artists: [],
                                                     inkers: [],
                                                     colourists: [],
-                                                    letteres: [],
+                                                    letterers: [],
                                                     editors: [],
                                                     translators: [],
                                                     firstApp: false,

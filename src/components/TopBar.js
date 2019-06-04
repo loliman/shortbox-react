@@ -13,13 +13,21 @@ import {withContext} from "./generic";
 import IconButton from "@material-ui/core/IconButton";
 import SearchBar from "./SearchBar";
 import FilterListIcon from '@material-ui/icons/FilterList';
+import EditIcon from '@material-ui/icons/Edit';
+import ClearIcon from '@material-ui/icons/Clear';
+import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
+import ClickAwayListener from "@material-ui/core/ClickAwayListener";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
 
 class TopBar extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            searchbarFocus: false
+            searchbarFocus: false,
+            anchorEl: null
         };
     }
 
@@ -59,12 +67,71 @@ class TopBar extends React.Component {
                         <Tooltip title={isFilter ? "Filter aktiv" : "Filtern"}>
                             <IconButton
                                 color={isFilter ? "secondary" : "inherit"}
-                                onClick={() => this.props.navigate(us ? "/filter/us" : "/filter/de")}
+                                onClick={(e) => {
+                                    if(!isFilter)
+                                        this.props.navigate(us ? "/filter/us" : "/filter/de");
+                                    else
+                                        this.handleFilterMenuOpen(e);
+                                }}
                                 id="filterIcon"
                             >
                                 <FilterListIcon />
                             </IconButton>
                         </Tooltip>
+
+                        <ClickAwayListener onClickAway={this.handleFilterMenuClose}>
+                            <div>
+                                <Menu
+                                    id="long-menu"
+                                    anchorEl={this.state.anchorEl}
+                                    open={this.state.anchorEl !== null}
+                                    onClose={() => this.handleFilterMenuClose}
+                                    PaperProps={{
+                                        style: {
+                                            maxHeight: 48 * 4.5,
+                                            width: 200,
+                                        },
+                                    }}>
+
+                                    <MenuItem key="edit"
+                                              onClick={() => {
+                                                  this.handleFilterMenuClose();
+                                                  this.props.navigate(us ? "/filter/us" : "/filter/de");
+                                              }}>
+                                        <ListItemIcon>
+                                            <EditIcon/>
+                                        </ListItemIcon>
+                                        <Typography variant="inherit" noWrap>
+                                            Bearbeiten
+                                        </Typography>
+                                    </MenuItem>
+
+                                    <MenuItem key="export" onClick={() => {
+                                        this.handleFilterMenuClose();
+                                        this.props.navigate(!us ? "/de" : "/us", {filter: null})
+                                    }}>
+                                        <ListItemIcon>
+                                            <CloudDownloadIcon/>
+                                        </ListItemIcon>
+                                        <Typography variant="inherit" noWrap>
+                                            Exportieren
+                                        </Typography>
+                                    </MenuItem>
+
+                                    <MenuItem key="reset" onClick={() => {
+                                        this.handleFilterMenuClose();
+                                        this.props.navigate(!us ? "/de" : "/us", {filter: null});
+                                    }}>
+                                        <ListItemIcon>
+                                            <ClearIcon/>
+                                        </ListItemIcon>
+                                        <Typography variant="inherit" noWrap>
+                                            Zurücksetzen
+                                        </Typography>
+                                    </MenuItem>
+                                </Menu>
+                            </div>
+                        </ClickAwayListener>
 
                         <FormControlLabel
                             id="us"
@@ -92,7 +159,20 @@ class TopBar extends React.Component {
     onFocus = (e, focus) => {
         this.setState({searchbarFocus: focus});
         if(e) e.preventDefault();
-    }
+    };
+
+
+    handleFilterMenuOpen = (e) => {
+        this.setState({
+            anchorEl: e.currentTarget
+        });
+    };
+
+    handleFilterMenuClose = () => {
+        this.setState({
+            anchorEl: null
+        });
+    };
 }
 
 function BreadCrumbMenu(props) {
