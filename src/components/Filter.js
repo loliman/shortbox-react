@@ -36,7 +36,7 @@ function Filter(props) {
             feature: false,
             formats: [],
             withVariants: false,
-            releasedates: [{date: '1900-01-01', compare: ">"}],
+            releasedates: [{date: '1900-01-01', compare: ">", variant: ""}],
             publishers: [],
             series: [],
             numbers: [{number: "", compare: ">"}],
@@ -85,7 +85,7 @@ function Filter(props) {
             });
         }
         if(!defaultValues.numbers)
-            defaultValues.numbers = [{number: "", compare: ">"}];
+            defaultValues.numbers = [{number: "", compare: ">", variant: ""}];
         if(!defaultValues.writers)
             defaultValues.writers = [];
         if(!defaultValues.artists)
@@ -221,58 +221,6 @@ function Filter(props) {
                             <CardHeader title="Filter"/>
 
                             <CardContent className="cardContent">
-                                <Typography variant="h6">Filter nach</Typography>
-
-                                <FormControlLabel
-                                    className="switchEditor"
-                                    control={
-                                        <Switch
-                                            checked={values.story}
-                                            onChange={() => {
-                                                setFieldValue("story", !values.story);
-                                                setFieldValue("cover", false);
-                                                setFieldValue("feature", false);
-                                            }}
-                                            color="secondary"/>
-                                    }
-                                    label="Geschichten"
-                                />
-
-                                <FormControlLabel
-                                    className="switchEditor"
-                                    control={
-                                        <Switch
-                                            checked={values.cover}
-                                            onChange={() => {
-                                                setFieldValue("cover", !values.cover);
-                                                setFieldValue("story", false);
-                                                setFieldValue("feature", false);
-                                            }}
-                                            color="secondary"/>
-                                    }
-                                    label="Cover"
-                                />
-
-                                {!us ?
-                                <FormControlLabel
-                                    className="switchEditor"
-                                    control={
-                                        <Switch
-                                            checked={values.feature}
-                                            onChange={() => {
-                                                setFieldValue("feature", !values.feature);
-                                                setFieldValue("cover", false);
-                                                setFieldValue("story", false);
-                                            }}
-                                            color="secondary"/>
-                                    }
-                                    label="Sonstige Inhalte"
-                                /> : null}
-
-                                <br />
-                                <br />
-                                <br />
-
                                 <Typography variant="h6">Details</Typography>
 
                                 <AutoComplete
@@ -355,6 +303,58 @@ function Filter(props) {
                                 <br/>
                                 <br/>
                                 <br/>
+
+                                <Typography variant="h6">Filter nach</Typography>
+
+                                <FormControlLabel
+                                    className="switchEditor"
+                                    control={
+                                        <Switch
+                                            checked={values.story}
+                                            onChange={() => {
+                                                setFieldValue("story", !values.story);
+                                                setFieldValue("cover", false);
+                                                setFieldValue("feature", false);
+                                            }}
+                                            color="secondary"/>
+                                    }
+                                    label="Geschichten"
+                                />
+
+                                <FormControlLabel
+                                    className="switchEditor"
+                                    control={
+                                        <Switch
+                                            checked={values.cover}
+                                            onChange={() => {
+                                                setFieldValue("cover", !values.cover);
+                                                setFieldValue("story", false);
+                                                setFieldValue("feature", false);
+                                            }}
+                                            color="secondary"/>
+                                    }
+                                    label="Cover"
+                                />
+
+                                {!us ?
+                                <FormControlLabel
+                                    className="switchEditor"
+                                    control={
+                                        <Switch
+                                            checked={values.feature}
+                                            onChange={() => {
+                                                setFieldValue("feature", !values.feature);
+                                                setFieldValue("cover", false);
+                                                setFieldValue("story", false);
+                                            }}
+                                            color="secondary"/>
+                                    }
+                                    label="Sonstige Inhalte"
+                                /> : null}
+
+                                <br />
+                                <br />
+                                <br />
 
                                 {
                                     !values.feature ?
@@ -458,205 +458,223 @@ function Filter(props) {
                                             </React.Fragment>
                                         }
 
-                                        <br />
+                                        {
+                                            !values.exclusive && !values.noPrint ?
+                                            <React.Fragment>
+                                                <br />
 
-                                        <AutoComplete
-                                            query={publishers}
-                                            variables={{us: !us}}
-                                            name={"publishers"}
-                                            nameField="name"
-                                            label="Verlag"
-                                            isMulti
-                                            onChange={(option) => setFieldValue("publishers", option)}
-                                            style={{
-                                                width: props.desktop ? "40%" : "99%"
-                                            }}
-                                            generateLabel={(e) => e.name}
-                                        />
+                                                <AutoComplete
+                                                    query={publishers}
+                                                    variables={{us: !us}}
+                                                    name={"publishers"}
+                                                    nameField="name"
+                                                    label="Verlag"
+                                                    isMulti
+                                                    onChange={(option) => setFieldValue("publishers", option)}
+                                                    style={{
+                                                        width: props.desktop ? "40%" : "99%"
+                                                    }}
+                                                    generateLabel={(e) => e.name}
+                                                />
 
-                                        <AutoComplete
-                                            query={series}
-                                            variables={{publisher: {name: "*", us: !us}}}
-                                            name={"series"}
-                                            nameField="title"
-                                            label="Serie"
-                                            isMulti
-                                            onChange={(option) => setFieldValue("series", option)}
-                                            style={{
-                                                width: props.desktop ? "40%" : "99%"
-                                            }}
-                                            generateLabel={generateLabel}
-                                        />
+                                                <AutoComplete
+                                                    query={series}
+                                                    variables={{publisher: {name: "*", us: !us}}}
+                                                    name={"series"}
+                                                    nameField="title"
+                                                    label="Serie"
+                                                    isMulti
+                                                    onChange={(option) => setFieldValue("series", option)}
+                                                    style={{
+                                                        width: props.desktop ? "40%" : "99%"
+                                                    }}
+                                                    generateLabel={generateLabel}
+                                                />
 
-                                        <br />
+                                                <br />
+
+                                                {
+                                                    values.numbers.map((n, i) => {
+                                                        return (
+                                                            <React.Fragment key={i}>
+                                                                <FastField
+                                                                    className={props.desktop ? "field field40" : "field field90"}
+                                                                    name={"numbers[" + i + "].number"}
+                                                                    label="Nummer"
+                                                                    component={TextField}
+                                                                />
+
+                                                                <FastField
+                                                                    type="text"
+                                                                    name={"numbers[" + i + "].compare"}
+                                                                    label="ist"
+                                                                    select
+                                                                    component={TextField}
+                                                                    className={"field field10"}
+                                                                    InputLabelProps={{
+                                                                        shrink: true,
+                                                                    }}
+                                                                >
+                                                                    {[">", "<", "=", ">=", "<="].map(e => (
+                                                                        <MenuItem key={e} value={e}>{e}</MenuItem>
+                                                                    ))}
+                                                                </FastField>
+
+                                                                {
+                                                                    !us && values.cover ?
+                                                                    <FastField
+                                                                        className={props.desktop ? "field field25" : "field field90"}
+                                                                        name={"numbers[" + i + "].variant"}
+                                                                        label="Variante"
+                                                                        component={TextField}
+                                                                    /> : null
+                                                                }
+
+                                                                {
+                                                                    i === values.numbers.length-1 ?
+                                                                        <IconButton className="addBtnFilter" aria-label="Hinzufügen"
+                                                                                    onClick={() => {
+                                                                                        let o = JSON.parse(JSON.stringify(values.numbers));
+                                                                                        o.push({number: "", compare: ">", variant: ""});
+                                                                                        setFieldValue("numbers", o);
+                                                                                    }}>
+                                                                            <AddIcon/>
+                                                                        </IconButton> : null
+                                                                }
+
+                                                                <br/>
+                                                            </React.Fragment>
+                                                        )
+                                                    })
+                                                }
+                                            </React.Fragment> : null
+                                        }
+                                    </React.Fragment> : null
+                                }
+
+                                <br/>
+                                <br/>
+                                <br/>
+
+                                {!values.exclusive && !values.noPrint ?
+                                    <React.Fragment>
+                                        <Typography variant="h6">Mitwirkende</Typography>
 
                                         {
-                                            values.numbers.map((n, i) => {
-                                                return (
-                                                    <React.Fragment key={i}>
-                                                        <FastField
-                                                            className={props.desktop ? "field field40" : "field field90"}
-                                                            name={"numbers[" + i + "].number"}
-                                                            label="Nummer"
-                                                            component={TextField}
-                                                        />
+                                            !values.cover ?
+                                                <AutoComplete
+                                                    query={individuals}
+                                                    name={"writers"}
+                                                    nameField="name"
+                                                    label="Autor"
+                                                    isMulti
+                                                    onChange={(option) => setFieldValue("writers", option)}
+                                                    style={{
+                                                        width: props.desktop ? "40%" : "99%"
+                                                    }}
+                                                    generateLabel={(e) => e.name}
+                                                /> : null
+                                        }
 
-                                                        <FastField
-                                                            type="text"
-                                                            name={"numbers[" + i + "].compare"}
-                                                            label="ist"
-                                                            select
-                                                            component={TextField}
-                                                            className={"field field10"}
-                                                            InputLabelProps={{
-                                                                shrink: true,
-                                                            }}
-                                                        >
-                                                            {[">", "<", "=", ">=", "<="].map(e => (
-                                                                <MenuItem key={e} value={e}>{e}</MenuItem>
-                                                            ))}
-                                                        </FastField>
+                                        {
+                                            !values.feature ?
+                                                <AutoComplete
+                                                    query={individuals}
+                                                    name={"artists"}
+                                                    nameField="name"
+                                                    label="Zeichner"
+                                                    isMulti
+                                                    onChange={(option) => setFieldValue("artists", option)}
+                                                    style={{
+                                                        width: props.desktop ? "40%" : "99%"
+                                                    }}
+                                                    generateLabel={(e) => e.name}
+                                                /> : null
+                                        }
 
-                                                        {
-                                                            i === values.numbers.length-1 ?
-                                                                <IconButton className="addBtnFilter" aria-label="Hinzufügen"
-                                                                            onClick={() => {
-                                                                                let o = JSON.parse(JSON.stringify(values.numbers));
-                                                                                o.push({number: "", compare: ">"});
-                                                                                setFieldValue("numbers", o);
-                                                                            }}>
-                                                                    <AddIcon/>
-                                                                </IconButton> : null
-                                                        }
+                                        <br/>
 
-                                                        <br/>
-                                                    </React.Fragment>
-                                                )
-                                            })
+                                        { values.story ?
+                                            <React.Fragment>
+                                                <AutoComplete
+                                                    query={individuals}
+                                                    name={"inkers"}
+                                                    nameField="name"
+                                                    label="Inker"
+                                                    isMulti
+                                                    onChange={(option) => setFieldValue("inkers", option)}
+                                                    style={{
+                                                        width: props.desktop ? "40%" : "99%"
+                                                    }}
+                                                    generateLabel={(e) => e.name}
+                                                />
+
+                                                <AutoComplete
+                                                    query={individuals}
+                                                    name={"colourists"}
+                                                    nameField="name"
+                                                    label="Kolorist"
+                                                    isMulti
+                                                    onChange={(option) => setFieldValue("colourists", option)}
+                                                    style={{
+                                                        width: props.desktop ? "40%" : "99%"
+                                                    }}
+                                                    generateLabel={(e) => e.name}
+                                                />
+
+                                                <br />
+
+                                                <AutoComplete
+                                                    query={individuals}
+                                                    name={"letterers"}
+                                                    nameField="name"
+                                                    label="Letterer"
+                                                    isMulti
+                                                    onChange={(option) => setFieldValue("letterers", option)}
+                                                    style={{
+                                                        width: props.desktop ? "40%" : "99%"
+                                                    }}
+                                                    generateLabel={(e) => e.name}
+                                                />
+
+                                                <AutoComplete
+                                                    query={individuals}
+                                                    name={"editors"}
+                                                    nameField="name"
+                                                    label="Editor"
+                                                    isMulti
+                                                    onChange={(option) => setFieldValue("editors", option)}
+                                                    style={{
+                                                        width: props.desktop ? "40%" : "99%"
+                                                    }}
+                                                    generateLabel={(e) => e.name}
+                                                />
+                                            </React.Fragment> : null }
+
+                                        { !us && values.story ?
+                                            <React.Fragment>
+                                                <br />
+
+                                                <AutoComplete
+                                                    query={individuals}
+                                                    name={"translators"}
+                                                    nameField="name"
+                                                    label="Übersetzer"
+                                                    isMulti
+                                                    onChange={(option) => setFieldValue("translators", option)}
+                                                    style={{
+                                                        width: props.desktop ? "40%" : "99%"
+                                                    }}
+                                                    generateLabel={(e) => e.name}
+                                                />
+                                            </React.Fragment> : null
                                         }
 
                                         <br/>
                                         <br/>
                                         <br/>
-                                    </React.Fragment> : null
-                                }
-
-                                <Typography variant="h6">Mitwirkende</Typography>
-
-                                {
-                                    !values.cover ?
-                                        <AutoComplete
-                                            query={individuals}
-                                            name={"writers"}
-                                            nameField="name"
-                                            label="Autor"
-                                            isMulti
-                                            onChange={(option) => setFieldValue("writers", option)}
-                                            style={{
-                                                width: props.desktop ? "40%" : "99%"
-                                            }}
-                                            generateLabel={(e) => e.name}
-                                        /> : null
-                                }
-
-                                {
-                                    !values.feature ?
-                                        <AutoComplete
-                                            query={individuals}
-                                            name={"artists"}
-                                            nameField="name"
-                                            label="Zeichner"
-                                            isMulti
-                                            onChange={(option) => setFieldValue("artists", option)}
-                                            style={{
-                                                width: props.desktop ? "40%" : "99%"
-                                            }}
-                                            generateLabel={(e) => e.name}
-                                        /> : null
-                                }
-
-                                <br/>
-
-                                { values.story ?
-                                    <React.Fragment>
-                                        <AutoComplete
-                                            query={individuals}
-                                            name={"inkers"}
-                                            nameField="name"
-                                            label="Inker"
-                                            isMulti
-                                            onChange={(option) => setFieldValue("inkers", option)}
-                                            style={{
-                                                width: props.desktop ? "40%" : "99%"
-                                            }}
-                                            generateLabel={(e) => e.name}
-                                        />
-
-                                        <AutoComplete
-                                            query={individuals}
-                                            name={"colourists"}
-                                            nameField="name"
-                                            label="Kolorist"
-                                            isMulti
-                                            onChange={(option) => setFieldValue("colourists", option)}
-                                            style={{
-                                                width: props.desktop ? "40%" : "99%"
-                                            }}
-                                            generateLabel={(e) => e.name}
-                                        />
-
-                                        <br />
-
-                                        <AutoComplete
-                                            query={individuals}
-                                            name={"letterers"}
-                                            nameField="name"
-                                            label="Letterer"
-                                            isMulti
-                                            onChange={(option) => setFieldValue("letterers", option)}
-                                            style={{
-                                                width: props.desktop ? "40%" : "99%"
-                                            }}
-                                            generateLabel={(e) => e.name}
-                                        />
-
-                                        <AutoComplete
-                                            query={individuals}
-                                            name={"editors"}
-                                            nameField="name"
-                                            label="Editor"
-                                            isMulti
-                                            onChange={(option) => setFieldValue("editors", option)}
-                                            style={{
-                                                width: props.desktop ? "40%" : "99%"
-                                            }}
-                                            generateLabel={(e) => e.name}
-                                        />
-                                    </React.Fragment> : null }
-
-                                { !us && values.story ?
-                                    <React.Fragment>
-                                        <br />
-
-                                        <AutoComplete
-                                            query={individuals}
-                                            name={"translators"}
-                                            nameField="name"
-                                            label="Übersetzer"
-                                            isMulti
-                                            onChange={(option) => setFieldValue("translators", option)}
-                                            style={{
-                                                width: props.desktop ? "40%" : "99%"
-                                            }}
-                                            generateLabel={(e) => e.name}
-                                        />
-                                    </React.Fragment> : null
-                                }
-
-                                <br/>
-                                <br/>
-                                <br/>
-                                <br/>
+                                        <br/>
+                                    </React.Fragment> : null}
 
                                 <div className="formButtons">
                                     <Button disabled={isSubmitting}
@@ -667,7 +685,7 @@ function Filter(props) {
                                                     feature: false,
                                                     formats: [],
                                                     withVariants: false,
-                                                    releasedates: [{date: '1900-01-01', compare: ">"}],
+                                                    releasedates: [{date: '1900-01-01', compare: ">", variant: ""}],
                                                     publishers: [],
                                                     series: [],
                                                     numbers: [{number: "", compare: ">"}],
