@@ -21,7 +21,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import {exportQuery} from "../graphql/queries";
-import ApolloConsumer from "react-apollo/ApolloConsumer";
+import {ApolloConsumer} from "react-apollo";
 
 class TopBar extends React.Component {
     constructor(props) {
@@ -120,13 +120,18 @@ class TopBar extends React.Component {
                                                 if(error || !data.export) {
                                                     this.props.enqueueSnackbar("Export fehlgeschlagen", {variant: 'error'});
                                                 } else {
-                                                    const a = document.createElement('a');
+                                                    let a = document.createElement('a');
                                                     document.body.appendChild(a);
                                                     a.setAttribute('style', 'display: none');
 
-                                                    const blob = new Blob([data.export], {type: 'text/plain'});
-                                                    const url = window.URL.createObjectURL(blob);
-                                                    const filename = 'shortbox.txt';
+                                                    let content = data.export;
+                                                    content = content.replaceAll("\"", "");
+                                                    content = content.replaceAll("\\n", "\r\n");
+                                                    content = content.replaceAll("\\t", "\t");
+
+                                                    let blob = new Blob([content], {type: 'text/plain'});
+                                                    let url = window.URL.createObjectURL(blob);
+                                                    let filename = 'shortbox.txt';
 
                                                     a.href = url;
                                                     a.download = filename;

@@ -662,7 +662,11 @@ function Filter(props) {
                                     <Button disabled={isSubmitting}
                                             onClick={() => {
                                                 resetForm({
+                                                    story: true,
+                                                    cover: false,
+                                                    feature: false,
                                                     formats: [],
+                                                    withVariants: false,
                                                     releasedates: [{date: '1900-01-01', compare: ">"}],
                                                     publishers: [],
                                                     series: [],
@@ -674,8 +678,8 @@ function Filter(props) {
                                                     letterers: [],
                                                     editors: [],
                                                     translators: [],
-                                                    firstApp: false,
-                                                    onlyApp: false,
+                                                    firstPrint: false,
+                                                    onlyPrint: false,
                                                     otherTb: false,
                                                     exclusive: false,
                                                     onlyTb: false,
