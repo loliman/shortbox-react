@@ -140,13 +140,12 @@ class AutoCompleteContainer extends React.Component {
             },
             getOptionLabel: (option) => {
                 let label = "";
-                if (option[this.props.nameField] === (this.props.isMulti ?
+                if (option[this.props.nameField] === (this.props.isMulti || this.props.creatable ?
                     (this.props.field.value ? this.props.field.value[this.props.nameField] : "")
                     : this.props.field.value))
                     label = option[this.props.nameField];
                 else
                     label = this.props.generateLabel(option);
-
                 return typeof label === "string" ? label : option[this.props.nameField];
             },
 
@@ -165,7 +164,7 @@ class AutoCompleteContainer extends React.Component {
         return (
             <div style={style}>
                 {
-                    !this.props.isMulti ?
+                    !this.props.isMulti && !this.props.creatable?
                         <Select {...props}
                                 onFocus={(e) => {
                                     if(this.props.onFocus)
@@ -192,33 +191,33 @@ class AutoCompleteContainer extends React.Component {
                             I don't know why, but the onBlur method seems to destroy the Series object.
                             But we don't need validation in that case anyways, so let's just ignore it.
                              */
-                             onBlur={this.props.isMulti ? this.props.field.onBlur : false}
-                             value={this.props.field.value}
-                             isMulti={this.props.isMulti}
-                             isValidNewOption={(value) => {
-                                 if(!this.props.createable)
-                                     return false;
+                                         onBlur={this.props.isMulti ? this.props.field.onBlur : false}
+                                         value={this.props.field.value}
+                                         isMulti={this.props.isMulti}
+                                         isValidNewOption={(value) => {
+                                             if(!this.props.creatable)
+                                                 return false;
 
-                                 let isNew = false;
-                                 if(value !== '' && this.props.options) {
-                                     let option = this.props.options.find(option => {
-                                         if(option[this.props.nameField] && value)
-                                             return option[this.props.nameField].toLowerCase() === value.toLowerCase();
-                                         else
-                                             return false;
-                                     });
+                                             let isNew = false;
+                                             if(value !== '' && this.props.options) {
+                                                 let option = this.props.options.find(option => {
+                                                     if(option[this.props.nameField] && value)
+                                                         return option[this.props.nameField].toLowerCase() === value.toLowerCase();
+                                                     else
+                                                         return false;
+                                                 });
 
-                                     if(!option) isNew = true;
-                                 }
+                                                 if(!option) isNew = true;
+                                             }
 
-                                 return isNew;
-                             }}
-                             getNewOptionData={(value) => {
-                                 let newOption = {};
-                                 newOption[this.props.nameField] = value;
-                                 newOption.__typename = typename;
-                                 return newOption;
-                             }}
+                                             return isNew;
+                                         }}
+                                         getNewOptionData={(value) => {
+                                             let newOption = {};
+                                             newOption[this.props.nameField] = value;
+                                             newOption.__typename = typename;
+                                             return newOption;
+                                         }}
                         />
                 }
 
@@ -386,6 +385,7 @@ const inputStyle = isHidden => ({
 function Input(props) {
     const {className, cx, id, innerRef, isHidden, isDisabled, selectProps, getStyles, ...rest} = props;
 
+
     return (
         <div className="autoSuggestInput">
             <AutosizeInput
@@ -427,7 +427,7 @@ function DropdownIndicator(props) {
 
     return (
         <div className="dropdownIndicator"
-            {...props.innerProps}>
+             {...props.innerProps}>
             {icon}
         </div>
     )

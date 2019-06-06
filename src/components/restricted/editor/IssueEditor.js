@@ -526,7 +526,7 @@ class IssueEditor extends React.Component {
                                         </Button>
 
                                         <Button disabled={isSubmitting}
-                                                oncClick={() => this.props.navigate(lastLocation ? lastLocation.pathname : "/")}
+                                                onClick={() => this.props.navigate(lastLocation ? lastLocation.pathname : "/")}
                                                 color="primary">
                                             Abbrechen
                                         </Button>
