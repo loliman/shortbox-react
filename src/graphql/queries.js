@@ -92,7 +92,8 @@ const publisher = gql`query Publisher($publisher: PublisherInput!){
                 publisher {
                     name
                 }
-            }
+            },
+            releasedate
         },
         lastIssue {
             number,
@@ -106,7 +107,8 @@ const publisher = gql`query Publisher($publisher: PublisherInput!){
                 publisher {
                     name
                 }
-            }
+            },
+            releasedate
         },
         lastEdited {
             number,
@@ -146,7 +148,8 @@ const seriesd = gql`query Seriesd($series: SeriesInput!){
                 publisher {
                     name
                 }
-            }
+            },
+            releasedate
         },
         lastIssue {
             number,
@@ -160,7 +163,8 @@ const seriesd = gql`query Seriesd($series: SeriesInput!){
                 publisher {
                     name
                 }
-            }
+            },
+            releasedate
         },
         lastEdited {
             number,
@@ -174,7 +178,7 @@ const seriesd = gql`query Seriesd($series: SeriesInput!){
                 publisher {
                     name
                 }
-            }
+            },
         },
         active,
         addinfo,

@@ -6,6 +6,8 @@ import Typography from "@material-ui/core/Typography";
 import {withContext} from "./generic";
 import React from "react";
 
+var dateFormat = require('dateformat');
+
 function IssuePreview(props) {
     let date = props.issue.updatedAt.split(" ")[0];
     if(date === today()) date = "heute";
@@ -35,6 +37,8 @@ function IssuePreview(props) {
                 <br />
 
                 {
+                    props.issue.releasedate ?
+                        <Typography>Erschienen {dateFormat(new Date(props.issue.releasedate), "dd.mm.yyyy")}</Typography> :
                     props.issue.createdAt === props.issue.updatedAt ?
                         <Typography>Hinzugefügt {date} um {time}</Typography> :
                         <Typography>Bearbeitet {date} um {time}</Typography>
