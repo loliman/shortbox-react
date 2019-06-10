@@ -17,10 +17,18 @@ function SeriesEdit(props) {
                     if (loading || error || !data.seriesd)
                         return <QueryResult loading={loading} error={error} data={data ? data.seriesd : null} selected={selected}/>;
 
+                    let defaultValues = JSON.parse(JSON.stringify(data.seriesd));
+
+                    defaultValues.issueCount = undefined;
+                    defaultValues.active = undefined;
+                    defaultValues.firstIssue = undefined;
+                    defaultValues.lastEdited = undefined;
+                    defaultValues.lastIssue = undefined;
+
                     return (
                         <SeriesEditor edit
                                       mutation={editSeries}
-                                      defaultValues={data.seriesd}
+                                      defaultValues={defaultValues}
                         />
                     );
                 }}

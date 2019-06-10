@@ -11,6 +11,19 @@ export const PublisherSchema = Yup.object().shape({
     name: Yup.string()
         .required('Pflichtfeld')
         .max(255, 'Maximal 255 Zeichen'),
+    startyear: Yup.number("Bitte geben Sie eine Zahl ein")
+        .min(1900, "Das Jahr muss größer als 1900 sein")
+        .when('endyear', {
+            is: 0 ,
+            then: Yup.number().max(2999, "Dsa Jahr darf nicht größer als 2999 sein"),
+            otherwise: Yup.number().max(Yup.ref('endyear'), "Das Startjahr muss größer als das Endjahr sein")
+        })
+        .required("Pflichtfeld")
+        .integer("Bitte geben Sie eine Zahl ein"),
+    endyear: Yup.number("Bitte geben Sie eine Zahl ein")
+        .min(0, "Das Jahr muss mindestens 0 sein")
+        .max(2999, "Dsa Jahr darf nicht größer als 2999 sein")
+        .integer("Bitte geben Sie eine Zahl ein"),
     addinfo: Yup.string()
         .max(2500, 'Maximal 2500 Zeichen')
 });

@@ -1,15 +1,13 @@
 import React from "react";
 import CardHeader from "@material-ui/core/CardHeader/CardHeader";
 import CardContent from "@material-ui/core/CardContent/CardContent";
-import Card from "@material-ui/core/Card/Card";
 import Typography from "@material-ui/core/Typography/Typography";
 import Layout from "./Layout";
 import {lastEdited} from "../graphql/queries";
 import {Query} from "react-apollo";
 import QueryResult from "./generic/QueryResult";
-import {generateLabel, generateUrl} from "../util/hierarchy";
-import {today} from "../util/util";
 import {withContext} from "./generic";
+import IssuePreview from "./IssuePreview";
 
 function Home(props) {
     return (
@@ -46,44 +44,6 @@ function Home(props) {
                 </div>
             </CardContent>
         </Layout>
-    );
-}
-
-function IssuePreview(props) {
-    let date = props.issue.updatedAt.split(" ")[0];
-    if(date === today()) date = "heute";
-    else date = "am " + date;
-
-    let time = props.issue.updatedAt.split(" ")[1];
-
-    let variant = '';
-    if (props.issue.format) {
-        variant += props.issue.format;
-        if (props.issue.variant)
-            variant += "/" + props.issue.variant;
-    }
-
-    return (
-        <Card className="issuePreview" onClick={() => props.navigate(generateUrl(props.issue, props.us))}>
-            <CardContent>
-               <Typography variant="subtitle1" id="issuePreviewTitle">{generateLabel(props.issue.series) + " #" + props.issue.number}</Typography>
-
-                {
-                    variant !== '' ?
-                        <Typography id="issuePreviewTitleVariant" variant={"caption"}>{variant}</Typography> :
-                        null
-                }
-                <Typography variant="caption">{generateLabel(props.issue.series.publisher)}</Typography>
-
-                <br />
-
-                {
-                    props.issue.createdAt === props.issue.updatedAt ?
-                        <Typography>Hinzugefügt {date} um {time}</Typography> :
-                        <Typography>Bearbeitet {date} um {time}</Typography>
-                }
-            </CardContent>
-        </Card>
     );
 }
 

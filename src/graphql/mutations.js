@@ -28,6 +28,8 @@ const createPublisher = gql`mutation CreatePublisher($item: PublisherInput!){
    createPublisher(item: $item) {
         id,
         name,
+        startyear,
+        endyear,
         addinfo,
         us
    }

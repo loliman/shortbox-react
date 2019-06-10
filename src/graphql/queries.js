@@ -76,7 +76,54 @@ const publisher = gql`query Publisher($publisher: PublisherInput!){
     publisher(publisher: $publisher) {
         name,
         us,
-        addinfo
+        startyear,
+        endyear,
+        seriesCount,
+        issueCount,
+        firstIssue {
+            number,
+            format,
+            variant,
+            createdAt,
+            updatedAt,
+            series {
+                title,
+                volume,
+                publisher {
+                    name
+                }
+            }
+        },
+        lastIssue {
+            number,
+            format,
+            variant,
+            createdAt,
+            updatedAt,
+            series {
+                title,
+                volume,
+                publisher {
+                    name
+                }
+            }
+        },
+        lastEdited {
+            number,
+            format,
+            variant,
+            createdAt,
+            updatedAt,
+            series {
+                title,
+                volume,
+                publisher {
+                    name
+                }
+            }
+        },
+        active,
+        addinfo,
     }
 }`;
 
@@ -86,6 +133,50 @@ const seriesd = gql`query Seriesd($series: SeriesInput!){
         volume,
         startyear,
         endyear,
+        issueCount,
+        firstIssue {
+            number,
+            format,
+            variant,
+            createdAt,
+            updatedAt,
+            series {
+                title,
+                volume,
+                publisher {
+                    name
+                }
+            }
+        },
+        lastIssue {
+            number,
+            format,
+            variant,
+            createdAt,
+            updatedAt,
+            series {
+                title,
+                volume,
+                publisher {
+                    name
+                }
+            }
+        },
+        lastEdited {
+            number,
+            format,
+            variant,
+            createdAt,
+            updatedAt,
+            series {
+                title,
+                volume,
+                publisher {
+                    name
+                }
+            }
+        },
+        active,
         addinfo,
         publisher {
             name,

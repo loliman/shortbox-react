@@ -23,6 +23,8 @@ class PublisherEditor extends React.Component {
         if(!defaultValues)
             defaultValues = {
                 name: '',
+                startyear: 1900,
+                endyear: 1900,
                 addinfo: '',
                 us: false
             };
@@ -70,7 +72,9 @@ class PublisherEditor extends React.Component {
                           } else {
                               try {
                                   let pub = {
-                                      name: defaultValues.name
+                                      name: defaultValues.name,
+                                      startyear: defaultValues.startyear,
+                                      endyear: defaultValues.endyear
                                   };
 
                                   updateInCache(cache, publisher, {publisher: pub}, defaultValues, {publisher: res});
@@ -145,6 +149,23 @@ class PublisherEditor extends React.Component {
                                     />
 
                                     <br />
+
+                                    <FastField
+                                        className={this.props.desktop ? "field field35" : "field field100"}
+                                        name="startyear"
+                                        label="Startjahr"
+                                        type="number"
+                                        component={TextField}
+                                    />
+                                    <br/>
+                                    <FastField
+                                        className={this.props.desktop ? "field field35" : "field field100"}
+                                        name="endyear"
+                                        label="Endjahr"
+                                        type="number"
+                                        component={TextField}
+                                    />
+                                    <br/>
 
                                     <FastField
                                         className={this.props.desktop ? "field field35" : "field field100"}

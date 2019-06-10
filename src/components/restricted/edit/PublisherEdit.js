@@ -17,10 +17,19 @@ function PublisherEdit(props) {
                     if (loading || error || !data.publisher)
                         return <QueryResult loading={loading} error={error} data={data ? data.publisher : null} selected={selected}/>;
 
+                    let defaultValues = JSON.parse(JSON.stringify(data.publisher));
+
+                    defaultValues.seriesCount = undefined;
+                    defaultValues.issueCount = undefined;
+                    defaultValues.active = undefined;
+                    defaultValues.firstIssue = undefined;
+                    defaultValues.lastEdited = undefined;
+                    defaultValues.lastIssue = undefined;
+
                     return (
                         <PublisherEditor edit
                                          mutation={editPublisher}
-                                         defaultValues={data.publisher}
+                                         defaultValues={defaultValues}
                         />
                     );
                 }}
