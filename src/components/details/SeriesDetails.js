@@ -61,8 +61,8 @@ function SeriesDetails(props) {
                                             <Typography variant="h6">
                                                 {
                                                     !props.us ?
-                                                        first + "veröffentlichtes Comic mit Marvel Material: " :
-                                                        "Frühestes Comic mit auf deutsch veröffentlichtem Material: "
+                                                        first + "veröffentlichtes Comic mit Marvel Material" :
+                                                        "Frühestes Comic mit auf deutsch veröffentlichtem Material"
                                                 }
                                             </Typography>
 
@@ -80,8 +80,8 @@ function SeriesDetails(props) {
                                             <Typography variant="h6">
                                                 {
                                                     !props.us ?
-                                                        "Letztes veröffentlichtes Comic mit Marvel Material: " :
-                                                        "Spätestes Comic mit auf deutsch veröffentlichtem Material: "
+                                                        "Letztes veröffentlichtes Comic mit Marvel Material" :
+                                                        "Spätestes Comic mit auf deutsch veröffentlichtem Material"
                                                 }
                                             </Typography>
 
