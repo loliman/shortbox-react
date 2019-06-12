@@ -59,7 +59,7 @@ function navigate(props, url, query, currentQuery) {
         }
     }
 
-    props.history.push((lastUrl === url ? (props.us ? "/us" : "/de") : url) + "?" + queryString.stringify(q));
+    props.history.push((lastUrl === url && query === currentQuery ? (props.us ? "/us" : "/de") : url) + "?" + queryString.stringify(q));
 }
 
 function createAppTitle(params, url) {

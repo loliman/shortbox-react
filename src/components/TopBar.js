@@ -151,7 +151,7 @@ class TopBar extends React.Component {
 
                                     <MenuItem key="reset" onClick={() => {
                                         this.handleFilterMenuClose();
-                                        this.props.navigate(!us ? "/de" : "/us", {filter: null});
+                                        this.props.navigate(generateUrl(this.props.selected, this.props.us), {filter: null});
                                     }}>
                                         <ListItemIcon>
                                             <ClearIcon/>
