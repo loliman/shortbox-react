@@ -68,6 +68,7 @@ function Bottom(props) {
                 &nbsp;und stehen unter der&nbsp;
                 <a href="https://creativecommons.org/licenses/by/3.0/de/" rel="noopener noreferrer nofollow"
                    target="_blank">Creative Commons License 3.0</a>
+                &nbsp;. Die Informationen wurden aufbereitet und unter Umständen ergänzt.&nbsp;
             </Typography>
         </React.Fragment>
     );
