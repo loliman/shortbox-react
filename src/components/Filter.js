@@ -6,7 +6,7 @@ import CardContent from "@material-ui/core/CardContent";
 import {FastField, Form, Formik} from "formik";
 import AutoComplete from "./generic/AutoComplete";
 import Button from "@material-ui/core/Button";
-import {individuals, publishers, series} from "../graphql/queries";
+import {arcs, individuals, publishers, series} from "../graphql/queries";
 import {stripItem} from "../util/util";
 import {generateLabel} from "../util/hierarchy";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -40,6 +40,7 @@ function Filter(props) {
             publishers: [],
             series: [],
             numbers: [{number: "", compare: ">", variant: ""}],
+            arcs: [],
             writers: [],
             artists: [],
             inkers: [],
@@ -86,6 +87,8 @@ function Filter(props) {
         }
         if(!defaultValues.numbers)
             defaultValues.numbers = [{number: "", compare: ">", variant: ""}];
+        if(!defaultValues.arcs)
+            defaultValues.arcs = [];
         if(!defaultValues.writers)
             defaultValues.writers = [];
         if(!defaultValues.artists)
@@ -158,6 +161,10 @@ function Filter(props) {
                         if(v.numbers.length === 0)
                             v.numbers = undefined;
                     }
+                    if (values.arcs.length > 0) {
+                        v.arcs = [];
+                        values.arcs.forEach((o) => v.arcs.push(stripItem(o)));
+                    }
                     if (values.writers.length > 0) {
                         v.writers = [];
                         values.writers.forEach((o) => v.writers.push(stripItem(o)));
@@ -210,7 +217,7 @@ function Filter(props) {
                         v.us = us;
                     }
 
-                    let url = lastLocation ? lastLocation.pathname : "/";
+                    let url = lastLocation ? lastLocation.pathname : "/" + (props.us ? 'us' : 'de');
                     props.navigate(url, {filter: JSON.stringify(v) !== "{}" ? JSON.stringify(v) : null});
 
                     actions.setSubmitting(false);
@@ -552,6 +559,19 @@ function Filter(props) {
                                     </React.Fragment> : null
                                 }
 
+                                <AutoComplete
+                                    query={arcs}
+                                    name={"arcs"}
+                                    nameField="title"
+                                    label="Teil von"
+                                    isMulti
+                                    onChange={(option) => setFieldValue("arcs", option)}
+                                    style={{
+                                        width: props.desktop ? "40%" : "99%"
+                                    }}
+                                    generateLabel={(e) => e.title + " (" + e.type.charAt(0).toUpperCase() + e.type.slice(1).toLowerCase() + ")"}
+                                />
+
                                 <br/>
                                 <br/>
                                 <br/>
@@ -689,6 +709,7 @@ function Filter(props) {
                                                     publishers: [],
                                                     series: [],
                                                     numbers: [{number: "", compare: ">", variant: ""}],
+                                                    arcs: [],
                                                     writers: [],
                                                     artists: [],
                                                     inkers: [],

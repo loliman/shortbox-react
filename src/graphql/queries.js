@@ -55,6 +55,13 @@ const individuals = gql`query Individuals {
     }
 }`;
 
+const arcs = gql`query Arcs {
+    arcs {
+        title,
+        type
+    }
+}`;
+
 export const lastEdited = gql`query LastEdited($us: Boolean) {
     lastEdited(us: $us) {
         number,
@@ -278,7 +285,11 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                         }
                     },
                     format,
-                    variant   
+                    variant,
+                    arcs {
+                        title,
+                        type
+                    }   
                 }
                 pencilers {
                     name
@@ -371,6 +382,10 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                 url
             }
         },
+        arcs {
+            title,
+            type
+        },
         variant,
         verified,
         addinfo
@@ -390,4 +405,4 @@ function getListQuery(level) {
 
 export {getListQuery,
     publisher, seriesd, issue, search,
-    publishers, series, issues, individuals, exportQuery};
+    publishers, series, issues, individuals, arcs, exportQuery};

@@ -29,6 +29,7 @@ import GridList from "@material-ui/core/GridList/GridList";
 import GridListTile from "@material-ui/core/GridListTile/GridListTile";
 import GridListTileBar from "@material-ui/core/GridListTileBar/GridListTileBar";
 import EditButton from "../restricted/EditButton";
+import {stripItem} from "../../util/util";
 
 class IssueDetails extends React.Component {
     render() {
@@ -43,6 +44,21 @@ class IssueDetails extends React.Component {
                                                 selected={selected}/>;
 
                         let issue = JSON.parse(JSON.stringify(data.issue));
+
+                        let arcs = [];
+                        if(us)
+                            arcs = data.issue.arcs;
+                        else {
+                            data.issue.stories.forEach(story => {
+                               if(story.parent && story.parent.issue && story.parent.issue.arcs) {
+                                   story.parent.issue.arcs.forEach(arc => {
+                                       if (!arcs.some(e => e.title === arc.title && e.type === arc.type)) {
+                                           arcs.push(arc);
+                                       }
+                                   })
+                               }
+                            });
+                        }
 
                         return (
                             <React.Fragment>
@@ -74,6 +90,30 @@ class IssueDetails extends React.Component {
                                                 </Paper>
                                             </React.Fragment> :
                                             null
+                                    }
+
+                                    {
+                                        arcs.length > 0 ? <br /> : null
+                                    }
+                                    {
+                                        arcs.map((arc, i) => {
+                                            let color = "default";
+                                            switch (arc.type) {
+                                                case "EVENT":
+                                                    color = "primary";
+                                                    break;
+                                                case "STORYLINE":
+                                                    color = "secondary";
+                                                    break;
+                                                case "STORYARC":
+                                                    color = "default";
+                                                    break;
+                                                default:
+                                                    color = "default";
+                                            }
+
+                                            return <Chip key={i} className="chip partOfChip" label={arc.title} color={color} onClick={() => this.props.navigate(us ? "/us" : "/de", {filter: JSON.stringify({arcs: [stripItem(arc)], story: true, us: us})})}/>;
+                                        })
                                     }
 
                                     {
