@@ -97,22 +97,23 @@ class IssueDetails extends React.Component {
                                     }
                                     {
                                         arcs.map((arc, i) => {
-                                            let color = "default";
+                                            let color;
+                                            let type;
                                             switch (arc.type) {
                                                 case "EVENT":
                                                     color = "primary";
+                                                    type = "Event";
                                                     break;
                                                 case "STORYLINE":
                                                     color = "secondary";
-                                                    break;
-                                                case "STORYARC":
-                                                    color = "default";
+                                                    type = "Story Line";
                                                     break;
                                                 default:
                                                     color = "default";
+                                                    type = "Story Arc";
                                             }
 
-                                            return <Chip key={i} className="chip partOfChip" label={arc.title} color={color} onClick={() => this.props.navigate(us ? "/us" : "/de", {filter: JSON.stringify({arcs: [stripItem(arc)], story: true, us: us})})}/>;
+                                            return <Chip key={i} className="chip partOfChip" label={arc.title + " (" + type + ")"} color={color} onClick={() => this.props.navigate(us ? "/us" : "/de", {filter: JSON.stringify({arcs: [stripItem(arc)], story: true, us: us})})}/>;
                                         })
                                     }
 

@@ -569,7 +569,22 @@ function Filter(props) {
                                     style={{
                                         width: props.desktop ? "40%" : "99%"
                                     }}
-                                    generateLabel={(e) => e.title + " (" + e.type.charAt(0).toUpperCase() + e.type.slice(1).toLowerCase() + ")"}
+                                    generateLabel={(e) => {
+                                        let type;
+                                        switch (e.type) {
+                                            case 'EVENT':
+                                                type = 'Event';
+                                                break;
+                                            case 'STORYLINE':
+                                                type = 'Story Line';
+                                                break;
+                                            default:
+                                                type = 'Story Arc';
+
+                                        }
+
+                                       return e.title + " (" + type + ")";
+                                    }}
                                 />
 
                                 <br/>
