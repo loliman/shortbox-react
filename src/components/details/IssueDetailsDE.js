@@ -69,8 +69,7 @@ function Bottom(props) {
 function CoverDetails(props) {
     return (
         <div>
-            <Typography><b>Artist</b> {toIndividualList(props.item.parent ? props.item.parent.artists : props.item.artists)}
-            </Typography>
+            <div className="individualListContainer"><Typography><b>Artist</b></Typography> {toIndividualList(props.item.parent ? props.item.parent.artists : props.item.artists, props, "artists", "cover")}</div>
         </div>
     );
 }
@@ -78,7 +77,7 @@ function CoverDetails(props) {
 function FeatureDetails(props) {
     return (
         <div>
-            <Typography><b>Autor</b> {toIndividualList(props.item.writers)}</Typography>
+            <div className="individualListContainer"><Typography><b>Autor</b></Typography> {toIndividualList(props.item.writers, props, "writers", "feature")}</div>
         </div>
     );
 }
@@ -86,17 +85,17 @@ function FeatureDetails(props) {
 function StoryDetails(props) {
     return (
         <div>
-            <Typography><b>Autor</b> {toIndividualList(props.item.parent ? props.item.parent.writers : props.item.writers)}</Typography>
-            <Typography><b>Zeichner</b> {toIndividualList(props.item.parent ? props.item.parent.pencilers : props.item.pencilers)}</Typography>
-            <Typography><b>Inker</b> {toIndividualList(props.item.parent ? props.item.parent.inkers : props.item.inkers)}</Typography>
-            <Typography><b>Kolorist</b> {toIndividualList(props.item.parent ? props.item.parent.colourists : props.item.colourists)}</Typography>
-            <Typography><b>Letterer</b> {toIndividualList(props.item.parent ? props.item.parent.letterers : props.item.letterers)}</Typography>
+            <div className="individualListContainer"><Typography><b>Autor</b></Typography> {toIndividualList(props.item.parent ? props.item.parent.writers : props.item.writers, props, "writers")}</div>
+            <div className="individualListContainer"><Typography><b>Zeichner</b></Typography> {toIndividualList(props.item.parent ? props.item.parent.pencilers : props.item.pencilers, props, "pencilers")}</div>
+            <div className="individualListContainer"><Typography><b>Inker</b></Typography> {toIndividualList(props.item.parent ? props.item.parent.inkers : props.item.inkers, props, "inkers")}</div>
+            <div className="individualListContainer"><Typography><b>Kolorist</b></Typography> {toIndividualList(props.item.parent ? props.item.parent.colourists : props.item.colourists, props, "colourists")}</div>
+            <div className="individualListContainer"><Typography><b>Letterer</b></Typography> {toIndividualList(props.item.parent ? props.item.parent.letterers : props.item.letterers, props, "letterers")}</div>
             {
                 props.item.translators.length > 0 ?
-                    <Typography><b>Übersetzer</b> {toIndividualList(props.item.translators)}</Typography> :
+                    <div className="individualListContainer"><Typography><b>Übersetzer</b></Typography> {toIndividualList(props.item.translators, props, "translators")}</div> :
                     null
             }
-            <Typography><b>Editor</b> {toIndividualList(props.item.parent ? props.item.parent.editors : props.item.editors)}</Typography>
+            <div className="individualListContainer"><Typography><b>Editor</b></Typography> {toIndividualList(props.item.parent ? props.item.parent.editors : props.item.editors, props, "editors")}</div>
         </div>
     );
 }
