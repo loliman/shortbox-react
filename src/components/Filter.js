@@ -43,6 +43,7 @@ function Filter(props) {
             arcs: [],
             writers: [],
             artists: [],
+            pencilers: [],
             inkers: [],
             colourists: [],
             letterers: [],
@@ -93,6 +94,8 @@ function Filter(props) {
             defaultValues.writers = [];
         if(!defaultValues.artists)
             defaultValues.artists = [];
+        if(!defaultValues.pencilers)
+            defaultValues.pencilers = [];
         if(!defaultValues.inkers)
             defaultValues.inkers = [];
         if(!defaultValues.colourists)
@@ -172,6 +175,10 @@ function Filter(props) {
                     if (values.artists.length > 0) {
                         v.artists = [];
                         values.artists.forEach((o) => v.artists.push(stripItem(o)));
+                    }
+                    if (values.pencilers.length > 0) {
+                        v.pencilers = [];
+                        values.pencilers.forEach((o) => v.pencilers.push(stripItem(o)));
                     }
                     if (values.inkers.length > 0) {
                         v.inkers = [];
@@ -612,7 +619,23 @@ function Filter(props) {
                                         }
 
                                         {
-                                            !values.feature ?
+                                            values.story ?
+                                                <AutoComplete
+                                                    query={individuals}
+                                                    name={"pencilers"}
+                                                    nameField="name"
+                                                    label="Zeichner"
+                                                    isMulti
+                                                    onChange={(option) => setFieldValue("pencilers", option)}
+                                                    style={{
+                                                        width: props.desktop ? "40%" : "99%"
+                                                    }}
+                                                    generateLabel={(e) => e.name}
+                                                /> : null
+                                        }
+
+                                        {
+                                            values.cover ?
                                                 <AutoComplete
                                                     query={individuals}
                                                     name={"artists"}
@@ -727,6 +750,7 @@ function Filter(props) {
                                                     arcs: [],
                                                     writers: [],
                                                     artists: [],
+                                                    pencilers: [],
                                                     inkers: [],
                                                     colourists: [],
                                                     letterers: [],

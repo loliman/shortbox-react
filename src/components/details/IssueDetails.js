@@ -77,7 +77,7 @@ class IssueDetails extends React.Component {
                                     <Variants us={us} issue={data.issue} navigate={this.props.navigate}/>
 
                                     <div className="details">
-                                        <DetailsTable issue={issue} details={this.props.details} us={us}/>
+                                        <DetailsTable issue={issue} details={this.props.details} navigate={this.props.navigate} us={us}/>
                                         <Cover issue={issue}/>
                                     </div>
 
@@ -143,6 +143,7 @@ function DetailsTable(props) {
             <Table className="table">
                 <TableBody>
                     {React.cloneElement(props.details, {
+                        ...props,
                         issue: props.issue
                     })}
                 </TableBody>
@@ -231,7 +232,7 @@ function ContainsItem(props) {
                 {React.cloneElement(props.itemTitle, {navigate: props.navigate, item: props.item, us: props.us})}
             </ExpansionPanelSummary>
             <ExpansionPanelDetails>
-                {React.cloneElement(props.itemDetails, {navigate: props.navigate, item: props.item})}
+                {React.cloneElement(props.itemDetails, {us: props.us, navigate: props.navigate, item: props.item})}
             </ExpansionPanelDetails>
         </ExpansionPanel>
     );
