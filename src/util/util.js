@@ -85,7 +85,7 @@ export function toIndividualList(items, props, individualType, filterType, detai
             <Chip key={i} className="chip partOfChip" label={item.name} onClick={() => props.navigate(props.us ? "/us" : "/de", {filter: JSON.stringify(filter)})}/>
         );
 
-        if(details && i != items.length-1)
+        if(details && i !== items.length-1)
             list.push(<br />);
     });
 
