@@ -69,7 +69,7 @@ export function romanize(num) {
 
 export function toIndividualList(items, props, individualType, filterType, details) {
     if(!items || items.length === 0)
-        return <Chip className="chip" variant={"outlined"} label="Unbekannt"/>;
+        return <Chip key={0} className="chip" variant={"outlined"} label="Unbekannt"/>;
 
     let list = [];
     items.forEach((item, i) => {
@@ -86,7 +86,7 @@ export function toIndividualList(items, props, individualType, filterType, detai
         );
 
         if(details && i !== items.length-1)
-            list.push(<br />);
+            list.push(<br key={i + "br"} />);
     });
 
     return list;

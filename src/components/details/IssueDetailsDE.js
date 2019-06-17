@@ -7,7 +7,8 @@ import IssueDetails, {
     ContainsTitleSimple,
     DetailsRow
 } from "./IssueDetails";
-import {toIndividualList} from "../../util/util";
+import {stripItem, toIndividualList} from "../../util/util";
+import Chip from "@material-ui/core/Chip";
 
 var dateFormat = require('dateformat');
 
@@ -85,6 +86,33 @@ function FeatureDetails(props) {
 function StoryDetails(props) {
     return (
         <div>
+            {
+                (props.item && props.item.parent &&  props.item.parent.issue && props.item.parent.issue.arcs && props.item.parent.issue.arcs.length > 0) ?
+                    <div className="individualListContainer"><Typography><b>Teil von</b></Typography>
+                        {
+                            props.item.parent.issue.arcs.map((arc, i) => {
+                                let color;
+                                let type;
+                                switch (arc.type) {
+                                    case "EVENT":
+                                        color = "primary";
+                                        type = "Event";
+                                        break;
+                                    case "STORYLINE":
+                                        color = "secondary";
+                                        type = "Story Line";
+                                        break;
+                                    default:
+                                        color = "default";
+                                        type = "Story Arc";
+                                }
+
+                                return <Chip key={i} className="chip partOfChip" label={arc.title + " (" + type + ")"} color={color} onClick={() => props.navigate(props.us ? "/us" : "/de", {filter: JSON.stringify({arcs: [stripItem(arc)], story: true, us: props.us})})}/>;
+                            })
+                        }
+                    </div> : null
+            }
+
             <div className="individualListContainer"><Typography><b>Autor</b></Typography> {toIndividualList(props.item.parent ? props.item.parent.writers : props.item.writers, props, "writers")}</div>
             <div className="individualListContainer"><Typography><b>Zeichner</b></Typography> {toIndividualList(props.item.parent ? props.item.parent.pencilers : props.item.pencilers, props, "pencilers")}</div>
             <div className="individualListContainer"><Typography><b>Inker</b></Typography> {toIndividualList(props.item.parent ? props.item.parent.inkers : props.item.inkers, props, "inkers")}</div>

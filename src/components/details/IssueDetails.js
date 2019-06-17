@@ -217,7 +217,7 @@ export function Contains(props) {
 
 function ContainsSimpleItem(props) {
     return (
-        <ExpansionPanel className="story" expanded={false}>
+        <ExpansionPanel className="story" defaultExpanded={expanded(props.item, props.query ? props.query.filter : null)}>
             <ExpansionPanelSummary className="summary">
                 {React.cloneElement(props.itemTitle, {navigate: props.navigate, item: props.item, us: props.us, simple: true})}
             </ExpansionPanelSummary>
@@ -227,7 +227,7 @@ function ContainsSimpleItem(props) {
 
 function ContainsItem(props) {
     return (
-        <ExpansionPanel className="story">
+        <ExpansionPanel className="story" defaultExpanded={expanded(props.item, props.query ? props.query.filter : null)}>
             <ExpansionPanelSummary className="summary" expandIcon={<ExpandMoreIcon/>}>
                 {React.cloneElement(props.itemTitle, {navigate: props.navigate, item: props.item, us: props.us})}
             </ExpansionPanelSummary>
@@ -391,6 +391,144 @@ function Variant(props) {
             />
         </GridListTile>
     );
+}
+
+function expanded(item, filter) {
+    if(!filter)
+        return false;
+
+    let compare = item.parent ? item.parent : item;
+    let currentFilter;
+    try {
+        currentFilter = JSON.parse(filter)
+    } catch (e) {
+        return false;
+    }
+
+    let expanded = false;
+
+    expanded = (currentFilter.onlyPrint && item.onlyapp) || expanded;
+    expanded = (currentFilter.firstPrint && item.firstapp) || expanded;
+    expanded = (currentFilter.onlyTb && item.onlytb) || expanded;
+    expanded = (currentFilter.exclusive && item.exclusive) || expanded;
+    expanded = (currentFilter.otherTb && item.onlytb) || expanded;
+    expanded = (currentFilter.noPrint && item.children.length) || expanded;
+
+    if(currentFilter.series && compare.issue.series) {
+        currentFilter.series.forEach(s => {
+            if(compare.issue.series.title === s.title && compare.issue.series.volume === s.volume && compare.issue.series.publisher.name === s.publisher.name)
+                expanded = true;
+        });
+    }
+
+    if(currentFilter.publishers && compare.issue.series) {
+        currentFilter.publishers.forEach(s => {
+            if(compare.issue.series.publisher.name === s.publisher.name)
+                expanded = true;
+        });
+    }
+    
+    if(currentFilter.publisher && compare.issue.series)
+        expanded = compare.issue.series.publisher.name === currentFilter.series.publisher.name;
+
+    if(currentFilter.numbers)
+        currentFilter.numbers.forEach(number => {
+            if(number.compare === "=" && number.number === compare.issue.number) {
+                expanded = true;
+            } else if(number.compare === ">" && number.number > compare.issue.number) {
+                expanded = true;
+            } else if(number.compare === "<" && number.number < compare.issue.number) {
+                expanded = true;
+            } else if(number.compare === ">=" && number.number >= compare.issue.number) {
+                expanded = true;
+            } else if(number.compare === "<=" && number.number <= compare.issue.number) {
+                expanded = true;
+            }
+        });
+
+    if(item.__typename === 'Story') {
+        if(currentFilter.arcs)
+            currentFilter.arcs.forEach(i => {
+                compare.issue.arcs.forEach(o => {
+                    if(i.title === o.title && i.type === o.type)
+                        expanded = true;
+                })
+            });
+
+        if(currentFilter.writers)
+            currentFilter.writers.forEach(i => {
+                compare.writers.forEach(o => {
+                    if(i.name === o.name)
+                        expanded = true;
+                })
+            });
+
+        if(currentFilter.pencilers)
+            currentFilter.pencilers.forEach(i => {
+                compare.pencilers.forEach(o => {
+                    if(i.name === o.name)
+                        expanded = true;
+                })
+            });
+
+        if(currentFilter.inkers)
+            currentFilter.inkers.forEach(i => {
+                compare.inkers.forEach(o => {
+                    if(i.name === o.name)
+                        expanded = true;
+                })
+            });
+
+        if(currentFilter.colourists)
+            currentFilter.colourists.forEach(i => {
+                compare.colourists.forEach(o => {
+                    if(i.name === o.name)
+                        expanded = true;
+                })
+            });
+
+        if(currentFilter.letterers)
+            currentFilter.letterers.forEach(i => {
+                compare.letterers.forEach(o => {
+                    if(i.name === o.name)
+                        expanded = true;
+                })
+            });
+
+        if(currentFilter.editors)
+            currentFilter.editors.forEach(i => {
+                compare.editors.forEach(o => {
+                    if(i.name === o.name)
+                        expanded = true;
+                })
+            });
+
+        if(currentFilter.translators && item.translators)
+            currentFilter.translators.forEach(i => {
+                item.translators.forEach(o => {
+                    if(i.name === o.name)
+                        expanded = true;
+                })
+            });
+    } else if(item.__typename === 'Cover') {
+        if(currentFilter.artists)
+            currentFilter.artists.forEach(i => {
+                item.artists.forEach(o => {
+                    if(i.name === o.name)
+                        expanded = true;
+                })
+            });
+    } else if(item.__typename === 'Feature') {
+        if(currentFilter.writers)
+            currentFilter.writers.forEach(i => {
+                compare.writers.forEach(o => {
+                    if(i.name === o.name)
+                        expanded = true;
+                })
+            });
+    }
+
+    return expanded;
 }
 
 export default withContext(IssueDetails);
