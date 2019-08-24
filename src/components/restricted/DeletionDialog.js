@@ -112,6 +112,21 @@ function DeletionDialog(props) {
                             else
                                 toDelete = item;
 
+                            if(level === HierarchyLevel.SERIES) {
+                                toDelete.issueCount = undefined;
+                                toDelete.active = undefined;
+                                toDelete.firstIssue = undefined;
+                                toDelete.lastEdited = undefined;
+                                toDelete.lastIssue = undefined;
+                            } else if(level === HierarchyLevel.PUBLISHER) {
+                                toDelete.seriesCount = undefined;
+                                toDelete.issueCount = undefined;
+                                toDelete.active = undefined;
+                                toDelete.firstIssue = undefined;
+                                toDelete.lastEdited = undefined;
+                                toDelete.lastIssue = undefined;
+                            }
+
                             deleteMutation({
                                 variables: {
                                     item: stripItem(toDelete)
