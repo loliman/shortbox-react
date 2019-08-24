@@ -29,9 +29,9 @@ function Details(props) {
             <DetailsRow key="releasedate" label="Erscheinungsdatum"
                         value={dateFormat(new Date(props.issue.releasedate), "dd.mm.yyyy")}/>
             <DetailsRow key="coverartists" label="Cover Artists"
-                        value={toIndividualList(props.issue.cover ? props.issue.cover.artists : null)}/>
+                        value={toIndividualList(props.issue.cover ? props.issue.cover.artists : null, props, "artists", "cover", true)}/>
             <DetailsRow key="editor" label="Editor"
-                        value={toIndividualList(props.issue.editors)}/>
+                        value={toIndividualList(props.issue.editors, props, "editors", "story", true)}/>
         </React.Fragment>
     );
 }
@@ -78,12 +78,12 @@ function StoryDetails(props) {
     return (
         <div className="usStoryContainer">
             <div className="usStoryDetails">
-                <Typography><b>Autor</b> {toIndividualList(props.item.writers)}</Typography>
-                <Typography><b>Zeichner</b> {toIndividualList(props.item.pencilers)}</Typography>
-                <Typography><b>Inker</b> {toIndividualList(props.item.inkers)}</Typography>
-                <Typography><b>Kolorist</b> {toIndividualList(props.item.colourists)}</Typography>
-                <Typography><b>Letterer</b> {toIndividualList(props.item.letterers)}</Typography>
-                <Typography><b>Editor</b> {toIndividualList(props.item.editors)}</Typography>
+                <div className="individualListContainer"><Typography><b>Autor</b></Typography> {toIndividualList(props.item.writers, props, "writers")}</div>
+                <div className="individualListContainer"><Typography><b>Zeichner</b></Typography> {toIndividualList(props.item.pencilers, props, "pencilers")}</div>
+                <div className="individualListContainer"><Typography><b>Inker</b></Typography> {toIndividualList(props.item.inkers, props, "inkers")}</div>
+                <div className="individualListContainer"><Typography><b>Kolorist</b></Typography> {toIndividualList(props.item.colourists, props, "colourists")}</div>
+                <div className="individualListContainer"><Typography><b>Letterer</b></Typography> {toIndividualList(props.item.letterers, props, "letterers")}</div>
+                <div className="individualListContainer"><Typography><b>Editor</b></Typography> {toIndividualList(props.item.editors, props, "editors")}</div>
             </div>
 
             {props.item.children.length === 0 ? null :

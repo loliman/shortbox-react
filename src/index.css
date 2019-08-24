@@ -932,6 +932,7 @@ body {
     height: 27px !important;
     margin-right: 5px !important;
     align-self: center;
+    margin-bottom: 2px !important;
 }
 
 .heading {
@@ -1257,4 +1258,13 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 .menuButton {
     margin-left: 12px;
     margin-right: 20px;
+}
+
+.individualListContainer {
+    padding-bottom: 3px;
+    display: flex;
+}
+.individualListContainer p {
+    align-self: center;
+    padding-right: 5px;
 }
