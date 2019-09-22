@@ -83,7 +83,7 @@ function StoryDetails(props) {
                 <div className="individualListContainer"><Typography><b>Inker</b></Typography> {toIndividualList(props.item.inkers, props, "inkers")}</div>
                 <div className="individualListContainer"><Typography><b>Kolorist</b></Typography> {toIndividualList(props.item.colourists, props, "colourists")}</div>
                 <div className="individualListContainer"><Typography><b>Letterer</b></Typography> {toIndividualList(props.item.letterers, props, "letterers")}</div>
-                <div className="individualListContainer"><Typography><b>Editor</b></Typography> {toIndividualList(props.item.editors, props, "editors")}</div>
+                <div className="individualListContainer"><Typography><b>Verleger</b></Typography> {toIndividualList(props.item.editors, props, "editors")}</div>
             </div>
 
             {props.item.children.length === 0 ? null :

@@ -270,6 +270,56 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
             editors {
                 name
             },
+            mainchars {
+                name,
+                type,
+                role
+            },
+            antagonists {
+                name,
+                type,
+                role
+            },
+            supchars {
+                name,
+                type,
+                role
+            },
+            otherchars {
+                name,
+                type,
+                role
+            },
+            teams {
+                name,
+                type,
+                role
+            },
+            races {
+                name,
+                type,
+                role
+            },
+            animals {
+                name,
+                type,
+                role
+            },
+            items {
+                name,
+                type,
+                role
+            },
+            vehicles {
+                name,
+                type,
+                role
+            },
+            places {
+                name,
+                type,
+                role
+            },                                                                                                              
             parent {
                 number,
                 issue {
@@ -281,7 +331,7 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                         volume,
                         publisher {
                             name,
-                            us
+                            us      
                         }
                     },
                     format,
@@ -290,7 +340,7 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                         title,
                         type
                     }   
-                }
+                },
                 pencilers {
                     name
                 },
@@ -308,6 +358,56 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                 },
                 editors {
                     name
+                },
+                mainchars {
+                    name,
+                    type,
+                    role
+                },
+                antagonists {
+                    name,
+                    type,
+                    role
+                },
+                supchars {
+                    name,
+                    type,
+                    role
+                },
+                otherchars {
+                    name,
+                    type,
+                    role
+                },
+                teams {
+                    name,
+                    type,
+                    role
+                },
+                races {
+                    name,
+                    type,
+                    role
+                },
+                animals {
+                    name,
+                    type,
+                    role
+                },
+                items {
+                    name,
+                    type,
+                    role
+                },
+                vehicles {
+                    name,
+                    type,
+                    role
+                },
+                places {
+                    name,
+                    type,
+                    role
                 }
             },
 			translators {

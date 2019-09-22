@@ -1,12 +1,7 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography/Typography";
 import {withContext} from "../generic";
-import IssueDetails, {
-    Contains,
-    ContainsTitleDetailed,
-    ContainsTitleSimple,
-    DetailsRow
-} from "./IssueDetails";
+import IssueDetails, {Contains, ContainsTitleDetailed, ContainsTitleSimple, DetailsRow} from "./IssueDetails";
 import {stripItem, toIndividualList} from "../../util/util";
 import Chip from "@material-ui/core/Chip";
 
@@ -123,7 +118,73 @@ function StoryDetails(props) {
                     <div className="individualListContainer"><Typography><b>Übersetzer</b></Typography> {toIndividualList(props.item.translators, props, "translators")}</div> :
                     null
             }
-            <div className="individualListContainer"><Typography><b>Editor</b></Typography> {toIndividualList(props.item.parent ? props.item.parent.editors : props.item.editors, props, "editors")}</div>
+            <div className="individualListContainer"><Typography><b>Verleger</b></Typography> {toIndividualList(props.item.parent ? props.item.parent.editors : props.item.editors, props, "editors")}</div>
+
+            <br />
+            <Typography variant="h6">Auftritte</Typography>
+            {
+                (props.item.parent ? props.item.parent.mainchars.length : props.item.mainchars.length) > 0 ?
+                    <div className="individualListContainer">
+                        <Typography><b>Hauptcharaktere</b></Typography> {toIndividualList(props.item.parent ? props.item.parent.mainchars : props.item.mainchars, props, "mainchars")}
+                    </div> :
+                    null
+            }
+            {
+                (props.item.parent ? props.item.parent.antagonists.length : props.item.antagonists.length) > 0 ?
+                    <div className="individualListContainer">
+                        <Typography><b>Antagonisten</b></Typography> {toIndividualList(props.item.parent ? props.item.parent.antagonists : props.item.antagonists, props, "antagonists")}
+                    </div> :
+                    null
+            }
+            {
+                (props.item.parent ? props.item.parent.supchars.length : props.item.supchars.length) > 0 ?
+                    <div className="individualListContainer"><Typography><b>Unterstützende
+                        Charaktere</b></Typography> {toIndividualList(props.item.parent ? props.item.parent.supchars : props.item.supchars, props, "supchars")}
+                    </div>
+                    : null}
+            {
+                (props.item.parent ? props.item.parent.otherchars.length : props.item.otherchars.length) > 0 ?
+                    <div className="individualListContainer"><Typography><b>Andere
+                        Charaktere</b></Typography> {toIndividualList(props.item.parent ? props.item.parent.otherchars : props.item.otherchars, props, "otherchars")}
+                    </div>
+
+                    : null}
+            {
+                (props.item.parent ? props.item.parent.teams.length : props.item.teams.length) > 0 ?
+                    <div className="individualListContainer">
+                        <Typography><b>Teams</b></Typography> {toIndividualList(props.item.parent ? props.item.parent.teams : props.item.teams, props, "teams")}
+                    </div>
+                    : null}
+            {
+                (props.item.parent ? props.item.parent.races.length : props.item.races.length) > 0 ?
+                    <div className="individualListContainer">
+                        <Typography><b>Rassen</b></Typography> {toIndividualList(props.item.parent ? props.item.parent.races : props.item.races, props, "races")}
+                    </div>
+                    : null}
+            {
+                (props.item.parent ? props.item.parent.animals.length : props.item.animals.length) > 0 ?
+                    <div className="individualListContainer">
+                        <Typography><b>Tiere</b></Typography> {toIndividualList(props.item.parent ? props.item.parent.animals : props.item.animals, props, "animals")}
+                    </div>
+                    : null}
+            {
+                (props.item.parent ? props.item.parent.items.length : props.item.items.length) > 0 ?
+                    <div className="individualListContainer">
+                        <Typography><b>Gegenstände</b></Typography> {toIndividualList(props.item.parent ? props.item.parent.items : props.item.items, props, "items")}
+                    </div>
+                    : null}
+            {
+                (props.item.parent ? props.item.parent.vehicles.length : props.item.vehicles.length) > 0 ?
+                    <div className="individualListContainer">
+                        <Typography><b>Fahrzeuge</b></Typography> {toIndividualList(props.item.parent ? props.item.parent.vehicles : props.item.vehicles, props, "vehicles")}
+                    </div>
+                    : null}
+            {
+                (props.item.parent ? props.item.parent.places.length : props.item.places.length) > 0 ?
+                    <div className="individualListContainer">
+                        <Typography><b>Orte</b></Typography> {toIndividualList(props.item.parent ? props.item.parent.places : props.item.places, props, "places")}
+                    </div>
+                    : null}
         </div>
     );
 }

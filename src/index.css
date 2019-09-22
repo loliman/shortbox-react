@@ -1263,6 +1263,7 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 .individualListContainer {
     padding-bottom: 3px;
     display: flex;
+    flex-wrap: wrap;
 }
 .individualListContainer p {
     align-self: center;
