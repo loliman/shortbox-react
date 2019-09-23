@@ -1,5 +1,5 @@
 import React from "react";
-import {toIndividualList} from "../../util/util";
+import {toChipList} from "../../util/util";
 import Typography from "@material-ui/core/Typography/Typography";
 import SearchIcon from '@material-ui/icons/Search';
 import IconButton from "@material-ui/core/IconButton/IconButton";
@@ -12,7 +12,7 @@ import IssueDetails, {
     Contains,
     ContainsTitleDetailed,
     ContainsTitleSimple,
-    DetailsRow
+    DetailsRow, IndividualList
 } from "./IssueDetails";
 
 var dateFormat = require('dateformat');
@@ -29,9 +29,9 @@ function Details(props) {
             <DetailsRow key="releasedate" label="Erscheinungsdatum"
                         value={dateFormat(new Date(props.issue.releasedate), "dd.mm.yyyy")}/>
             <DetailsRow key="coverartists" label="Cover Artists"
-                        value={toIndividualList(props.issue.cover ? props.issue.cover.artists : null, props, "artists", "cover", true)}/>
+                        value={toChipList(props.issue ? props.issue.cover.artists : null, props, "artists",  true)}/>
             <DetailsRow key="editor" label="Editor"
-                        value={toIndividualList(props.issue.editors, props, "editors", "story", true)}/>
+                        value={toChipList(props.issue.editors, props, "editors",  true)}/>
         </React.Fragment>
     );
 }
@@ -78,12 +78,27 @@ function StoryDetails(props) {
     return (
         <div className="usStoryContainer">
             <div className="usStoryDetails">
-                <div className="individualListContainer"><Typography><b>Autor</b></Typography> {toIndividualList(props.item.writers, props, "writers")}</div>
-                <div className="individualListContainer"><Typography><b>Zeichner</b></Typography> {toIndividualList(props.item.pencilers, props, "pencilers")}</div>
-                <div className="individualListContainer"><Typography><b>Inker</b></Typography> {toIndividualList(props.item.inkers, props, "inkers")}</div>
-                <div className="individualListContainer"><Typography><b>Kolorist</b></Typography> {toIndividualList(props.item.colourists, props, "colourists")}</div>
-                <div className="individualListContainer"><Typography><b>Letterer</b></Typography> {toIndividualList(props.item.letterers, props, "letterers")}</div>
-                <div className="individualListContainer"><Typography><b>Verleger</b></Typography> {toIndividualList(props.item.editors, props, "editors")}</div>
+                <IndividualList us={props.us} navigate={props.navigate} label={"Autor"} type={"writers"} item={props.item} />
+                <IndividualList us={props.us} navigate={props.navigate} label={"Zeichner"} type={"pencilers"} item={props.item} />
+                <IndividualList us={props.us} navigate={props.navigate} label={"Inker"} type={"inkers"} item={props.item} />
+                <IndividualList us={props.us} navigate={props.navigate} label={"Kolorist"} type={"colourists"} item={props.item} />
+                <IndividualList us={props.us} navigate={props.navigate} label={"Letterer"} type={"letterers"} item={props.item} />
+
+                <IndividualList us={props.us} navigate={props.navigate} label={"Verleger"} type={"editors"} item={props.item} />
+
+                <br />
+                <Typography variant="h6">Auftritte</Typography>
+
+                <IndividualList us={props.us} navigate={props.navigate} label={"Hauptcharaktere"} type={"mainchars"} item={props.item} hideIfEmpty={true}/>
+                <IndividualList us={props.us} navigate={props.navigate} label={"Antagonisten"} type={"antagonists"} item={props.item} hideIfEmpty={true}/>
+                <IndividualList us={props.us} navigate={props.navigate} label={"Unterstützende Charaktere"} type={"supchars"} item={props.item} hideIfEmpty={true}/>
+                <IndividualList us={props.us} navigate={props.navigate} label={"Andere Charaktere"} type={"otherchars"} item={props.item} hideIfEmpty={true}/>
+                <IndividualList us={props.us} navigate={props.navigate} label={"Teams"} type={"teams"} item={props.item} hideIfEmpty={true}/>
+                <IndividualList us={props.us} navigate={props.navigate} label={"Rassen"} type={"races"} item={props.item} hideIfEmpty={true}/>
+                <IndividualList us={props.us} navigate={props.navigate} label={"Tiere"} type={"animals"} item={props.item} hideIfEmpty={true}/>
+                <IndividualList us={props.us} navigate={props.navigate} label={"Gegenstände"} type={"items"} item={props.item} hideIfEmpty={true}/>
+                <IndividualList us={props.us} navigate={props.navigate} label={"Fahrzeuge"} type={"vehicles"} item={props.item} hideIfEmpty={true}/>
+                <IndividualList us={props.us} navigate={props.navigate} label={"Orte"} type={"places"} item={props.item} hideIfEmpty={true}/>
             </div>
 
             {props.item.children.length === 0 ? null :

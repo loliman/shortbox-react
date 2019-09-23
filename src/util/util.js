@@ -67,16 +67,16 @@ export function romanize(num) {
     return Array(+digits.join("") + 1).join("M") + roman;
 }
 
-export function toIndividualList(items, props, individualType, filterType, details) {
-    if(!items || items.length === 0)
+export function toChipList(items, props, individualType, details) {
+    if(!items || items.length === 0) {
         return <Chip key={0} className="chip" variant={"outlined"} label="Unbekannt"/>;
+    }
 
     let list = [];
     items.forEach((item, i) => {
         let filter = {
-            story: filterType !== "cover" && filterType !== "feature",
-            cover: filterType === "cover",
-            feature: filterType === "feature",
+            story: individualType !== "artists",
+            cover: individualType === "artists",
             us: props.us
         };
         filter[individualType] = [{name: item.name}];

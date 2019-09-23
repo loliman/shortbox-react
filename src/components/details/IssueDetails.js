@@ -29,7 +29,7 @@ import GridList from "@material-ui/core/GridList/GridList";
 import GridListTile from "@material-ui/core/GridListTile/GridListTile";
 import GridListTileBar from "@material-ui/core/GridListTileBar/GridListTileBar";
 import EditButton from "../restricted/EditButton";
-import {stripItem} from "../../util/util";
+import {stripItem, toChipList} from "../../util/util";
 
 class IssueDetails extends React.Component {
     render() {
@@ -390,6 +390,18 @@ function Variant(props) {
                 }}
             />
         </GridListTile>
+    );
+}
+
+export function IndividualList(props) {
+    let items = props.item.parent ? props.item.parent[props.type] : props.item[props.type];
+
+    if(!items || items.length === 0)
+        if(props.hideIfEmpty)
+            return null;
+
+    return(
+        <div className="individualListContainer"><Typography><b>{props.label}</b></Typography> {toChipList(items, props, props.type)}</div>
     );
 }
 
