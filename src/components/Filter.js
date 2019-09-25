@@ -6,7 +6,7 @@ import CardContent from "@material-ui/core/CardContent";
 import {FastField, Form, Formik} from "formik";
 import AutoComplete from "./generic/AutoComplete";
 import Button from "@material-ui/core/Button";
-import {arcs, individuals, publishers, series} from "../graphql/queries";
+import {apps, arcs, individuals, publishers, series} from "../graphql/queries";
 import {stripItem} from "../util/util";
 import {generateLabel} from "../util/hierarchy";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
@@ -41,14 +41,8 @@ function Filter(props) {
             series: [],
             numbers: [{number: "", compare: ">", variant: ""}],
             arcs: [],
-            writers: [],
-            artists: [],
-            pencilers: [],
-            inkers: [],
-            colourists: [],
-            letterers: [],
-            editors: [],
-            translators: [],
+            individuals: [],
+            appearances: [],
             firstPrint: false,
             onlyPrint: false,
             otherTb: false,
@@ -90,22 +84,10 @@ function Filter(props) {
             defaultValues.numbers = [{number: "", compare: ">", variant: ""}];
         if(!defaultValues.arcs)
             defaultValues.arcs = [];
-        if(!defaultValues.writers)
-            defaultValues.writers = [];
-        if(!defaultValues.artists)
-            defaultValues.artists = [];
-        if(!defaultValues.pencilers)
-            defaultValues.pencilers = [];
-        if(!defaultValues.inkers)
-            defaultValues.inkers = [];
-        if(!defaultValues.colourists)
-            defaultValues.colourists = [];
-        if(!defaultValues.letterers)
-            defaultValues.letterers = [];
-        if(!defaultValues.editors)
-            defaultValues.editors = [];
-        if(!defaultValues.translators)
-            defaultValues.translators = [];
+        if(!defaultValues.individuals)
+            defaultValues.individuals = [];
+        if(!defaultValues.appearances)
+            defaultValues.appearances = [];
         if(!defaultValues.firstPrint)
             defaultValues.firstPrint = false;
         if(!defaultValues.onlyPrint)
@@ -168,37 +150,13 @@ function Filter(props) {
                         v.arcs = [];
                         values.arcs.forEach((o) => v.arcs.push(stripItem(o)));
                     }
-                    if (values.writers.length > 0) {
-                        v.writers = [];
-                        values.writers.forEach((o) => v.writers.push(stripItem(o)));
+                    if (values.individuals.length > 0) {
+                        v.individuals = [];
+                        values.individuals.forEach((o) => v.individuals.push(stripItem(o)));
                     }
-                    if (values.artists.length > 0) {
-                        v.artists = [];
-                        values.artists.forEach((o) => v.artists.push(stripItem(o)));
-                    }
-                    if (values.pencilers.length > 0) {
-                        v.pencilers = [];
-                        values.pencilers.forEach((o) => v.pencilers.push(stripItem(o)));
-                    }
-                    if (values.inkers.length > 0) {
-                        v.inkers = [];
-                        values.inkers.forEach((o) => v.inkers.push(stripItem(o)));
-                    }
-                    if (values.colourists.length > 0) {
-                        v.colourists = [];
-                        values.colourists.forEach((o) => v.colourists.push(stripItem(o)));
-                    }
-                    if (values.letterers.length > 0) {
-                        v.letterers = [];
-                        values.letterers.forEach((o) => v.letterers.push(stripItem(o)));
-                    }
-                    if (values.editors.length > 0) {
-                        v.editors = [];
-                        values.editors.forEach((o) => v.editors.push(stripItem(o)));
-                    }
-                    if (values.translators.length > 0) {
-                        v.translators = [];
-                        values.translators.forEach((o) => v.translators.push(stripItem(o)));
+                    if (values.appearances.length > 0) {
+                        v.appearances = [];
+                        values.appearances.forEach((o) => v.appearances.push(stripItem(o)));
                     }
                     if (values.firstPrint)
                         v.firstPrint = true;
@@ -606,11 +564,12 @@ function Filter(props) {
                                             !values.cover ?
                                                 <AutoComplete
                                                     query={individuals}
-                                                    name={"writers"}
+                                                    name={"individuals"}
                                                     nameField="name"
+                                                    type="WRITER"
                                                     label="Autor"
                                                     isMulti
-                                                    onChange={(option) => setFieldValue("writers", option)}
+                                                    onChange={(option) => setFieldValue("individuals", option)}
                                                     style={{
                                                         width: props.desktop ? "40%" : "99%"
                                                     }}
@@ -622,11 +581,12 @@ function Filter(props) {
                                             values.story ?
                                                 <AutoComplete
                                                     query={individuals}
-                                                    name={"pencilers"}
+                                                    name={"individuals"}
                                                     nameField="name"
+                                                    type={"PENCILER"}
                                                     label="Zeichner"
                                                     isMulti
-                                                    onChange={(option) => setFieldValue("pencilers", option)}
+                                                    onChange={(option) => setFieldValue("individuals", option)}
                                                     style={{
                                                         width: props.desktop ? "40%" : "99%"
                                                     }}
@@ -638,11 +598,12 @@ function Filter(props) {
                                             values.cover ?
                                                 <AutoComplete
                                                     query={individuals}
-                                                    name={"artists"}
+                                                    name={"individuals"}
+                                                    type={"ARTIST"}
                                                     nameField="name"
                                                     label="Zeichner"
                                                     isMulti
-                                                    onChange={(option) => setFieldValue("artists", option)}
+                                                    onChange={(option) => setFieldValue("individuals", option)}
                                                     style={{
                                                         width: props.desktop ? "40%" : "99%"
                                                     }}
@@ -656,11 +617,12 @@ function Filter(props) {
                                             <React.Fragment>
                                                 <AutoComplete
                                                     query={individuals}
-                                                    name={"inkers"}
+                                                    name={"individuals"}
+                                                    type={"INKER"}
                                                     nameField="name"
                                                     label="Inker"
                                                     isMulti
-                                                    onChange={(option) => setFieldValue("inkers", option)}
+                                                    onChange={(option) => setFieldValue("individuals", option)}
                                                     style={{
                                                         width: props.desktop ? "40%" : "99%"
                                                     }}
@@ -669,11 +631,12 @@ function Filter(props) {
 
                                                 <AutoComplete
                                                     query={individuals}
-                                                    name={"colourists"}
+                                                    name={"individuals"}
+                                                    type={"COLOURIST"}
                                                     nameField="name"
                                                     label="Kolorist"
                                                     isMulti
-                                                    onChange={(option) => setFieldValue("colourists", option)}
+                                                    onChange={(option) => setFieldValue("individuals", option)}
                                                     style={{
                                                         width: props.desktop ? "40%" : "99%"
                                                     }}
@@ -684,11 +647,12 @@ function Filter(props) {
 
                                                 <AutoComplete
                                                     query={individuals}
-                                                    name={"letterers"}
+                                                    name={"individuals"}
+                                                    type={"LETTERER"}
                                                     nameField="name"
                                                     label="Letterer"
                                                     isMulti
-                                                    onChange={(option) => setFieldValue("letterers", option)}
+                                                    onChange={(option) => setFieldValue("individuals", option)}
                                                     style={{
                                                         width: props.desktop ? "40%" : "99%"
                                                     }}
@@ -697,11 +661,12 @@ function Filter(props) {
 
                                                 <AutoComplete
                                                     query={individuals}
-                                                    name={"editors"}
+                                                    name={"individuals"}
+                                                    type={"EDITOR"}
                                                     nameField="name"
                                                     label="Editor"
                                                     isMulti
-                                                    onChange={(option) => setFieldValue("editors", option)}
+                                                    onChange={(option) => setFieldValue("individuals", option)}
                                                     style={{
                                                         width: props.desktop ? "40%" : "99%"
                                                     }}
@@ -715,11 +680,12 @@ function Filter(props) {
 
                                                 <AutoComplete
                                                     query={individuals}
-                                                    name={"translators"}
+                                                    name={"individuals"}
+                                                    type={"TRANSLATOR"}
                                                     nameField="name"
                                                     label="Übersetzer"
                                                     isMulti
-                                                    onChange={(option) => setFieldValue("translators", option)}
+                                                    onChange={(option) => setFieldValue("individuals", option)}
                                                     style={{
                                                         width: props.desktop ? "40%" : "99%"
                                                     }}
@@ -733,6 +699,30 @@ function Filter(props) {
                                         <br/>
                                         <br/>
                                     </React.Fragment> : null}
+
+                                {values.story ?
+                                    <React.Fragment>
+                                        <Typography variant="h6">Auftritte</Typography>
+
+                                        <AutoComplete
+                                            query={apps}
+                                            name={"appearances"}
+                                            nameField="name"
+                                            label="Auftritte"
+                                            isMulti
+                                            onChange={(option) => setFieldValue("appearances", option)}
+                                            style={{
+                                                width: props.desktop ? "80%" : "99%"
+                                            }}
+                                            generateLabel={(e) => getType(e) + e.name}
+                                        />
+
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                    </React.Fragment> : null
+                                }
 
                                 <div className="formButtons">
                                     <Button disabled={isSubmitting}
@@ -748,14 +738,8 @@ function Filter(props) {
                                                     series: [],
                                                     numbers: [{number: "", compare: ">", variant: ""}],
                                                     arcs: [],
-                                                    writers: [],
-                                                    artists: [],
-                                                    pencilers: [],
-                                                    inkers: [],
-                                                    colourists: [],
-                                                    letterers: [],
-                                                    editors: [],
-                                                    translators: [],
+                                                    individuals: [],
+                                                    appearances: [],
                                                     firstPrint: false,
                                                     onlyPrint: false,
                                                     otherTb: false,
@@ -789,6 +773,27 @@ function Filter(props) {
             </Formik>
         </Layout>
     );
+}
+
+function getType(app) {
+    switch (app.type) {
+        case "CHARACTER":
+            return "!!Charakter!!";
+        case "ITEM":
+            return "!!Gegenstand!!";
+        case "TEAM":
+            return "!!Team!!";
+        case "RACE":
+            return "!!Rasse!!";
+        case "ANIMAL":
+            return "!!Tier!!";
+        case "LOCATION":
+            return "!!Ort!!";
+        case "VEHICLE":
+            return "!!Fahrzeug!!";
+        default:
+            return "";
+    }
 }
 
 export default withContext(Filter);

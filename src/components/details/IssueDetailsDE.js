@@ -1,8 +1,15 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography/Typography";
 import {withContext} from "../generic";
-import IssueDetails, {Contains, ContainsTitleDetailed, ContainsTitleSimple, DetailsRow, IndividualList} from "./IssueDetails";
-import {stripItem, toChipList} from "../../util/util";
+import IssueDetails, {
+    AppearanceList,
+    Contains,
+    ContainsTitleDetailed,
+    ContainsTitleSimple,
+    DetailsRow,
+    IndividualList, toChipList
+} from "./IssueDetails";
+import {stripItem} from "../../util/util";
 import Chip from "@material-ui/core/Chip";
 
 var dateFormat = require('dateformat');
@@ -65,7 +72,9 @@ function Bottom(props) {
 function CoverDetails(props) {
     return (
         <div>
-            <div className="individualListContainer"><Typography><b>Artist</b></Typography> {toChipList(props.item.parent ? props.item.parent : props.item, props, "artists", "cover")}</div>
+            <div className="individualListContainer"><Typography><b>Artist</b></Typography> {
+                toChipList(props.item.parent.individuals.filter(item => item.type === 'ARTIST') ? props.item.parent.individuals.filter(item => item.type === 'ARTIST') : props.item, props, "ARTIST")
+            } </div>
         </div>
     );
 }
@@ -73,7 +82,7 @@ function CoverDetails(props) {
 function FeatureDetails(props) {
     return (
         <div>
-            <div className="individualListContainer"><Typography><b>Autor</b></Typography> {toChipList(props.item, props, "writers", "feature")}</div>
+            <div className="individualListContainer"><Typography><b>Autor</b></Typography> {toChipList(props.item.individuals.filter(item => item.type === 'WRITER'), props, "WRITER")}</div>
         </div>
     );
 }
@@ -105,32 +114,40 @@ function StoryDetails(props) {
                                 return <Chip key={i} className="chip partOfChip" label={arc.title + " (" + type + ")"} color={color} onClick={() => props.navigate(props.us ? "/us" : "/de", {filter: JSON.stringify({arcs: [stripItem(arc)], story: true, us: props.us})})}/>;
                             })
                         }
+                        <br />
                     </div> : null
             }
 
-            <IndividualList us={props.us} navigate={props.navigate} label={"Autor"} type={"writers"} item={props.item} />
-            <IndividualList us={props.us} navigate={props.navigate} label={"Zeichner"} type={"pencilers"} item={props.item} />
-            <IndividualList us={props.us} navigate={props.navigate} label={"Inker"} type={"inkers"} item={props.item} />
-            <IndividualList us={props.us} navigate={props.navigate} label={"Kolorist"} type={"colourists"} item={props.item} />
-            <IndividualList us={props.us} navigate={props.navigate} label={"Letterer"} type={"letterers"} item={props.item} />
+            <Typography variant="h6">Mitwirkende</Typography>
+            <IndividualList us={props.us} navigate={props.navigate} label={"Autor"} type={"WRITER"} item={props.item} />
+            <IndividualList us={props.us} navigate={props.navigate} label={"Zeichner"} type={"PENCILER"} item={props.item} />
+            <IndividualList us={props.us} navigate={props.navigate} label={"Inker"} type={"INKER"} item={props.item} />
+            <IndividualList us={props.us} navigate={props.navigate} label={"Kolorist"} type={"COLOURIST"} item={props.item} />
+            <IndividualList us={props.us} navigate={props.navigate} label={"Letterer"} type={"LETTERER"} item={props.item} />
+            <IndividualList us={props.us} navigate={props.navigate} label={"Übersetzer"} type={"TRANSLATOR"} item={props.item} hideIfEmpty={true}/>
+            <IndividualList us={props.us} navigate={props.navigate} label={"Verleger"} type={"EDITOR"} item={props.item} />
 
-            <IndividualList us={props.us} navigate={props.navigate} label={"Übersetzer"} type={"translators"} item={props.item} hideIfEmpty={true}/>
+            {
+                (props.item.parent ? props.item.parent.appearances.length : props.item.appearances.length) > 0 ?
+                    (
+                        <React.Fragment>
+                            <br />
+                            <Typography variant="h6">Auftritte</Typography>
 
-            <IndividualList us={props.us} navigate={props.navigate} label={"Verleger"} type={"editors"} item={props.item} />
+                            <AppearanceList us={props.us} navigate={props.navigate} label={"Hauptcharaktere"} role={"FEATURED"} type={"CHARACTER"} item={props.item} hideIfEmpty={true}/>
+                            <AppearanceList us={props.us} navigate={props.navigate} label={"Antagonisten"} role={"ANTAGONIST"} type={"CHARACTER"} item={props.item} hideIfEmpty={true}/>
+                            <AppearanceList us={props.us} navigate={props.navigate} label={"Unterstützende Charaktere"} role={"SUPPORTING"} type={"CHARACTER"} item={props.item} hideIfEmpty={true}/>
+                            <AppearanceList us={props.us} navigate={props.navigate} label={"Andere Charaktere"} role={"OTHER"} type={"CHARACTER"} item={props.item} hideIfEmpty={true}/>
+                            <AppearanceList us={props.us} navigate={props.navigate} label={"Teams"} type={"TEAM"} item={props.item} hideIfEmpty={true}/>
+                            <AppearanceList us={props.us} navigate={props.navigate} label={"Rassen"} type={"RACE"} item={props.item} hideIfEmpty={true}/>
+                            <AppearanceList us={props.us} navigate={props.navigate} label={"Tiere"} type={"ANIMAL"} item={props.item} hideIfEmpty={true}/>
+                            <AppearanceList us={props.us} navigate={props.navigate} label={"Gegenstände"} type={"ITEM"} item={props.item} hideIfEmpty={true}/>
+                            <AppearanceList us={props.us} navigate={props.navigate} label={"Fahrzeuge"} type={"VEHICLE"} item={props.item} hideIfEmpty={true}/>
+                            <AppearanceList us={props.us} navigate={props.navigate} label={"Orte"} type={"PLACE"} item={props.item} hideIfEmpty={true}/>
+                        </React.Fragment>
+                    ) : null
+            }
 
-            <br />
-            <Typography variant="h6">Auftritte</Typography>
-
-            <IndividualList us={props.us} navigate={props.navigate} label={"Hauptcharaktere"} type={"mainchars"} item={props.item} hideIfEmpty={true}/>
-            <IndividualList us={props.us} navigate={props.navigate} label={"Antagonisten"} type={"antagonists"} item={props.item} hideIfEmpty={true}/>
-            <IndividualList us={props.us} navigate={props.navigate} label={"Unterstützende Charaktere"} type={"supchars"} item={props.item} hideIfEmpty={true}/>
-            <IndividualList us={props.us} navigate={props.navigate} label={"Andere Charaktere"} type={"otherchars"} item={props.item} hideIfEmpty={true}/>
-            <IndividualList us={props.us} navigate={props.navigate} label={"Teams"} type={"teams"} item={props.item} hideIfEmpty={true}/>
-            <IndividualList us={props.us} navigate={props.navigate} label={"Rassen"} type={"races"} item={props.item} hideIfEmpty={true}/>
-            <IndividualList us={props.us} navigate={props.navigate} label={"Tiere"} type={"animals"} item={props.item} hideIfEmpty={true}/>
-            <IndividualList us={props.us} navigate={props.navigate} label={"Gegenstände"} type={"items"} item={props.item} hideIfEmpty={true}/>
-            <IndividualList us={props.us} navigate={props.navigate} label={"Fahrzeuge"} type={"vehicles"} item={props.item} hideIfEmpty={true}/>
-            <IndividualList us={props.us} navigate={props.navigate} label={"Orte"} type={"places"} item={props.item} hideIfEmpty={true}/>
         </div>
     );
 }

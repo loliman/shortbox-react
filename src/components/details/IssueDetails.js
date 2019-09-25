@@ -29,7 +29,7 @@ import GridList from "@material-ui/core/GridList/GridList";
 import GridListTile from "@material-ui/core/GridListTile/GridListTile";
 import GridListTileBar from "@material-ui/core/GridListTileBar/GridListTileBar";
 import EditButton from "../restricted/EditButton";
-import {stripItem, toChipList} from "../../util/util";
+import {stripItem} from "../../util/util";
 
 class IssueDetails extends React.Component {
     render() {
@@ -394,15 +394,65 @@ function Variant(props) {
 }
 
 export function IndividualList(props) {
-    let items = props.item.parent ? props.item.parent[props.type] : props.item[props.type];
+    return(
+        <ChipList us={props.us} navigate={props.navigate} label={props.label} hideIfEmpty={props.hideIfEmpty}
+                  type={props.type} role={props.role}
+                  items={props.item.parent ? props.item.parent.individuals : props.item.individuals} />
+    );
+}
 
-    if(!items || items.length === 0)
-        if(props.hideIfEmpty)
-            return null;
+export function AppearanceList(props) {
+    return(
+        <ChipList us={props.us} navigate={props.navigate} label={props.label} hideIfEmpty={props.hideIfEmpty}
+                  type={props.type} role={props.role}
+                  items={props.item.parent ? props.item.parent.appearances : props.item.appearances} />
+    );
+}
+
+function ChipList(props) {
+    let items = props.items.filter(item => (item.role === props.role || !props.role) && item.type === props.type);
+
+    if((!items || items.length === 0) && props.hideIfEmpty)
+        return null;
 
     return(
-        <div className="individualListContainer"><Typography><b>{props.label}</b></Typography> {toChipList(items, props, props.type)}</div>
+        <div className="individualListContainer"><Typography><b>{props.label}</b></Typography> {toChipList(items, props, props.type, props.role)}</div>
     );
+}
+
+export function toChipList(items, props, type, role) {
+    if(!items || items.length === 0) {
+        return <Chip key={0} className="chip" variant={"outlined"} label="Unbekannt"/>;
+    }
+
+    let list = [];
+    items.forEach((item, i) => {
+        let filterType = item.__typename.toLocaleLowerCase() + "s";
+        let filter = {};
+
+        filter.story = true;
+        if(filterType === 'individuals' && type === 'ARTIST') {
+            filter.cover = true;
+            filter.story = undefined;
+        }
+        filter.us = props.us;
+
+        filter[filterType] = [];
+        let t = {};
+        t.name = item.name;
+        t.type = type;
+        if(role) t.role = role;
+        filter[filterType].push(t);
+
+        list.push(
+            <Chip key={i} className="chip partOfChip" label={item.name} onClick={() => props.navigate(props.us ? "/us" : "/de", {filter: JSON.stringify(filter)})}/>
+        );
+
+        if(i !== items.length-1)
+            list.push(<br key={i + "br"} />);
+    });
+
+    return list;
 }
 
 function expanded(item, filter) {
@@ -467,74 +517,26 @@ function expanded(item, filter) {
                 })
             });
 
-        if(currentFilter.writers)
-            currentFilter.writers.forEach(i => {
-                compare.writers.forEach(o => {
-                    if(i.name === o.name)
-                        expanded = true;
-                })
-            });
-
-        if(currentFilter.pencilers)
-            currentFilter.pencilers.forEach(i => {
-                compare.pencilers.forEach(o => {
-                    if(i.name === o.name)
-                        expanded = true;
-                })
-            });
-
-        if(currentFilter.inkers)
-            currentFilter.inkers.forEach(i => {
-                compare.inkers.forEach(o => {
-                    if(i.name === o.name)
-                        expanded = true;
-                })
-            });
-
-        if(currentFilter.colourists)
-            currentFilter.colourists.forEach(i => {
-                compare.colourists.forEach(o => {
-                    if(i.name === o.name)
-                        expanded = true;
-                })
-            });
-
-        if(currentFilter.letterers)
-            currentFilter.letterers.forEach(i => {
-                compare.letterers.forEach(o => {
-                    if(i.name === o.name)
-                        expanded = true;
-                })
-            });
-
-        if(currentFilter.editors)
-            currentFilter.editors.forEach(i => {
-                compare.editors.forEach(o => {
-                    if(i.name === o.name)
-                        expanded = true;
-                })
-            });
-
-        if(currentFilter.translators && item.translators)
-            currentFilter.translators.forEach(i => {
-                item.translators.forEach(o => {
-                    if(i.name === o.name)
+        if(currentFilter.individuals)
+            currentFilter.individuals.forEach(i => {
+                compare.individuals.forEach(o => {
+                    if(i.name === o.name && i.type === o.type)
                         expanded = true;
                 })
             });
     } else if(item.__typename === 'Cover') {
-        if(currentFilter.artists)
-            currentFilter.artists.forEach(i => {
-                item.artists.forEach(o => {
-                    if(i.name === o.name)
+        if(currentFilter.individuals)
+            currentFilter.individuals.forEach(i => {
+                item.individuals.forEach(o => {
+                    if(i.name === o.name && i.type === o.type)
                         expanded = true;
                 })
             });
     } else if(item.__typename === 'Feature') {
-        if(currentFilter.writers)
-            currentFilter.writers.forEach(i => {
-                compare.writers.forEach(o => {
-                    if(i.name === o.name)
+        if(currentFilter.individuals)
+            currentFilter.individuals.forEach(i => {
+                compare.individuals.forEach(o => {
+                    if(i.name === o.name && i.type === o.type)
                         expanded = true;
                 })
             });

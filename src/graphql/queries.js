@@ -55,6 +55,13 @@ const individuals = gql`query Individuals {
     }
 }`;
 
+const apps = gql`query Apps {
+    apps {
+        name,
+        type
+    }
+}`;
+
 const arcs = gql`query Arcs {
     arcs {
         title,
@@ -206,13 +213,15 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
         releasedate,
         price,
         currency,
-        editors {
-            name
-        },
+        individuals {
+            name,
+            type
+        }
         cover {
             url,
-            artists {
-                name
+            individuals {
+                name,
+                type
             }
         },
         series {
@@ -227,8 +236,9 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
             title,
             addinfo,
             number,
-            writers {
-                name
+            individuals {
+                name,
+                type
             }
         },
         stories {
@@ -252,74 +262,15 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                     variant
                 }
             },
-            pencilers {
-                name
+            individuals {
+                name,
+                type
             },
-            writers {
-                name
-            },
-            inkers {
-                name
-            },
-            colourists {
-                name
-            },
-            letterers {
-                name
-            },
-            editors {
-                name
-            },
-            mainchars {
+            appearances {
                 name,
                 type,
                 role
-            },
-            antagonists {
-                name,
-                type,
-                role
-            },
-            supchars {
-                name,
-                type,
-                role
-            },
-            otherchars {
-                name,
-                type,
-                role
-            },
-            teams {
-                name,
-                type,
-                role
-            },
-            races {
-                name,
-                type,
-                role
-            },
-            animals {
-                name,
-                type,
-                role
-            },
-            items {
-                name,
-                type,
-                role
-            },
-            vehicles {
-                name,
-                type,
-                role
-            },
-            places {
-                name,
-                type,
-                role
-            },                                                                                                              
+            },                                                                                           
             parent {
                 number,
                 issue {
@@ -341,78 +292,16 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                         type
                     }   
                 },
-                pencilers {
-                    name
+                individuals {
+                    name,
+                    type
                 },
-                writers {
-                    name
-                },
-                inkers {
-                    name
-                },
-                colourists {
-                    name
-                },
-                letterers {
-                    name
-                },
-                editors {
-                    name
-                },
-                mainchars {
+                appearances {
                     name,
                     type,
                     role
-                },
-                antagonists {
-                    name,
-                    type,
-                    role
-                },
-                supchars {
-                    name,
-                    type,
-                    role
-                },
-                otherchars {
-                    name,
-                    type,
-                    role
-                },
-                teams {
-                    name,
-                    type,
-                    role
-                },
-                races {
-                    name,
-                    type,
-                    role
-                },
-                animals {
-                    name,
-                    type,
-                    role
-                },
-                items {
-                    name,
-                    type,
-                    role
-                },
-                vehicles {
-                    name,
-                    type,
-                    role
-                },
-                places {
-                    name,
-                    type,
-                    role
-                }
+                }   
             },
-			translators {
-				name
-			},
 			onlyapp,
             firstapp,
             onlytb,
@@ -454,17 +343,19 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                             us
                         }
                     }   
-                }
-                artists {
-                    name
+                },
+                individuals {
+                    name,
+                    type
                 }
             }
             onlyapp,
             firstapp,
             exclusive,
-            artists {
-                name
-            }
+            individuals {
+                name,
+                type
+            },
         },
         variants {
             format,
@@ -505,4 +396,4 @@ function getListQuery(level) {
 
 export {getListQuery,
     publisher, seriesd, issue, search,
-    publishers, series, issues, individuals, arcs, exportQuery};
+    publishers, series, issues, individuals, apps, arcs, exportQuery};

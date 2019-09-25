@@ -61,13 +61,15 @@ const createIssue = gql`mutation CreateIssue($item: IssueInput!){
         releasedate,
         price,
         currency,
-        editors {
-            name
+        individuals {
+            name,
+            type
         },
         cover {
             url,
-            artists {
-                name
+            individuals {
+                name,
+                type
             }
         },
         series {
@@ -82,15 +84,15 @@ const createIssue = gql`mutation CreateIssue($item: IssueInput!){
             title,
             addinfo,
             number,
-            writers {
-                name
+            individuals {
+                name,
+                type
             }
         },
         stories {
             title,
             addinfo,
             number,
-            ,
             children {
                 issue {
                     number,
@@ -108,23 +110,9 @@ const createIssue = gql`mutation CreateIssue($item: IssueInput!){
                     variant
                 }
             },
-            pencilers {
-                name
-            },
-            writers {
-                name
-            },
-            inkers {
-                name
-            },
-            colourists {
-                name
-            },
-            letterers {
-                name
-            },
-            editors {
-                name
+            individuals {
+                name,
+                type
             },
             parent {
                 number,
@@ -143,28 +131,15 @@ const createIssue = gql`mutation CreateIssue($item: IssueInput!){
                     format,
                     variant   
                 }
-                pencilers {
-                    name
-                },
-                writers {
-                    name
-                },
-                inkers {
-                    name
-                },
-                colourists {
-                    name
-                },
-                letterers {
-                    name
-                },
-                editors {
-                    name
+                individuals {
+                    name,
+                    type
                 }
             },
-			translators {
-				name
-			},
+			individuals {
+                name,
+                type
+            },
 			onlyapp,
             firstapp,
             exclusive
@@ -206,15 +181,17 @@ const createIssue = gql`mutation CreateIssue($item: IssueInput!){
                         }
                     }   
                 }
-                artists {
-                    name
+                individuals {
+                    name,
+                    type
                 }
             }
             onlyapp,
             firstapp,
             exclusive,
-            artists {
-                name
+            individuals {
+                name,
+                type
             }
         },
         variants {
@@ -249,13 +226,15 @@ const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
         releasedate,
         price,
         currency,
-        editors {
-            name
+        individuals {
+            name,
+            type
         },
         cover {
             url,
-            artists {
-                name
+            individuals {
+                name,
+                type
             }
         },
         series {
@@ -270,15 +249,15 @@ const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
             title,
             addinfo,
             number,
-            writers {
-                name
+            individuals {
+                name,
+                type
             }
         },
         stories {
             title,
             addinfo,
             number,
-            ,
             children {
                 issue {
                     number,
@@ -296,23 +275,9 @@ const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
                     variant
                 }
             },
-            pencilers {
-                name
-            },
-            writers {
-                name
-            },
-            inkers {
-                name
-            },
-            colourists {
-                name
-            },
-            letterers {
-                name
-            },
-            editors {
-                name
+            individuals {
+                name,
+                type
             },
             parent {
                 number,
@@ -331,28 +296,15 @@ const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
                     format,
                     variant   
                 }
-                pencilers {
-                    name
-                },
-                writers {
-                    name
-                },
-                inkers {
-                    name
-                },
-                colourists {
-                    name
-                },
-                letterers {
-                    name
-                },
-                editors {
-                    name
+                individuals {
+                    name,
+                    type
                 }
             },
-			translators {
-				name
-			},
+			individuals {
+                name,
+                type
+            }
 			onlyapp,
             firstapp,
             exclusive
@@ -393,16 +345,18 @@ const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
                             us
                         }
                     }   
-                }
-                artists {
-                    name
+                },
+                individuals {
+                    name,
+                    type
                 }
             }
             onlyapp,
             firstapp,
             exclusive,
-            artists {
-                name
+            individuals {
+                name,
+                type
             }
         },
         variants {

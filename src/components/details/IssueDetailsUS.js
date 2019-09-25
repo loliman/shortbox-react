@@ -1,5 +1,4 @@
 import React from "react";
-import {toChipList} from "../../util/util";
 import Typography from "@material-ui/core/Typography/Typography";
 import SearchIcon from '@material-ui/icons/Search';
 import IconButton from "@material-ui/core/IconButton/IconButton";
@@ -9,10 +8,11 @@ import ListItem from "@material-ui/core/ListItem/ListItem";
 import {withContext} from "../generic";
 import {generateLabel, generateUrl} from "../../util/hierarchy";
 import IssueDetails, {
+    AppearanceList,
     Contains,
     ContainsTitleDetailed,
     ContainsTitleSimple,
-    DetailsRow, IndividualList
+    DetailsRow, IndividualList, toChipList
 } from "./IssueDetails";
 
 var dateFormat = require('dateformat');
@@ -29,9 +29,9 @@ function Details(props) {
             <DetailsRow key="releasedate" label="Erscheinungsdatum"
                         value={dateFormat(new Date(props.issue.releasedate), "dd.mm.yyyy")}/>
             <DetailsRow key="coverartists" label="Cover Artists"
-                        value={toChipList(props.issue ? props.issue.cover.artists : null, props, "artists",  true)}/>
+                        value={toChipList(props.issue ? props.issue.cover.individuals.filter(item => item.type === 'ARTIST') : null, props, "ARTIST")}/>
             <DetailsRow key="editor" label="Editor"
-                        value={toChipList(props.issue.editors, props, "editors",  true)}/>
+                        value={toChipList(props.issue.individuals.filter(item => item.type === 'EDITOR'), props, "EDITOR")}/>
         </React.Fragment>
     );
 }
@@ -78,27 +78,35 @@ function StoryDetails(props) {
     return (
         <div className="usStoryContainer">
             <div className="usStoryDetails">
-                <IndividualList us={props.us} navigate={props.navigate} label={"Autor"} type={"writers"} item={props.item} />
-                <IndividualList us={props.us} navigate={props.navigate} label={"Zeichner"} type={"pencilers"} item={props.item} />
-                <IndividualList us={props.us} navigate={props.navigate} label={"Inker"} type={"inkers"} item={props.item} />
-                <IndividualList us={props.us} navigate={props.navigate} label={"Kolorist"} type={"colourists"} item={props.item} />
-                <IndividualList us={props.us} navigate={props.navigate} label={"Letterer"} type={"letterers"} item={props.item} />
+                <Typography variant="h6">Mitwirkende</Typography>
+                <IndividualList us={props.us} navigate={props.navigate} label={"Autor"} type={"WRITER"} item={props.item} />
+                <IndividualList us={props.us} navigate={props.navigate} label={"Zeichner"} type={"PENCILER"} item={props.item} />
+                <IndividualList us={props.us} navigate={props.navigate} label={"Inker"} type={"INKER"} item={props.item} />
+                <IndividualList us={props.us} navigate={props.navigate} label={"Kolorist"} type={"COLOURIST"} item={props.item} />
+                <IndividualList us={props.us} navigate={props.navigate} label={"Letterer"} type={"LETTERER"} item={props.item} />
+                <IndividualList us={props.us} navigate={props.navigate} label={"Übersetzer"} type={"TRANSLATOR"} item={props.item} hideIfEmpty={true}/>
+                <IndividualList us={props.us} navigate={props.navigate} label={"Verleger"} type={"EDITOR"} item={props.item} />
 
-                <IndividualList us={props.us} navigate={props.navigate} label={"Verleger"} type={"editors"} item={props.item} />
+                {
+                    (props.item.parent ? props.item.parent.appearances.length : props.item.appearances.length) > 0 ?
+                        (
+                            <React.Fragment>
+                                <br />
+                                <Typography variant="h6">Auftritte</Typography>
 
-                <br />
-                <Typography variant="h6">Auftritte</Typography>
-
-                <IndividualList us={props.us} navigate={props.navigate} label={"Hauptcharaktere"} type={"mainchars"} item={props.item} hideIfEmpty={true}/>
-                <IndividualList us={props.us} navigate={props.navigate} label={"Antagonisten"} type={"antagonists"} item={props.item} hideIfEmpty={true}/>
-                <IndividualList us={props.us} navigate={props.navigate} label={"Unterstützende Charaktere"} type={"supchars"} item={props.item} hideIfEmpty={true}/>
-                <IndividualList us={props.us} navigate={props.navigate} label={"Andere Charaktere"} type={"otherchars"} item={props.item} hideIfEmpty={true}/>
-                <IndividualList us={props.us} navigate={props.navigate} label={"Teams"} type={"teams"} item={props.item} hideIfEmpty={true}/>
-                <IndividualList us={props.us} navigate={props.navigate} label={"Rassen"} type={"races"} item={props.item} hideIfEmpty={true}/>
-                <IndividualList us={props.us} navigate={props.navigate} label={"Tiere"} type={"animals"} item={props.item} hideIfEmpty={true}/>
-                <IndividualList us={props.us} navigate={props.navigate} label={"Gegenstände"} type={"items"} item={props.item} hideIfEmpty={true}/>
-                <IndividualList us={props.us} navigate={props.navigate} label={"Fahrzeuge"} type={"vehicles"} item={props.item} hideIfEmpty={true}/>
-                <IndividualList us={props.us} navigate={props.navigate} label={"Orte"} type={"places"} item={props.item} hideIfEmpty={true}/>
+                                <AppearanceList us={props.us} navigate={props.navigate} label={"Hauptcharaktere"} role={"FEATURED"} type={"CHARACTER"} item={props.item} hideIfEmpty={true}/>
+                                <AppearanceList us={props.us} navigate={props.navigate} label={"Antagonisten"} role={"ANTAGONIST"} type={"CHARACTER"} item={props.item} hideIfEmpty={true}/>
+                                <AppearanceList us={props.us} navigate={props.navigate} label={"Unterstützende Charaktere"} role={"SUPPORTING"} type={"CHARACTER"} item={props.item} hideIfEmpty={true}/>
+                                <AppearanceList us={props.us} navigate={props.navigate} label={"Andere Charaktere"} role={"OTHER"} type={"CHARACTER"} item={props.item} hideIfEmpty={true}/>
+                                <AppearanceList us={props.us} navigate={props.navigate} label={"Teams"} type={"TEAM"} item={props.item} hideIfEmpty={true}/>
+                                <AppearanceList us={props.us} navigate={props.navigate} label={"Rassen"} type={"RACE"} item={props.item} hideIfEmpty={true}/>
+                                <AppearanceList us={props.us} navigate={props.navigate} label={"Tiere"} type={"ANIMAL"} item={props.item} hideIfEmpty={true}/>
+                                <AppearanceList us={props.us} navigate={props.navigate} label={"Gegenstände"} type={"ITEM"} item={props.item} hideIfEmpty={true}/>
+                                <AppearanceList us={props.us} navigate={props.navigate} label={"Fahrzeuge"} type={"VEHICLE"} item={props.item} hideIfEmpty={true}/>
+                                <AppearanceList us={props.us} navigate={props.navigate} label={"Orte"} type={"PLACE"} item={props.item} hideIfEmpty={true}/>
+                            </React.Fragment>
+                        ) : null
+                }
             </div>
 
             {props.item.children.length === 0 ? null :

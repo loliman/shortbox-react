@@ -1,6 +1,3 @@
-import React from "react";
-import Chip from "@material-ui/core/Chip";
-
 export function wrapItem(item) {
     if (item.__typename === "Publisher")
         return {us: (item.us ? item.us : false), publisher: item};
@@ -65,31 +62,6 @@ export function romanize(num) {
     while (i--)
         roman = (key[+digits.pop() + (i * 10)] || "") + roman;
     return Array(+digits.join("") + 1).join("M") + roman;
-}
-
-export function toChipList(items, props, individualType, details) {
-    if(!items || items.length === 0) {
-        return <Chip key={0} className="chip" variant={"outlined"} label="Unbekannt"/>;
-    }
-
-    let list = [];
-    items.forEach((item, i) => {
-        let filter = {
-            story: individualType !== "artists",
-            cover: individualType === "artists",
-            us: props.us
-        };
-        filter[individualType] = [{name: item.name}];
-
-        list.push(
-            <Chip key={i} className="chip partOfChip" label={item.name} onClick={() => props.navigate(props.us ? "/us" : "/de", {filter: JSON.stringify(filter)})}/>
-        );
-
-        if(details && i !== items.length-1)
-            list.push(<br key={i + "br"} />);
-    });
-
-    return list;
 }
 
 export function today() {

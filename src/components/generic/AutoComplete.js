@@ -115,6 +115,7 @@ class AutoCompleteContainer extends React.Component {
 
         let props = {
             name: this.props.field.name,
+            type: this.props.type,
             error: error,
             touched: touched,
             textFieldProps: {
@@ -128,7 +129,18 @@ class AutoCompleteContainer extends React.Component {
 
             options: this.props.loading ? [] : this.props.options,
             onChange: (option) => {
-                this.props.onChange(option)
+                if(Array.isArray(option) && this.props.type) {
+                    let options = [];
+                    option.forEach(o => {
+                        options.push({
+                            name: o.name,
+                            type: !o.type ? this.props.type : o.type
+                        })
+                    });
+
+                    this.props.onChange(options);
+                } else
+                    this.props.onChange(option);
             },
             onChangeValue: (value) => {
                 this.props.onChangeValue(value);
@@ -191,33 +203,36 @@ class AutoCompleteContainer extends React.Component {
                             I don't know why, but the onBlur method seems to destroy the Series object.
                             But we don't need validation in that case anyways, so let's just ignore it.
                              */
-                                         onBlur={this.props.isMulti ? this.props.field.onBlur : false}
-                                         value={this.props.field.value}
-                                         isMulti={this.props.isMulti}
-                                         isValidNewOption={(value) => {
-                                             if(!this.props.creatable)
-                                                 return false;
+                             onBlur={this.props.isMulti ? this.props.field.onBlur : false}
+                             value={this.props.field.value}
+                             isMulti={this.props.isMulti}
+                             isValidNewOption={(value) => {
+                                 if(!this.props.creatable)
+                                     return false;
 
-                                             let isNew = false;
-                                             if(value !== '' && this.props.options) {
-                                                 let option = this.props.options.find(option => {
-                                                     if(option[this.props.nameField] && value)
-                                                         return option[this.props.nameField].toLowerCase() === value.toLowerCase();
-                                                     else
-                                                         return false;
-                                                 });
+                                 let isNew = false;
+                                 if(value !== '' && this.props.options) {
+                                     let option = this.props.options.find(option => {
+                                         if(option[this.props.nameField] && value)
+                                             return option[this.props.nameField].toLowerCase() === value.toLowerCase();
+                                         else
+                                             return false;
+                                     });
 
-                                                 if(!option) isNew = true;
-                                             }
+                                     if(!option) isNew = true;
+                                 }
 
-                                             return isNew;
-                                         }}
-                                         getNewOptionData={(value) => {
-                                             let newOption = {};
-                                             newOption[this.props.nameField] = value;
-                                             newOption.__typename = typename;
-                                             return newOption;
-                                         }}
+                                 return isNew;
+                             }}
+                             getNewOptionData={(value) => {
+                                 let newOption = {};
+                                 newOption[this.props.nameField] = value;
+                                 newOption.__typename = typename;
+                                 if(this.props.type)
+                                     newOption.type = this.props.type;
+
+                                 return newOption;
+                             }}
                         />
                 }
 
@@ -385,7 +400,6 @@ const inputStyle = isHidden => ({
 function Input(props) {
     const {className, cx, id, innerRef, isHidden, isDisabled, selectProps, getStyles, ...rest} = props;
 
-
     return (
         <div className="autoSuggestInput">
             <AutosizeInput
@@ -401,10 +415,23 @@ function Input(props) {
 }
 
 function MultiValue(props) {
+    if(props.selectProps.type && props.selectProps.type !== props.data.type)
+        return null;
+
+    let regex = new RegExp("!!\\w*!!");
+    let thick = regex.exec(props.children);
+    let label = props.children;
+
+    let thickString;
+    if(thick && thick.length > 0) {
+        thickString = thick[0].substr(2, thick[0].length-4);
+        label = label.replace("!!" + thickString + "!!", "");
+    }
+
     return (
         <Chip
             tabIndex={-1}
-            label={props.children}
+            label={label + (thickString ? " (" + thickString + ")" : "")}
             className={props.isFocused ? "chip chipFocused" : "chip"}
             onDelete={props.removeProps.onClick}
             deleteIcon={<CancelIcon {...props.removeProps} />}

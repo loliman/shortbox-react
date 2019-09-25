@@ -55,7 +55,7 @@ class IssueEditor extends React.Component {
                 releasedate: '1900-01-01',
                 price: '0',
                 currency: currencies[0],
-                editors: [],
+                individuals: [],
                 addinfo: '',
                 stories: [],
                 features: [],
@@ -161,28 +161,16 @@ class IssueEditor extends React.Component {
                             actions.setSubmitting(true);
 
                             let stories = values.stories.map(e => {
-                                if(e.exclusive || values.series.publisher.us) {
+                                if(e.exclusive || values.series.publisher.us)
                                     e.parent = undefined;
-                                    e.translators = undefined;
-                                } else {
-                                    e.writers = undefined;
-                                    e.pencilers = undefined;
-                                    e.inkers = undefined;
-                                    e.colourists = undefined;
-                                    e.letterers = undefined;
-                                    e.editors = undefined;
-                                }
                                 e.children = undefined;
 
                                 return e;
                             });
 
                             let covers = values.covers.map(e => {
-                                if(e.exclusive || values.series.publisher.us) {
+                                if(e.exclusive || values.series.publisher.us)
                                     e.parent = undefined;
-                                } else {
-                                    e.artists = undefined;
-                                }
                                 e.children = undefined;
 
                                 return e;
@@ -194,9 +182,7 @@ class IssueEditor extends React.Component {
                             variables.item.stories = stories;
                             variables.item.covers = covers;
 
-                            if(!variables.item.series.publisher.us)
-                                variables.item.editors = undefined;
-                            else {
+                            if(variables.item.series.publisher.us) {
                                 variables.item.format = undefined;
                                 variables.item.limitation = undefined;
                                 variables.item.pages = undefined;
@@ -216,27 +202,16 @@ class IssueEditor extends React.Component {
                                 variables.item.publisher = stripItem(variables.item.publisher);
                             if(variables.item.series)
                                 variables.item.series = stripItem(variables.item.series);
-                            if(variables.item.editors)
-                                variables.item.editors = variables.item.editors.map(item => stripItem(item));
+                            if(variables.item.individuals)
+                                variables.item.individuals = variables.item.individuals.map(item => stripItem(item));
 
                             if(variables.item.stories)
                                 variables.item.stories = variables.item.stories.map(story => {
                                    if(story.series)
                                        story.series = stripItem(story.series);
-                                   if(story.translators)
-                                       story.translators = story.translators.map(item => stripItem(item));
-                                   if(story.writers)
-                                       story.writers = story.writers.map(item => stripItem(item));
-                                   if(story.pencilers)
-                                       story.pencilers = story.pencilers.map(item => stripItem(item));
-                                   if(story.inkers)
-                                       story.inkers = story.inkers.map(item => stripItem(item));
-                                   if(story.colourists)
-                                       story.colourists = story.colourists.map(item => stripItem(item));
-                                   if(story.inkers)
-                                       story.letterers = story.letterers.map(item => stripItem(item));
-                                   if(story.editors)
-                                       story.editors = story.editors.map(item => stripItem(item));
+                                   if(story.individuals)
+                                       story.individuals = story.individuals.map(item => stripItem(item));
+
                                    if(story.parent && story.parent.issue && story.parent.issue.series)
                                        story.parent.issue.series = stripItem(story.parent.issue.series);
                                    return story;
@@ -244,8 +219,8 @@ class IssueEditor extends React.Component {
 
                             if(variables.item.features)
                                 variables.item.features = variables.item.features.map(feature => {
-                                    if(feature.writers)
-                                        feature.writers= feature.writers.map(item => stripItem(item));
+                                    if(feature.individuals)
+                                        feature.individuals= feature.individuals.map(item => stripItem(item));
 
                                     return feature;
                                 });
@@ -254,8 +229,8 @@ class IssueEditor extends React.Component {
                                 variables.item.covers = variables.item.covers.map(cover => {
                                     if(cover.series)
                                         cover.series = stripItem(cover.series);
-                                    if(cover.artists)
-                                        cover.artists = cover.artists.map(item => stripItem(item));
+                                    if(cover.individuals)
+                                        cover.individuals = cover.individuals.map(item => stripItem(item));
                                     if(cover.parent && cover.parent.issue && cover.parent.issue.series)
                                         cover.parent.issue.series = stripItem(cover.parent.issue.series);
                                     return cover;
@@ -473,7 +448,7 @@ class IssueEditor extends React.Component {
                                                 query={individuals}
                                                 name="editors"
                                                 nameField="name"
-                                                label="Editor"
+                                                label="Verleger"
                                                 isMulti
                                                 creatable
                                                 onChange={(option) => setFieldValue("editors", option)}
@@ -720,12 +695,13 @@ function StoryFieldsNonExclusive(props) {
 
             <AutoComplete
                 query={individuals}
-                name={"stories[" + index + "].translators"}
+                name={"stories[" + index + "].individuals"}
                 nameField="name"
+                type={"TRANSLATOR"}
                 label="Übersetzer"
                 isMulti
                 creatable
-                onChange={(option) => setFieldValue("stories[" + index + "].translators", option)}
+                onChange={(option) => setFieldValue("stories[" + index + "].individuals", option)}
                 style={{
                     width: props.desktop ? "35%" : "100%"
                 }}
@@ -743,13 +719,14 @@ function StoryFieldsExclusive(props) {
             <div className="storyAddInputContainer">
                 <AutoComplete
                     query={individuals}
-                    name={"stories[" + index + "].writers"}
+                    name={"stories[" + index + "].individuals"}
+                    type={"WRITER"}
                     nameField="name"
                     label="Autor"
                     disabled={props.disabled}
                     isMulti
                     creatable
-                    onChange={(option) => setFieldValue("stories[" + index + "].writers", option)}
+                    onChange={(option) => setFieldValue("stories[" + index + "].individuals", option)}
                     style={{
                         width: props.desktop ? "33.3%" : "99%"
                     }}
@@ -757,13 +734,14 @@ function StoryFieldsExclusive(props) {
                 />
                 <AutoComplete
                     query={individuals}
-                    name={"stories[" + index + "].pencilers"}
+                    name={"stories[" + index + "].individuals"}
+                    type={"PENCILER"}
                     nameField="name"
                     label="Zeichner"
                     disabled={props.disabled}
                     isMulti
                     creatable
-                    onChange={(option) => setFieldValue("stories[" + index + "].pencilers", option)}
+                    onChange={(option) => setFieldValue("stories[" + index + "].individuals", option)}
                     style={{
                         width: props.desktop ? "33.3%" : "100%"
                     }}
@@ -771,13 +749,14 @@ function StoryFieldsExclusive(props) {
                 />
                 <AutoComplete
                     query={individuals}
-                    name={"stories[" + index + "].inkers"}
+                    name={"stories[" + index + "].individuals"}
+                    type={"INKER"}
                     nameField="name"
                     label="Inker"
                     isMulti
                     disabled={props.disabled}
                     creatable
-                    onChange={(option) => setFieldValue("stories[" + index + "].inkers", option)}
+                    onChange={(option) => setFieldValue("stories[" + index + "].individuals", option)}
                     style={{
                         width: props.desktop ? "33.3%" : "100%"
                     }}
@@ -787,13 +766,14 @@ function StoryFieldsExclusive(props) {
             <div className="storyAddInputContainer">
                 <AutoComplete
                     query={individuals}
-                    name={"stories[" + index + "].colourists"}
+                    type={"COLOURIST"}
+                    name={"stories[" + index + "].individuals"}
                     nameField="name"
                     label="Kolorist"
                     disabled={props.disabled}
                     isMulti
                     creatable
-                    onChange={(option) => setFieldValue("stories[" + index + "].colourists", option)}
+                    onChange={(option) => setFieldValue("stories[" + index + "].individuals", option)}
                     style={{
                         width: props.desktop ? "33.3%" : "100%"
                     }}
@@ -801,13 +781,14 @@ function StoryFieldsExclusive(props) {
                 />
                 <AutoComplete
                     query={individuals}
-                    name={"stories[" + index + "].letterers"}
+                    name={"stories[" + index + "].individuals"}
+                    type={"LETTERER"}
                     nameField="name"
                     label="Letterer"
                     disabled={props.disabled}
                     isMulti
                     creatable
-                    onChange={(option) => setFieldValue("stories[" + index + "].letterers", option)}
+                    onChange={(option) => setFieldValue("stories[" + index + "].individuals", option)}
                     style={{
                         width: props.desktop ? "33.3%" : "100%"
                     }}
@@ -815,13 +796,14 @@ function StoryFieldsExclusive(props) {
                 />
                 <AutoComplete
                     query={individuals}
-                    name={"stories[" + index + "].editors"}
+                    name={"stories[" + index + "].individuals"}
+                    type={"EDITOR"}
                     nameField="name"
-                    label="Editor"
+                    label="Verleger"
                     disabled={props.disabled}
                     isMulti
                     creatable
-                    onChange={(option) => setFieldValue("stories[" + index + "].editors", option)}
+                    onChange={(option) => setFieldValue("stories[" + index + "].individuals", option)}
                     style={{
                         width: props.desktop ? "33.3%" : "100%"
                     }}
@@ -867,12 +849,13 @@ function FeatureFields(props) {
 
             <AutoComplete
                 query={individuals}
-                name={"features[" + props.index + "].writers"}
+                name={"features[" + props.index + "].individuals"}
                 nameField="name"
+                type={"WRITER"}
                 label="Autor"
                 isMulti
                 creatable
-                onChange={(option) => props.setFieldValue("features[" + props.index + "].writers", option)}
+                onChange={(option) => props.setFieldValue("features[" + props.index + "].individuals", option)}
                 style={{
                     width: props.desktop ? "30%" : "100%"
                 }}
@@ -1000,13 +983,16 @@ function CoverFieldsExclusive(props) {
         <React.Fragment>
             <AutoComplete
                 query={individuals}
-                name={"covers[" + index + "].artists"}
+                name={"covers[" + index + "].individuals"}
                 nameField="name"
+                type={"ARTIST"}
                 label="Zeichner"
                 isMulti
                 creatable
                 disabled={props.disabled}
-                onChange={(option) => setFieldValue("covers[" + index + "].artists", option)}
+                onChange={(option) => {
+                    setFieldValue("covers[" + index + "].individuals", option)
+                }}
                 style={{
                     width: props.desktop ? "40%" : "99%"
                 }}
@@ -1109,13 +1095,7 @@ const storyDefault = {
         },
         number: 0
     },
-    translators: [],
-    writers: [],
-    pencilers: [],
-    inkers: [],
-    colourists: [],
-    letterers: [],
-    editors: [],
+    individuals: [],
     addinfo: '',
     exclusive: false,
 };
@@ -1123,7 +1103,7 @@ const storyDefault = {
 const featureDefault = {
     title: '',
     addinfo: '',
-    writers: [],
+    individuals: [],
     number: 0
 };
 
@@ -1142,7 +1122,7 @@ const coverDefault = {
         },
         number: 0
     },
-    artists: [],
+    individuals: [],
     addinfo: '',
     number: 0,
     exclusive: false,

@@ -27,7 +27,7 @@ function IssueEdit(props) {
                     defaultValues.createdAt = undefined;
                     defaultValues.updatedAt = undefined;
                     defaultValues.cover = defaultValues.cover ? defaultValues.cover : '';
-                    defaultValues.editors = (defaultValues.editors && defaultValues.editors.length > 0 ? defaultValues.editors.map(individual => stripItem(individual)) : []);
+                    defaultValues.individuals = defaultValues.individuals ? defaultValues.individuals.map(i => stripItem(i)) : [];
                     defaultValues.pages = defaultValues.pages ? defaultValues.pages : 0;
                     defaultValues.limitation = defaultValues.limitation ? defaultValues.limitation : 0;
 
@@ -40,13 +40,7 @@ function IssueEdit(props) {
                             number: story.number,
                             addinfo: story.addinfo,
                             exclusive: exclusive,
-                            translators: exclusive ? undefined : (story.translators && story.translators.length > 0 ? story.translators.map(individual => stripItem(individual)) : []),
-                            writers: !exclusive ? undefined : (story.writers && story.writers.length > 0 ? story.writers.map(individual => stripItem(individual)) : []),
-                            pencilers: !exclusive ? undefined : (story.pencilers && story.pencilers.length > 0 ? story.pencilers.map(individual => stripItem(individual)) : []),
-                            inkers: !exclusive ? undefined : (story.inkers && story.inkers.length > 0 ? story.inkers.map(individual => stripItem(individual)) : []),
-                            colourists: !exclusive ? undefined : (story.colourists && story.colourists.length > 0 ? story.colourists.map(individual => stripItem(individual)) : []),
-                            letterers: !exclusive ? undefined : (story.letterers && story.letterers.length > 0 ? story.letterers.map(individual => stripItem(individual)) : []),
-                            editors: !exclusive ? undefined : (story.editors && story.editors.length > 0 ? story.editors.map(individual => stripItem(individual)) : []),
+                            individuals: !exclusive ? undefined : (story.individuals ? story.individuals.map(i => stripItem(i)) : []),
                             parent: exclusive ? undefined : {
                                 number: story.parent.number,
                                 issue: {
@@ -68,7 +62,7 @@ function IssueEdit(props) {
                             title: feature.title,
                             number: feature.number,
                             addinfo: feature.addinfo,
-                            writers: (feature.writers && feature.writers.length > 0 ? feature.writers.map(individual => stripItem(individual)) : [])
+                            individuals: (feature.individuals ? feature.individuals.map(i => stripItem(i)) : [])
                         })
                     });
                     defaultValues.features = oldFeatures;
@@ -81,7 +75,7 @@ function IssueEdit(props) {
                             number: cover.number,
                             addinfo: cover.addinfo,
                             exclusive: exclusive,
-                            artists: !exclusive ? undefined : (cover.artists && cover.artists.length > 0 ? cover.artists.map(individual => stripItem(individual)) : []),
+                            individuals: !exclusive ? undefined : (cover.individuals ? cover.individuals.map(i => stripItem(i)) : []),
                             parent: exclusive ? undefined : {
                                 number: 0,
                                 issue: {
