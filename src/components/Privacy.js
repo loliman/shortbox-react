@@ -405,6 +405,33 @@ function Privacy(props) {
 
                 <br/>
 
+                <Typography variant="h6">Google Analytics</Typography>
+
+                <br/>
+
+                <Typography>
+                    Wir verwenden Google Analytics, um die Website-Nutzung zu analysieren. Die daraus gewonnenen Daten werden genutzt, um unsere Website sowie Werbemaßnahmen zu optimieren.
+                    <br />
+                    Google Analytics ist ein Webanalysedienst, der von Google Inc. (1600 Amphitheatre Parkway, Mountain View, CA 94043, United States) betrieben und bereitgestellt wird. Google verarbeitet die Daten zur Website-Nutzung in unserem Auftrag und verpflichtet sich vertraglich zu Maßnahmen, um die Vertraulichkeit der verarbeiteten Daten zu gewährleisten.
+                    <br />
+                    Während Ihres Website-Besuchs werden u.a. folgende Daten aufgezeichnet:
+                    <br /><br />
+                    - Aufgerufene Seiten<br />
+                    - Ihr Verhalten auf den Seiten (beispielsweise Klicks, Scroll-Verhalten und Verweildauer)<br />
+                    - Ihr ungefährer Standort (Land und Stadt)<br />
+                    - Ihre IP-Adresse (in gekürzter Form, sodass keine eindeutige Zuordnung möglich ist)<br />
+                    - Technische Informationen wie Browser, Internetanbieter, Endgerät und Bildschirmauflösung<br />
+                    - Herkunftsquelle Ihres Besuchs (d.h. über welche Website bzw. über welches Werbemittel Sie zu uns gekommen sind)<br />
+                    <br />
+                    Diese Daten werden an einen Server von Google in den USA übertragen. Google beachtet dabei die Datenschutzbestimmungen des „EU-US Privacy Shield“-Abkommens.
+                    <br />
+                    Google Analytics speichert Cookies in Ihrem Webbrowser für die Dauer von zwei Jahren seit Ihrem letzten Besuch. Diese Cookies enthaltene eine zufallsgenerierte User-ID, mit der Sie bei zukünftigen Website-Besuchen wiedererkannt werden können.
+                    <br />
+                    Die aufgezeichneten Daten werden zusammen mit der zufallsgenerierten User-ID gespeichert, was die Auswertung pseudonymer Nutzerprofile ermöglicht. Diese nutzerbezogenen Daten werden automatisch nach 14 Monaten gelöscht. Sonstige Daten bleiben in aggregierter Form unbefristet gespeichert.
+                </Typography>
+
+                <br/>
+
                 <Typography variant="h6">Marvel Database</Typography>
 
                 <br/>
