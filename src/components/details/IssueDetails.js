@@ -305,7 +305,7 @@ export function ContainsTitleDetailed(props) {
                 {
                     props.item.onlyapp && props.item.parent ?
                         !smallChip ?
-                            <Chip className="chip" label="Einzige Ausgabe" color="secondary"
+                            <Chip className="chip" label="Einzige Veröffentlichung" color="secondary"
                                   icon={<PriorityHighIcon/>}/>
                             : <Chip className="chip" label={<PriorityHighIcon className="
                             mobileChip"/>}
@@ -316,7 +316,7 @@ export function ContainsTitleDetailed(props) {
                 {
                     props.item.firstapp && props.item.parent ?
                         <Chip className="chip"
-                              label={!smallChip ? "Erstausgabe" : "1."}
+                              label={!smallChip ? "Erstveröffentlichung" : "1."}
                               color="primary"/>
                         : null
                 }

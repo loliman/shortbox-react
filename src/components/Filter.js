@@ -348,7 +348,7 @@ function Filter(props) {
                                                             }}
                                                             color="secondary"/>
                                                     }
-                                                    label="Erstausgabe"
+                                                    label="Erstveröffentlichung"
                                                 />
 
                                                 <FormControlLabel
@@ -364,7 +364,7 @@ function Filter(props) {
                                                             }}
                                                             color="secondary"/>
                                                     }
-                                                    label="Einzige Ausgabe"
+                                                    label="Einzige Veröffentlichung"
                                                 />
 
                                                 <FormControlLabel
