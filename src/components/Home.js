@@ -12,8 +12,8 @@ import IssuePreview from "./IssuePreview";
 function Home(props) {
     return (
         <Layout>
-            <CardHeader title="Willkommen auf Shortbox"
-                        subheader="Das deutsche Archiv für Marvel Comics"/>
+            <CardHeader title="Willkommen auf Shortbox "
+                        subheader="Das deutsche Archiv für Marvel Comics "/>
 
             <CardContent className="cardContent">
                 <Typography>
