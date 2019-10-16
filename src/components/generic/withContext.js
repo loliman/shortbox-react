@@ -83,7 +83,7 @@ function createAppTitle(params, url) {
         title += " | US";
 
     if(params.level !== HierarchyLevel.ROOT || params.edit || params.create)
-        title += " | Shortbox";
+        title += " - Shortbox";
 
     return title;
 }
