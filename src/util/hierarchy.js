@@ -118,6 +118,15 @@ export function generateLabel(item) {
         return item.series.title + (item.series.publisher ? ' (Vol. ' + romanize(item.series.volume) + ')' : '') + (year ? year : "");
     }
 
-    if (item.issue)
-        return item.issue.series.title + ' #' + item.issue.number;
+    if (item.issue) {
+        let year;
+
+        if (item.issue.series.startyear)
+            if(item.issue.series.startyear === item.series.endyear)
+                year = ' (' + item.issue.series.startyear + ')';
+            else
+                year = ' (' + item.issue.series.startyear + ' - ' + ((!item.issue.series.endyear || item.issue.series.endyear === 0) ? '...' : item.issue.series.endyear) + ')';
+
+        return item.issue.series.title + (item.issue.series.publisher ? ' (Vol. ' + romanize(item.issue.series.volume) + ')' : '') + (year ? year : "") + ' #' + item.issue.number;
+    }
 }
