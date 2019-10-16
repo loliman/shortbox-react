@@ -101,7 +101,7 @@ export function generateLabel(item) {
         item = wrapItem(item);
 
     if (!item.publisher && !item.series && !item.issue)
-        return "Shortbox";
+        return "Shortbox - Das deutsche Archiv für Marvel Comics";
 
     if (item.publisher)
         return item.publisher.name;

@@ -17,9 +17,14 @@ function Home(props) {
 
             <CardContent className="cardContent">
                 <Typography>
-                    Shortbox.de ist ein 2018 gestartetes, privates Projekt von Marvel Fans für Marvel Fans, welches
-                        den Anspruch hat, jede je erschienene deutsche Marvel-Veröffentlichung detailliert zu katalogisieren.<br />
-                    Alle auf Shortbox.de gelisteten Informationen unterliegen der&nbsp;
+                    Shortbox listet alle deutschen Marvel Veröffentlichungen detailliert auf und ordnet diese den entsprechenden US Geschichten zu.<br /><br />
+
+                    Angefangen über Geschichten der bekanntesten Superhelden Spider-Man, Deadpool, den X-Men oder den Avengers oder unbekannteren Helden wie Moon Knight und den New Mutants, über Comics zum
+                    Marvel Cinematic Universe mit Captain America, Captain Marvel und Iron Man bis hin zu Western-Comics, Horror-Comics und Kinder-Comics wie den Glücksbärchis
+                    oder der Police Acadamy findet ihr hier alle Veröffentlichungen in offiziellen Ausgaben, Raubkopien oder Fan-Comics.<br /><br />
+
+                    Shortbox wurde 2018 gestartet und ist privates Projekt von mir für alle Marvel Fans.<br />
+                    Aus diesem Grund unterliegen alle auf Shortbox gelisteten Informationen der&nbsp;
                         <a href="https://creativecommons.org/licenses/by/3.0/de/" rel="noopener noreferrer nofollow"
                            target="_blank">Creative Commons License 3.0</a> und stehen somit, unter Angabe der Quelle,
                         jedem zur freien und kostenlosen Verfügung.
