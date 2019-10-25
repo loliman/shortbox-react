@@ -98,7 +98,7 @@ function TypeListEntry(props) {
     return (
         <div className="itemContainer">
             <ListItem onClick={() => {
-                          if ((mobile && !mobileLandscape) && level === HierarchyLevel.SERIES)
+                          if ((mobile && !mobileLandscape) && (level === HierarchyLevel.SERIES || level === HierarchyLevel.ISSUE))
                               toogleDrawer();
 
                           props.navigate(generateUrl(item, us));

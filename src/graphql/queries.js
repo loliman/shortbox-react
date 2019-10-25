@@ -74,6 +74,7 @@ export const lastEdited = gql`query LastEdited($us: Boolean) {
         number,
         format,
         variant,
+        title,
         createdAt,
         updatedAt,
         series {
@@ -272,6 +273,7 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                 role
             },                                                                                           
             parent {
+                title,
                 number,
                 issue {
                     number,

@@ -25,11 +25,19 @@ function IssuePreview(props) {
     return (
         <Card className="issuePreview" onClick={() => props.navigate(generateUrl(props.issue, props.us))}>
             <CardContent>
-                <Typography variant="subtitle1" id="issuePreviewTitle">{generateLabel(props.issue.series) + " #" + props.issue.number}</Typography>
+                <div className="issueTitleContainer">
+                    <Typography variant="subtitle1" className="issuePreviewTitle">{generateLabel(props.issue.series) + " #" + props.issue.number}</Typography>
+
+                    {
+                        props.issue.title !== '' ?
+                            <Typography className="issuePreviewSubTitle" variant={"subtitle2"}>{props.issue.title}</Typography> :
+                            null
+                    }
+                </div>
 
                 {
                     variant !== '' ?
-                        <Typography id="issuePreviewTitleVariant" variant={"caption"}>{variant}</Typography> :
+                        <Typography className="issuePreviewTitleVariant" variant={"caption"}>{variant}</Typography> :
                         null
                 }
                 <Typography variant="caption">{generateLabel(props.issue.series.publisher)}</Typography>

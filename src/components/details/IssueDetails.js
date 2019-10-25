@@ -30,6 +30,7 @@ import GridListTile from "@material-ui/core/GridListTile/GridListTile";
 import GridListTileBar from "@material-ui/core/GridListTileBar/GridListTileBar";
 import EditButton from "../restricted/EditButton";
 import {stripItem} from "../../util/util";
+import SnackbarContent from "@material-ui/core/SnackbarContent";
 
 class IssueDetails extends React.Component {
     render() {
@@ -60,8 +61,18 @@ class IssueDetails extends React.Component {
                             });
                         }
 
+                        let q = new Date();
+                        let today = new Date(q.getFullYear(), q.getMonth(), q.getDay());
+
                         return (
                             <React.Fragment>
+                                {
+                                    !us && !issue.verified && today < new Date(issue.releasedate)
+                                    ? <SnackbarContent id="notVerifiedWarning" message="Diese Ausgabe ist noch nicht im Handel erhältlich und noch nicht vorab verifiziert worden.
+                                        Die angezeigten Informationen weichen gegebenenfalls von den tatsächlichen Daten ab."  />
+                                    : null
+                                }
+
                                 <CardHeader title={generateLabel(issue)}
                                             subheader={this.props.subheader ? generateIssueSubHeader(issue) : ""}
                                             action={
@@ -74,6 +85,7 @@ class IssueDetails extends React.Component {
                                             }/>
 
                                 <CardContent className="cardContent">
+
                                     <Variants us={us} issue={data.issue} navigate={this.props.navigate}/>
 
                                     <div className="details">
@@ -283,11 +295,21 @@ export function ContainsTitleDetailed(props) {
     let exclusive = props.item.exclusive && !props.us;
     let variant = (!props.us && issue.variant && issue.variant !== '') ? ' '+ issue.variant : '';
 
+    let parentTitle;
+    if(!props.item.title && props.item.parent && props.item.parent.title)
+        parentTitle = props.item.parent.title;
+
     return (
         <div className={props.simple ? "storyTitle storyTitleSimple" : "storyTitle"}>
             <div className="headingContainer">
-                <Typography
-                    className="heading">{generateItemTitle(props.item.issue ? props.item.issue : props.item) + variant}</Typography>
+                <div>
+                    <Typography
+                        className="heading itemTitle">{generateItemTitle(props.item.issue ? props.item.issue : props.item) + variant}
+                    </Typography>
+                    {parentTitle && !(props.mobile && !props.mobileLandscape)
+                        ? <Typography className="parentTitle">{parentTitle}</Typography>
+                        : null}
+                </div>
                 <Typography className="heading headingAddInfo">
                     {props.item.addinfo ? props.item.addinfo : null}
                 </Typography>

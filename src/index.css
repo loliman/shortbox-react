@@ -9,6 +9,20 @@ body {
     flex-direction: column;
 }
 
+#notVerifiedWarning {
+    min-width: 100%;
+    background: rgb(204, 21, 21);
+    border-radius: 0;
+}
+
+#cookieHint {
+    border-radius: 0;
+    z-index: 1051;
+    min-width: 100%;
+    float: bottom;
+    position: absolute;
+}
+
 #logo {
     align-self: center;
     margin-left: 10px;
@@ -244,6 +258,7 @@ body {
     height: 100%;
     box-shadow: none;
     display: flex;
+    border-radius: 0;
     flex-direction: column;
 }
 
@@ -273,6 +288,10 @@ body {
     padding-left: 10px;
     padding-right: 10px;
     color: darkgray;
+}
+
+.cookieSpanLink {
+    color: white;
 }
 
 .spanDif {
@@ -1135,6 +1154,32 @@ div[class^="MuiExpansionPanelSummary-content-"] {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    display: inline-block;
+}
+
+.issueTitleContainer {
+    display: flex;
+    align-items: flex-end;
+    text-align: left;
+}
+
+.issuePreviewTitle {
+}
+
+.issuePreviewSubTitle {
+    width: auto;
+    padding-left: 5px;
+    padding-bottom: 3px;
+}
+
+.itemTitle {
+    display: inline-block !important;
+    padding-right: 10px !important;
+}
+
+.parentTitle {
+    color: rgba(0, 0, 0, 0.54) !important;
+    display: inline-block !important;
 }
 
 .issuePreview:hover {

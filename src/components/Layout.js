@@ -7,6 +7,7 @@ import AddFab from "./restricted/AddFab";
 import Typography from "@material-ui/core/Typography";
 import {Mutation} from "react-apollo";
 import {logout} from "../graphql/mutations";
+import Cookies from "./Cookies";
 
 class Layout extends React.Component {
     constructor(props) {
@@ -55,6 +56,7 @@ class Layout extends React.Component {
                         </Card>
                     </div>
 
+                    <Cookies/>
                     <AddFab us={us}/>
                 </div>
             </React.Fragment>
