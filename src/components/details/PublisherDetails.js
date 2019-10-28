@@ -9,7 +9,7 @@ import {generateLabel, getSelected} from "../../util/hierarchy";
 import Typography from "@material-ui/core/es/Typography/Typography";
 import EditButton from "../restricted/EditButton";
 import withContext from "../generic/withContext";
-import IssuePreview from "../IssuePreview";
+import IssuePreview, {IssuePreviewPlaceholder} from "../IssuePreview";
 
 function PublisherDetails(props) {
     let selected = getSelected(props.match.params);
@@ -19,7 +19,10 @@ function PublisherDetails(props) {
             <Query query={publisher} variables={selected}>
                 {({loading, error, data}) => {
                     if (loading || error || !data.publisher)
-                        return <QueryResult loading={loading} error={error} data={data ? data.publisher : null} selected={selected}/>;
+                        return <QueryResult loading={loading} error={error} data={data ? data.publisher : null}
+                                            selected={selected}
+                                            placeholder={<PublisherDetailsPlaceholder />}
+                                            placeholderCount={1}/>;
 
                     let first = data.publisher.issueCount === 1 ? (data.publisher.active ? "Bisher einziges " : "Einziges ") : "Erstes ";
                     return (
@@ -119,6 +122,79 @@ function PublisherDetails(props) {
             </Query>
         </Layout>
     )
+}
+
+function PublisherDetailsPlaceholder(props) {
+    return (
+        <React.Fragment>
+            <CardHeader title={<div className="ui placeholder cardHeaderPlaceholder">
+                <div className={"header"}>
+                    <div className="medium line"/>
+                </div>
+            </div>} />
+
+            <CardContent className="cardContent">
+                <br />
+                <div className="ui placeholder">
+                    <div className="header">
+                        <div className="short line"/>
+                    </div>
+                </div>
+
+                <br />
+
+                <div className="ui placeholder placeholderTypographyLine"><div className="very short line"/></div>
+                <div className="ui placeholder placeholderTypographyLine"><div className="very short line"/></div>
+                <div className="ui placeholder placeholderTypographyLine"><div className="short line"/></div>
+                <div className="ui placeholder placeholderTypographyLine"><div className="short line"/></div>
+
+                <br />
+                <br />
+                <br />
+
+                <div className="ui placeholder">
+                    <div className="header">
+                        <div className="long line"/>
+                    </div>
+                </div>
+
+                <br/>
+
+                <IssuePreviewPlaceholder />
+
+                <br/>
+                <br />
+
+                <div className="ui placeholder">
+                    <div className="header">
+                        <div className="long line"/>
+                    </div>
+                </div>
+
+                <br/>
+
+                <IssuePreviewPlaceholder />
+                <br />
+                <br />
+
+                <div className="ui placeholder">
+                    <div className="header">
+                        <div className="long line"/>
+                    </div>
+                </div>
+
+                <br />
+
+                <div className="history">
+                    <IssuePreviewPlaceholder key={1} />
+                    <IssuePreviewPlaceholder key={2} />
+                    <IssuePreviewPlaceholder key={3} />
+                    <IssuePreviewPlaceholder key={4} />
+                    <IssuePreviewPlaceholder key={5} />
+                </div>
+            </CardContent>
+        </React.Fragment>
+    );
 }
 
 export default withContext(PublisherDetails);

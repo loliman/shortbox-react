@@ -62,7 +62,9 @@ class List extends React.Component {
                                         this.props.handleLogout();
                                     }
 
-                                    return <QueryResult loading={loading} error={error} />;
+                                    return <QueryResult loading={loading} error={error}
+                                                        placeholder={<TypeListEntryPlaceholder />}
+                                                        placeholderCount={25}/>;
                                 }
 
                                 if (data[queryName].length === 0)
@@ -107,6 +109,25 @@ function TypeListEntry(props) {
                 <ListItemText className="itemText"
                               primary={label}
                 />
+            </ListItem>
+        </div>
+    );
+}
+
+function TypeListEntryPlaceholder(props) {
+    let n = Math.floor(Math.random() * 6);
+    let lengths = ["very long", "long", "medium", "short", "very short"];
+
+    return (
+        <div className="itemContainer">
+            <ListItem className="typeListEntryPlaceholder">
+                <ListItemText>
+                    <div className="ui placeholder">
+                        <div className="header">
+                            <div className={lengths[n-1] + " line"}/>
+                        </div>
+                    </div>
+                </ListItemText>
             </ListItem>
         </div>
     );

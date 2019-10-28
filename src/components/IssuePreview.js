@@ -56,4 +56,31 @@ function IssuePreview(props) {
     );
 }
 
+export function IssuePreviewPlaceholder(props) {
+    let n = Math.floor(Math.random() * 6);
+    let lengths = ["very long", "long", "medium", "short", "very short"];
+
+    return (
+        <Card className="issuePreview issuePreviewPlaceholder">
+            <CardContent>
+                <div className="ui placeholder issuePreviewHeaderPlaceholder">
+                    <div className="header">
+                        <div className={lengths[n-1] + " line"}/>
+                    </div>
+                    <div className="paragraph">
+                        <div className="extremly short line"/>
+                        <div className="extremly short line"/>
+                    </div>
+                </div>
+
+                <br />
+
+                <div className="ui placeholder">
+                    <div className="very short line"/>
+                </div>
+            </CardContent>
+        </Card>
+    );
+}
+
 export default withContext(IssuePreview);

@@ -42,7 +42,9 @@ class IssueDetails extends React.Component {
                     {({loading, error, data}) => {
                         if (loading || error || !data.issue)
                             return <QueryResult loading={loading} error={error} data={data ? data.issue : null}
-                                                selected={selected}/>;
+                                                selected={selected}
+                                                placeholder={<IssueDetailsPreview />}
+                                                placeholderCount={1}/>;
 
                         let issue = JSON.parse(JSON.stringify(data.issue));
 
@@ -565,6 +567,100 @@ function expanded(item, filter) {
     }
 
     return expanded;
+}
+
+function IssueDetailsPreview() {
+    return (
+        <React.Fragment>
+            <CardHeader title={<div className="ui placeholder cardHeaderPlaceholder">
+                <div className={"header"}>
+                    <div className="medium line"/>
+                    <div className="short line"/>
+                </div>
+            </div>} />
+
+            <CardContent>
+                <div className={"details"}>
+                    <Paper className="detailsPaper">
+                        <Table className="table">
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell align="left">
+                                        <div className="ui placeholder">
+                                            <div className="long line"/>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell align="left">
+                                        <div className="ui placeholder">
+                                            <div className="medium line"/>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell align="left">
+                                        <div className="ui placeholder">
+                                            <div className="long line"/>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell align="left">
+                                        <div className="ui placeholder">
+                                            <div className="short line"/>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </Paper>
+
+                    <div
+                        className="media"
+                        style={{width: '45vh'}}>
+                        <div className="ui placeholder mediaPreview">
+                            <div className="square image"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <br />
+                <br />
+                <br />
+
+                <div className="stories">
+                    <CardHeader title={
+                        <div className="ui placeholder">
+                            <div className="header">
+                                <div className="very short line"/>
+                            </div>
+                        </div>
+                    }/>
+
+                    <StoryPreview />
+                    <StoryPreview />
+                    <StoryPreview />
+                    <StoryPreview />
+                </div>
+            </CardContent>
+        </React.Fragment>
+    )
+}
+
+function StoryPreview(props) {
+    let n = Math.floor(Math.random() * 6);
+    let lengths = ["very long", "long", "medium", "short", "very short"];
+
+    return (
+        <ExpansionPanel className="story storiesPreview">
+            <ExpansionPanelSummary className="summary">
+                <div className="ui placeholder storyPreview">
+                    <div className={lengths[n-1] + " line storyPreviewLine"}/>
+                </div>
+            </ExpansionPanelSummary>
+        </ExpansionPanel>
+    );
 }
 
 export default withContext(IssueDetails);

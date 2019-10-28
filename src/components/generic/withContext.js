@@ -4,6 +4,7 @@ import {withSnackbar} from "notistack";
 import {withLastLocation} from "react-router-last-location";
 import {withRouter} from "react-router-dom";
 import {AppContext} from "./AppContext";
+import {withCookies} from "react-cookie";
 import {generateLabel, getHierarchyLevel, getSelected, HierarchyLevel} from "../../util/hierarchy";
 import * as queryString from "query-string";
 
@@ -43,6 +44,7 @@ function withContext(WrappedComponent) {
     return compose(
         withSnackbar,
         withLastLocation,
+        withCookies,
         withRouter
     )(WithContext);
 }

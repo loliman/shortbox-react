@@ -25,6 +25,9 @@ import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 import Filter from "./Filter";
 
 const theme = createMuiTheme({
+    typography: {
+        useNextVariants: true,
+    },
     palette: {
         primary: {
             main: '#546e7a'

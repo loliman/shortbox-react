@@ -8,7 +8,7 @@ import QueryResult from "../generic/QueryResult";
 import {seriesd} from "../../graphql/queries";
 import Typography from "@material-ui/core/es/Typography/Typography";
 import EditButton from "../restricted/EditButton";
-import IssuePreview from "../IssuePreview";
+import IssuePreview, {IssuePreviewPlaceholder} from "../IssuePreview";
 import withContext from "../generic/withContext";
 
 function SeriesDetails(props) {
@@ -19,7 +19,10 @@ function SeriesDetails(props) {
             <Query query={seriesd} variables={selected}>
                 {({loading, error, data}) => {
                     if (loading || error || !data.seriesd)
-                        return <QueryResult loading={loading} error={error} data={data ? data.seriesd : null} selected={selected}/>;
+                        return <QueryResult loading={loading} error={error} data={data ? data.seriesd : null}
+                                            selected={selected}
+                                            placeholder={<SeriesDetailsPlaceholder />}
+                                            placeholderCount={1}/>;
 
                     let first = data.seriesd.issueCount === 1 ? (data.seriesd.active ? "Bisher einziges " : "Einziges ") : "Erstes ";
                     return(
@@ -109,6 +112,78 @@ function SeriesDetails(props) {
             </Query>
         </Layout>
     )
+}
+
+function SeriesDetailsPlaceholder(props) {
+    return (
+        <React.Fragment>
+            <CardHeader title={<div className="ui placeholder cardHeaderPlaceholder">
+                <div className={"header"}>
+                    <div className="medium line"/>
+                </div>
+            </div>} />
+
+            <CardContent className="cardContent">
+                <br />
+                <div className="ui placeholder">
+                    <div className="header">
+                        <div className="short line"/>
+                    </div>
+                </div>
+
+                <br />
+
+                <div className="ui placeholder placeholderTypographyLine"><div className="very short line"/></div>
+                <div className="ui placeholder placeholderTypographyLine"><div className="very short line"/></div>
+                <div className="ui placeholder placeholderTypographyLine"><div className="short line"/></div>
+
+                <br />
+                <br />
+                <br />
+
+                <div className="ui placeholder">
+                    <div className="header">
+                        <div className="long line"/>
+                    </div>
+                </div>
+
+                <br/>
+
+                <IssuePreviewPlaceholder />
+
+                <br/>
+                <br />
+
+                <div className="ui placeholder">
+                    <div className="header">
+                        <div className="long line"/>
+                    </div>
+                </div>
+
+                <br/>
+
+                <IssuePreviewPlaceholder />
+                <br />
+                <br />
+
+                <div className="ui placeholder">
+                    <div className="header">
+                        <div className="long line"/>
+                    </div>
+                </div>
+
+                <br />
+
+                <div className="history">
+                    <IssuePreviewPlaceholder key={1} />
+                    <IssuePreviewPlaceholder key={2} />
+                    <IssuePreviewPlaceholder key={3} />
+                    <IssuePreviewPlaceholder key={4} />
+                    <IssuePreviewPlaceholder key={5} />
+                </div>
+            </CardContent>
+        </React.Fragment>
+    );
 }
 
 export default withContext(SeriesDetails);

@@ -7,7 +7,7 @@ import {lastEdited} from "../graphql/queries";
 import {Query} from "react-apollo";
 import QueryResult from "./generic/QueryResult";
 import {withContext} from "./generic";
-import IssuePreview from "./IssuePreview";
+import IssuePreview, {IssuePreviewPlaceholder} from "./IssuePreview";
 
 function Home(props) {
     return (
@@ -33,15 +33,13 @@ function Home(props) {
                 <br />
                 <br />
 
-                <Typography variant="h6">Letzte Änderungen</Typography>
-
-                <br />
-                
                 <div className="history">
                     <Query query={lastEdited} variables={{us: props.us}}>
                         {({loading, error, data}) => {
                             if (loading || error || !data.lastEdited)
-                                return <QueryResult loading={loading} error={error} />;
+                                return <QueryResult loading={loading} error={error}
+                                                    placeholder={<IssuePreviewPlaceholder />}
+                                                    placeholderCount={7}/>;
 
                             return data.lastEdited.map((i, idx) => <IssuePreview {...props} key={idx} issue={i}/>);
                         }}
