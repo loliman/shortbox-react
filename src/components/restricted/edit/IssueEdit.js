@@ -31,6 +31,15 @@ function IssueEdit(props) {
                     defaultValues.pages = defaultValues.pages ? defaultValues.pages : 0;
                     defaultValues.limitation = defaultValues.limitation ? defaultValues.limitation : 0;
 
+                    let oldArcs = [];
+                    defaultValues.arcs.forEach(arc => {
+                        oldArcs.push({
+                            title: arc.title,
+                            type: arc.type
+                        })
+                    });
+                    defaultValues.arcs = oldArcs;
+
                     let oldStories = [];
                     defaultValues.stories.forEach(story => {
                         let exclusive = story.exclusive || defaultValues.series.publisher.us;

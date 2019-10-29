@@ -331,7 +331,7 @@ function Filter(props) {
                                 {
                                     !values.feature ?
                                     <React.Fragment>
-                                        <Typography variant="h6">Enthält</Typography>
+                                        <Typography variant="h6">{us ? "Enthalten in" : "Enthält"}</Typography>
 
                                         { !us ?
                                             <React.Fragment>
