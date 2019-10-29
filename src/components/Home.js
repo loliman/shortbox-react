@@ -8,6 +8,7 @@ import {Query} from "react-apollo";
 import QueryResult from "./generic/QueryResult";
 import {withContext} from "./generic";
 import IssuePreview, {IssuePreviewPlaceholder} from "./IssuePreview";
+import InfiniteScroll from 'react-infinite-scroller';
 
 function Home(props) {
     return (
@@ -35,13 +36,36 @@ function Home(props) {
 
                 <div className="history">
                     <Query query={lastEdited} variables={{us: props.us}}>
-                        {({loading, error, data}) => {
+                        {({loading, error, data, fetchMore}) => {
                             if (loading || error || !data.lastEdited)
                                 return <QueryResult loading={loading} error={error}
                                                     placeholder={<IssuePreviewPlaceholder />}
                                                     placeholderCount={7}/>;
 
-                            return data.lastEdited.map((i, idx) => <IssuePreview {...props} key={idx} issue={i}/>);
+                            return (
+                                <InfiniteScroll
+                                    pageStart={0}
+                                    loadMore={
+                                        fetchMore({
+                                            variables: {
+                                                offset: data.lastEdited.length
+                                            },
+                                            updateQuery: (prev, { fetchMoreResult }) => {
+                                                if (!fetchMoreResult) return prev;
+                                                return Object.assign({}, prev, {
+                                                    lastEdited: [...prev.lastEdited, ...fetchMoreResult.lastEdited]
+                                                });
+                                            }
+                                        })
+                                    }
+                                    hasMore={data.lastEdited.length % 25 !== 0}
+                                    loader={<h4>Loading...</h4>}
+                                >
+                                    {
+                                        data.lastEdited.map((i, idx) => <IssuePreview {...props} key={idx} issue={i}/>)
+                                    }
+                                </InfiniteScroll>
+                            );
                         }}
                     </Query>
                 </div>

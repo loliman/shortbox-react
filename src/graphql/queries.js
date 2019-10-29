@@ -69,8 +69,8 @@ const arcs = gql`query Arcs {
     }
 }`;
 
-export const lastEdited = gql`query LastEdited($us: Boolean) {
-    lastEdited(us: $us) {
+export const lastEdited = gql`query LastEdited($us: Boolean, $offset: Int) {
+    lastEdited(us: $us, offset: $offset) {
         number,
         format,
         variant,
