@@ -1546,3 +1546,42 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 .ui.fluid.placeholder{
     max-width:none
 }
+
+/*Bouncing balls*/
+.ballsContainer {
+    margin: auto;
+    text-align: center;
+    padding-top: 35px;
+}
+
+div div.ball {
+    width: 10px;
+    position: relative;
+    display: inline-block;
+    margin: 5px;
+    height: 10px;
+    border-radius: 50%;
+    z-index: 999;
+}
+
+.ball-one {
+    background-color: #546e7a;
+    animation: jump .5s ease 0s infinite alternate;
+}
+
+.ball-two {
+    background-color: #546e7a;
+    animation: jump .5s ease .15s infinite alternate;
+}
+
+.ball-three {
+    background-color: #546e7a;
+    animation: jump .5s ease .25s infinite alternate;
+}
+
+@keyframes jump {
+    0% {transform: scaleY(.8);}
+    100% {
+        transform: translateY(-30px);
+    }
+}

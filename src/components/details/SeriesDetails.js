@@ -1,117 +1,162 @@
 import React from 'react'
 import CardHeader from "@material-ui/core/CardHeader/CardHeader";
 import CardContent from "@material-ui/core/CardContent/CardContent";
-import {generateLabel, getSelected} from "../../util/hierarchy";
+import {generateLabel} from "../../util/hierarchy";
 import Layout from "../Layout";
 import {Query} from "react-apollo";
 import QueryResult from "../generic/QueryResult";
-import {seriesd} from "../../graphql/queries";
+import {lastEdited, seriesd} from "../../graphql/queries";
 import Typography from "@material-ui/core/es/Typography/Typography";
 import EditButton from "../restricted/EditButton";
 import IssuePreview, {IssuePreviewPlaceholder} from "../IssuePreview";
 import withContext from "../generic/withContext";
+import PaginatedQuery from "../generic/PaginatedQuery";
 
-function SeriesDetails(props) {
-    let selected = getSelected(props.match.params);
+class SeriesDetails extends React.Component {
+    componentDidMount() {
+        this.props.registerLoadingComponent(this.constructor.name + "_history");
+        this.props.registerLoadingComponent(this.constructor.name + "_details");
+    }
 
-    return (
-        <Layout>
-            <Query query={seriesd} variables={selected}>
-                {({loading, error, data}) => {
-                    if (loading || error || !data.seriesd)
-                        return <QueryResult loading={loading} error={error} data={data ? data.seriesd : null}
-                                            selected={selected}
-                                            placeholder={<SeriesDetailsPlaceholder />}
-                                            placeholderCount={1}/>;
+    render() {
+        return (
+            <PaginatedQuery query={lastEdited} variables={{
+                filter: {
+                    us: this.props.us,
+                    series: [{
+                        title: this.props.selected.series.title,
+                        volume: this.props.selected.series.volume
+                    }],
+                    publishers: [{
+                        name: this.props.selected.series.publisher.name
+                    }]
+                }
+            }}
+                onCompleted={() => this.props.unregisterLoadingComponent(this.constructor.name + "_history")}
+            >
+                {({error, data, fetchMore, hasMore, fetching}) => {
+                    let lastEdited = data? data.lastEdited : [];
+                    let lastEditedError = error;
 
-                    let first = data.seriesd.issueCount === 1 ? (data.seriesd.active ? "Bisher einziges " : "Einziges ") : "Erstes ";
-                    return(
-                        <React.Fragment>
-                            <CardHeader title={generateLabel(data.seriesd)}
-                                        action={<EditButton item={data.seriesd}/>}/>
+                    let loading;
+                    if(hasMore)
+                        loading = (
+                            <div className="ballsContainer">
+                                {fetching ?
+                                    <React.Fragment>
+                                        <div className="ball ball-one" />
+                                        <div className="ball ball-two" />
+                                        <div className="ball ball-three" />
+                                    </React.Fragment> : null}
+                            </div>
+                        );
 
-                            <CardContent className="cardContent">
-                                <Typography variant="h6">Allgemeine Informationen</Typography>
+                    return (
+                        <Layout handleScroll={fetchMore}>
+                            <Query query={seriesd} variables={this.props.selected} notifyOnNetworkStatusChange
+                                   onCompleted={() => this.props.unregisterLoadingComponent(this.constructor.name + "_details")}
+                                   onError={() => this.props.unregisterLoadingComponent(this.constructor.name + "_details")}>
+                                {({error, data}) => {
+                                    if (this.props.appIsLoading || error || lastEditedError || !data.seriesd)
+                                        return <QueryResult error={error || lastEditedError} data={data ? data.seriesd : null}
+                                                            selected={this.props.elected}
+                                                            placeholder={<SeriesDetailsPlaceholder />}
+                                                            placeholderCount={1}/>;
 
-                                <br />
-
-                                <Typography>Gestartet: {data.seriesd.startyear}</Typography>
-                                <Typography>Beendet: {data.seriesd.active ? "läuft noch" : data.seriesd.endyear}</Typography>
-                                <Typography>
-                                    {
-                                        !props.us ?
-                                            "Anzahl Comics mit Marvel Material: " :
-                                            "Anzahl Comics mit auf deutsch vorliegendem Material: "
-                                    }
-                                    {data.seriesd.issueCount}
-                                </Typography>
-
-                                <br />
-                                <br />
-                                {
-                                    data.seriesd.addinfo ?
+                                    let first = data.seriesd.issueCount === 1 ? (data.seriesd.active ? "Bisher einziges " : "Einziges ") : "Erstes ";
+                                    return(
                                         <React.Fragment>
-                                            <Typography dangerouslySetInnerHTML={{__html: data.seriesd.addinfo}} />
+                                            <CardHeader title={generateLabel(data.seriesd)}
+                                                        action={<EditButton item={data.seriesd}/>}/>
 
-                                            <br />
-                                            <br />
-                                        </React.Fragment> : null
-                                }
+                                            <CardContent className="cardContent">
+                                                <Typography variant="h6">Allgemeine Informationen</Typography>
 
-                                {
-                                    data.seriesd.firstIssue ?
-                                        <React.Fragment>
-                                            <Typography variant="h6">
+                                                <br />
+
+                                                <Typography>Gestartet: {data.seriesd.startyear}</Typography>
+                                                <Typography>Beendet: {data.seriesd.active ? "läuft noch" : data.seriesd.endyear}</Typography>
+                                                <Typography>
+                                                    {
+                                                        !this.props.us ?
+                                                            "Anzahl Comics mit Marvel Material: " :
+                                                            "Anzahl Comics mit auf deutsch vorliegendem Material: "
+                                                    }
+                                                    {data.seriesd.issueCount}
+                                                </Typography>
+
+                                                <br />
+                                                <br />
                                                 {
-                                                    !props.us ?
-                                                        first + "veröffentlichtes Comic mit Marvel Material" :
-                                                        "Frühestes Comic mit auf deutsch veröffentlichtem Material"
+                                                    data.seriesd.addinfo ?
+                                                        <React.Fragment>
+                                                            <Typography dangerouslySetInnerHTML={{__html: data.seriesd.addinfo}} />
+
+                                                            <br />
+                                                            <br />
+                                                        </React.Fragment> : null
                                                 }
-                                            </Typography>
 
-                                            <br/>
-
-                                            <IssuePreview {...props} issue={data.seriesd.firstIssue}/>
-
-                                            <br/>
-                                        </React.Fragment> : null
-                                }
-
-                                {
-                                    data.seriesd.lastIssue && data.seriesd.issueCount > 1 ?
-                                        <React.Fragment>
-                                            <Typography variant="h6">
                                                 {
-                                                    !props.us ?
-                                                        "Letztes veröffentlichtes Comic mit Marvel Material" :
-                                                        "Spätestes Comic mit auf deutsch veröffentlichtem Material"
+                                                    data.seriesd.firstIssue ?
+                                                        <React.Fragment>
+                                                            <Typography variant="h6">
+                                                                {
+                                                                    !this.props.us ?
+                                                                        first + "veröffentlichtes Comic mit Marvel Material" :
+                                                                        "Frühestes Comic mit auf deutsch veröffentlichtem Material"
+                                                                }
+                                                            </Typography>
+
+                                                            <br/>
+
+                                                            <IssuePreview {...this.props} issue={data.seriesd.firstIssue}/>
+
+                                                            <br/>
+                                                        </React.Fragment> : null
                                                 }
-                                            </Typography>
 
-                                            <br/>
+                                                {
+                                                    data.seriesd.lastIssue && data.seriesd.issueCount > 1 ?
+                                                        <React.Fragment>
+                                                            <Typography variant="h6">
+                                                                {
+                                                                    !this.props.us ?
+                                                                        "Letztes veröffentlichtes Comic mit Marvel Material" :
+                                                                        "Spätestes Comic mit auf deutsch veröffentlichtem Material"
+                                                                }
+                                                            </Typography>
 
-                                            <IssuePreview {...props} issue={data.seriesd.lastIssue}/>
+                                                            <br/>
 
-                                            <br/>
-                                        </React.Fragment> : null
-                                }
+                                                            <IssuePreview {...this.props} issue={data.seriesd.lastIssue}/>
 
-                                <Typography variant="h6">Letzte Änderungen</Typography>
+                                                            <br/>
+                                                        </React.Fragment> : null
+                                                }
 
-                                <br />
+                                                <Typography variant="h6">Letzte Änderungen</Typography>
 
-                                <div className="history">
-                                    {
-                                        data.seriesd.lastEdited.map((i, idx) => <IssuePreview {...props} key={idx} issue={i}/>)
-                                    }
-                                </div>
-                            </CardContent>
-                        </React.Fragment>
-                    );
+                                                <br />
+
+                                                <div className="history">
+                                                    {
+                                                        lastEdited.map((i, idx) => <IssuePreview {...this.props} key={idx} issue={i}/>)
+                                                    }
+
+                                                    {loading}
+                                                </div>
+                                            </CardContent>
+                                        </React.Fragment>
+                                    );
+                                }}
+                            </Query>
+                        </Layout>
+                    )
                 }}
-            </Query>
-        </Layout>
-    )
+            </PaginatedQuery>
+        );
+    }
 }
 
 function SeriesDetailsPlaceholder(props) {

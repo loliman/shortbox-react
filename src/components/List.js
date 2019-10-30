@@ -2,7 +2,6 @@ import React from 'react';
 import MuiList from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText'
-import {Query} from "react-apollo";
 import {getListQuery} from '../graphql/queries'
 import QueryResult from './generic/QueryResult';
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer/SwipeableDrawer";
@@ -10,6 +9,7 @@ import Typography from "@material-ui/core/es/Typography/Typography";
 import {ScrollContainer} from "react-router-scroll-4";
 import {withContext} from "./generic";
 import {generateLabel, generateUrl, HierarchyLevel} from "../util/hierarchy";
+import PaginatedQuery from "./generic/PaginatedQuery";
 
 class List extends React.Component {
     constructor(props) {
@@ -18,6 +18,10 @@ class List extends React.Component {
         this.state = {
             scrollKey: "listContainer-" + new Date().getTime()
         };
+    }
+
+    componentDidMount() {
+        this.props.registerLoadingComponent(this.constructor.name);
     }
 
     render() {
@@ -52,32 +56,50 @@ class List extends React.Component {
                 className={drawerOpen ? 'drawer-open' : 'drawer-close'}
                 id="drawer">
                 <ScrollContainer scrollKey={this.state.scrollKey}>
-                    <MuiList id="list">
-                        <Query query={query}
-                               variables={selected}>
-                            {({loading, error, data}) => {
-                                if (loading || error || !data[queryName]) {
-                                    if(error && error.message.indexOf("400") !== -1 && this.props.session) {
-                                        this.props.enqueueSnackbar("Deine Session ist abgelaufen oder ungültig, du wirst ausgeloggt.", {variant: 'warning'});
-                                        this.props.handleLogout();
-                                    }
+                    <PaginatedQuery query={query} variables={selected} onCompleted={() => this.props.unregisterLoadingComponent(this.constructor.name)}>
+                        {({error, data, fetchMore, fetching, hasMore}) => {
+                            let content;
 
-                                    return <QueryResult loading={loading} error={error}
-                                                        placeholder={<TypeListEntryPlaceholder />}
-                                                        placeholderCount={25}/>;
+                            if (this.props.appIsLoading || error || !data[queryName]) {
+                                if(error && error.message.indexOf("400") !== -1 && this.props.session) {
+                                    this.props.enqueueSnackbar("Deine Session ist abgelaufen oder ungültig, du wirst ausgeloggt.", {variant: 'warning'});
+                                    this.props.handleLogout();
                                 }
 
-                                if (data[queryName].length === 0)
-                                    return <NoEntries />;
-
-                                return data[queryName].map((i, idx) => {
+                                content = <QueryResult error={error}
+                                                    placeholder={<TypeListEntryPlaceholder />}
+                                                    placeholderCount={25}/>;
+                            } else if (data[queryName].length === 0)
+                                content = <NoEntries />;
+                            else content = data[queryName].map((i, idx) => {
                                     return <TypeListEntry {...this.props}
                                                           handleMenuOpen={handleMenuOpen}
                                                           key={idx} item={i}/>
                                 });
-                            }}
-                        </Query>
-                    </MuiList>
+
+                            if(hasMore && content.length > 0)
+                                content.push(
+                                    <ListItem key={"balls"}>
+                                        <ListItemText>
+                                            <div className="ballsContainer">
+                                                {fetching ?
+                                                    <React.Fragment>
+                                                        <div className="ball ball-one" />
+                                                        <div className="ball ball-two" />
+                                                        <div className="ball ball-three" />
+                                                    </React.Fragment> : null}
+                                            </div>
+                                        </ListItemText>
+                                    </ListItem>
+                                );
+
+                            return (
+                                <MuiList id="list" onScroll={fetchMore}>
+                                    {content}
+                                </MuiList>
+                            )
+                        }}
+                    </PaginatedQuery>
                 </ScrollContainer>
             </SwipeableDrawer>
         );

@@ -14,7 +14,7 @@ class Layout extends React.Component {
         super(props);
 
         this.state = {
-            openSpeedDial: false,
+            openSpeedDial: false
         };
     }
 
@@ -28,7 +28,7 @@ class Layout extends React.Component {
                 <div id="main">
                     <List/>
 
-                    <div id="content" className={drawerOpen ? 'content-show' : 'content-hide'}>
+                    <div id="content" className={drawerOpen ? 'content-show' : 'content-hide'} onScroll={e => this.props.handleScroll ? this.props.handleScroll(e) : false}>
                         <Card>
                             <div id="contentChildren">
                                 {children}

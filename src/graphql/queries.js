@@ -13,15 +13,15 @@ const exportQuery = gql`query Export($filter: Filter!){
     export(filter: $filter)
 }`;
 
-const publishers = gql`query Publishers($us: Boolean!, $filter: Filter){
-    publishers(us: $us, filter: $filter) {
+const publishers = gql`query Publishers($us: Boolean!, $offset: Int, $filter: Filter){
+    publishers(us: $us, offset: $offset, filter: $filter) {
         name,
         us
     }
 }`;
 
-const series = gql`query Series($publisher: PublisherInput!, $filter: Filter){
-    series(publisher: $publisher, filter: $filter) {
+const series = gql`query Series($publisher: PublisherInput!, $offset: Int, $filter: Filter){
+    series(publisher: $publisher, offset: $offset, filter: $filter) {
         title,
         volume,
         startyear,
@@ -33,8 +33,8 @@ const series = gql`query Series($publisher: PublisherInput!, $filter: Filter){
     }
 }`;
 
-const issues = gql`query Issues($series: SeriesInput!, $filter: Filter){
-    issues(series: $series, filter: $filter) {
+const issues = gql`query Issues($series: SeriesInput!, $offset: Int, $filter: Filter){
+    issues(series: $series, offset: $offset, filter: $filter) {
         title,
         number,
         series {
@@ -69,8 +69,8 @@ const arcs = gql`query Arcs {
     }
 }`;
 
-export const lastEdited = gql`query LastEdited($us: Boolean, $offset: Int) {
-    lastEdited(us: $us, offset: $offset) {
+export const lastEdited = gql`query LastEdited($filter: Filter, $offset: Int) {
+    lastEdited(filter: $filter, offset: $offset) {
         number,
         format,
         variant,
@@ -125,20 +125,6 @@ const publisher = gql`query Publisher($publisher: PublisherInput!){
             },
             releasedate
         },
-        lastEdited {
-            number,
-            format,
-            variant,
-            createdAt,
-            updatedAt,
-            series {
-                title,
-                volume,
-                publisher {
-                    name
-                }
-            }
-        },
         active,
         addinfo,
     }
@@ -180,20 +166,6 @@ const seriesd = gql`query Seriesd($series: SeriesInput!){
                 }
             },
             releasedate
-        },
-        lastEdited {
-            number,
-            format,
-            variant,
-            createdAt,
-            updatedAt,
-            series {
-                title,
-                volume,
-                publisher {
-                    name
-                }
-            },
         },
         active,
         addinfo,

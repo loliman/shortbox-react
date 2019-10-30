@@ -46,7 +46,8 @@ class AppContextProvider extends React.Component {
             tablet: tablet,
             tabletLandscape: tabletLandscape,
             desktop: desktop,
-            drawerOpen: desktop || tabletLandscape
+            drawerOpen: desktop || tabletLandscape,
+            loadingComponents: []
         };
     }
 
@@ -62,12 +63,38 @@ class AppContextProvider extends React.Component {
                 mobileLandscape: this.state.mobileLandscape,
                 tablet: this.state.tablet,
                 tabletLandscape: this.state.tabletLandscape,
-                desktop: this.state.desktop
+                desktop: this.state.desktop,
+                appIsLoading: this.state.loadingComponents.length > 0,
+                registerLoadingComponent: this.registerLoadingComponent,
+                unregisterLoadingComponent: this.unregisterLoadingComponent,
+                isComponentRegistered: this.isComponentRegistered
             }}>
                 {this.props.children}
             </AppContext.Provider>
         )
     }
+
+    registerLoadingComponent = (component) => {
+        let components = this.state.loadingComponents;
+        components.push(component);
+
+        this.setState({
+            loadingComponents: components
+        });
+    };
+
+    unregisterLoadingComponent = (component) => {
+        let components = this.state.loadingComponents;
+        components = components.filter(c => c !== component);
+
+        this.setState({
+            loadingComponents: components
+        });
+    };
+
+    isComponentRegistered = (component) => {
+        return this.state.loadingComponents.find(c => c === component);
+    };
 
     handleLogin = (user) => {
         this.props.cookies.set('session', user);

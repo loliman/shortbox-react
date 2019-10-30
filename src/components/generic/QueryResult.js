@@ -4,14 +4,12 @@ import SearchIcon from "@material-ui/icons/Search";
 import Typography from "@material-ui/core/es/Typography/Typography";
 import {generateLabel} from "../../util/hierarchy";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import withContext from "./withContext";
 
-export default function QueryResult(props) {
-    let {loading, error, data, selected} = props;
+function QueryResult(props) {
+    let {appIsLoading, error, data, selected} = props;
 
-    if(error && error.message.indexOf("400") !== -1 && this.props.session)
-        loading = true;
-
-    if (loading) {
+    if (appIsLoading) {
         if(props.placeholder && props.placeholderCount) {
             let placeholder = [];
 
@@ -26,7 +24,7 @@ export default function QueryResult(props) {
                 className="queryResultText">Lade...</Typography></div>;
     }
 
-    if (error)
+    if (error || (data && data.errors))
         return <div className="queryResult"><ErrorIcon fontSize="large"/><Typography
             className="queryResultText">Fehler</Typography></div>;
 
@@ -36,3 +34,5 @@ export default function QueryResult(props) {
 
     return null;
 }
+
+export default withContext(QueryResult);

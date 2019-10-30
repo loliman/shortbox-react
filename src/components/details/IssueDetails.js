@@ -33,15 +33,21 @@ import {stripItem} from "../../util/util";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
 
 class IssueDetails extends React.Component {
+    componentDidMount() {
+        this.props.registerLoadingComponent(this.constructor.name);
+    }
+
     render() {
         const {selected, us} = this.props;
 
         return (
             <Layout>
-                <Query query={issue} variables={selected}>
-                    {({loading, error, data}) => {
-                        if (loading || error || !data.issue)
-                            return <QueryResult loading={loading} error={error} data={data ? data.issue : null}
+                <Query query={issue} variables={selected} notifyOnNetworkStatusChange
+                       onCompleted={() => this.props.unregisterLoadingComponent(this.constructor.name)}
+                       onError={() => this.props.unregisterLoadingComponent(this.constructor.name)}>
+                    {({error, data}) => {
+                        if (this.props.appIsLoading || error || !data.issue)
+                            return <QueryResult error={error} data={data ? data.issue : null}
                                                 selected={selected}
                                                 placeholder={<IssueDetailsPreview />}
                                                 placeholderCount={1}/>;
