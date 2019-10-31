@@ -1,8 +1,8 @@
 import gql from "graphql-tag";
 import {HierarchyLevel} from "../util/hierarchy";
 
-const search = gql`query Nodes($pattern: String!, $us: Boolean!){
-    nodes(pattern: $pattern, us: $us) {
+const search = gql`query Nodes($pattern: String!, $us: Boolean!, $offset: Int){
+    nodes(pattern: $pattern, us: $us, offset: $offset) {
         type,
         label,
         url

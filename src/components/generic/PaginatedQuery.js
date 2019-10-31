@@ -22,6 +22,9 @@ class PaginatedQuery extends React.Component {
                     queryName = queryName[0].toLowerCase() + queryName.slice(1);
                     let offset = (data && data[queryName]) ? data[queryName].length : 0;
 
+                    let fetchMoreVars = JSON.parse(JSON.stringify(this.props.variables));
+                    fetchMoreVars.offset = offset;
+
                     return this.props.children({
                         ...this.props,
                         loading: loading,
@@ -31,9 +34,7 @@ class PaginatedQuery extends React.Component {
                         hasMore: this.state.hasMore,
                         fetchMore: (e => this.fetchMoreOnScroll(e,
                             () => fetchMore({
-                                variables: {
-                                    offset: offset
-                                },
+                                variables: fetchMoreVars,
                                 updateQuery: (prev, {fetchMoreResult}) => {
                                     if (!fetchMoreResult) return prev;
 
@@ -47,7 +48,9 @@ class PaginatedQuery extends React.Component {
                                         });
 
                                     let src2 = {};
-                                    src2[queryName] = [...prev[queryName], ...fetchMoreResult[queryName]];
+
+                                    if(prev)
+                                        src2[queryName] = [...prev[queryName], ...fetchMoreResult[queryName]];
 
                                     return Object.assign({}, prev, src2);
                                 }
@@ -61,7 +64,8 @@ class PaginatedQuery extends React.Component {
 
     fetchMoreOnScroll = (e, reload) => {
         let element = e.target;
-        if (element.scrollHeight - element.scrollTop === element.clientHeight && this.state.hasMore) {
+
+        if (element.scrollHeight - element.scrollTop <= element.clientHeight && this.state.hasMore) {
             reload();
 
             this.setState({

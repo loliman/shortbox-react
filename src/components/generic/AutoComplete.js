@@ -3,16 +3,15 @@ import Select from 'react-select';
 import {Field} from "formik";
 import Paper from "@material-ui/core/Paper/Paper";
 import MenuItem from "@material-ui/core/MenuItem/MenuItem";
-import {Query} from "react-apollo";
 import Typography from "@material-ui/core/Typography";
 import Chip from "@material-ui/core/Chip";
 import CancelIcon from "@material-ui/icons/Cancel";
 import TextField from "@material-ui/core/TextField";
 import AutosizeInput from "react-input-autosize";
 import CreatableSelect from 'react-select/lib/Creatable';
-import matchSorter from "match-sorter";
 import debounceRender from 'react-debounce-render';
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
+import PaginatedQuery from "./PaginatedQuery";
 
 class AutoComplete extends React.Component {
     constructor(props) {
@@ -40,33 +39,29 @@ class AutoComplete extends React.Component {
                           disabled={disabled}
                           onChange={onChange}
                           onChangeValue={(value) => {
-                              if(this.props.liveSearch)
-                                  this.props.onChange(value, true);
-                              else if(values) {
-                                  let newOptions = matchSorter(values, value, {keys: [nameField]});
-                                  this.setState({options: newOptions});
-                              }
+                              this.props.onChange(value, true);
                           }}
                           loading={!disabled && false}/>;
         }
 
         return (
-            <Query query={query}
+            <PaginatedQuery query={query}
                    variables={variables}
-                   queryDeduplication={true}>
-                {({loading, error, data}) => {
+                   queryDeduplication={true}
+                   notifyOnNetworkStatusChange>
+                {({error, data, fetchMore, loading, fetching, hasMore}) => {
                     let optionsFromQuery = [];
                     if(data)
                         optionsFromQuery = data[query.definitions[0].name.value.toLowerCase()];
 
                     let options;
-                    if(this.state.options)
+                    if(this.state.options) {
                         options = this.state.options;
+                        options = options.slice(0, 25);
+                    }
                     else
                         options = optionsFromQuery;
 
-                    if(options)
-                        options = options.slice(0, 25);
 
                     return <Field {...this.props}
                                   component={AutoCompleteContainer}
@@ -74,19 +69,17 @@ class AutoComplete extends React.Component {
                                   label={label}
                                   nameField={nameField}
                                   loadingError={error}
+                                  fetchMore={fetchMore}
+                                  fetching={fetching}
+                                  hasMore={hasMore}
                                   disabled={disabled}
                                   onChange={onChange}
                                   onChangeValue={(value) => {
-                                      if(this.props.liveSearch)
-                                          this.props.onChange(value, true);
-                                      else if(optionsFromQuery) {
-                                          let newOptions = matchSorter(optionsFromQuery, value, {keys: [nameField]});
-                                          this.setState({options: newOptions});
-                                      }
+                                      this.props.onChange(value, true);
                                   }}
-                                  loading={!disabled && loading}/>;
+                                  loading={!disabled && loading && !fetching}/>;
                 }}
-            </Query>
+            </PaginatedQuery>
         );
     }
 }
@@ -166,7 +159,10 @@ class AutoCompleteContainer extends React.Component {
             isDisabled: this.props.disabled,
             isLoading: this.props.loading,
             hideSelectedOptions: true,
-
+            fetching: this.props.fetching,
+            loading: this.props.loading,
+            hasMore: this.props.hasMore,
+            fetchMore: this.props.fetchMore,
             loadingMessage: () => 'Lade...',
             dropdownIcon: this.props.dropdownIcon,
             placeholder: (!this.props.loadingError ? this.props.placeholder ? this.props.placeholder.trim() : 'Bitte wählen...' : 'Fehler!'),
@@ -441,7 +437,7 @@ function MultiValue(props) {
 
 function Menu(props) {
     return (
-        <Paper square className="paper" {...props.innerProps}>
+        <Paper square className="paper" onScroll={props.selectProps.fetchMore} {...props.innerProps}>
             {props.children}
         </Paper>
     );
