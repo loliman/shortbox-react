@@ -11,7 +11,22 @@ class PaginatedQuery extends React.Component {
         };
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        let vars = JSON.stringify(this.props.variables);
+        let oldvars = JSON.stringify(prevProps.variables);
+
+        if(oldvars !== vars) {
+            this.setState({
+                hasMore: true
+            })
+        }
+    }
+
     render() {
+        this.props.variables.offset = 0;
+        if(!this.props.variables.pattern)
+            this.props.variables.pattern = "";
+
         return (
             <Query query={this.props.query} variables={this.props.variables}
                    onCompleted={this.props.onCompleted}
@@ -22,8 +37,12 @@ class PaginatedQuery extends React.Component {
                     queryName = queryName[0].toLowerCase() + queryName.slice(1);
                     let offset = (data && data[queryName]) ? data[queryName].length : 0;
 
-                    let fetchMoreVars = JSON.parse(JSON.stringify(this.props.variables));
-                    fetchMoreVars.offset = offset;
+                    let fetchMoreVars = {};
+                    if(this.props.variables)
+                        fetchMoreVars = JSON.parse(JSON.stringify(this.props.variables));
+                    fetchMoreVars.offset = offset ? offset : 0;
+                    if(!fetchMoreVars.pattern)
+                        fetchMoreVars.pattern = "";
 
                     return this.props.children({
                         ...this.props,

@@ -62,7 +62,6 @@ class AutoComplete extends React.Component {
                     else
                         options = optionsFromQuery;
 
-
                     return <Field {...this.props}
                                   component={AutoCompleteContainer}
                                   options={options}
@@ -74,6 +73,7 @@ class AutoComplete extends React.Component {
                                   hasMore={hasMore}
                                   disabled={disabled}
                                   onChange={onChange}
+                                  variables={variables}
                                   onChangeValue={(value) => {
                                       this.props.onChange(value, true);
                                   }}
@@ -124,6 +124,8 @@ class AutoCompleteContainer extends React.Component {
             onChange: (option) => {
                 if(Array.isArray(option) && this.props.type) {
                     let options = [];
+                    option = option.filter(o => !o.pattern);
+
                     option.forEach(o => {
                         options.push({
                             name: o.name,
@@ -145,12 +147,17 @@ class AutoCompleteContainer extends React.Component {
             },
             getOptionLabel: (option) => {
                 let label = "";
+
+                if(option.pattern)
+                    return null;
+
                 if (option[this.props.nameField] === (this.props.isMulti || this.props.creatable ?
                     (this.props.field.value ? this.props.field.value[this.props.nameField] : "")
                     : this.props.field.value))
                     label = option[this.props.nameField];
                 else
                     label = this.props.generateLabel(option);
+
                 return typeof label === "string" ? label : option[this.props.nameField];
             },
 
@@ -283,7 +290,7 @@ function NoOptionsMessage(props) {
             className="noOptionsMessage"
             {...props.innerProps}
         >
-            {props.children}
+            Keine Einträge
         </Typography>
     );
 }
@@ -411,7 +418,7 @@ function Input(props) {
 }
 
 function MultiValue(props) {
-    if(props.selectProps.type && props.selectProps.type !== props.data.type)
+     if(props.selectProps.type && props.selectProps.type !== props.data.type)
         return null;
 
     let regex = new RegExp("!!\\w*!!");
@@ -423,6 +430,9 @@ function MultiValue(props) {
         thickString = thick[0].substr(2, thick[0].length-4);
         label = label.replace("!!" + thickString + "!!", "");
     }
+
+    if(!label)
+        return null;
 
     return (
         <Chip

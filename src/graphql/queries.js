@@ -13,15 +13,15 @@ const exportQuery = gql`query Export($filter: Filter!){
     export(filter: $filter)
 }`;
 
-const publishers = gql`query Publishers($us: Boolean!, $offset: Int, $filter: Filter){
-    publishers(us: $us, offset: $offset, filter: $filter) {
+const publishers = gql`query Publishers($pattern: String, $us: Boolean!, $offset: Int, $filter: Filter){
+    publishers(pattern: $pattern, us: $us, offset: $offset, filter: $filter) {
         name,
         us
     }
 }`;
 
-const series = gql`query Series($publisher: PublisherInput!, $offset: Int, $filter: Filter){
-    series(publisher: $publisher, offset: $offset, filter: $filter) {
+const series = gql`query Series($pattern: String, $publisher: PublisherInput!, $offset: Int, $filter: Filter){
+    series(pattern: $pattern, publisher: $publisher, offset: $offset, filter: $filter) {
         title,
         volume,
         startyear,
@@ -33,8 +33,8 @@ const series = gql`query Series($publisher: PublisherInput!, $offset: Int, $filt
     }
 }`;
 
-const issues = gql`query Issues($series: SeriesInput!, $offset: Int, $filter: Filter){
-    issues(series: $series, offset: $offset, filter: $filter) {
+const issues = gql`query Issues($pattern: String, $series: SeriesInput!, $offset: Int, $filter: Filter){
+    issues(pattern: $pattern, series: $series, offset: $offset, filter: $filter) {
         title,
         number,
         series {
@@ -49,21 +49,21 @@ const issues = gql`query Issues($series: SeriesInput!, $offset: Int, $filter: Fi
     }
 }`;
 
-const individuals = gql`query Individuals {
-    individuals {
+const individuals = gql`query Individuals($pattern: String, $offset: Int) {
+    individuals(pattern: $pattern, offset: $offset) {
         name
     }
 }`;
 
-const apps = gql`query Apps {
-    apps {
+const apps = gql`query Apps($pattern: String, $offset: Int) {
+    apps(pattern: $pattern, offset: $offset) {
         name,
         type
     }
 }`;
 
-const arcs = gql`query Arcs {
-    arcs {
+const arcs = gql`query Arcs($pattern: String, $offset: Int) {
+    arcs(pattern: $pattern, offset: $offset) {
         title,
         type
     }

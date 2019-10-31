@@ -105,7 +105,6 @@ class AppContextProvider extends React.Component {
         window.location.reload();
     };
 
-
     toogleDrawer = () => {
         this.setState({
             drawerOpen: !this.state.drawerOpen

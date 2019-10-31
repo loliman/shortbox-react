@@ -7,9 +7,9 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import withContext from "./withContext";
 
 function QueryResult(props) {
-    let {appIsLoading, error, data, selected} = props;
+    let {appIsLoading, loading, error, data, selected} = props;
 
-    if (appIsLoading) {
+    if (appIsLoading || loading) {
         if(props.placeholder && props.placeholderCount) {
             let placeholder = [];
 

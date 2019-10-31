@@ -16,7 +16,6 @@ class SearchBar extends React.Component {
                         <Form>
                             <AutoComplete
                                 query={search}
-                                liveSearch
                                 name="pattern"
                                 placeholder={mobile || (tablet && !tabletLandscape) ? " " : "Suchen"}
                                 variant="outlined"

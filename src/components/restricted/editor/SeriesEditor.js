@@ -165,11 +165,14 @@ class SeriesEditor extends React.Component {
 
                                         <AutoComplete
                                             query={publishers}
-                                            variables={{us: defaultValues.publisher.us}}
+                                            variables={{pattern: values.publisher.name, us: defaultValues.publisher.us}}
                                             name="publisher.name"
                                             label="Verlag"
-                                            onChange={(option) => {
-                                                setFieldValue("publisher", option ? option : {name : '', us: defaultValues.publisher.us})
+                                            onChange={(option, live) => {
+                                                if(live && option !== "")
+                                                    setFieldValue("publisher.name", option);
+                                                else
+                                                    setFieldValue("publisher", option ? option : {name : '', us: defaultValues.publisher.us})
                                             }}
                                             style={{
                                                 width: this.props.desktop ? "35.7%" : "100%"

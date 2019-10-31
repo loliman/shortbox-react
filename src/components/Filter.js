@@ -16,6 +16,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import AddIcon from "@material-ui/icons/Add";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
+import {getPattern, updateField} from "./restricted/editor/IssueEditor";
 
 function Filter(props) {
     const {lastLocation, us} = props;
@@ -437,12 +438,12 @@ function Filter(props) {
 
                                                 <AutoComplete
                                                     query={publishers}
-                                                    variables={{us: !us}}
                                                     name={"publishers"}
                                                     nameField="name"
                                                     label="Verlag"
                                                     isMulti
-                                                    onChange={(option) => setFieldValue("publishers", option)}
+                                                    variables={{pattern: getPattern(values.publishers, "name"), us: !us}}
+                                                    onChange={(option, live) => updateField(option, live, values.publishers, setFieldValue, "publishers", "name")}
                                                     style={{
                                                         width: props.desktop ? "40%" : "99%"
                                                     }}
@@ -451,12 +452,12 @@ function Filter(props) {
 
                                                 <AutoComplete
                                                     query={series}
-                                                    variables={{publisher: {name: "*", us: !us}}}
                                                     name={"series"}
                                                     nameField="title"
                                                     label="Serie"
                                                     isMulti
-                                                    onChange={(option) => setFieldValue("series", option)}
+                                                    variables={{pattern: getPattern(values.series, "title"), publisher: {name: "*", us: !us}}}
+                                                    onChange={(option, live) => updateField(option, live, values.series, setFieldValue, "series", "title")}
                                                     style={{
                                                         width: props.desktop ? "40%" : "99%"
                                                     }}
@@ -530,7 +531,8 @@ function Filter(props) {
                                     nameField="title"
                                     label="Teil von"
                                     isMulti
-                                    onChange={(option) => setFieldValue("arcs", option)}
+                                    variables={{pattern: getPattern(values.arcs, "title")}}
+                                    onChange={(option, live) => updateField(option, live, values.arcs, setFieldValue, "arcs", "title")}
                                     style={{
                                         width: props.desktop ? "40%" : "99%"
                                     }}
@@ -569,7 +571,8 @@ function Filter(props) {
                                                     type="WRITER"
                                                     label="Autor"
                                                     isMulti
-                                                    onChange={(option) => setFieldValue("individuals", option)}
+                                                    variables={{pattern: getPattern(values.individuals, "name")}}
+                                                    onChange={(option, live) => updateField(option, live, values.individuals, setFieldValue, "individuals", "name")}
                                                     style={{
                                                         width: props.desktop ? "40%" : "99%"
                                                     }}
@@ -586,7 +589,8 @@ function Filter(props) {
                                                     type={"PENCILER"}
                                                     label="Zeichner"
                                                     isMulti
-                                                    onChange={(option) => setFieldValue("individuals", option)}
+                                                    variables={{pattern: getPattern(values.individuals, "name")}}
+                                                    onChange={(option, live) => updateField(option, live, values.individuals, setFieldValue, "individuals", "name")}
                                                     style={{
                                                         width: props.desktop ? "40%" : "99%"
                                                     }}
@@ -603,7 +607,8 @@ function Filter(props) {
                                                     nameField="name"
                                                     label="Zeichner"
                                                     isMulti
-                                                    onChange={(option) => setFieldValue("individuals", option)}
+                                                    variables={{pattern: getPattern(values.individuals, "name")}}
+                                                    onChange={(option, live) => updateField(option, live, values.individuals, setFieldValue, "individuals", "name")}
                                                     style={{
                                                         width: props.desktop ? "40%" : "99%"
                                                     }}
@@ -622,7 +627,8 @@ function Filter(props) {
                                                     nameField="name"
                                                     label="Inker"
                                                     isMulti
-                                                    onChange={(option) => setFieldValue("individuals", option)}
+                                                    variables={{pattern: getPattern(values.individuals, "name")}}
+                                                    onChange={(option, live) => updateField(option, live, values.individuals, setFieldValue, "individuals", "name")}
                                                     style={{
                                                         width: props.desktop ? "40%" : "99%"
                                                     }}
@@ -636,7 +642,8 @@ function Filter(props) {
                                                     nameField="name"
                                                     label="Kolorist"
                                                     isMulti
-                                                    onChange={(option) => setFieldValue("individuals", option)}
+                                                    variables={{pattern: getPattern(values.individuals, "name")}}
+                                                    onChange={(option, live) => updateField(option, live, values.individuals, setFieldValue, "individuals", "name")}
                                                     style={{
                                                         width: props.desktop ? "40%" : "99%"
                                                     }}
@@ -652,7 +659,8 @@ function Filter(props) {
                                                     nameField="name"
                                                     label="Letterer"
                                                     isMulti
-                                                    onChange={(option) => setFieldValue("individuals", option)}
+                                                    variables={{pattern: getPattern(values.individuals, "name")}}
+                                                    onChange={(option, live) => updateField(option, live, values.individuals, setFieldValue, "individuals", "name")}
                                                     style={{
                                                         width: props.desktop ? "40%" : "99%"
                                                     }}
@@ -666,7 +674,8 @@ function Filter(props) {
                                                     nameField="name"
                                                     label="Editor"
                                                     isMulti
-                                                    onChange={(option) => setFieldValue("individuals", option)}
+                                                    variables={{pattern: getPattern(values.individuals, "name")}}
+                                                    onChange={(option, live) => updateField(option, live, values.individuals, setFieldValue, "individuals", "name")}
                                                     style={{
                                                         width: props.desktop ? "40%" : "99%"
                                                     }}
@@ -685,7 +694,8 @@ function Filter(props) {
                                                     nameField="name"
                                                     label="Übersetzer"
                                                     isMulti
-                                                    onChange={(option) => setFieldValue("individuals", option)}
+                                                    variables={{pattern: getPattern(values.individuals, "name")}}
+                                                    onChange={(option, live) => updateField(option, live, values.individuals, setFieldValue, "individuals", "name")}
                                                     style={{
                                                         width: props.desktop ? "40%" : "99%"
                                                     }}
@@ -710,7 +720,8 @@ function Filter(props) {
                                             nameField="name"
                                             label="Auftritte"
                                             isMulti
-                                            onChange={(option) => setFieldValue("appearances", option)}
+                                            variables={{pattern: getPattern(values.appearances, "name")}}
+                                            onChange={(option, live) => updateField(option, live, values.appearances, setFieldValue, "appearances", "name")}
                                             style={{
                                                 width: props.desktop ? "80%" : "99%"
                                             }}

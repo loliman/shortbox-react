@@ -59,7 +59,8 @@ class IssueEditor extends React.Component {
                 addinfo: '',
                 stories: [],
                 features: [],
-                covers: []
+                covers: [],
+                pattern: ""
             };
 
         this.state = {
@@ -281,15 +282,21 @@ class IssueEditor extends React.Component {
 
                                     <AutoComplete
                                         query={publishers}
-                                        variables={{us: defaultValues.series.publisher.us ? defaultValues.series.publisher.us : false}}
                                         name="series.publisher.name"
                                         label="Verlag"
-                                        onChange={(option) => {
-                                            setFieldValue("series", {title: '', volume: '', publisher: {name : '', us: defaultValues.series.publisher.us}});
+                                        variables={{pattern: values.series.publisher.name, us: defaultValues.series.publisher.us ? defaultValues.series.publisher.us : false}}
+                                        onChange={(option, live) => {
+                                            if(typeof option !== "string" || option.trim() !== "") {
+                                                if (live) {
+                                                    setFieldValue("series.publisher.name", option);
+                                                }
+                                                else {
+                                                    setFieldValue("series", {title: '', volume: '', publisher: {name : '', us: defaultValues.series.publisher.us}});
 
-                                            if(option)
-                                                setFieldValue("series.publisher", option);
-
+                                                    if(option)
+                                                        setFieldValue("series.publisher", option);
+                                                }
+                                            }
                                         }}
                                         style={{
                                             width: this.props.desktop ? "35.7%" : "100%"
@@ -302,13 +309,20 @@ class IssueEditor extends React.Component {
                                     <AutoComplete
                                         disabled={!values.series.publisher.name || values.series.publisher.name.trim().length === 0}
                                         query={series}
-                                        variables={{publisher: {name: values.series.publisher.name}}}
+                                        variables={{pattern: values.series.title, publisher: {name: values.series.publisher.name}}}
                                         name="series.title"
                                         label="Serie"
-                                        onChange={(option) => {
-                                            setFieldValue("series", option ?
-                                                {title: option.title, volume: option.volume, publisher: {name : values.series.publisher.name, us: values.series.publisher.us}} :
-                                                {title: '', volume: '', publisher: {name : values.series.publisher.name, us: values.series.publisher.us}})
+                                        onChange={(option, live) => {
+                                            if(typeof option !== "string" || option.trim() !== "") {
+                                                if (live) {
+                                                    setFieldValue("series.title", option);
+                                                }
+                                                else {
+                                                    setFieldValue("series", option ?
+                                                        {title: option.title, volume: option.volume, publisher: {name : values.series.publisher.name, us: values.series.publisher.us}} :
+                                                        {title: '', volume: '', publisher: {name : values.series.publisher.name, us: values.series.publisher.us}})
+                                                }
+                                            }
                                         }}
                                         style={{
                                             width: this.props.desktop ? "25.7%" : "73.3%"
@@ -471,7 +485,7 @@ class IssueEditor extends React.Component {
                                     <br/>
                                     <br/>
 
-                                    <Stories setFieldValue={setFieldValue} items={values.stories} {...this.props}
+                                    <Stories setFieldValue={setFieldValue} items={values.stories} {...this.props} values={values}
                                         us={values.series.publisher.us}/>
 
                                     <br/>
@@ -479,14 +493,14 @@ class IssueEditor extends React.Component {
                                     {
                                         !values.series.publisher.us ?
                                             <React.Fragment>
-                                                <Features setFieldValue={setFieldValue} items={values.features} {...this.props}/>
+                                                <Features setFieldValue={setFieldValue} values={values} items={values.features} {...this.props}/>
 
                                                 <br/>
                                             </React.Fragment> : null
                                     }
 
                                     <Covers setFieldValue={setFieldValue} items={values.covers} {...this.props}
-                                        us={values.series.publisher.us}/>
+                                        us={values.series.publisher.us} values={values}/>
 
                                     <br/>
 
@@ -647,22 +661,29 @@ function generateSeriesLabelWithYears(series) {
 }
 
 function StoryFieldsNonExclusive(props) {
-    const {index, setFieldValue} = props;
+    const {index, setFieldValue, values} = props;
 
     return (
         <div className="storyAddInputContainer">
             <AutoComplete
                     query={series}
-                    variables={{publisher: {name: "*", us: true}}}
                     name={"stories[" + index + "].parent.issue.series"}
                     nameField="title"
                     label="Serie"
                     creatable
-                    onChange={(option) => {
-                        if(option && !option.volume)
-                            option.volume = 0;
+                    variables={{pattern: values.stories[index].parent.issue.series.title, publisher: {name: "*", us: true}}}
+                    onChange={(option, live) => {
+                        if(typeof option !== "string" || option.trim() !== "") {
+                            if (live) {
+                                setFieldValue("stories[" + index + "].parent.issue.series.title", option)
+                            }
+                            else {
+                                if(option && !option.volume)
+                                    option.volume = 0;
 
-                        setFieldValue("stories[" + index + "].parent.issue.series", option ? option : {title: '', volume: 0});
+                                setFieldValue("stories[" + index + "].parent.issue.series", option ? option : {title: '', volume: 0});
+                            }
+                        }
                     }}
                     style={{
                         width: props.desktop ? "40%" : "99%"
@@ -701,7 +722,8 @@ function StoryFieldsNonExclusive(props) {
                 label="Übersetzer"
                 isMulti
                 creatable
-                onChange={(option) => setFieldValue("stories[" + index + "].individuals", option)}
+                variables={{pattern: getPattern(values.stories[index].individuals, "name")}}
+                onChange={(option, live) => updateField(option, live, values.stories[index].individuals, setFieldValue, "stories[" + index + "].individuals", "name")}
                 style={{
                     width: props.desktop ? "35%" : "100%"
                 }}
@@ -711,8 +733,39 @@ function StoryFieldsNonExclusive(props) {
     );
 }
 
+export function updateField(option, live, values, setFieldValue, field, pattern) {
+    if(typeof option !== "string" || option.trim() !== "") {
+        if (live) {
+            let arr = JSON.parse(JSON.stringify(values));
+
+            if(arr.length === 0 || !arr[arr.length-1].pattern) {
+                let dummy = {pattern: true};
+                dummy[pattern] = "";
+                arr.push(dummy);
+            }
+            else {
+                let dummy = arr[arr.length-1];
+                dummy[pattern] = option;
+                arr[arr.length-1] = dummy;
+            }
+
+            setFieldValue(field, arr);
+        }
+        else {
+            setFieldValue(field, option)
+        }
+    }
+}
+
+export function getPattern(arr, pattern) {
+    if(arr.length === 0 || !arr[arr.length-1].pattern)
+        return null;
+
+    return arr[arr.length-1][pattern];
+}
+
 function StoryFieldsExclusive(props) {
-    const {index, setFieldValue} = props;
+    const {index, setFieldValue, values} = props;
 
     return (
         <React.Fragment>
@@ -726,7 +779,8 @@ function StoryFieldsExclusive(props) {
                     disabled={props.disabled}
                     isMulti
                     creatable
-                    onChange={(option) => setFieldValue("stories[" + index + "].individuals", option)}
+                    variables={{pattern: getPattern(values.stories[index].individuals, "name")}}
+                    onChange={(option, live) => updateField(option, live, values.stories[index].individuals, setFieldValue, "stories[" + index + "].individuals", "name")}
                     style={{
                         width: props.desktop ? "33.3%" : "99%"
                     }}
@@ -741,7 +795,8 @@ function StoryFieldsExclusive(props) {
                     disabled={props.disabled}
                     isMulti
                     creatable
-                    onChange={(option) => setFieldValue("stories[" + index + "].individuals", option)}
+                    variables={{pattern: getPattern(values.stories[index].individuals, "name")}}
+                    onChange={(option, live) => updateField(option, live, values.stories[index].individuals, setFieldValue, "stories[" + index + "].individuals", "name")}
                     style={{
                         width: props.desktop ? "33.3%" : "100%"
                     }}
@@ -756,7 +811,8 @@ function StoryFieldsExclusive(props) {
                     isMulti
                     disabled={props.disabled}
                     creatable
-                    onChange={(option) => setFieldValue("stories[" + index + "].individuals", option)}
+                    variables={{pattern: getPattern(values.stories[index].individuals, "name")}}
+                    onChange={(option, live) => updateField(option, live, values.stories[index].individuals, setFieldValue, "stories[" + index + "].individuals", "name")}
                     style={{
                         width: props.desktop ? "33.3%" : "100%"
                     }}
@@ -773,7 +829,8 @@ function StoryFieldsExclusive(props) {
                     disabled={props.disabled}
                     isMulti
                     creatable
-                    onChange={(option) => setFieldValue("stories[" + index + "].individuals", option)}
+                    variables={{pattern: getPattern(values.stories[index].individuals, "name")}}
+                    onChange={(option, live) => updateField(option, live, values.stories[index].individuals, setFieldValue, "stories[" + index + "].individuals", "name")}
                     style={{
                         width: props.desktop ? "33.3%" : "100%"
                     }}
@@ -788,7 +845,8 @@ function StoryFieldsExclusive(props) {
                     disabled={props.disabled}
                     isMulti
                     creatable
-                    onChange={(option) => setFieldValue("stories[" + index + "].individuals", option)}
+                    variables={{pattern: getPattern(values.stories[index].individuals, "name")}}
+                    onChange={(option, live) => updateField(option, live, values.stories[index].individuals, setFieldValue, "stories[" + index + "].individuals", "name")}
                     style={{
                         width: props.desktop ? "33.3%" : "100%"
                     }}
@@ -803,7 +861,8 @@ function StoryFieldsExclusive(props) {
                     disabled={props.disabled}
                     isMulti
                     creatable
-                    onChange={(option) => setFieldValue("stories[" + index + "].individuals", option)}
+                    variables={{pattern: getPattern(values.stories[index].individuals, "name")}}
+                    onChange={(option, live) => updateField(option, live, values.stories[index].individuals, setFieldValue, "stories[" + index + "].individuals", "name")}
                     style={{
                         width: props.desktop ? "33.3%" : "100%"
                     }}
@@ -855,7 +914,8 @@ function FeatureFields(props) {
                 label="Autor"
                 isMulti
                 creatable
-                onChange={(option) => props.setFieldValue("features[" + props.index + "].individuals", option)}
+                variables={{pattern: getPattern(props.values.features[props.index].individuals, "name")}}
+                onChange={(option, live) => updateField(option, live, props.values.features[props.index], props.setFieldValue, "features[" + props.index + "].individuals")}
                 style={{
                     width: props.desktop ? "30%" : "100%"
                 }}
@@ -929,21 +989,29 @@ function CoverFields(props) {
 }
 
 function CoverFieldsNonExclusive(props) {
-    const {index, setFieldValue} = props;
+    const {index, setFieldValue, values} = props;
 
     return (
         <div className="storyAddInputContainer">
             <AutoComplete
                 query={series}
-                variables={{publisher: {name: "*", us: true}}}
                 name={"covers[" + index + "].parent.issue.series"}
                 nameField="title"
                 label="Serie"
                 creatable
-                onChange={(option) => {
-                    if(option && !option.volume)
-                        option.volume = 0;
-                    setFieldValue("covers[" + index + "].parent.issue.series", option ? option : {title: '', volume: 0});
+                variables={{pattern: values.covers[index].parent.issue.series.title, publisher: {name: "*", us: true}}}
+                onChange={(option, live) => {
+                    if(typeof option !== "string" || option.trim() !== "") {
+                        if (live) {
+                            setFieldValue("covers[" + index + "].parent.issue.series.title", option)
+                        }
+                        else {
+                            if(option && !option.volume)
+                                option.volume = 0;
+
+                            setFieldValue("covers[" + index + "].parent.issue.series", option ? option : {title: '', volume: 0});
+                        }
+                    }
                 }}
                 style={{
                     width: props.desktop ? "40%" : "99%"
@@ -990,9 +1058,8 @@ function CoverFieldsExclusive(props) {
                 isMulti
                 creatable
                 disabled={props.disabled}
-                onChange={(option) => {
-                    setFieldValue("covers[" + index + "].individuals", option)
-                }}
+                variables={{pattern: getPattern(props.values.covers[props.index].individuals, "name")}}
+                onChange={(option, live) => updateField(option, live, props.values.covers[index].individuals, setFieldValue, "covers[" + index + "].individuals", "name")}
                 style={{
                     width: props.desktop ? "40%" : "99%"
                 }}
