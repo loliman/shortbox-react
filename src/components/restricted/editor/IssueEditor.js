@@ -758,7 +758,7 @@ export function updateField(option, live, values, setFieldValue, field, pattern)
 }
 
 export function getPattern(arr, pattern) {
-    if(arr.length === 0 || !arr[arr.length-1].pattern)
+    if(!arr || arr.length === 0 || !arr[arr.length-1].pattern)
         return null;
 
     return arr[arr.length-1][pattern];

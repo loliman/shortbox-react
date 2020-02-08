@@ -256,6 +256,14 @@ body {
     flex-grow: 1;
 }
 
+_:-ms-fullscreen, :root #content {
+    max-width: 79.9%;
+}
+
+_:-ms-fullscreen, :root #main {
+    height: calc(100vh - 84px)
+}
+
 #content > div {
     overflow: auto;
     height: 100%;
@@ -416,6 +424,10 @@ body {
 
     #drawer > :last-child {
         width: 50%;
+    }
+
+    .details {
+        padding-right: 2%;
     }
 
     #headerSearch fieldset {
@@ -679,6 +691,10 @@ body {
         min-height: 56px !important;
     }
 
+    .details {
+        padding-right: 2%;
+    }
+
     #drawer > :last-child {
         width: 80%;
     }
@@ -748,7 +764,13 @@ body {
     }
 
     div[class^="MuiSnackbar-root-"] {
+        align-content: flex-start;
         top: 0 !important;
+        bottom: unset !important;
+    }
+
+    div[class^="MuiSnackbarContent-action-"] {
+        height: 44px !important;
     }
 
     .storyAdd > :first-child {

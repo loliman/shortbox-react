@@ -75,8 +75,6 @@ class Dropdown extends React.Component {
                                       }
 
                                       this.props.navigate("/edit" + generateUrl(this.props.EditDropdown.item, us));
-                                      if(this.props.mobile && !this.props.mobileLandscape)
-                                          this.props.toogleDrawer();
                                       this.props.handleClose();
                                   }}>
                             <ListItemIcon>

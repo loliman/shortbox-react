@@ -21,7 +21,8 @@ class List extends React.Component {
     }
 
     componentDidMount() {
-        this.props.registerLoadingComponent(this.constructor.name);
+        if(!(this.props.mobile || (this.props.tablet && !this.props.tabletLandscape)))
+            this.props.registerLoadingComponent(this.constructor.name);
     }
 
     render() {
