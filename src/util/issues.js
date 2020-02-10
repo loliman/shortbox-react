@@ -6,7 +6,7 @@ export function generateItemTitle(item) {
         return item.title;
     else if (item.parent) {
         let title = generateLabel(item.parent.issue.series) + " #" + item.parent.issue.number;
-        title += ((item.__typename !== "Cover" && item.parent.number > 0) ? " [" + romanize(item.parent.number) + "]" : "");
+        title += ((item.__typename !== "Cover" && item.parent.number > 0 && item.parent.issue.stories.length > 1) ? " [" + romanize(item.parent.number) + "]" : "");
         title += (item.parent.variant ? " [" + item.parent.format + "/" + item.parent.variant + "]" : "");
         return title ;
     } else if (item.series)

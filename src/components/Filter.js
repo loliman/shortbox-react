@@ -157,7 +157,10 @@ function Filter(props) {
                     }
                     if (values.appearances.length > 0) {
                         v.appearances = [];
-                        values.appearances.forEach((o) => v.appearances.push(stripItem(o)));
+                        values.appearances.forEach((o) => {
+                            if(!o.pattern)
+                                v.appearances.push(stripItem(o))
+                        });
                     }
                     if (values.firstPrint)
                         v.firstPrint = true;

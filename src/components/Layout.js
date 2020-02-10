@@ -29,7 +29,7 @@ class Layout extends React.Component {
                     <List/>
 
                     <div id="content" className={drawerOpen ? 'content-show' : 'content-hide'} onScroll={e => this.props.handleScroll ? this.props.handleScroll(e) : false}>
-                        <Card>
+                        <Card id="contentBg">
                             <div id="contentChildren">
                                 {children}
                             </div>

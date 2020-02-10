@@ -153,6 +153,14 @@ body {
     padding-left: 7px !important;
 }
 
+#headerSearch .outerAutoComplete {
+    border: 1px solid #f0f0f0 !important;
+    -webkit-box-shadow: unset !important;
+    -moz-box-shadow: unset !important;
+    box-shadow: unset !important;
+    border-radius: unset !important;
+}
+
 #headerSearch .autoSuggestField :last-child span {
     background: transparent;
 }
@@ -354,6 +362,10 @@ _:-ms-fullscreen, :root #main {
     width: 45vh !important;
     flex-shrink: 0;
     margin-right: -3px !important;
+    border: 1px solid #f0f0f0 !important;
+    -webkit-box-shadow: unset !important;
+    -moz-box-shadow: unset !important;
+    box-shadow: unset !important;
 }
 
 .media {
@@ -362,6 +374,10 @@ _:-ms-fullscreen, :root #main {
     height: 55vh !important;
     width: 47.5vh !important;
     flex-shrink: 0;
+    border: 1px solid #f0f0f0 !important;
+    -webkit-box-shadow: unset !important;
+    -moz-box-shadow: unset !important;
+    box-shadow: unset !important;
 }
 
 /*
@@ -995,6 +1011,17 @@ div[class^="MuiExpansionPanelSummary-content-"] {
     margin: 4px 0 !important;
 }
 
+span[class^="MuiSwitch-bar-"] {
+    background-color: darkgrey;
+}
+
+.summary {
+    border: 0px solid #f0f0f0 !important;
+    -webkit-box-shadow: unset !important;
+    -moz-box-shadow: unset !important;
+    box-shadow: unset !important;
+}
+
 .loading {
     width: 50px !important;
 }
@@ -1177,6 +1204,10 @@ div[class^="MuiExpansionPanelSummary-content-"] {
 .issuePreview {
     margin-bottom: 10px;
     width: 100%;
+    border: 1px solid #f0f0f0 !important;
+    -webkit-box-shadow: unset !important;
+    -moz-box-shadow: unset !important;
+    box-shadow: unset !important;
 }
 
 .issuePreview h6 {
@@ -1587,17 +1618,17 @@ div div.ball {
 }
 
 .ball-one {
-    background-color: #546e7a;
+    background-color: #000000;
     animation: jump .5s ease 0s infinite alternate;
 }
 
 .ball-two {
-    background-color: #546e7a;
+    background-color: #000000;
     animation: jump .5s ease .15s infinite alternate;
 }
 
 .ball-three {
-    background-color: #546e7a;
+    background-color: #000000;
     animation: jump .5s ease .25s infinite alternate;
 }
 

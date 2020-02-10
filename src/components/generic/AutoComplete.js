@@ -177,7 +177,7 @@ class AutoCompleteContainer extends React.Component {
         };
 
         return (
-            <div style={style}>
+            <div className="outerAutoComplete" style={style}>
                 {
                     !this.props.isMulti && !this.props.creatable?
                         <Select {...props}

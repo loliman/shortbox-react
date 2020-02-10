@@ -54,8 +54,8 @@ class TopBar extends React.Component {
                             <MenuIcon />
                         </IconButton>
 
-                        <img onClick={() => this.props.navigate("/", {filter: null})}
-                             id="logo" src="/android-icon-192x192.png" alt="Shortbox" height="40"/>
+                        <img onClick={() => this.props.navigate(us ? "/us" : "/de", {filter: null})}
+                             id="logo" src="/Shortbox_Logo.png" alt="Shortbox" height="40"/>
                         <Typography variant="h6" color="inherit" className="appTitle" noWrap>
                             {
                                 (mobile && !mobileLandscape) ?
@@ -210,7 +210,7 @@ function BreadCrumbMenu(props) {
 
     switch (level) {
         case HierarchyLevel.ROOT:
-            return <BreadCrumbLink to={us ? "/us" : "/de"} label="Shortbox" {...props}/>;
+            return null;
         case HierarchyLevel.PUBLISHER:
             return (
                 <React.Fragment>
@@ -243,20 +243,16 @@ function BreadCrumbMenuMobile(props) {
 
     switch (level) {
         case HierarchyLevel.ROOT:
-            return <BreadCrumbLink to={us ? "/us" : "/de"} label="Shortbox" {...props}/>;
+            return null;
         case HierarchyLevel.PUBLISHER:
             return (
                 <React.Fragment>
-                    <BreadCrumbLink to={us ? "/us" : "/de"} label="Shortbox" {...props}/>
-                    <KeyboardArrowRightIcon className="navArrow"/>
                     <BreadCrumbLabel label={generateLabel(selected)}/>
                 </React.Fragment>
             );
         case HierarchyLevel.SERIES:
             return (
                 <React.Fragment>
-                    <BreadCrumbLink to={us ? "/us" : "/de"} label="Shortbox" {...props}/>
-                    <KeyboardArrowRightIcon className="navArrow"/>
                     <BreadCrumbLink to={generateUrl(selected.series, us)}
                                     label={generateLabel(selected.series)}
                                     {...props}/>
@@ -268,8 +264,6 @@ function BreadCrumbMenuMobile(props) {
             return (
                 <React.Fragment>
                     <React.Fragment>
-                        <BreadCrumbLink to={us ? "/us" : "/de"} label="Shortbox" {...props}/>
-                        <KeyboardArrowRightIcon className="navArrow"/>
                         <BreadCrumbLink to={generateUrl(selected.issue.series, us)}
                                         label={generateLabel(selected.issue.series)}
                                         {...props}/>

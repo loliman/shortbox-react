@@ -261,6 +261,9 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                     },
                     format,
                     variant,
+                    stories {
+                        number
+                    },
                     arcs {
                         title,
                         type

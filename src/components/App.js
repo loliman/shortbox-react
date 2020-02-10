@@ -30,7 +30,7 @@ const theme = createMuiTheme({
     },
     palette: {
         primary: {
-            main: '#546e7a'
+            main: '#000000'
         },
     }
 });
