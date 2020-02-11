@@ -131,12 +131,16 @@ function Filter(props) {
                         values.publishers.forEach((o) => {
                             let p = stripItem(o);
                             p.us = undefined;
-                            v.publishers.push(p)
+                            if(!o.pattern)
+                                v.publishers.push(p)
                         });
                     }
                     if (values.series.length > 0) {
                         v.series = [];
-                        values.series.forEach((o) => v.series.push(stripItem(o)));
+                        values.series.forEach((o) => {
+                            if(!o.pattern)
+                                v.series.push(stripItem(o))
+                        });
                     }
                     if(values.numbers.length > 0) {
                         v.numbers = [];
@@ -149,11 +153,17 @@ function Filter(props) {
                     }
                     if (values.arcs.length > 0) {
                         v.arcs = [];
-                        values.arcs.forEach((o) => v.arcs.push(stripItem(o)));
+                        values.arcs.forEach((o) => {
+                            if(!o.pattern)
+                                v.arcs.push(stripItem(o))
+                        });
                     }
                     if (values.individuals.length > 0) {
                         v.individuals = [];
-                        values.individuals.forEach((o) => v.individuals.push(stripItem(o)));
+                        values.individuals.forEach((o) => {
+                            if(!o.pattern)
+                                v.individuals.push(stripItem(o))
+                        });
                     }
                     if (values.appearances.length > 0) {
                         v.appearances = [];
