@@ -29,9 +29,9 @@ function Details(props) {
             <DetailsRow key="releasedate" label="Erscheinungsdatum"
                         value={dateFormat(new Date(props.issue.releasedate), "dd.mm.yyyy")}/>
             <DetailsRow key="coverartists" label="Cover Artists"
-                        value={toChipList(props.issue ? props.issue.cover.individuals.filter(item => item.type === 'ARTIST') : null, props, "ARTIST")}/>
+                        value={toChipList(props.issue ? props.issue.cover.individuals.filter(item => item.type.includes('ARTIST')) : null, props, "ARTIST")}/>
             <DetailsRow key="editor" label="Editor"
-                        value={toChipList(props.issue.individuals.filter(item => item.type === 'EDITOR'), props, "EDITOR")}/>
+                        value={toChipList(props.issue.individuals.filter(item => item.type.includes('EDITOR')), props, "EDITOR")}/>
         </React.Fragment>
     );
 }
@@ -130,7 +130,7 @@ function StoryDetails(props) {
                                     </div>
                                     <Tooltip title="Zur Ausgabe">
                                         <IconButton className="detailsIcon issueStoryIssueButton"
-                                                    onClick={() => props.navigate(generateUrl(child.issue))}
+                                                    onClick={() => props.navigate(generateUrl(child.issue), {filter: null})}
                                                     aria-label="Details">
                                             <SearchIcon fontSize="small"/>
                                         </IconButton>

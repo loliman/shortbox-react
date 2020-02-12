@@ -30,8 +30,6 @@ export function generateUrl(item, us) {
     if (item.publisher)
         return url + encodeURIComponent(item.publisher.name);
 
-    console.log(item);
-
     if (item.series)
         return url
             + encodeURIComponent(item.series.publisher.name.replace(/%/g, '%25'))

@@ -372,7 +372,7 @@ export function ContainsTitleDetailed(props) {
 
                 <Tooltip title="Zur Ausgabe">
                     <IconButton className="detailsIcon"
-                                onClick={() => props.navigate(exclusive ? "" : generateUrl(issue, !props.us))}
+                                onClick={() => props.navigate(exclusive ? "" : generateUrl(issue, !props.us), {filter: null})}
                                 aria-label="Details"
                                 disabled={exclusive}>
                         <SearchIcon fontSize="small"/>
@@ -427,7 +427,8 @@ export function IndividualList(props) {
     return(
         <ChipList us={props.us} navigate={props.navigate} label={props.label} hideIfEmpty={props.hideIfEmpty}
                   type={props.type} role={props.role}
-                  items={props.item.parent ? props.item.parent.individuals : props.item.individuals} />
+                  items={props.item.parent ? props.item.parent.individuals : props.item.individuals}
+                  individual={true}/>
     );
 }
 
@@ -440,7 +441,12 @@ export function AppearanceList(props) {
 }
 
 function ChipList(props) {
-    let items = props.items.filter(item => (item.role === props.role || !props.role) && item.type === props.type);
+    let items = props.items.filter(item => {
+        if(props.individual)
+            return item.type.includes(props.type);
+
+        return (item.role === props.role || !props.role) && item.type === props.type
+    });
 
     if((!items || items.length === 0) && props.hideIfEmpty)
         return null;

@@ -73,7 +73,7 @@ function CoverDetails(props) {
     return (
         <div>
             <div className="individualListContainer"><Typography><b>Artist</b></Typography> {
-                toChipList(props.item.parent.individuals.filter(item => item.type === 'ARTIST') ? props.item.parent.individuals.filter(item => item.type === 'ARTIST') : props.item, props, "ARTIST")
+                toChipList(props.item.parent.individuals.filter(item => item.type.includes('ARTIST')) ? props.item.parent.individuals.filter(item => item.type.includes('ARTIST')) : props.item, props, "ARTIST")
             } </div>
         </div>
     );
@@ -82,7 +82,7 @@ function CoverDetails(props) {
 function FeatureDetails(props) {
     return (
         <div>
-            <div className="individualListContainer"><Typography><b>Autor</b></Typography> {toChipList(props.item.individuals.filter(item => item.type === 'WRITER'), props, "WRITER")}</div>
+            <div className="individualListContainer"><Typography><b>Autor</b></Typography> {toChipList(props.item.individuals.filter(item => item.type.includes('WRITER')), props, "WRITER")}</div>
         </div>
     );
 }

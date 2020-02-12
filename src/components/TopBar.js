@@ -54,7 +54,7 @@ class TopBar extends React.Component {
                             <MenuIcon />
                         </IconButton>
 
-                        <img onClick={() => this.props.navigate(us ? "/us" : "/de", {filter: null})}
+                        <img onClick={() => this.props.navigate(us ? "/us" : "/de")}
                              id="logo" src="/Shortbox_Logo.png" alt="Shortbox" height="40"/>
                         <Typography variant="h6" color="inherit" className="appTitle" noWrap>
                             {

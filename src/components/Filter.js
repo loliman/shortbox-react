@@ -356,9 +356,6 @@ function Filter(props) {
                                                             checked={values.firstPrint}
                                                             onChange={() => {
                                                                 setFieldValue("firstPrint", !values.firstPrint);
-                                                                setFieldValue("onlyPrint", false);
-                                                                setFieldValue("otherTb", false);
-                                                                setFieldValue("exclusive", false);
                                                             }}
                                                             color="secondary"/>
                                                     }
@@ -371,10 +368,7 @@ function Filter(props) {
                                                         <Switch
                                                             checked={values.onlyPrint}
                                                             onChange={() => {
-                                                                setFieldValue("firstPrint", false);
                                                                 setFieldValue("onlyPrint", !values.onlyPrint);
-                                                                setFieldValue("otherTb", false);
-                                                                setFieldValue("exclusive", false);
                                                             }}
                                                             color="secondary"/>
                                                     }
@@ -387,10 +381,7 @@ function Filter(props) {
                                                         <Switch
                                                             checked={values.otherTb}
                                                             onChange={() => {
-                                                                setFieldValue("firstPrint", false);
-                                                                setFieldValue("onlyPrint", false);
                                                                 setFieldValue("otherTb", !values.otherTb);
-                                                                setFieldValue("exclusive", false);
                                                             }}
                                                             color="secondary"/>
                                                     }
@@ -403,9 +394,6 @@ function Filter(props) {
                                                         <Switch
                                                             checked={values.exclusive}
                                                             onChange={() => {
-                                                                setFieldValue("firstPrint", false);
-                                                                setFieldValue("onlyPrint", false);
-                                                                setFieldValue("otherTb", false);
                                                                 setFieldValue("exclusive", !values.exclusive);
                                                             }}
                                                             color="secondary"/>
@@ -421,7 +409,6 @@ function Filter(props) {
                                                             checked={values.onlyTb}
                                                             onChange={() => {
                                                                 setFieldValue("onlyTb", !values.onlyTb);
-                                                                setFieldValue("noPrint", false);
                                                             }}
                                                             color="secondary"/>
                                                     }
@@ -434,7 +421,6 @@ function Filter(props) {
                                                         <Switch
                                                             checked={values.noPrint}
                                                             onChange={() => {
-                                                                setFieldValue("onlyTb", false);
                                                                 setFieldValue("noPrint", !values.noPrint);
                                                             }}
                                                             color="secondary"/>
@@ -445,7 +431,6 @@ function Filter(props) {
                                         }
 
                                         {
-                                            !values.exclusive && !values.noPrint ?
                                             <React.Fragment>
                                                 <br />
 
@@ -533,7 +518,7 @@ function Filter(props) {
                                                         )
                                                     })
                                                 }
-                                            </React.Fragment> : null
+                                            </React.Fragment>
                                         }
                                     </React.Fragment> : null
                                 }
@@ -571,7 +556,7 @@ function Filter(props) {
                                 <br/>
                                 <br/>
 
-                                {!values.exclusive && !values.noPrint ?
+                                {
                                     <React.Fragment>
                                         <Typography variant="h6">Mitwirkende</Typography>
 
@@ -721,7 +706,7 @@ function Filter(props) {
                                         <br/>
                                         <br/>
                                         <br/>
-                                    </React.Fragment> : null}
+                                    </React.Fragment>}
 
                                 {values.story ?
                                     <React.Fragment>
