@@ -560,6 +560,14 @@ function expanded(item, filter) {
                         expanded = true;
                 })
             });
+
+        if(currentFilter.appearances)
+            currentFilter.appearances.forEach(i => {
+                compare.appearances.forEach(o => {
+                    if(i.name === o.name && i.type === o.type)
+                        expanded = true;
+                })
+            });
     } else if(item.__typename === 'Cover') {
         if(currentFilter.individuals)
             currentFilter.individuals.forEach(i => {

@@ -465,6 +465,7 @@ class IssueEditor extends React.Component {
                                                 label="Verleger"
                                                 isMulti
                                                 creatable
+                                                variables={{pattern: getPattern(values.editors, "name")}}
                                                 onChange={(option) => setFieldValue("editors", option)}
                                                 style={{
                                                     width: this.props.desktop ? "35.7%" : "100%"
