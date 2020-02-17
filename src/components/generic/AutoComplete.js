@@ -129,7 +129,9 @@ class AutoCompleteContainer extends React.Component {
                     option.forEach(o => {
                         options.push({
                             name: o.name,
-                            type: !o.type ? this.props.type : o.type
+                            title: o.title,
+                            type: !o.type ? this.props.type : o.type,
+                            role: !o.role ? this.props.type : o.role
                         })
                     });
 
@@ -406,7 +408,7 @@ function Input(props) {
     return (
         <div className="autoSuggestInput">
             <AutosizeInput
-                id={selectProps.name ? selectProps.name : id}
+                id={selectProps.name ? selectProps.name + "_" + Math.floor(Math.random() * new Date().getTime()) : id}
                 className={cx(null, { 'input': true }, className)}
                 inputRef={innerRef}
                 inputStyle={inputStyle(isHidden)}
@@ -418,7 +420,16 @@ function Input(props) {
 }
 
 function MultiValue(props) {
-     if(props.selectProps.type && props.selectProps.type !== props.data.type)
+    let render = false;
+    if(props.selectProps.type) {
+        if(typeof props.data.type === "object") {
+            render = props.data.type.includes(props.selectProps.type) || props.data.role === props.selectProps.type;
+        } else {
+            render = props.data.type === props.selectProps.type || props.data.role === props.selectProps.type;
+        }
+    }
+
+     if(!render)
         return null;
 
     let regex = new RegExp("!!\\w*!!");

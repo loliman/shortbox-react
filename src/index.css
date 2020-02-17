@@ -120,6 +120,7 @@ body {
 
 #headerSearch fieldset {
     top: -14px;
+    border-radius: unset;
 }
 
 #headerSearch svg {
@@ -158,7 +159,7 @@ body {
     -webkit-box-shadow: unset !important;
     -moz-box-shadow: unset !important;
     box-shadow: unset !important;
-    border-radius: unset !important;
+    border-radius: 1px !important;
 }
 
 #headerSearch .autoSuggestField :last-child span {
@@ -636,6 +637,10 @@ _:-ms-fullscreen, :root #main {
         margin-top: 6px !important;
         margin-left: -14px !important;
     }
+
+    #headerSearch .outerAutoComplete {
+        border: none !important;
+    }
 }
 
 /*
@@ -695,6 +700,10 @@ _:-ms-fullscreen, :root #main {
     .exclusiveToggle {
         margin-top: 6px !important;
         margin-left: -14px !important;
+    }
+
+    #headerSearch .outerAutoComplete {
+        border: none !important;
     }
 }
 
@@ -821,6 +830,10 @@ _:-ms-fullscreen, :root #main {
     .spanDif {
         padding-left: 2px;
         padding-right: 2px;
+    }
+
+    #headerSearch .outerAutoComplete {
+        border: none !important;
     }
 }
 
@@ -1202,6 +1215,7 @@ span[class^="MuiSwitch-bar-"] {
 }
 
 .issuePreview {
+    border-radius: 1px !important;
     margin-bottom: 10px;
     width: 100%;
     border: 1px solid #f0f0f0 !important;
@@ -1343,13 +1357,19 @@ span[class^="MuiSwitch-bar-"] {
     flex-wrap: wrap;
     flex: 1;
     align-items: center;
-    overflow: hidden;
+    overflow: auto;
+    max-height: 29.4px;
+    padding-top: 4px;
 }
 
 .autoSuggestField {
     display: flex !important;
     padding: 0 !important;
     margin-top: -6px !important;
+}
+
+.autoSuggestField .valueContainer {
+    padding-top: 6px !important;
 }
 
 .autoSuggestInput {

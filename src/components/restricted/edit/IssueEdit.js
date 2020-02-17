@@ -27,9 +27,17 @@ function IssueEdit(props) {
                     defaultValues.createdAt = undefined;
                     defaultValues.updatedAt = undefined;
                     defaultValues.cover = defaultValues.cover ? defaultValues.cover : '';
-                    defaultValues.individuals = defaultValues.individuals ? defaultValues.individuals.map(i => stripItem(i)) : [];
                     defaultValues.pages = defaultValues.pages ? defaultValues.pages : 0;
                     defaultValues.limitation = defaultValues.limitation ? defaultValues.limitation : 0;
+
+                    let oldIndividuals = [];
+                    defaultValues.individuals.forEach(individual => {
+                        oldIndividuals.push({
+                            name: individual.name,
+                            type: individual.type
+                        })
+                    });
+                    defaultValues.individuals = oldIndividuals;
 
                     let oldArcs = [];
                     defaultValues.arcs.forEach(arc => {
@@ -50,6 +58,7 @@ function IssueEdit(props) {
                             addinfo: story.addinfo,
                             exclusive: exclusive,
                             individuals: !exclusive ? undefined : (story.individuals ? story.individuals.map(i => stripItem(i)) : []),
+                            appearances: !exclusive ? undefined : (story.appearances ? story.appearances.map(i => stripItem(i)) : []),
                             parent: exclusive ? undefined : {
                                 number: story.parent.number,
                                 issue: {

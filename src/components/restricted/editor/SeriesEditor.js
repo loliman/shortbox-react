@@ -175,7 +175,7 @@ class SeriesEditor extends React.Component {
                                                     setFieldValue("publisher", option ? option : {name : '', us: defaultValues.publisher.us})
                                             }}
                                             style={{
-                                                width: this.props.desktop ? "35.7%" : "100%"
+                                                width: this.props.desktop ? "40.8%" : "100%"
                                             }}
                                             generateLabel={generateLabel}
                                         />

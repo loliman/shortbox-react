@@ -8,7 +8,7 @@ import CardContent from "@material-ui/core/CardContent";
 import Button from "@material-ui/core/Button";
 import withContext from "../../generic/withContext";
 import CardHeader from "@material-ui/core/CardHeader";
-import {individuals, issue, issues, publishers, series} from "../../../graphql/queries";
+import {apps, arcs, individuals, issue, issues, publishers, series} from "../../../graphql/queries";
 import {decapitalize, stripItem, wrapItem} from "../../../util/util";
 import AutoComplete from "../../generic/AutoComplete";
 import {addToCache, removeFromCache, updateInCache} from "./Editor";
@@ -205,6 +205,8 @@ class IssueEditor extends React.Component {
                                 variables.item.series = stripItem(variables.item.series);
                             if(variables.item.individuals)
                                 variables.item.individuals = variables.item.individuals.map(item => stripItem(item));
+                            if(variables.item.arcs)
+                                variables.item.arcs = variables.item.arcs.map(item => stripItem(item));
 
                             if(variables.item.stories)
                                 variables.item.stories = variables.item.stories.map(story => {
@@ -212,6 +214,8 @@ class IssueEditor extends React.Component {
                                        story.series = stripItem(story.series);
                                    if(story.individuals)
                                        story.individuals = story.individuals.map(item => stripItem(item));
+                                    if(story.appearances)
+                                        story.appearances = story.appearances.map(item => stripItem(item));
 
                                    if(story.parent && story.parent.issue && story.parent.issue.series)
                                        story.parent.issue.series = stripItem(story.parent.issue.series);
@@ -299,7 +303,7 @@ class IssueEditor extends React.Component {
                                             }
                                         }}
                                         style={{
-                                            width: this.props.desktop ? "35.7%" : "100%"
+                                            width: this.props.desktop ? "40.8%" : "100%"
                                         }}
                                         generateLabel={generateLabel}
                                     />
@@ -325,7 +329,7 @@ class IssueEditor extends React.Component {
                                             }
                                         }}
                                         style={{
-                                            width: this.props.desktop ? "25.7%" : "73.3%"
+                                            width: this.props.desktop ? "30.6%" : "73.3%"
                                         }}
                                         generateLabel={generateLabel}
                                     />
@@ -458,20 +462,71 @@ class IssueEditor extends React.Component {
                                                 <br/>
                                             </React.Fragment> :
 
-                                            <AutoComplete
-                                                query={individuals}
-                                                name="editors"
-                                                nameField="name"
-                                                label="Verleger"
-                                                isMulti
-                                                creatable
-                                                variables={{pattern: getPattern(values.editors, "name")}}
-                                                onChange={(option) => setFieldValue("editors", option)}
-                                                style={{
-                                                    width: this.props.desktop ? "35.7%" : "100%"
-                                                }}
-                                                generateLabel={(e) => e.name}
-                                            />
+                                            <React.Fragment>
+                                                <AutoComplete
+                                                    query={individuals}
+                                                    name="individuals"
+                                                    type="EDITOR"
+                                                    nameField="name"
+                                                    label="Verleger"
+                                                    isMulti
+                                                    creatable
+                                                    variables={{pattern: getPattern(values.individuals, "name")}}
+                                                    onChange={(option) => setFieldValue("individuals", option)}
+                                                    style={{
+                                                        width: this.props.desktop ? "40.8%" : "100%"
+                                                    }}
+                                                    generateLabel={(e) => e.name}
+                                                />
+
+                                                <AutoComplete
+                                                    query={arcs}
+                                                    name="arcs"
+                                                    type="EVENT"
+                                                    nameField="title"
+                                                    label="Event"
+                                                    isMulti
+                                                    creatable
+                                                    variables={{pattern: getPattern(values.arcs, "title"), type: "EVENT"}}
+                                                    onChange={(option) => setFieldValue("arcs", option)}
+                                                    style={{
+                                                        width: this.props.desktop ? "40.8%" : "100%"
+                                                    }}
+                                                    generateLabel={(e) => e.title}
+                                                />
+
+                                                <AutoComplete
+                                                    query={arcs}
+                                                    name="arcs"
+                                                    type="STORYARC"
+                                                    nameField="title"
+                                                    label="Arc"
+                                                    isMulti
+                                                    creatable
+                                                    variables={{pattern: getPattern(values.arcs, "title"), type: "STORYARC"}}
+                                                    onChange={(option) => setFieldValue("arcs", option)}
+                                                    style={{
+                                                        width: this.props.desktop ? "40.8%" : "100%"
+                                                    }}
+                                                    generateLabel={(e) => e.title}
+                                                />
+
+                                                <AutoComplete
+                                                    query={arcs}
+                                                    name="arcs"
+                                                    type="STORYLINE"
+                                                    nameField="title"
+                                                    label="Storyline"
+                                                    isMulti
+                                                    creatable
+                                                    variables={{pattern: getPattern(values.arcs, "title"), type: "STORYLINE"}}
+                                                    onChange={(option) => setFieldValue("arcs", option)}
+                                                    style={{
+                                                        width: this.props.desktop ? "40.8%" : "100%"
+                                                    }}
+                                                    generateLabel={(e) => e.title}
+                                                />
+                                            </React.Fragment>
                                     }
 
                                     <FastField
@@ -864,6 +919,183 @@ function StoryFieldsExclusive(props) {
                     creatable
                     variables={{pattern: getPattern(values.stories[index].individuals, "name")}}
                     onChange={(option, live) => updateField(option, live, values.stories[index].individuals, setFieldValue, "stories[" + index + "].individuals", "name")}
+                    style={{
+                        width: props.desktop ? "33.3%" : "100%"
+                    }}
+                    generateLabel={(e) => e.name}
+                />
+
+                <br />
+                <br />
+                <br />
+
+                <AutoComplete
+                    query={apps}
+                    name={"stories[" + index + "].appearances"}
+                    type={"FEATURED"}
+                    nameField="name"
+                    label="Hauptcharaktere"
+                    disabled={props.disabled}
+                    isMulti
+                    creatable
+                    variables={{pattern: getPattern(values.stories[index].appearances, "name"), type: "CHARACTER"}}
+                    onChange={(option, live) => updateField(option, live, values.stories[index].appearances, setFieldValue, "stories[" + index + "].appearances", "name")}
+                    style={{
+                        width: props.desktop ? "33.3%" : "100%"
+                    }}
+                    generateLabel={(e) => e.name}
+                />
+
+                <AutoComplete
+                    query={apps}
+                    name={"stories[" + index + "].appearances"}
+                    type={"ANTAGONIST"}
+                    nameField="name"
+                    label="Antagonisten"
+                    disabled={props.disabled}
+                    isMulti
+                    creatable
+                    variables={{pattern: getPattern(values.stories[index].appearances, "name"), type: "CHARACTER"}}
+                    onChange={(option, live) => {
+                        option.role = "ANTAGONIST";
+                        updateField(option, live, values.stories[index].appearances, setFieldValue, "stories[" + index + "].appearances", "name")
+                    }}
+                    style={{
+                        width: props.desktop ? "33.3%" : "100%"
+                    }}
+                    generateLabel={(e) => e.name}
+                />
+
+                <AutoComplete
+                    query={apps}
+                    name={"stories[" + index + "].appearances"}
+                    type={"SUPPORTING"}
+                    nameField="name"
+                    label="Unterstützende Charaktere"
+                    disabled={props.disabled}
+                    isMulti
+                    creatable
+                    variables={{pattern: getPattern(values.stories[index].appearances, "name"), type: "CHARACTER"}}
+                    onChange={(option, live) => updateField(option, live, values.stories[index].appearances, setFieldValue, "stories[" + index + "].appearances", "name")}
+                    style={{
+                        width: props.desktop ? "33.3%" : "100%"
+                    }}
+                    generateLabel={(e) => e.name}
+                />
+
+                <AutoComplete
+                    query={apps}
+                    name={"stories[" + index + "].appearances"}
+                    type={"OTHER"}
+                    nameField="name"
+                    label="Andere Charaktere"
+                    disabled={props.disabled}
+                    isMulti
+                    creatable
+                    variables={{pattern: getPattern(values.stories[index].appearances, "name"), type: "CHARACTER"}}
+                    onChange={(option, live) => updateField(option, live, values.stories[index].appearances, setFieldValue, "stories[" + index + "].appearances", "name")}
+                    style={{
+                        width: props.desktop ? "33.3%" : "100%"
+                    }}
+                    generateLabel={(e) => e.name}
+                />
+
+                <AutoComplete
+                    query={apps}
+                    name={"stories[" + index + "].appearances"}
+                    type={"GROUP"}
+                    nameField="name"
+                    label="Teams"
+                    disabled={props.disabled}
+                    isMulti
+                    creatable
+                    variables={{pattern: getPattern(values.stories[index].appearances, "name"), type: "GROUP"}}
+                    onChange={(option, live) => updateField(option, live, values.stories[index].appearances, setFieldValue, "stories[" + index + "].appearances", "name")}
+                    style={{
+                        width: props.desktop ? "33.3%" : "100%"
+                    }}
+                    generateLabel={(e) => e.name}
+                />
+
+                <AutoComplete
+                    query={apps}
+                    name={"stories[" + index + "].appearances"}
+                    type={"RACE"}
+                    nameField="name"
+                    label="Rassen"
+                    disabled={props.disabled}
+                    isMulti
+                    creatable
+                    variables={{pattern: getPattern(values.stories[index].appearances, "name"), type: "RACE"}}
+                    onChange={(option, live) => updateField(option, live, values.stories[index].appearances, setFieldValue, "stories[" + index + "].appearances", "name")}
+                    style={{
+                        width: props.desktop ? "33.3%" : "100%"
+                    }}
+                    generateLabel={(e) => e.name}
+                />
+
+                <AutoComplete
+                    query={apps}
+                    name={"stories[" + index + "].appearances"}
+                    type={"ANIMAL"}
+                    nameField="name"
+                    label="Tiere"
+                    disabled={props.disabled}
+                    isMulti
+                    creatable
+                    variables={{pattern: getPattern(values.stories[index].appearances, "name"), type: "ANIMAL"}}
+                    onChange={(option, live) => updateField(option, live, values.stories[index].appearances, setFieldValue, "stories[" + index + "].appearances", "name")}
+                    style={{
+                        width: props.desktop ? "33.3%" : "100%"
+                    }}
+                    generateLabel={(e) => e.name}
+                />
+
+                <AutoComplete
+                    query={apps}
+                    name={"stories[" + index + "].appearances"}
+                    type={"ITEM"}
+                    nameField="name"
+                    label="Gegenstände"
+                    disabled={props.disabled}
+                    isMulti
+                    creatable
+                    variables={{pattern: getPattern(values.stories[index].appearances, "name"), type: "ITEM"}}
+                    onChange={(option, live) => updateField(option, live, values.stories[index].appearances, setFieldValue, "stories[" + index + "].appearances", "name")}
+                    style={{
+                        width: props.desktop ? "33.3%" : "100%"
+                    }}
+                    generateLabel={(e) => e.name}
+                />
+
+                <AutoComplete
+                    query={apps}
+                    name={"stories[" + index + "].appearances"}
+                    type={"VEHICLE"}
+                    nameField="name"
+                    label="Fahrzeuge"
+                    disabled={props.disabled}
+                    isMulti
+                    creatable
+                    variables={{pattern: getPattern(values.stories[index].appearances, "name"), type: "VEHICLE"}}
+                    onChange={(option, live) => updateField(option, live, values.stories[index].appearances, setFieldValue, "stories[" + index + "].appearances", "name")}
+                    style={{
+                        width: props.desktop ? "33.3%" : "100%"
+                    }}
+                    generateLabel={(e) => e.name}
+                />
+
+                <AutoComplete
+                    query={apps}
+                    name={"stories[" + index + "].appearances"}
+                    type={"LOCATION"}
+                    nameField="name"
+                    label="Orte"
+                    disabled={props.disabled}
+                    isMulti
+                    creatable
+                    variables={{pattern: getPattern(values.stories[index].appearances, "name"), type: "LOCATION"}}
+                    onChange={(option, live) => updateField(option, live, values.stories[index].appearances, setFieldValue, "stories[" + index + "].appearances", "name")}
                     style={{
                         width: props.desktop ? "33.3%" : "100%"
                     }}

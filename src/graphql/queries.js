@@ -55,15 +55,15 @@ const individuals = gql`query Individuals($pattern: String, $offset: Int) {
     }
 }`;
 
-const apps = gql`query Apps($pattern: String, $offset: Int) {
-    apps(pattern: $pattern, offset: $offset) {
+const apps = gql`query Apps($pattern: String, $type: String, $offset: Int) {
+    apps(pattern: $pattern, type: $type, offset: $offset) {
         name,
         type
     }
 }`;
 
-const arcs = gql`query Arcs($pattern: String, $offset: Int) {
-    arcs(pattern: $pattern, offset: $offset) {
+const arcs = gql`query Arcs($pattern: String, $type: String, $offset: Int) {
+    arcs(pattern: $pattern, type: $type, offset: $offset) {
         title,
         type
     }

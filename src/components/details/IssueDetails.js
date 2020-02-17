@@ -477,7 +477,6 @@ export function toChipList(items, props, type, role) {
         let t = {};
         t.name = item.name;
         t.type = type;
-        if(role) t.role = role;
         filter[filterType].push(t);
 
         list.push(

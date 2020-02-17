@@ -138,7 +138,7 @@ function StoryDetails(props) {
                             <AppearanceList us={props.us} navigate={props.navigate} label={"Antagonisten"} role={"ANTAGONIST"} type={"CHARACTER"} item={props.item} hideIfEmpty={true}/>
                             <AppearanceList us={props.us} navigate={props.navigate} label={"Unterstützende Charaktere"} role={"SUPPORTING"} type={"CHARACTER"} item={props.item} hideIfEmpty={true}/>
                             <AppearanceList us={props.us} navigate={props.navigate} label={"Andere Charaktere"} role={"OTHER"} type={"CHARACTER"} item={props.item} hideIfEmpty={true}/>
-                            <AppearanceList us={props.us} navigate={props.navigate} label={"Teams"} type={"TEAM"} item={props.item} hideIfEmpty={true}/>
+                            <AppearanceList us={props.us} navigate={props.navigate} label={"Teams"} type={"GROUP"} item={props.item} hideIfEmpty={true}/>
                             <AppearanceList us={props.us} navigate={props.navigate} label={"Rassen"} type={"RACE"} item={props.item} hideIfEmpty={true}/>
                             <AppearanceList us={props.us} navigate={props.navigate} label={"Tiere"} type={"ANIMAL"} item={props.item} hideIfEmpty={true}/>
                             <AppearanceList us={props.us} navigate={props.navigate} label={"Gegenstände"} type={"ITEM"} item={props.item} hideIfEmpty={true}/>

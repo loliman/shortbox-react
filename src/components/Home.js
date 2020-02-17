@@ -50,7 +50,8 @@ class Home extends React.Component {
                                                     Marvel Cinematic Universe mit Captain America, Captain Marvel und Iron Man bis hin zu Western-Comics, Horror-Comics und Kinder-Comics wie den Glücksbärchis
                                                     oder der Police Acadamy findet ihr hier alle Veröffentlichungen in offiziellen Ausgaben, Raubkopien oder Fan-Comics.<br /><br />
 
-                                                    Shortbox wurde 2018 gestartet und ist privates Projekt von mir für alle Marvel Fans.<br />
+                                                    Inspiriert durch <a href="http://www.maxithecat.de/UHBMCC/INDEX.HTM" rel="noopener noreferrer nofollow" target="_blank">maxithecat's UHBMCC</a> wurde
+                                                    Shortbox 2018 ins Leben gerufen. Shortbox ist ein vollständig privates Projekt von mir für alle Marvel Fans.<br />
                                                     Aus diesem Grund unterliegen alle auf Shortbox gelisteten Informationen der&nbsp;
                                                     <a href="https://creativecommons.org/licenses/by/3.0/de/" rel="noopener noreferrer nofollow"
                                                        target="_blank">Creative Commons License 3.0</a> und stehen somit, unter Angabe der Quelle,
