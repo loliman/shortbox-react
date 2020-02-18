@@ -23,7 +23,7 @@ class PublisherDetails extends React.Component {
 
         return (
             <PaginatedQuery query={lastEdited} variables={{filter: {us: this.props.us, publishers: [{name: this.props.selected.publisher.name}]}}}
-                            onCompleted={() => this.props.unregisterLoadingComponent(this.constructor.name + "_history")}>
+                            onCompleted={() => this.props.unregisterLoadingComponent("PublisherDetails_history")}>
                 {({error, data, fetchMore, fetching, hasMore}) => {
                     let lastEdited = data ? data.lastEdited : [];
                     let lastEditedError = error;
@@ -44,8 +44,8 @@ class PublisherDetails extends React.Component {
                     return (
                         <Layout handleScroll={fetchMore}>
                             <Query query={publisher} variables={selected} notifyOnNetworkStatusChange
-                                   onCompleted={() => this.props.unregisterLoadingComponent(this.constructor.name + "_details")}
-                                   onError={() => this.props.unregisterLoadingComponent(this.constructor.name + "_details")}>
+                                   onCompleted={() => this.props.unregisterLoadingComponent("PublisherDetails_details")}
+                                   onError={() => this.props.unregisterLoadingComponent("PublisherDetails_details")}>
                                 {({error, data}) => {
                                     if (this.props.appIsLoading || error || lastEditedError || !data.publisher)
                                         return <QueryResult error={error || lastEditedError} data={data ? data.publisher : null}

@@ -57,7 +57,7 @@ class List extends React.Component {
                 className={drawerOpen ? 'drawer-open' : 'drawer-close'}
                 id="drawer">
                 <ScrollContainer scrollKey={this.state.scrollKey}>
-                    <PaginatedQuery query={query} variables={selected} onCompleted={() => this.props.unregisterLoadingComponent(this.constructor.name)}>
+                    <PaginatedQuery query={query} variables={selected} onCompleted={() => this.props.unregisterLoadingComponent("List")}>
                         {({error, data, fetchMore, fetching, hasMore}) => {
                             let content;
 

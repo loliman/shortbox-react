@@ -43,8 +43,8 @@ class IssueDetails extends React.Component {
         return (
             <Layout>
                 <Query query={issue} variables={selected} notifyOnNetworkStatusChange
-                       onCompleted={() => this.props.unregisterLoadingComponent(this.constructor.name)}
-                       onError={() => this.props.unregisterLoadingComponent(this.constructor.name)}>
+                       onCompleted={() => this.props.unregisterLoadingComponent("IssueDetails")}
+                       onError={() => this.props.unregisterLoadingComponent("IssueDetails")}>
                     {({error, data}) => {
                         if (this.props.appIsLoading || error || !data.issue)
                             return <QueryResult error={error} data={data ? data.issue : null}

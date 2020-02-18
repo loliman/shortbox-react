@@ -17,7 +17,7 @@ class Home extends React.Component {
     render() {
         return (
             <PaginatedQuery query={lastEdited} variables={{filter: {us: this.props.us}}}
-                            onCompleted={() => this.props.unregisterLoadingComponent(this.constructor.name)}>
+                            onCompleted={() => this.props.unregisterLoadingComponent("Home")}>
                 {({error, data, fetchMore, fetching, hasMore}) => {
                     let loading;
                     if(hasMore)

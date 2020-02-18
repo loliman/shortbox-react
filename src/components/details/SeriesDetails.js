@@ -32,7 +32,7 @@ class SeriesDetails extends React.Component {
                     }]
                 }
             }}
-                onCompleted={() => this.props.unregisterLoadingComponent(this.constructor.name + "_history")}
+                onCompleted={() => this.props.unregisterLoadingComponent("SeriesDetails_history")}
             >
                 {({error, data, fetchMore, hasMore, fetching}) => {
                     let lastEdited = data? data.lastEdited : [];
@@ -54,8 +54,8 @@ class SeriesDetails extends React.Component {
                     return (
                         <Layout handleScroll={fetchMore}>
                             <Query query={seriesd} variables={this.props.selected} notifyOnNetworkStatusChange
-                                   onCompleted={() => this.props.unregisterLoadingComponent(this.constructor.name + "_details")}
-                                   onError={() => this.props.unregisterLoadingComponent(this.constructor.name + "_details")}>
+                                   onCompleted={() => this.props.unregisterLoadingComponent("SeriesDetails_details")}
+                                   onError={() => this.props.unregisterLoadingComponent("SeriesDetails_details")}>
                                 {({error, data}) => {
                                     if (this.props.appIsLoading || error || lastEditedError || !data.seriesd)
                                         return <QueryResult error={error || lastEditedError} data={data ? data.seriesd : null}
