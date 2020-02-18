@@ -65,6 +65,7 @@ class AppContextProvider extends React.Component {
                 tabletLandscape: this.state.tabletLandscape,
                 desktop: this.state.desktop,
                 appIsLoading: this.state.loadingComponents.length > 0,
+                resetLoadingComponents: this.resetLoadingComponents,
                 registerLoadingComponent: this.registerLoadingComponent,
                 unregisterLoadingComponent: this.unregisterLoadingComponent,
                 isComponentRegistered: this.isComponentRegistered
@@ -73,6 +74,12 @@ class AppContextProvider extends React.Component {
             </AppContext.Provider>
         )
     }
+
+    resetLoadingComponents = () => {
+        this.setState({
+            loadingComponents: []
+        });
+    };
 
     registerLoadingComponent = (component) => {
         let components = this.state.loadingComponents;

@@ -27,7 +27,10 @@ function withContext(WrappedComponent) {
                     selected: selected,
                     query: currentQuery,
                     level: getHierarchyLevel(selected),
-                    navigate: (url, query) => navigate(props, url, query, currentQuery)
+                    navigate: (url, query) => {
+                        context.resetLoadingComponents();
+                        navigate(props, url, query, currentQuery)
+                    }
                 };
 
                 document.title = createAppTitle(params, props.match.url);
