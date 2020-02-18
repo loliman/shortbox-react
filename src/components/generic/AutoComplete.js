@@ -421,12 +421,15 @@ function Input(props) {
 
 function MultiValue(props) {
     let render = false;
+
     if(props.selectProps.type) {
         if(typeof props.data.type === "object") {
             render = props.data.type.includes(props.selectProps.type) || props.data.role === props.selectProps.type;
         } else {
             render = props.data.type === props.selectProps.type || props.data.role === props.selectProps.type;
         }
+    } else {
+        render = true;
     }
 
      if(!render)

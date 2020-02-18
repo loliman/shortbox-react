@@ -143,7 +143,7 @@ function StoryDetails(props) {
                             <AppearanceList us={props.us} navigate={props.navigate} label={"Tiere"} type={"ANIMAL"} item={props.item} hideIfEmpty={true}/>
                             <AppearanceList us={props.us} navigate={props.navigate} label={"Gegenstände"} type={"ITEM"} item={props.item} hideIfEmpty={true}/>
                             <AppearanceList us={props.us} navigate={props.navigate} label={"Fahrzeuge"} type={"VEHICLE"} item={props.item} hideIfEmpty={true}/>
-                            <AppearanceList us={props.us} navigate={props.navigate} label={"Orte"} type={"PLACE"} item={props.item} hideIfEmpty={true}/>
+                            <AppearanceList us={props.us} navigate={props.navigate} label={"Orte"} type={"LOCATION"} item={props.item} hideIfEmpty={true}/>
                         </React.Fragment>
                     ) : null
             }
