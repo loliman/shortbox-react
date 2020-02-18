@@ -11,7 +11,7 @@ import PaginatedQuery from "./generic/PaginatedQuery";
 
 class Home extends React.Component {
     componentDidMount() {
-        this.props.registerLoadingComponent(this.constructor.name);
+        this.props.registerLoadingComponent("Home");
     }
 
     render() {

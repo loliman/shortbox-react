@@ -22,7 +22,7 @@ class List extends React.Component {
 
     componentDidMount() {
         if(!(this.props.mobile || (this.props.tablet && !this.props.tabletLandscape)))
-            this.props.registerLoadingComponent(this.constructor.name);
+            this.props.registerLoadingComponent("List");
     }
 
     render() {

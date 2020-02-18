@@ -76,8 +76,6 @@ class AppContextProvider extends React.Component {
     }
 
     resetLoadingComponents = () => {
-        console.log("reset loading components");
-
         this.setState({
             loadingComponents: []
         });
@@ -87,10 +85,6 @@ class AppContextProvider extends React.Component {
         let components = this.state.loadingComponents;
         components.push(component);
 
-        console.log(component);
-        console.log(components);
-        console.log("\n");
-
         this.setState({
             loadingComponents: components
         });
@@ -99,10 +93,6 @@ class AppContextProvider extends React.Component {
     unregisterLoadingComponent = (component) => {
         let components = this.state.loadingComponents;
         components = components.filter(c => c !== component);
-
-        console.log(component);
-        console.log(components);
-        console.log("\n");
 
         this.setState({
             loadingComponents: components

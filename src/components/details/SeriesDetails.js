@@ -14,8 +14,8 @@ import PaginatedQuery from "../generic/PaginatedQuery";
 
 class SeriesDetails extends React.Component {
     componentDidMount() {
-        this.props.registerLoadingComponent(this.constructor.name + "_history");
-        this.props.registerLoadingComponent(this.constructor.name + "_details");
+        this.props.registerLoadingComponent("SeriesDetails_history");
+        this.props.registerLoadingComponent("SeriesDetails_details");
     }
 
     render() {

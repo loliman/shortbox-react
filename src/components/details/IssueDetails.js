@@ -34,7 +34,7 @@ import SnackbarContent from "@material-ui/core/SnackbarContent";
 
 class IssueDetails extends React.Component {
     componentDidMount() {
-        this.props.registerLoadingComponent(this.constructor.name);
+        this.props.registerLoadingComponent("IssueDetails");
     }
 
     render() {
