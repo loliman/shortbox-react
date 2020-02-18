@@ -77,7 +77,7 @@ class AppContextProvider extends React.Component {
 
     resetLoadingComponents = () => {
         console.log("reset loading components");
-        
+
         this.setState({
             loadingComponents: []
         });
