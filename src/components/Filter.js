@@ -154,15 +154,21 @@ function Filter(props) {
                     if (values.arcs.length > 0) {
                         v.arcs = [];
                         values.arcs.forEach((o) => {
-                            if(!o.pattern)
-                                v.arcs.push(stripItem(o))
+                            if(!o.pattern) {
+                                let item = stripItem(o);
+                                item.role = undefined;
+                                v.arcs.push(item);
+                            }
                         });
                     }
                     if (values.individuals.length > 0) {
                         v.individuals = [];
                         values.individuals.forEach((o) => {
-                            if(!o.pattern)
-                                v.individuals.push(stripItem(o))
+                            if(!o.pattern) {
+                                let item = stripItem(o);
+                                item.role = undefined;
+                                v.individuals.push(item);
+                            }
                         });
                     }
                     if (values.appearances.length > 0) {
