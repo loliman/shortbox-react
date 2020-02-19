@@ -165,20 +165,28 @@ class SeriesEditor extends React.Component {
 
                                         <AutoComplete
                                             query={publishers}
-                                            variables={{pattern: values.publisher.name, us: defaultValues.publisher.us}}
                                             name="publisher.name"
                                             label="Verlag"
+                                            variables={{pattern: values.publisher.name, us: defaultValues.publisher.us ? defaultValues.publisher.us : false}}
                                             onChange={(option, live) => {
-                                                if(live && option !== "")
-                                                    setFieldValue("publisher.name", option);
-                                                else
-                                                    setFieldValue("publisher", option ? option : {name : '', us: defaultValues.publisher.us})
+                                                if(typeof option !== "string" || option.trim() !== "") {
+                                                    if (live) {
+                                                        setFieldValue("publisher.name", option);
+                                                    }
+                                                    else {
+                                                        setFieldValue("publisher", {name : '', us: defaultValues.publisher.us});
+
+                                                        if(option)
+                                                            setFieldValue("publisher", option);
+                                                    }
+                                                }
                                             }}
                                             style={{
                                                 width: this.props.desktop ? "40.8%" : "100%"
                                             }}
                                             generateLabel={generateLabel}
                                         />
+
                                         <br/>
                                         <FastField
                                             className={this.props.desktop ? "field field35" : "field field100"}

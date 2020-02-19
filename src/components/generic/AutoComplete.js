@@ -167,7 +167,7 @@ class AutoCompleteContainer extends React.Component {
             isClearable: true,
             isDisabled: this.props.disabled,
             isLoading: this.props.loading,
-            hideSelectedOptions: true,
+            hideSelectedOptions: false,
             fetching: this.props.fetching,
             loading: this.props.loading,
             hasMore: this.props.hasMore,
