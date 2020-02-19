@@ -56,7 +56,8 @@ class PaginatedQuery extends React.Component {
                             () => fetchMore({
                                 variables: fetchMoreVars,
                                 updateQuery: (prev, {fetchMoreResult}) => {
-                                    if (!fetchMoreResult) return prev;
+                                    if (!fetchMoreResult || prev[queryName].length !== fetchMoreVars.offset)
+                                        return prev;
 
                                     this.setState({
                                         fetching: false
