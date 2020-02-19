@@ -49,6 +49,7 @@ function Filter(props) {
             otherTb: false,
             exclusive: false,
             onlyTb: false,
+            onlyOnePrint: false,
             noPrint: false
         };
     else {
@@ -101,6 +102,8 @@ function Filter(props) {
             defaultValues.onlyTb = false;
         if(!defaultValues.noPrint)
             defaultValues.noPrint = false;
+        if(!defaultValues.onlyOnePrint)
+            defaultValues.onlyOnePrint = false;
     }
 
     return (
@@ -190,6 +193,8 @@ function Filter(props) {
                         v.onlyTb = true;
                     if (values.noPrint)
                         v.noPrint = true;
+                    if (values.onlyOnePrint)
+                        v.onlyOnePrint = true;
 
                     if(JSON.stringify(v) !== "{}") {
                         if (values.story)
@@ -419,6 +424,19 @@ function Filter(props) {
                                                             color="secondary"/>
                                                     }
                                                     label="Nur in TB"
+                                                />
+
+                                                <FormControlLabel
+                                                    className="switchEditor"
+                                                    control={
+                                                        <Switch
+                                                            checked={values.onlyOnePrint}
+                                                            onChange={() => {
+                                                                setFieldValue("onlyOnePrint", !values.onlyOnePrint);
+                                                            }}
+                                                            color="secondary"/>
+                                                    }
+                                                    label="Nur einfach auf deutsch erschienen"
                                                 />
 
                                                 <FormControlLabel
@@ -760,7 +778,8 @@ function Filter(props) {
                                                     otherTb: false,
                                                     exclusive: false,
                                                     onlyTb: false,
-                                                    noPrint: false
+                                                    noPrint: false,
+                                                    onlyOnePrint: false,
                                                 });
                                             }}
                                             color="secondary">

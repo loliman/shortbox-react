@@ -122,8 +122,13 @@ function StoryDetails(props) {
                             return (
                                 <ListItem key={idx} className="issueStoryIssueItem" divider={props.item.children.length-1 !== idx}>
                                     <div>
-                                        <Typography
-                                            className="issueStoryIssue">{generateLabel(child.issue.series) + " #" + child.issue.number}</Typography>
+                                        <div className="headingContainer">
+                                            <Typography
+                                                className="issueStoryIssue">{generateLabel(child.issue.series) + " #" + child.issue.number}</Typography>
+                                            <Typography className="parentTitle">
+                                                {child.addinfo ? child.addinfo : null}
+                                            </Typography>
+                                        </div>
                                         <Typography className="issueStoryIssue issueStoryIssuePublisher">
                                             {generateLabel(child.issue.series.publisher)}
                                         </Typography>

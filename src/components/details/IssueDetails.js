@@ -286,6 +286,17 @@ export function ContainsTitleSimple(props) {
                               color="primary"/>
                         : null
                 }
+
+                {
+                    props.item.onlyoneprint && !props.item.parent ?
+                        !smallChip ?
+                            <Chip className="chip" label="Nur einfach auf deutsch veröffentlicht" color="secondary"
+                                  icon={<PriorityHighIcon/>}/>
+                            : <Chip className="chip" label={<PriorityHighIcon className="
+                            mobileChip"/>}
+                                    color="secondary"/>
+                        : null
+                }
             </div>
         </div>
     )
@@ -507,6 +518,7 @@ function expanded(item, filter) {
     expanded = (currentFilter.onlyPrint && item.onlyapp) || expanded;
     expanded = (currentFilter.firstPrint && item.firstapp) || expanded;
     expanded = (currentFilter.onlyTb && item.onlytb) || expanded;
+    expanded = (currentFilter.onlyOnePrint && item.onlyoneprint) || expanded;
     expanded = (currentFilter.exclusive && item.exclusive) || expanded;
     expanded = (currentFilter.otherTb && item.onlytb) || expanded;
     expanded = (currentFilter.noPrint && item.children.length) || expanded;

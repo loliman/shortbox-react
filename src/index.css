@@ -1051,6 +1051,8 @@ span[class^="MuiSwitch-bar-"] {
 
 .issueStoryIssue {
     font-size: 0.875rem;
+    display: inline-block !important;
+    padding-right: 10px !important;
 }
 
 .issueStoryIssueItem {
