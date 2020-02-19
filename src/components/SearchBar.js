@@ -60,9 +60,9 @@ class SearchBar extends React.Component {
 
 function getNodeType(node) {
     switch (node.type) {
-        case "Publisher":
+        case "publisher":
             return "!!Verlag!!";
-        case "Series":
+        case "series":
             return "!!Serie!!";
         default:
             return "!!Ausgabe!!";
