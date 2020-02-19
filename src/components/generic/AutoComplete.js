@@ -145,6 +145,9 @@ class AutoCompleteContainer extends React.Component {
             filterOption: false,
 
             getOptionValue: (option) => {
+                if(option.pattern)
+                    return null;
+                
                 return option[this.props.nameField];
             },
             getOptionLabel: (option) => {
