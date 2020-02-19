@@ -122,17 +122,14 @@ class AutoCompleteContainer extends React.Component {
 
             options: this.props.loading ? [] : this.props.options,
             onChange: (option) => {
-                if(Array.isArray(option) && this.props.type) {
+                if(Array.isArray(option)) {
                     let options = [];
                     option = option.filter(o => !o.pattern);
 
                     option.forEach(o => {
-                        options.push({
-                            name: o.name,
-                            title: o.title,
-                            type: !o.type ? this.props.type : o.type,
-                            role: !o.role ? this.props.type : o.role
-                        })
+                        o.type = !o.type ? this.props.type : o.type;
+                        o.role = !o.role ? this.props.type : o.role;
+                        options.push(o);
                     });
 
                     this.props.onChange(options);
@@ -140,21 +137,25 @@ class AutoCompleteContainer extends React.Component {
                     this.props.onChange(option);
             },
             onChangeValue: (value) => {
-                this.props.onChangeValue(value);
+                if(value.trim() === "" && this.props.field.value && Array.isArray(this.props.field.value)) {
+                    this.props.onChange(this.props.field.value.filter(o => !o.pattern));
+                } else {
+                    this.props.onChangeValue(value);
+                }
             },
             filterOption: false,
 
             getOptionValue: (option) => {
                 if(option.pattern)
-                    return null;
-                
+                    return "";
+
                 return option[this.props.nameField];
             },
             getOptionLabel: (option) => {
                 let label = "";
 
                 if(option.pattern)
-                    return null;
+                    return "";
 
                 if (option[this.props.nameField] === (this.props.isMulti || this.props.creatable ?
                     (this.props.field.value ? this.props.field.value[this.props.nameField] : "")
@@ -212,7 +213,7 @@ class AutoCompleteContainer extends React.Component {
                             But we don't need validation in that case anyways, so let's just ignore it.
                              */
                              onBlur={this.props.isMulti ? this.props.field.onBlur : false}
-                             value={this.props.field.value}
+                             value={this.props.field.value ? this.props.field.value : []}
                              isMulti={this.props.isMulti}
                              isValidNewOption={(value) => {
                                  if(!this.props.creatable)

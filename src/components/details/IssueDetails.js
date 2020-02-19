@@ -45,9 +45,10 @@ class IssueDetails extends React.Component {
                 <Query query={issue} variables={selected} notifyOnNetworkStatusChange
                        onCompleted={() => this.props.unregisterLoadingComponent("IssueDetails")}
                        onError={() => this.props.unregisterLoadingComponent("IssueDetails")}>
-                    {({error, data}) => {
-                        if (this.props.appIsLoading || error || !data.issue)
+                    {({networkStatus, error, data}) => {
+                        if (this.props.appIsLoading || error || !data.issue || networkStatus < 7)
                             return <QueryResult error={error} data={data ? data.issue : null}
+                                                loading={networkStatus < 7}
                                                 selected={selected}
                                                 placeholder={<IssueDetailsPreview />}
                                                 placeholderCount={1}/>;
@@ -272,6 +273,17 @@ export function ContainsTitleSimple(props) {
 
             <div className="chips">
                 {
+                    props.item.onlyoneprint && !props.item.parent ?
+                        !smallChip ?
+                            <Chip className="chip" label="Nur einfach auf deutsch veröffentlicht" color="secondary"
+                                  icon={<PriorityHighIcon/>}/>
+                            : <Chip className="chip" label={<PriorityHighIcon className="
+                            mobileChip"/>}
+                                    color="secondary"/>
+                        : null
+                }
+
+                {
                     props.us && props.item.children.length === 0 ?
                         !smallChip ?
                             <Chip className="chip" label="Nicht auf deutsch erschienen" color="default"/>
@@ -284,17 +296,6 @@ export function ContainsTitleSimple(props) {
                         <Chip className="chip"
                               label={!smallChip ? "Nur in Taschenbuch" : "TB"}
                               color="primary"/>
-                        : null
-                }
-
-                {
-                    props.item.onlyoneprint && !props.item.parent ?
-                        !smallChip ?
-                            <Chip className="chip" label="Nur einfach auf deutsch veröffentlicht" color="secondary"
-                                  icon={<PriorityHighIcon/>}/>
-                            : <Chip className="chip" label={<PriorityHighIcon className="
-                            mobileChip"/>}
-                                    color="secondary"/>
                         : null
                 }
             </div>
@@ -531,8 +532,8 @@ function expanded(item, filter) {
     }
 
     if(currentFilter.publishers && compare.issue.series) {
-        currentFilter.publishers.forEach(s => {
-            if(compare.issue.series.publisher.name === s.publisher.name)
+        currentFilter.publishers.forEach(p => {
+            if(compare.issue.series.publisher.name === p.name)
                 expanded = true;
         });
     }

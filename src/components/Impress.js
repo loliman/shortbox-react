@@ -39,8 +39,8 @@ function Impress(props) {
 
                 <Typography>
                         Christian Riese<br/>
-                        Humperdinckweg 15<br/>
-                        33102 Paderborn<br/>
+                        Ottenhauser Weg 10<br/>
+                        33100 Paderborn<br/>
                 </Typography>
 
                 <br/>

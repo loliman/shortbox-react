@@ -58,10 +58,10 @@ class List extends React.Component {
                 id="drawer">
                 <ScrollContainer scrollKey={this.state.scrollKey}>
                     <PaginatedQuery query={query} variables={selected} onCompleted={() => this.props.unregisterLoadingComponent("List")}>
-                        {({error, data, fetchMore, fetching, hasMore}) => {
+                        {({error, data, fetchMore, fetching, hasMore, networkStatus}) => {
                             let content;
 
-                            if (this.props.appIsLoading || error || !data[queryName]) {
+                            if (this.props.appIsLoading || error || !data[queryName] || networkStatus === 2) {
                                 if(error && error.message.indexOf("400") !== -1 && this.props.session) {
                                     this.props.enqueueSnackbar("Deine Session ist abgelaufen oder ungültig, du wirst ausgeloggt.", {variant: 'warning'});
                                     this.props.handleLogout();
@@ -69,7 +69,9 @@ class List extends React.Component {
 
                                 content = <QueryResult error={error}
                                                     placeholder={<TypeListEntryPlaceholder />}
-                                                    placeholderCount={25}/>;
+                                                    placeholderCount={25}
+                                                    loading={networkStatus === 2}
+                                                    data={data}/>;
                             } else if (data[queryName].length === 0)
                                 content = <NoEntries />;
                             else content = data[queryName].map((i, idx) => {

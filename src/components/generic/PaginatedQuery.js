@@ -32,7 +32,7 @@ class PaginatedQuery extends React.Component {
                    onCompleted={this.props.onCompleted}
                    onError={this.props.onCompleted}
                    notifyOnNetworkStatusChange>
-                {({loading, error, data, fetchMore}) => {
+                {({loading, error, data, fetchMore, networkStatus}) => {
                     let queryName = this.props.query.definitions[0].name.value;
                     queryName = queryName[0].toLowerCase() + queryName.slice(1);
                     let offset = (data && data[queryName]) ? data[queryName].length : 0;
@@ -50,6 +50,7 @@ class PaginatedQuery extends React.Component {
                         error: error,
                         data: data,
                         fetching: this.state.fetching,
+                        networkStatus: networkStatus,
                         hasMore: this.state.hasMore,
                         fetchMore: (e => this.fetchMoreOnScroll(e,
                             () => fetchMore({

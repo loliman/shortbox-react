@@ -172,7 +172,9 @@ class TopBar extends React.Component {
                                 <Tooltip title={"Wechseln zu " + (us ? "Deutsch" : "US")}>
                                     <Switch
                                         checked={us}
-                                        onChange={() => this.props.navigate(us ? "/de" : "/us", {filter: null})}
+                                        onChange={() => {
+                                            this.props.navigate(us ? "/de" : "/us", {filter: null})
+                                        }}
                                         color="secondary"/>
                                 </Tooltip>
                             }

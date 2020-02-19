@@ -134,15 +134,13 @@ function Filter(props) {
                         values.publishers.forEach((o) => {
                             let p = stripItem(o);
                             p.us = undefined;
-                            if(!o.pattern)
-                                v.publishers.push(p)
+                            v.publishers.push(p)
                         });
                     }
                     if (values.series.length > 0) {
                         v.series = [];
                         values.series.forEach((o) => {
-                            if(!o.pattern)
-                                v.series.push(stripItem(o))
+                            v.series.push(stripItem(o))
                         });
                     }
                     if(values.numbers.length > 0) {
@@ -157,28 +155,23 @@ function Filter(props) {
                     if (values.arcs.length > 0) {
                         v.arcs = [];
                         values.arcs.forEach((o) => {
-                            if(!o.pattern) {
-                                let item = stripItem(o);
-                                item.role = undefined;
-                                v.arcs.push(item);
-                            }
+                            let item = stripItem(o);
+                            item.role = undefined;
+                            v.arcs.push(item);
                         });
                     }
                     if (values.individuals.length > 0) {
                         v.individuals = [];
                         values.individuals.forEach((o) => {
-                            if(!o.pattern) {
-                                let item = stripItem(o);
-                                item.role = undefined;
-                                v.individuals.push(item);
-                            }
+                            let item = stripItem(o);
+                            item.role = undefined;
+                            v.individuals.push(item);
                         });
                     }
                     if (values.appearances.length > 0) {
                         v.appearances = [];
                         values.appearances.forEach((o) => {
-                            if(!o.pattern)
-                                v.appearances.push(stripItem(o))
+                            v.appearances.push(stripItem(o))
                         });
                     }
                     if (values.firstPrint)

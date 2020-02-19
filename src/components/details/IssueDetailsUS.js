@@ -18,7 +18,7 @@ import IssueDetails, {
 var dateFormat = require('dateformat');
 
 function IssueDetailsUS(props) {
-    return <IssueDetails bottom={<Bottom/>}
+    return <IssueDetails bottom={<Bottom {...props}/>}
                          details={<Details/>}
                          subheader/>
 }
@@ -44,7 +44,7 @@ function Bottom(props) {
 
             <Contains {...props} header="Geschichten"
                       noEntriesHint="Dieser Ausgabe sind noch keine Geschichten zugeordnet"
-                      items={props.issue.stories} itemTitle={<ContainsTitleSimple/>}
+                      items={props.issue.stories} itemTitle={<ContainsTitleSimple {...props}/>}
                       itemDetails={<StoryDetails/>}/>
 
             <br/>
@@ -53,7 +53,7 @@ function Bottom(props) {
             <Contains {...props} header="Cover erschienen in"
                       noEntriesHint="Das Cover ist noch keinen deutschen Ausgaben zugeordnet"
                       items={props.issue.covers[0] ? props.issue.covers[0].children.map(c => c.issue) : []}
-                      itemTitle={<ContainsTitleDetailed/>}/>
+                      itemTitle={<ContainsTitleDetailed {...props}/>}/>
 
             <br/>
             <br/>

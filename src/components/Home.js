@@ -18,7 +18,7 @@ class Home extends React.Component {
         return (
             <PaginatedQuery query={lastEdited} variables={{filter: {us: this.props.us}}}
                             onCompleted={() => this.props.unregisterLoadingComponent("Home")}>
-                {({error, data, fetchMore, fetching, hasMore}) => {
+                {({error, data, fetchMore, fetching, hasMore, networkStatus}) => {
                     let loading;
                     if(hasMore)
                         loading = (
@@ -35,8 +35,8 @@ class Home extends React.Component {
                     return (
                         <Layout handleScroll={fetchMore}>
                             {
-                                (this.props.appIsLoading || error || !data.lastEdited) ?
-                                    <QueryResult error={error} placeholder={<HomePlaceholder/>} placeholderCount={1}/> :
+                                (this.props.appIsLoading || error || !data.lastEdited || networkStatus === 2) ?
+                                    <QueryResult error={error} loading={networkStatus === 2} placeholder={<HomePlaceholder/>} placeholderCount={1}/> :
                                     (
                                         <React.Fragment>
                                             <CardHeader title="Willkommen auf Shortbox "

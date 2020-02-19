@@ -59,9 +59,8 @@ class IssueEditor extends React.Component {
                 addinfo: '',
                 stories: [],
                 features: [],
-                covers: [],
-                pattern: ""
-            };
+                covers: []
+        };
 
         this.state = {
             defaultValues: defaultValues,
