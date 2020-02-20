@@ -128,8 +128,6 @@ class SeriesEditor extends React.Component {
                             });
 
                             actions.setSubmitting(false);
-                            if(error)
-                                actions.resetForm();
                         }}>
                         {({values, resetForm, submitForm, isSubmitting, setFieldValue}) => {
                             return (

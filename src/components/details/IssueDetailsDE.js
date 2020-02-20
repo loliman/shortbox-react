@@ -134,10 +134,10 @@ function StoryDetails(props) {
                             <br />
                             <Typography variant="h6">Auftritte</Typography>
 
-                            <AppearanceList us={props.us} navigate={props.navigate} label={"Hauptcharaktere"} role={"FEATURED"} type={"CHARACTER"} item={props.item} hideIfEmpty={true}/>
-                            <AppearanceList us={props.us} navigate={props.navigate} label={"Antagonisten"} role={"ANTAGONIST"} type={"CHARACTER"} item={props.item} hideIfEmpty={true}/>
-                            <AppearanceList us={props.us} navigate={props.navigate} label={"Unterstützende Charaktere"} role={"SUPPORTING"} type={"CHARACTER"} item={props.item} hideIfEmpty={true}/>
-                            <AppearanceList us={props.us} navigate={props.navigate} label={"Andere Charaktere"} role={"OTHER"} type={"CHARACTER"} item={props.item} hideIfEmpty={true}/>
+                            <AppearanceList us={props.us} navigate={props.navigate} label={"Hauptcharaktere"} appRole={"FEATURED"} type={"CHARACTER"} item={props.item} hideIfEmpty={true}/>
+                            <AppearanceList us={props.us} navigate={props.navigate} label={"Antagonisten"} appRole={"ANTAGONIST"} type={"CHARACTER"} item={props.item} hideIfEmpty={true}/>
+                            <AppearanceList us={props.us} navigate={props.navigate} label={"Unterstützende Charaktere"} appRole={"SUPPORTING"} type={"CHARACTER"} item={props.item} hideIfEmpty={true}/>
+                            <AppearanceList us={props.us} navigate={props.navigate} label={"Andere Charaktere"} appRole={"OTHER"} type={"CHARACTER"} item={props.item} hideIfEmpty={true}/>
                             <AppearanceList us={props.us} navigate={props.navigate} label={"Teams"} type={"GROUP"} item={props.item} hideIfEmpty={true}/>
                             <AppearanceList us={props.us} navigate={props.navigate} label={"Rassen"} type={"RACE"} item={props.item} hideIfEmpty={true}/>
                             <AppearanceList us={props.us} navigate={props.navigate} label={"Tiere"} type={"ANIMAL"} item={props.item} hideIfEmpty={true}/>

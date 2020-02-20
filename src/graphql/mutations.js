@@ -229,7 +229,7 @@ const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
         individuals {
             name,
             type
-        },
+        }
         cover {
             url,
             individuals {
@@ -259,6 +259,7 @@ const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
             addinfo,
             number,
             children {
+                addinfo,
                 issue {
                     number,
                     series {
@@ -279,7 +280,13 @@ const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
                 name,
                 type
             },
+            appearances {
+                name,
+                type,
+                role
+            },                                                                                           
             parent {
+                title,
                 number,
                 issue {
                     number,
@@ -290,23 +297,33 @@ const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
                         volume,
                         publisher {
                             name,
-                            us
+                            us      
                         }
                     },
                     format,
-                    variant   
-                }
+                    variant,
+                    stories {
+                        number
+                    },
+                    arcs {
+                        title,
+                        type
+                    }   
+                },
                 individuals {
                     name,
                     type
-                }
+                },
+                appearances {
+                    name,
+                    type,
+                    role
+                }   
             },
-			individuals {
-                name,
-                type
-            }
 			onlyapp,
             firstapp,
+            onlytb,
+            onlyoneprint,
             exclusive
         },
         covers {
@@ -314,6 +331,7 @@ const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
             addinfo,
             number,
             children {
+                addinfo,
                 issue {
                     number,
                     format,
@@ -357,7 +375,7 @@ const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
             individuals {
                 name,
                 type
-            }
+            },
         },
         variants {
             format,
@@ -374,6 +392,10 @@ const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
             cover {
                 url
             }
+        },
+        arcs {
+            title,
+            type
         },
         variant,
         verified,

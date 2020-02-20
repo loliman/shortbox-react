@@ -362,6 +362,9 @@ function Option(props) {
 }
 
 function Placeholder(props) {
+    if(props.isFocused)
+        return null;
+
     return (
         <Typography
             color="textSecondary"

@@ -33,18 +33,12 @@ import {stripItem} from "../../util/util";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
 
 class IssueDetails extends React.Component {
-    componentDidMount() {
-        this.props.registerLoadingComponent("IssueDetails");
-    }
-
     render() {
         const {selected, us} = this.props;
 
         return (
             <Layout>
-                <Query query={issue} variables={selected} notifyOnNetworkStatusChange
-                       onCompleted={() => this.props.unregisterLoadingComponent("IssueDetails")}
-                       onError={() => this.props.unregisterLoadingComponent("IssueDetails")}>
+                <Query query={issue} variables={selected} notifyOnNetworkStatusChange>
                     {({networkStatus, error, data}) => {
                         if (this.props.appIsLoading || error || !data.issue || networkStatus < 7)
                             return <QueryResult error={error} data={data ? data.issue : null}
@@ -438,7 +432,7 @@ function Variant(props) {
 export function IndividualList(props) {
     return(
         <ChipList us={props.us} navigate={props.navigate} label={props.label} hideIfEmpty={props.hideIfEmpty}
-                  type={props.type} role={props.role}
+                  type={props.type} appRole={props.role}
                   items={props.item.parent ? props.item.parent.individuals : props.item.individuals}
                   individual={true}/>
     );
@@ -447,7 +441,7 @@ export function IndividualList(props) {
 export function AppearanceList(props) {
     return(
         <ChipList us={props.us} navigate={props.navigate} label={props.label} hideIfEmpty={props.hideIfEmpty}
-                  type={props.type} role={props.role}
+                  type={props.type} appRole={props.role}
                   items={props.item.parent ? props.item.parent.appearances : props.item.appearances} />
     );
 }
@@ -457,14 +451,14 @@ function ChipList(props) {
         if(props.individual)
             return item.type.includes(props.type);
 
-        return (item.role === props.role || !props.role) && item.type === props.type
+        return (item.role === props.appRole || !props.appRole) && item.type === props.type
     });
 
     if((!items || items.length === 0) && props.hideIfEmpty)
         return null;
 
     return(
-        <div className="individualListContainer"><Typography><b>{props.label}</b></Typography> {toChipList(items, props, props.type, props.role)}</div>
+        <div className="individualListContainer"><Typography><b>{props.label}</b></Typography> {toChipList(items, props, props.type, props.appRole)}</div>
     );
 }
 

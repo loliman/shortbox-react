@@ -245,8 +245,6 @@ class IssueEditor extends React.Component {
                             });
 
                             actions.setSubmitting(false);
-                            if(error)
-                                actions.resetForm();
                         }}>
                         {({values, resetForm, submitForm, isSubmitting, setFieldValue}) => (
                             <Form>
@@ -437,7 +435,7 @@ class IssueEditor extends React.Component {
                                         !values.series.publisher.us ?
                                             <React.Fragment>
                                                 <FastField
-                                                    className={this.props.desktop ? "field field25" : "field field75"}
+                                                    className={this.props.desktop ? "field field30" : "field field75"}
                                                     name="price"
                                                     label="Preis"
                                                     component={TextField}
