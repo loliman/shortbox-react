@@ -22,7 +22,7 @@ function ExportDialog(props) {
                     </DialogTitle>
                     <DialogContent>
                         <Typography>
-                            <b>TXT:</b> Einfacher Export im Textformat. Beinhaltet Verlagsnamen, Serientitle und Ausgabennummern.<br/>
+                            <b>TXT:</b> Einfacher Export im Textformat. Beinhaltet Verlagsnamen, Serientitel und Ausgabennummern.<br/>
                             <b>CSV:</b> Detaillierter Export im CSV Format. Beinhaltet alle Metainformationen zu gefilterten Ausgaben.
                         </Typography>
                     </DialogContent>
