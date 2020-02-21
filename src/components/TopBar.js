@@ -20,8 +20,7 @@ import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
-import {exportQuery} from "../graphql/queries";
-import {ApolloConsumer} from "react-apollo";
+import ExportDialog from "./ExportDialog";
 
 class TopBar extends React.Component {
     constructor(props) {
@@ -29,6 +28,7 @@ class TopBar extends React.Component {
 
         this.state = {
             searchbarFocus: false,
+            exportOpen: false,
             anchorEl: null
         };
     }
@@ -108,46 +108,15 @@ class TopBar extends React.Component {
                                         </Typography>
                                     </MenuItem>
 
-                                    <ApolloConsumer>
-                                        {client => (
-                                            <MenuItem key="export" onClick={async () => {
-                                                this.handleFilterMenuClose();
-                                                const { data, error } = await client.query({
-                                                    query: exportQuery,
-                                                    variables: {filter: JSON.parse(this.props.query.filter)}
-                                                });
-
-                                                if(error || !data.export) {
-                                                    this.props.enqueueSnackbar("Export fehlgeschlagen", {variant: 'error'});
-                                                } else {
-                                                    let a = document.createElement('a');
-                                                    document.body.appendChild(a);
-                                                    a.setAttribute('style', 'display: none');
-
-                                                    let content = data.export;
-                                                    content = content.replaceAll("\"", "");
-                                                    content = content.replaceAll("\\n", "\r\n");
-                                                    content = content.replaceAll("\\t", "\t");
-
-                                                    let blob = new Blob([content], {type: 'text/plain'});
-                                                    let url = window.URL.createObjectURL(blob);
-                                                    let filename = 'shortbox.txt';
-
-                                                    a.href = url;
-                                                    a.download = filename;
-                                                    a.click();
-                                                    window.URL.revokeObjectURL(url);
-                                                }
-                                            }}>
-                                                <ListItemIcon>
-                                                    <CloudDownloadIcon/>
-                                                </ListItemIcon>
-                                                <Typography variant="inherit" noWrap>
-                                                    Exportieren
-                                                </Typography>
-                                            </MenuItem>
-                                            )}
-                                    </ApolloConsumer>
+                                    <MenuItem key="export" onClick={() => this.handleExport()}>
+                                        <ListItemIcon>
+                                            <CloudDownloadIcon/>
+                                        </ListItemIcon>
+                                        <Typography variant="inherit" noWrap>
+                                            Exportieren
+                                        </Typography>
+                                    </MenuItem>
+                                    )}
 
                                     <MenuItem key="reset" onClick={() => {
                                         this.handleFilterMenuClose();
@@ -161,6 +130,9 @@ class TopBar extends React.Component {
                                         </Typography>
                                     </MenuItem>
                                 </Menu>
+
+                                <ExportDialog handleClose={this.handleExportClose}
+                                              open={this.state.exportOpen}/>
                             </div>
                         </ClickAwayListener>
 
@@ -204,6 +176,18 @@ class TopBar extends React.Component {
         this.setState({
             anchorEl: null
         });
+    };
+
+    handleExport = () => {
+        this.setState({
+            exportOpen: true
+        });
+    };
+
+    handleExportClose = () => {
+        this.setState({
+            exportOpen: false
+        })
     };
 }
 

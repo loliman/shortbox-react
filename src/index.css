@@ -1108,6 +1108,11 @@ span[class^="MuiSwitch-bar-"] {
     padding-bottom: 2px;
 }
 
+.exportTitleIcon {
+    margin-bottom: -4px;
+    margin-right: 10px;
+}
+
 .field {
     margin-top: 6px !important;
     margin-right: 6px !important;

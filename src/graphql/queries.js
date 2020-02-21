@@ -9,8 +9,8 @@ const search = gql`query Nodes($pattern: String!, $us: Boolean!, $offset: Int){
     }
 }`;
 
-const exportQuery = gql`query Export($filter: Filter!){
-    export(filter: $filter)
+const exportQuery = gql`query Export($filter: Filter!, $type: String!){
+    export(filter: $filter, type: $type)
 }`;
 
 const publishers = gql`query Publishers($pattern: String, $us: Boolean!, $offset: Int, $filter: Filter){
