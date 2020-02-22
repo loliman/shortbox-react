@@ -1103,9 +1103,8 @@ span[class^="MuiSwitch-bar-"] {
 }
 
 .deleteTitleIcon {
-    padding-right: 5px;
-    align-self: center;
-    padding-bottom: 2px;
+    margin-bottom: -4px;
+    margin-right: 10px;
 }
 
 .exportTitleIcon {

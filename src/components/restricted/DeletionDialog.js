@@ -54,7 +54,7 @@ function DeletionDialog(props) {
                               if(level === HierarchyLevel.ISSUE && item.variants.length > 1) {
                                   let variants = item.variants.filter((variant) => {
                                       return (item.number + item.format + item.variant).toLowerCase()
-                                          .localeCompare(variant.number + variant.format + variant.variant.toLowerCase()) !== 0;
+                                          .localeCompare((variant.number + variant.format + variant.variant).toLowerCase()) !== 0;
                                   });
 
                                   try {
@@ -86,12 +86,15 @@ function DeletionDialog(props) {
                                   }
                           }}
                           onCompleted={(data) => {
-                              navigate(generateUrl(parent, parent.us));
+                              navigate(generateUrl(parent, props.us));
 
-                              let mutationName = deleteMutation.definitions[0].name.value.toLowerCase();
+                              let mutationName = deleteMutation.definitions[0].name.value;
+                              mutationName = mutationName.substr(0, 1).toLocaleLowerCase() + mutationName.substr(1);
 
                               if (data[mutationName])
                                   enqueueSnackbar(generateLabel(item) + " erfolgreich gelöscht", {variant: 'success'});
+                              else
+                                  enqueueSnackbar(generateLabel(item) + " konnte nicht gelöscht werden", {variant: 'error'});
 
                               handleClose();
                           }}
