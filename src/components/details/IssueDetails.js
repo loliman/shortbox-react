@@ -441,7 +441,7 @@ export function IndividualList(props) {
 export function AppearanceList(props) {
     return(
         <ChipList us={props.us} navigate={props.navigate} label={props.label} hideIfEmpty={props.hideIfEmpty}
-                  type={props.type} appRole={props.role}
+                  type={props.type} appRole={props.appRole}
                   items={props.item.parent ? props.item.parent.appearances : props.item.appearances} />
     );
 }
