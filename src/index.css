@@ -10,7 +10,7 @@ body {
 }
 
 #notVerifiedWarning {
-    min-width: 99.9%;
+    min-width: 99.8%;
     border-radius: 0;
     background: rgb(204, 21, 21);
     border: 2px solid rgb(204, 21, 21);
