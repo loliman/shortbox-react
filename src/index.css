@@ -452,8 +452,16 @@ _:-ms-fullscreen, :root #main {
         border: none;
     }
 
+    #headerSearch .outerAutoComplete {
+        border: none !important;
+    }
+
     #headerSearch .dropdownIndicator {
         color: white;
+    }
+
+    #notVerifiedWarning {
+        min-width: 98.9%;
     }
 
     .headerSearchFocused {
@@ -542,6 +550,10 @@ _:-ms-fullscreen, :root #main {
         -o-transition: flex 0.3s ease;
     }
 
+    #notVerifiedWarning {
+        min-width: 99.5%;
+    }
+
     .media {
         height: 35vh !important;
         width: 32.5vh !important;
@@ -590,6 +602,10 @@ _:-ms-fullscreen, :root #main {
 
     #headerSearch .dropdownIndicator {
         color: white;
+    }
+
+    #notVerifiedWarning {
+        min-width: 98.9%;
     }
 
     .headerSearchFocused {
@@ -654,6 +670,10 @@ _:-ms-fullscreen, :root #main {
 
     #drawer > :last-child {
         width: 60%;
+    }
+
+    #notVerifiedWarning {
+        min-width: 98.9%;
     }
 
     #headerSearch fieldset {
@@ -726,6 +746,10 @@ _:-ms-fullscreen, :root #main {
 
     #main {
         height: calc(100vh - 56px);
+    }
+
+    #notVerifiedWarning {
+        min-width: 98.9%;
     }
 
     #headerSearch fieldset {
@@ -1103,13 +1127,9 @@ span[class^="MuiSwitch-bar-"] {
 }
 
 .deleteTitleIcon {
-    margin-bottom: -4px;
-    margin-right: 10px;
-}
-
-.exportTitleIcon {
-    margin-bottom: -4px;
-    margin-right: 10px;
+    padding-right: 5px;
+    align-self: center;
+    padding-bottom: 2px;
 }
 
 .field {
@@ -1615,8 +1635,8 @@ span[class^="MuiSwitch-bar-"] {
     width:65%
 }
 .ui.placeholder .very.short.line.line.line:after{
-     width:80%
- }
+    width:80%
+}
 
 .ui.placeholder .extremly.short.line.line.line:after{
     width:90%
