@@ -553,10 +553,11 @@ function expanded(item, filter) {
     if(item.__typename === 'Story') {
         if(currentFilter.arcs)
             currentFilter.arcs.forEach(i => {
-                compare.issue.arcs.forEach(o => {
-                    if(i.title === o.title && i.type === o.type)
-                        expanded = true;
-                })
+                if(compare.issue)
+                    compare.issue.arcs.forEach(o => {
+                        if(i.title === o.title && i.type === o.type)
+                            expanded = true;
+                    })
             });
 
         if(currentFilter.individuals)
