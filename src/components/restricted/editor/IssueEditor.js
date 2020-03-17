@@ -1368,11 +1368,18 @@ function ExclusiveToggle(props) {
                 <Switch
                     checked={items[index].exclusive}
                     onChange={() => {
-                        setFieldValue(items + "[" + index + "].exclusive", !items[index].exclusive);
-                        if(items[index].exclusive)
-                            setFieldValue(type + "[" + index + "].parent", {issue: {series: {title: ""}}});
-                        else
-                            setFieldValue(type + "[" + index + "].parent", undefined);
+                        let item = items[index];
+                        
+                        if(items[index].exclusive) {
+                            item.exclusive = false;
+                            item.parent = {issue: {series: {title: ""}}};
+                        }
+                        else{
+                            item.exclusive = true;
+                            item.parent = undefined;
+                        }
+
+                        setFieldValue(type + "[" + index + "]", item);
                     }}
                     value="exclusive"
                 />
