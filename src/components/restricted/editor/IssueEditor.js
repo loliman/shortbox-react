@@ -1372,7 +1372,7 @@ function ExclusiveToggle(props) {
                         if(!items[index].exclusive)
                             setFieldValue(type + "[" + index + "].parent", {issue: {series: {title: ""}}});
                         else
-                            setFieldValue(type + "[" + index + "].parent", undefiened);
+                            setFieldValue(type + "[" + index + "].parent", undefined);
                     }}
                     value="exclusive"
                 />
