@@ -213,6 +213,7 @@ class IssueEditor extends React.Component {
                                        story.series = stripItem(story.series);
                                    if(story.individuals)
                                        story.individuals = story.individuals.map(item => stripItem(item));
+
                                     if(story.appearances)
                                         story.appearances = story.appearances.map(item => stripItem(item));
 
@@ -220,6 +221,8 @@ class IssueEditor extends React.Component {
                                        story.parent.issue.series = stripItem(story.parent.issue.series);
                                    return story;
                                 });
+
+                            console.log(variables.item.stories);
 
                             if(variables.item.features)
                                 variables.item.features = variables.item.features.map(feature => {
@@ -1368,15 +1371,22 @@ function ExclusiveToggle(props) {
                 <Switch
                     checked={items[index].exclusive}
                     onChange={() => {
-                        let item = items[index];
-                        
+                        let item = JSON.parse(JSON.stringify(items[index]));
+
                         if(items[index].exclusive) {
-                            item.exclusive = false;
+                            item.individuals = undefined;
+                            if(type === "stories")
+                                item.appearances = undefined;
                             item.parent = {issue: {series: {title: ""}}};
+                            item.exclusive = false;
                         }
                         else{
                             item.exclusive = true;
+                            item.individuals = [];
+                            if(type === "stories")
+                                item.appearances = [];
                             item.parent = undefined;
+                            item.exclusive = true;
                         }
 
                         setFieldValue(type + "[" + index + "]", item);
