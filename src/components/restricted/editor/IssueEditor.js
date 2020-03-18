@@ -222,8 +222,6 @@ class IssueEditor extends React.Component {
                                    return story;
                                 });
 
-                            console.log(variables.item.stories);
-
                             if(variables.item.features)
                                 variables.item.features = variables.item.features.map(feature => {
                                     if(feature.individuals)
