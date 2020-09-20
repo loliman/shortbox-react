@@ -48,6 +48,7 @@ function Filter(props) {
             onlyPrint: false,
             otherTb: false,
             exclusive: false,
+            reprint: false,
             onlyTb: false,
             onlyOnePrint: false,
             noPrint: false
@@ -98,6 +99,8 @@ function Filter(props) {
             defaultValues.otherTb = false;
         if(!defaultValues.exclusive)
             defaultValues.exclusive = false;
+        if(!defaultValues.reprint)
+            defaultValues.reprint = false;
         if(!defaultValues.onlyTb)
             defaultValues.onlyTb = false;
         if(!defaultValues.noPrint)
@@ -182,6 +185,8 @@ function Filter(props) {
                         v.otherTb = true;
                     if (values.exclusive)
                         v.exclusive = true;
+                    if (values.reprint)
+                        v.reprint = true;
                     if (values.onlyTb)
                         v.onlyTb = true;
                     if (values.noPrint)
@@ -403,6 +408,19 @@ function Filter(props) {
                                                             color="secondary"/>
                                                     }
                                                     label="Exklusiv"
+                                                />
+
+                                                <FormControlLabel
+                                                    className="switchEditor"
+                                                    control={
+                                                        <Switch
+                                                            checked={values.reprint}
+                                                            onChange={() => {
+                                                                setFieldValue("reprint", !values.reprint);
+                                                            }}
+                                                            color="secondary"/>
+                                                    }
+                                                    label="Reiner Nachdruck"
                                                 />
                                             </React.Fragment> :
                                             <React.Fragment>
@@ -770,6 +788,7 @@ function Filter(props) {
                                                     onlyPrint: false,
                                                     otherTb: false,
                                                     exclusive: false,
+                                                    reprint: false,
                                                     onlyTb: false,
                                                     noPrint: false,
                                                     onlyOnePrint: false,

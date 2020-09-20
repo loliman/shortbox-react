@@ -342,6 +342,21 @@ function Option(props) {
         label = label.replace("!!" + thickString + "!!", "");
     }
 
+    let labels = [];
+    let query = props.selectProps.inputValue.split(" ");
+
+    query.forEach(q => {
+        let before = label.substring(0, label.toLowerCase().indexOf(q));
+        let between = label.substring(label.toLowerCase().indexOf(q), label.toLowerCase().indexOf(q) + q.length);
+        let after = label.substring(label.toLowerCase().indexOf(q) + q.length, label.length);
+
+        labels.push(before);
+        labels.push(<b key={between}>{between}</b>);
+        label = after;
+    });
+
+    labels.push(label);
+
     return (
         <MenuItem
             buttonRef={props.innerRef}
@@ -354,7 +369,7 @@ function Option(props) {
             {...props.innerProps}
         >
             <Typography title={label} noWrap={true}>
-                {label}
+                {labels}
             </Typography>
             {thick}
         </MenuItem>
