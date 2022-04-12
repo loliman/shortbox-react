@@ -11,6 +11,7 @@ import IssueDetails, {
 } from "./IssueDetails";
 import {stripItem} from "../../util/util";
 import Chip from "@material-ui/core/Chip";
+import Tooltip from "@material-ui/core/Tooltip";
 
 var dateFormat = require('dateformat');
 
@@ -111,7 +112,9 @@ function StoryDetails(props) {
                                         type = "Story Arc";
                                 }
 
-                                return <Chip key={i} className="chip partOfChip" label={arc.title + " (" + type + ")"} color={color} onClick={() => props.navigate(props.us ? "/us" : "/de", {filter: JSON.stringify({arcs: [stripItem(arc)], story: true, us: props.us})})}/>;
+                                return <Tooltip title={"Der erweiterte Filter ist aktuell deaktiviert"}>
+                                    <Chip key={i} className="chip partOfChip" label={arc.title + " (" + type + ")"} color={color} /*onClick={() => props.navigate(props.us ? "/us" : "/de", {filter: JSON.stringify({arcs: [stripItem(arc)], story: true, us: props.us})})}*//>
+                                </Tooltip>;
                             })
                         }
                         <br /><br /><br />
@@ -122,7 +125,7 @@ function StoryDetails(props) {
             <IndividualList us={props.us} navigate={props.navigate} label={"Autor"} type={"WRITER"} item={props.item} />
             <IndividualList us={props.us} navigate={props.navigate} label={"Zeichner"} type={"PENCILER"} item={props.item} />
             <IndividualList us={props.us} navigate={props.navigate} label={"Inker"} type={"INKER"} item={props.item} />
-            <IndividualList us={props.us} navigate={props.navigate} label={"Kolorist"} type={"COLOURIST"} item={props.item} />
+            <IndividualList us={props.us} navigate={props.navigate} label={"Kolorist"} type={"COLORIST"} item={props.item} />
             <IndividualList us={props.us} navigate={props.navigate} label={"Letterer"} type={"LETTERER"} item={props.item} />
             <IndividualList us={props.us} navigate={props.navigate} label={"Übersetzer"} type={"TRANSLATOR"} item={props.item} hideIfEmpty={true}/>
             <IndividualList us={props.us} navigate={props.navigate} label={"Verleger"} type={"EDITOR"} item={props.item} />

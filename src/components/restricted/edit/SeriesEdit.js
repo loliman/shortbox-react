@@ -20,6 +20,7 @@ function SeriesEdit(props) {
                     let defaultValues = JSON.parse(JSON.stringify(data.seriesd));
 
                     defaultValues.issueCount = undefined;
+                    defaultValues.genre = undefined;
                     defaultValues.active = undefined;
                     defaultValues.firstIssue = undefined;
                     defaultValues.lastEdited = undefined;

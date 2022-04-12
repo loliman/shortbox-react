@@ -45,6 +45,15 @@ function Filter(props) {
             individuals: [],
             appearances: [],
             firstPrint: false,
+            firstCompletePrint: false,
+            firstMonochromePrint: false,
+            firstColouredPrint: false,
+            onlyPartlyPrint: false,
+            onlyCompletePrint: false,
+            onlyMonochromePrint: false,
+            onlyColouredPrint: false,
+            onlyFullsize: false,
+            firstFullsize: false,
             onlyPrint: false,
             otherTb: false,
             exclusive: false,
@@ -93,6 +102,24 @@ function Filter(props) {
             defaultValues.appearances = [];
         if(!defaultValues.firstPrint)
             defaultValues.firstPrint = false;
+        if(!defaultValues.firstCompletePrint)
+            defaultValues.firstCompletePrint = false;
+        if(!defaultValues.firstMonochromePrint)
+            defaultValues.firstMonochromePrint = false;
+        if(!defaultValues.firstColouredPrint)
+            defaultValues.firstColouredPrint = false;
+        if(!defaultValues.firstFullsize)
+            defaultValues.firstFullsize = false;
+        if(!defaultValues.onlyPartlyPrint)
+            defaultValues.onlyPartlyPrint = false;
+        if(!defaultValues.onlyCompletePrint)
+            defaultValues.onlyCompletePrint = false;
+        if(!defaultValues.onlyMonochromePrint)
+            defaultValues.onlyMonochromePrint = false;
+        if(!defaultValues.onlyColouredPrint)
+            defaultValues.onlyColouredPrint = false;
+        if(!defaultValues.onlyFullsize)
+            defaultValues.onlyFullsize = false;
         if(!defaultValues.onlyPrint)
             defaultValues.onlyPrint = false;
         if(!defaultValues.otherTb)
@@ -179,6 +206,24 @@ function Filter(props) {
                     }
                     if (values.firstPrint)
                         v.firstPrint = true;
+                    if(values.firstCompletePrint)
+                        v.firstCompletePrint = true;
+                    if(values.onlyPartlyPrint)
+                        v.onlyPartlyPrint = true;
+                    if(values.onlyCompletePrint)
+                        v.onlyCompletePrint = true;
+                    if(values.firstMonochromePrint)
+                        v.firstMonochromePrint = true;
+                    if(values.firstColouredPrint)
+                        v.firstColouredPrint = true;
+                    if(values.firstFullsize)
+                        v.firstFullsize = true;
+                    if(values.onlyMonochromePrint)
+                        v.onlyMonochromePrint = true;
+                    if(values.onlyColouredPrint)
+                        v.onlyColouredPrint = true;
+                    if(values.onlyFullsize)
+                        v.onlyFullsize = true;
                     if (values.onlyPrint)
                         v.onlyPrint = true;
                     if (values.otherTb)
@@ -371,6 +416,45 @@ function Filter(props) {
                                                     label="Erstveröffentlichung"
                                                 />
 
+                                                < FormControlLabel
+                                                    className="switchEditor"
+                                                    control={
+                                                        <Switch
+                                                            checked={values.firstCompletePrint}
+                                                            onChange={() => {
+                                                                setFieldValue("firstCompletePrint", !values.firstCompletePrint);
+                                                            }}
+                                                            color="secondary"/>
+                                                    }
+                                                    label="Erste Komplettveröffentlichung"
+                                                />
+
+                                                <FormControlLabel
+                                                    className="switchEditor"
+                                                    control={
+                                                        <Switch
+                                                            checked={values.firstMonochromePrint}
+                                                            onChange={() => {
+                                                                setFieldValue("firstMonochromePrint", !values.firstMonochromePrint);
+                                                            }}
+                                                            color="secondary"/>
+                                                    }
+                                                    label="Erste S/W Veröffentlichung"
+                                                />
+
+                                                <FormControlLabel
+                                                    className="switchEditor"
+                                                    control={
+                                                        <Switch
+                                                            checked={values.firstColouredPrint}
+                                                            onChange={() => {
+                                                                setFieldValue("firstColouredPrint", !values.firstColouredPrint);
+                                                            }}
+                                                            color="secondary"/>
+                                                    }
+                                                    label="Erste Farbveröffentlichung"
+                                                />
+
                                                 <FormControlLabel
                                                     className="switchEditor"
                                                     control={
@@ -454,6 +538,58 @@ function Filter(props) {
                                                     className="switchEditor"
                                                     control={
                                                         <Switch
+                                                            checked={values.onlyPartlyPrint}
+                                                            onChange={() => {
+                                                                setFieldValue("onlyPartlyPrint", !values.onlyPartlyPrint);
+                                                            }}
+                                                            color="secondary"/>
+                                                    }
+                                                    label="Nur teilweise auf deutsch erschienen"
+                                                />
+
+                                                <FormControlLabel
+                                                    className="switchEditor"
+                                                    control={
+                                                        <Switch
+                                                            checked={values.onlyCompletePrint}
+                                                            onChange={() => {
+                                                                setFieldValue("onlyCompletePrint", !values.onlyCompletePrint);
+                                                            }}
+                                                            color="secondary"/>
+                                                    }
+                                                    label="Nur vollständig auf deutsch erschienen"
+                                                />
+
+                                                <FormControlLabel
+                                                    className="switchEditor"
+                                                    control={
+                                                        <Switch
+                                                            checked={values.onlyMonochromePrint}
+                                                            onChange={() => {
+                                                                setFieldValue("onlyMonochromePrint", !values.onlyMonochromePrint);
+                                                            }}
+                                                            color="secondary"/>
+                                                    }
+                                                    label="Nur in S/W auf deutsch erschienen"
+                                                />
+
+                                                <FormControlLabel
+                                                    className="switchEditor"
+                                                    control={
+                                                        <Switch
+                                                            checked={values.onlyColouredPrint}
+                                                            onChange={() => {
+                                                                setFieldValue("onlyColouredPrint", !values.onlyColouredPrint);
+                                                            }}
+                                                            color="secondary"/>
+                                                    }
+                                                    label="Nur in Farbe auf deutsch erschienen"
+                                                />
+
+                                                <FormControlLabel
+                                                    className="switchEditor"
+                                                    control={
+                                                        <Switch
                                                             checked={values.noPrint}
                                                             onChange={() => {
                                                                 setFieldValue("noPrint", !values.noPrint);
@@ -463,6 +599,39 @@ function Filter(props) {
                                                     label="Nicht auf deutsch erschienen"
                                                 />
                                             </React.Fragment>
+                                        }
+
+                                        {
+                                            values.cover ?
+                                                <React.Fragment> {
+                                                    !us ?
+                                                        <FormControlLabel
+                                                            className="switchEditor"
+                                                            control={
+                                                                <Switch
+                                                                    checked={values.firstFullsize}
+                                                                    onChange={() => {
+                                                                        setFieldValue("firstFullsize", !values.firstFullsize);
+                                                                    }}
+                                                                    color="secondary"/>
+                                                            }
+                                                            label="Erstveröffentlichung in Originalgröße"
+                                                        /> :
+                                                        <FormControlLabel
+                                                            className="switchEditor"
+                                                            control={
+                                                                <Switch
+                                                                    checked={values.onlyFullsize}
+                                                                    onChange={() => {
+                                                                        setFieldValue("onlyFullsize", !values.onlyFullsize);
+                                                                    }}
+                                                                    color="secondary"/>
+                                                            }
+                                                            label="Nur in Originalgröße"
+                                                        />
+                                                }
+                                                </React.Fragment>
+                                            : null
                                         }
 
                                         {
@@ -671,7 +840,7 @@ function Filter(props) {
                                                 <AutoComplete
                                                     query={individuals}
                                                     name={"individuals"}
-                                                    type={"COLOURIST"}
+                                                    type={"COLORIST"}
                                                     nameField="name"
                                                     label="Kolorist"
                                                     isMulti
@@ -785,6 +954,15 @@ function Filter(props) {
                                                     individuals: [],
                                                     appearances: [],
                                                     firstPrint: false,
+                                                    firstCompletePrint: false,
+                                                    onlyPartlyPrint: false,
+                                                    onlyCompletePrint: false,
+                                                    firstMonochromePrint: false,
+                                                    firstColouredPrint: false,
+                                                    firstFullsize: false,
+                                                    onlyMonochromePrint: false,
+                                                    onlyColouredPrint: false,
+                                                    onlyFullsize: false,
                                                     onlyPrint: false,
                                                     otherTb: false,
                                                     exclusive: false,

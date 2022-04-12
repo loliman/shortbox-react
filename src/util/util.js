@@ -80,3 +80,56 @@ export function today() {
 
     return dd + "." + mm + "." + yyyy;
 }
+
+export function pagesStringToArray(pages) {
+    if(!pages || pages.length === 0)
+        return [];
+
+    let res = [];
+
+    let splitAtComma = pages.split(",");
+    splitAtComma.forEach(comma => {
+        let splitAtDash = comma.split("-");
+
+        let currentDash = +splitAtDash[0];
+        let nextDash = currentDash;
+        if(splitAtDash.length > 1)
+            nextDash = +splitAtDash[1];
+
+        while(currentDash <= nextDash)
+            res.push(currentDash++);
+    });
+
+    return res;
+}
+
+export function pagesArrayToString(pages) {
+    if(pages.length === 0)
+        return "";
+
+    let res = "";
+
+    for(let i = 0; i < pages.length; i++) {
+        let current = pages[i];
+        let next = 0;
+        if(i < pages.length)
+            next = pages[i+1];
+
+        if(current+1 === next) {
+            if(res.endsWith("-"))
+                continue;
+            else {
+                if(res.length > 0)
+                    res+= ", ";
+                res += current + "-";
+            }
+        }
+        else {
+            if(res.length > 0 && !res.endsWith("-"))
+                res+= ", ";
+            res += current;
+        }
+    }
+
+    return res;
+}

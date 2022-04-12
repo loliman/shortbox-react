@@ -8,6 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import {Mutation} from "react-apollo";
 import {logout} from "../graphql/mutations";
 import Cookies from "./Cookies";
+import Tooltip from "@material-ui/core/Tooltip";
 
 class Layout extends React.Component {
     constructor(props) {
@@ -66,10 +67,13 @@ class Layout extends React.Component {
 
 function LogIn(props) {
     return (
-        <span className="spanLink"
-                onClick={() => props.navigate("/login")}>
-            Login
-        </span>
+        <Tooltip title={"Der Login ist aktuell deaktiviert"}>
+            <span className="spanLink"
+                    //onClick={() => props.navigate("/login")}
+        >
+                Login
+            </span>
+        </Tooltip>
     );
 }
 

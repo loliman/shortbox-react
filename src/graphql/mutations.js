@@ -140,9 +140,19 @@ const createIssue = gql`mutation CreateIssue($item: IssueInput!){
                 name,
                 type
             },
-			onlyapp,
+            onlyapp,
             firstapp,
-            exclusive
+            onlytb,
+            onlyoneprint,
+            exclusive,
+            firstcomplete,
+            firstpartly,
+            firstmonochrome,
+            firstcoloured,
+            onlypartly,
+            onlymonochrome,
+            pages,
+            coloured,
         },
         covers {
             url,
@@ -188,7 +198,15 @@ const createIssue = gql`mutation CreateIssue($item: IssueInput!){
             }
             onlyapp,
             firstapp,
+            onlytb,
+            onlyoneprint,
             exclusive,
+            firstcomplete,
+            firstpartly,
+            firstmonochrome,
+            firstcoloured,
+            onlypartly,
+            onlymonochrome,
             individuals {
                 name,
                 type
@@ -258,6 +276,8 @@ const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
             title,
             addinfo,
             number,
+            pages,
+            coloured,
             children {
                 addinfo,
                 issue {
@@ -288,6 +308,8 @@ const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
             parent {
                 title,
                 number,
+                coloured,
+                pages,
                 issue {
                     number,
                     series {
@@ -320,16 +342,24 @@ const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
                     role
                 }   
             },
-			onlyapp,
+            onlyapp,
             firstapp,
             onlytb,
             onlyoneprint,
-            exclusive
+            exclusive,
+            firstcomplete,
+            firstpartly,
+            firstmonochrome,
+            firstcoloured,
+            onlypartly,
+            onlymonochrome
         },
         covers {
             url,
             addinfo,
             number,
+            fullsize, 
+            coloured,
             children {
                 addinfo,
                 issue {
@@ -371,7 +401,15 @@ const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
             }
             onlyapp,
             firstapp,
+            onlytb,
+            onlyoneprint,
             exclusive,
+            firstcomplete,
+            firstpartly,
+            firstmonochrome,
+            firstcoloured,
+            onlypartly,
+            onlymonochrome,
             individuals {
                 name,
                 type

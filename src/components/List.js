@@ -47,6 +47,7 @@ class List extends React.Component {
         let queryName = query.definitions[0].name.value.toLowerCase();
 
         selected.filter = filter;
+
         return (
             <SwipeableDrawer
                 disableDiscovery={true}
@@ -127,7 +128,6 @@ function TypeListEntry(props) {
             <ListItem onClick={() => {
                           if ((mobile && !mobileLandscape) && (level === HierarchyLevel.SERIES || level === HierarchyLevel.ISSUE))
                               toogleDrawer();
-
                           props.navigate(generateUrl(item, us));
                       }}
                       button>

@@ -74,6 +74,9 @@ class SeriesDetails extends React.Component {
 
                                                 <br />
 
+                                                {
+                                                    data.seriesd.genre ? <Typography>Genre: {data.seriesd.genre}</Typography> : null
+                                                }
                                                 <Typography>Gestartet: {data.seriesd.startyear}</Typography>
                                                 <Typography>Beendet: {data.seriesd.active ? "läuft noch" : data.seriesd.endyear}</Typography>
                                                 <Typography>

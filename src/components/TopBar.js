@@ -66,15 +66,17 @@ class TopBar extends React.Component {
                     </div>
 
                     <div id="headerRight">
-                        <Tooltip title={isFilter ? "Filter aktiv" : "Filtern"}>
+                        <Tooltip title={isFilter ? "Filter aktiv" : /*"Filtern"*/"Der erweiterte Filter ist aktuell deaktiviert"}>
                             <IconButton
-                                color={isFilter ? "secondary" : "inherit"}
-                                onClick={(e) => {
+                                //disabled={true}
+                                //color={isFilter ? "secondary" : "inherit"}
+                                color={"secondary"}
+                                /*onClick={(e) => {
                                     if(!isFilter)
                                         this.props.navigate(us ? "/filter/us" : "/filter/de");
                                     else
                                         this.handleFilterMenuOpen(e);
-                                }}
+                                }}*/
                                 id="filterIcon"
                             >
                                 <FilterListIcon />

@@ -6,7 +6,7 @@ import {issue} from "../../../graphql/queries";
 import {withContext} from "../../generic";
 import QueryResult from "../../generic/QueryResult";
 import IssueEditor from "../editor/IssueEditor";
-import {stripItem} from "../../../util/util";
+import {pagesArrayToString, stripItem} from "../../../util/util";
 
 function IssueEdit(props) {
     const {selected} = props;
@@ -26,6 +26,7 @@ function IssueEdit(props) {
                     defaultValues.verified = undefined;
                     defaultValues.createdAt = undefined;
                     defaultValues.updatedAt = undefined;
+                    defaultValues.edited = undefined;
                     defaultValues.cover = defaultValues.cover ? defaultValues.cover : '';
                     defaultValues.pages = defaultValues.pages ? defaultValues.pages : 0;
                     defaultValues.limitation = defaultValues.limitation ? defaultValues.limitation : 0;
@@ -56,7 +57,9 @@ function IssueEdit(props) {
                             title: story.title,
                             number: story.number,
                             addinfo: story.addinfo,
+                            pages: pagesArrayToString(story.pages),
                             exclusive: exclusive,
+                            coloured: story.coloured,
                             individuals: !exclusive ? undefined : (story.individuals ? story.individuals.map(i => stripItem(i)) : []),
                             appearances: !exclusive ? undefined : (story.appearances ? story.appearances.map(i => stripItem(i)) : []),
                             parent: exclusive ? undefined : {
@@ -93,6 +96,8 @@ function IssueEdit(props) {
                             number: cover.number,
                             addinfo: cover.addinfo,
                             exclusive: exclusive,
+                            fullsize: cover.fullsize,
+                            coloured: cover.coloured,
                             individuals: !exclusive ? undefined : (cover.individuals ? cover.individuals.map(i => stripItem(i)) : []),
                             parent: exclusive ? undefined : {
                                 number: 0,

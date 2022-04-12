@@ -118,6 +118,7 @@ function DeletionDialog(props) {
                             if(level === HierarchyLevel.SERIES) {
                                 toDelete.issueCount = undefined;
                                 toDelete.active = undefined;
+                                toDelete.genre = undefined;
                                 toDelete.firstIssue = undefined;
                                 toDelete.lastEdited = undefined;
                                 toDelete.lastIssue = undefined;

@@ -14,6 +14,8 @@ import IssueDetails, {
     ContainsTitleSimple,
     DetailsRow, IndividualList, toChipList
 } from "./IssueDetails";
+import {pagesArrayToString} from "../../util/util";
+import Chip from "@material-ui/core/Chip/Chip";
 
 var dateFormat = require('dateformat');
 
@@ -29,7 +31,9 @@ function Details(props) {
             <DetailsRow key="releasedate" label="Erscheinungsdatum"
                         value={dateFormat(new Date(props.issue.releasedate), "dd.mm.yyyy")}/>
             <DetailsRow key="coverartists" label="Cover Artists"
-                        value={toChipList(props.issue && props.issue.cover ? props.issue.cover.individuals.filter(item => item.type.includes('ARTIST')) : null, props, "ARTIST")}/>
+                        value={toChipList(props.issue && props.issue.cover && props.issue.cover.individuals
+                            ? props.issue.cover.individuals.filter(item => item.type.includes('ARTIST'))
+                            : null, props, "ARTIST")}/>
             <DetailsRow key="editor" label="Editor"
                         value={toChipList(props.issue.individuals.filter(item => item.type.includes('EDITOR')), props, "EDITOR")}/>
         </React.Fragment>
@@ -58,6 +62,7 @@ function Bottom(props) {
             <br/>
             <br/>
 
+            {!props.issue.edited ?
             <Typography className="spanLink">
                 Informationen über&nbsp;
                 <a href={generateMarvelDbUrl(props.issue)} rel="noopener noreferrer nofollow"
@@ -68,84 +73,223 @@ function Bottom(props) {
                 &nbsp;und stehen unter der&nbsp;
                 <a href="https://creativecommons.org/licenses/by/3.0/de/" rel="noopener noreferrer nofollow"
                    target="_blank">Creative Commons License 3.0</a>
-                &nbsp;. Die Informationen wurden aufbereitet und unter Umständen ergänzt.&nbsp;
-            </Typography>
+                . Die Informationen wurden aufbereitet und unter Umständen ergänzt.&nbsp;
+            </Typography> : null }
         </React.Fragment>
     );
 }
 
 function StoryDetails(props) {
+    let story = props.item.parent ? props.item.parent : props.item;
+    let smallChip = props.mobile || props.mobileLandscape || ((props.tablet || props.tabletLandscape) && props.drawerOpen);
+
     return (
         <div className="usStoryContainer">
             <div className="usStoryDetails">
+                {!props.item.reprintOf ? null :
+                    <React.Fragment>
+                        <Typography variant="h6">Nachdruck von</Typography>
+
+                        <List className="issueStoryIssueList">
+                            <ListItem className="issueStoryIssueReprint">
+                                <div>
+                                    <div className="headingContainer">
+                                        <Typography
+                                            className="issueStoryIssue">{generateLabel(props.item.reprintOf.issue.series) + " #" + props.item.reprintOf.issue.number}</Typography>
+                                        <Typography className="parentTitle">
+                                            {props.item.reprintOf.addinfo ? props.item.reprintOf.addinfo : null}
+                                        </Typography>
+                                    </div>
+                                    <Typography className="issueStoryIssue issueStoryIssuePublisher">
+                                        {generateLabel(props.item.reprintOf.issue.series.publisher)}
+                                    </Typography>
+                                </div>
+                                <Tooltip title="Zur Ausgabe">
+                                    <IconButton className="detailsIcon issueStoryIssueButton"
+                                                onClick={() => props.navigate(generateUrl(props.item.reprintOf.issue, true), {filter: null})}
+                                                aria-label="Details">
+                                        <SearchIcon fontSize="small"/>
+                                    </IconButton>
+                                </Tooltip>
+                            </ListItem>
+                        </List>
+                    </React.Fragment>
+                }
+
+                {!story.reprints || story.reprints.length === 0 ? null :
+                    <React.Fragment>
+                        <Typography variant="h6">Nachgedruckt in</Typography>
+
+                        <List className="issueStoryIssueList">
+                            {
+                                story.reprints.map((child, idx) => {
+                                    if (!child.issue)
+                                        return null;
+
+                                    return (
+                                        <ListItem key={idx} className="issueStoryIssueReprint" divider={story.reprints.length-1 !== idx}>
+                                            <div>
+                                                <div className="headingContainer">
+                                                    <Typography
+                                                        className="issueStoryIssue">{generateLabel(child.issue.series) + " #" + child.issue.number}</Typography>
+                                                    <Typography className="parentTitle">
+                                                        {child.addinfo ? child.addinfo : null}
+                                                    </Typography>
+                                                </div>
+                                                <Typography className="issueStoryIssue issueStoryIssuePublisher">
+                                                    {generateLabel(child.issue.series.publisher)}
+                                                </Typography>
+                                            </div>
+                                            <Tooltip title="Zur Ausgabe">
+                                                <IconButton className="detailsIcon issueStoryIssueButton"
+                                                            onClick={() => props.navigate(generateUrl(child.issue, true), {filter: null})}
+                                                            aria-label="Details">
+                                                    <SearchIcon fontSize="small"/>
+                                                </IconButton>
+                                            </Tooltip>
+                                        </ListItem>
+                                    );
+                                })
+                            }
+                        </List>
+                    </React.Fragment>
+                }
+
                 <Typography variant="h6">Mitwirkende</Typography>
-                <IndividualList us={props.us} navigate={props.navigate} label={"Autor"} type={"WRITER"} item={props.item} />
-                <IndividualList us={props.us} navigate={props.navigate} label={"Zeichner"} type={"PENCILER"} item={props.item} />
-                <IndividualList us={props.us} navigate={props.navigate} label={"Inker"} type={"INKER"} item={props.item} />
-                <IndividualList us={props.us} navigate={props.navigate} label={"Kolorist"} type={"COLOURIST"} item={props.item} />
-                <IndividualList us={props.us} navigate={props.navigate} label={"Letterer"} type={"LETTERER"} item={props.item} />
-                <IndividualList us={props.us} navigate={props.navigate} label={"Übersetzer"} type={"TRANSLATOR"} item={props.item} hideIfEmpty={true}/>
-                <IndividualList us={props.us} navigate={props.navigate} label={"Verleger"} type={"EDITOR"} item={props.item} />
+                <IndividualList us={props.us} navigate={props.navigate} label={"Autor"} type={"WRITER"} item={story} />
+                <IndividualList us={props.us} navigate={props.navigate} label={"Zeichner"} type={"PENCILER"} item={story} />
+                <IndividualList us={props.us} navigate={props.navigate} label={"Inker"} type={"INKER"} item={story} />
+                <IndividualList us={props.us} navigate={props.navigate} label={"Kolorist"} type={"COLORIST"} item={story} />
+                <IndividualList us={props.us} navigate={props.navigate} label={"Letterer"} type={"LETTERER"} item={story} />
+                <IndividualList us={props.us} navigate={props.navigate} label={"Übersetzer"} type={"TRANSLATOR"} item={story} hideIfEmpty={true}/>
+                <IndividualList us={props.us} navigate={props.navigate} label={"Verleger"} type={"EDITOR"} item={story} />
 
                 {
-                    (props.item.parent ? props.item.parent.appearances.length : props.item.appearances.length) > 0 ?
+                    (story.parent ? story.parent.appearances.length : story.appearances.length) > 0 ?
                         (
                             <React.Fragment>
                                 <br />
                                 <Typography variant="h6">Auftritte</Typography>
 
-                                <AppearanceList us={props.us} navigate={props.navigate} label={"Hauptcharaktere"} appRole={"FEATURED"} type={"CHARACTER"} item={props.item} hideIfEmpty={true}/>
-                                <AppearanceList us={props.us} navigate={props.navigate} label={"Antagonisten"} appRole={"ANTAGONIST"} type={"CHARACTER"} item={props.item} hideIfEmpty={true}/>
-                                <AppearanceList us={props.us} navigate={props.navigate} label={"Unterstützende Charaktere"} appRole={"SUPPORTING"} type={"CHARACTER"} item={props.item} hideIfEmpty={true}/>
-                                <AppearanceList us={props.us} navigate={props.navigate} label={"Andere Charaktere"} appRole={"OTHER"} type={"CHARACTER"} item={props.item} hideIfEmpty={true}/>
-                                <AppearanceList us={props.us} navigate={props.navigate} label={"Teams"} type={"GROUP"} item={props.item} hideIfEmpty={true}/>
-                                <AppearanceList us={props.us} navigate={props.navigate} label={"Rassen"} type={"RACE"} item={props.item} hideIfEmpty={true}/>
-                                <AppearanceList us={props.us} navigate={props.navigate} label={"Tiere"} type={"ANIMAL"} item={props.item} hideIfEmpty={true}/>
-                                <AppearanceList us={props.us} navigate={props.navigate} label={"Gegenstände"} type={"ITEM"} item={props.item} hideIfEmpty={true}/>
-                                <AppearanceList us={props.us} navigate={props.navigate} label={"Fahrzeuge"} type={"VEHICLE"} item={props.item} hideIfEmpty={true}/>
-                                <AppearanceList us={props.us} navigate={props.navigate} label={"Orte"} type={"LOCATION"} item={props.item} hideIfEmpty={true}/>
+                                <AppearanceList us={props.us} navigate={props.navigate} label={"Hauptcharaktere"} appRole={"FEATURED"} type={"CHARACTER"} item={story} hideIfEmpty={true}/>
+                                <AppearanceList us={props.us} navigate={props.navigate} label={"Antagonisten"} appRole={"ANTAGONIST"} type={"CHARACTER"} item={story} hideIfEmpty={true}/>
+                                <AppearanceList us={props.us} navigate={props.navigate} label={"Unterstützende Charaktere"} appRole={"SUPPORTING"} type={"CHARACTER"} item={story} hideIfEmpty={true}/>
+                                <AppearanceList us={props.us} navigate={props.navigate} label={"Andere Charaktere"} appRole={"OTHER"} type={"CHARACTER"} item={story} hideIfEmpty={true}/>
+                                <AppearanceList us={props.us} navigate={props.navigate} label={"Teams"} type={"GROUP"} item={story} hideIfEmpty={true}/>
+                                <AppearanceList us={props.us} navigate={props.navigate} label={"Rassen"} type={"RACE"} item={story} hideIfEmpty={true}/>
+                                <AppearanceList us={props.us} navigate={props.navigate} label={"Tiere"} type={"ANIMAL"} item={story} hideIfEmpty={true}/>
+                                <AppearanceList us={props.us} navigate={props.navigate} label={"Gegenstände"} type={"ITEM"} item={story} hideIfEmpty={true}/>
+                                <AppearanceList us={props.us} navigate={props.navigate} label={"Fahrzeuge"} type={"VEHICLE"} item={story} hideIfEmpty={true}/>
+                                <AppearanceList us={props.us} navigate={props.navigate} label={"Orte"} type={"LOCATION"} item={story} hideIfEmpty={true}/>
                             </React.Fragment>
                         ) : null
                 }
-            </div>
 
-            {props.item.children.length === 0 ? null :
-            <React.Fragment>
-                <br/>
+                {story.children.length === 0 ? null :
+                <React.Fragment>
+                    <br/>
 
-                <List className="issueStoryIssueList">
-                    {
-                        props.item.children.map((child, idx) => {
-                            if (!child.issue)
-                                return null;
+                    <Typography variant="h6">Erschienen in</Typography>
 
-                            return (
-                                <ListItem key={idx} className="issueStoryIssueItem" divider={props.item.children.length-1 !== idx}>
-                                    <div>
-                                        <div className="headingContainer">
-                                            <Typography
-                                                className="issueStoryIssue">{generateLabel(child.issue.series) + " #" + child.issue.number}</Typography>
-                                            <Typography className="parentTitle">
-                                                {child.addinfo ? child.addinfo : null}
+                    <List className="issueStoryIssueList">
+                        {
+                            story.children.map((child, idx) => {
+                                if (!child.issue)
+                                    return null;
+
+                                return (
+                                    <ListItem key={idx} className="issueStoryIssueItem" divider={story.children.length-1 !== idx}>
+                                        <div>
+                                            <div className="headingContainer">
+                                                <Typography
+                                                    className="issueStoryIssue">{generateLabel(child.issue.series) + " #" + child.issue.number}</Typography>
+                                                <Typography className="parentTitle">
+                                                    {child.addinfo ? child.addinfo : null}
+                                                </Typography>
+                                                <Typography className="parentTitle">
+                                                    {child.pages && child.pages.length > 0 ? "Seiten " + pagesArrayToString(child.pages) : null}
+                                                </Typography>
+                                                <Typography className="parentTitle">
+                                                    &nbsp;
+                                                    {child.coloured === false ? "Schwarz-Weiß" : null}
+                                                </Typography>
+                                            </div>
+                                            <Typography className="issueStoryIssue issueStoryIssuePublisher">
+                                                {generateLabel(child.issue.series.publisher)}
                                             </Typography>
                                         </div>
-                                        <Typography className="issueStoryIssue issueStoryIssuePublisher">
-                                            {generateLabel(child.issue.series.publisher)}
-                                        </Typography>
-                                    </div>
-                                    <Tooltip title="Zur Ausgabe">
-                                        <IconButton className="detailsIcon issueStoryIssueButton"
-                                                    onClick={() => props.navigate(generateUrl(child.issue), {filter: null})}
-                                                    aria-label="Details">
-                                            <SearchIcon fontSize="small"/>
-                                        </IconButton>
-                                    </Tooltip>
-                                </ListItem>
-                            );
-                        })
-                    }
-                </List>
-            </React.Fragment>}
+                                        <div className="chips">
+                                            {
+                                                child.firstapp ?
+                                                    <Chip className="chip"
+                                                          label={!smallChip ? "Erstveröffentlichung" : "1."}
+                                                          color="primary"/>
+                                                    : null
+                                            }
+
+                                            {
+                                                child.firstpartly ?
+                                                    <Chip className="chip"
+                                                          label={!smallChip ? "Erste Teilveröffentlichung" : "1."}
+                                                          color="primary"/>
+                                                    : null
+                                            }
+
+                                            {
+                                                child.firstcomplete ?
+                                                    <Chip className="chip"
+                                                          label={!smallChip ? "Erste Komplettveröffentlichung" : "1."}
+                                                          color="primary"/>
+                                                    : null
+                                            }
+
+                                            {
+                                                child.firstsmall ?
+                                                    <Chip className="chip"
+                                                          label={!smallChip ? "Erstveröffentlichung (Verkleinert)" : "1."}
+                                                          color="primary"/>
+                                                    : null
+                                            }
+
+                                            {
+                                                child.firstfullsize ?
+                                                    <Chip className="chip"
+                                                          label={!smallChip ? "Erstveröffentlichung (Originalgröße)" : "1."}
+                                                          color="primary"/>
+                                                    : null
+                                            }
+
+                                            {
+                                                child.firstmonochrome ?
+                                                    <Chip className="chip"
+                                                          label={!smallChip ? "Erste S/W Veröffentlichung" : "1."}
+                                                          color="primary"/>
+                                                    : null
+                                            }
+
+                                            {
+                                                child.firstcoloured ?
+                                                    <Chip className="chip"
+                                                          label={!smallChip ? "Erste Farbveröffentlichung" : "1."}
+                                                          color="primary"/>
+                                                    : null
+                                            }
+
+                                            <Tooltip title="Zur Ausgabe">
+                                                <IconButton className="detailsIcon issueStoryIssueButton"
+                                                            onClick={() => props.navigate(generateUrl(child.issue), {filter: null})}
+                                                            aria-label="Details">
+                                                    <SearchIcon fontSize="small"/>
+                                                </IconButton>
+                                            </Tooltip>
+                                        </div>
+                                    </ListItem>
+                                );
+                            })
+                        }
+                    </List>
+                </React.Fragment>}
+            </div>
         </div>
     )
 }

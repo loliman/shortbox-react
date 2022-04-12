@@ -29,7 +29,7 @@ import GridList from "@material-ui/core/GridList/GridList";
 import GridListTile from "@material-ui/core/GridListTile/GridListTile";
 import GridListTileBar from "@material-ui/core/GridListTileBar/GridListTileBar";
 import EditButton from "../restricted/EditButton";
-import {stripItem} from "../../util/util";
+import {pagesArrayToString, stripItem} from "../../util/util";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
 
 class IssueDetails extends React.Component {
@@ -128,7 +128,9 @@ class IssueDetails extends React.Component {
                                                     type = "Story Arc";
                                             }
 
-                                            return <Chip key={i} className="chip partOfChip" label={arc.title + " (" + type + ")"} color={color} onClick={() => this.props.navigate(us ? "/us" : "/de", {filter: JSON.stringify({arcs: [stripItem(arc)], story: true, us: us})})}/>;
+                                            return <Tooltip title={"Der erweiterte Filter ist aktuell deaktiviert"}>
+                                                <Chip key={i} className="chip partOfChip" label={arc.title + " (" + type + ")"} color={color} /*onClick={() => this.props.navigate(us ? "/us" : "/de", {filter: JSON.stringify({arcs: [stripItem(arc)], story: true, us: us})})}*//>
+                                            </Tooltip>;
                                         })
                                     }
 
@@ -256,18 +258,20 @@ function ContainsItem(props) {
 export function ContainsTitleSimple(props) {
     let smallChip = props.mobile || props.mobileLandscape || ((props.tablet || props.tabletLandscape) && props.drawerOpen);
 
+    let story = props.item.parent ? props.item.parent : props.item;
+
     return (
         <div className={props.simple ? "storyTitle storyTitleSimple" : "storyTitle"}>
             <div className="headingContainer">
-                <Typography className="heading">{generateItemTitle(props.item)}</Typography>
+                <Typography className="heading">{generateItemTitle(story)}</Typography>
                 <Typography className="heading headingAddInfo">
-                    {props.item.addinfo ? props.item.addinfo : null}
+                    {story.addinfo ? story.addinfo : null}
                 </Typography>
             </div>
 
             <div className="chips">
                 {
-                    props.item.onlyoneprint && !props.item.parent ?
+                    story.onlyoneprint && !story.parent ?
                         !smallChip ?
                             <Chip className="chip" label="Nur einfach auf deutsch veröffentlicht" color="secondary"
                                   icon={<PriorityHighIcon/>}/>
@@ -278,7 +282,29 @@ export function ContainsTitleSimple(props) {
                 }
 
                 {
-                    props.us && props.item.children.length === 0 ?
+                    story.onlypartly && !story.parent ?
+                        !smallChip ?
+                            <Chip className="chip" label="Nur teilweise auf deutsch veröffentlicht" color="secondary"
+                                  icon={<PriorityHighIcon/>}/>
+                            : <Chip className="chip" label={<PriorityHighIcon className="
+                            mobileChip"/>}
+                                    color="secondary"/>
+                        : null
+                }
+
+                {
+                    story.onlymonochrome && !story.parent ?
+                        !smallChip ?
+                            <Chip className="chip" label="Nur in S/W auf deutsch veröffentlicht" color="secondary"
+                                  icon={<PriorityHighIcon/>}/>
+                            : <Chip className="chip" label={<PriorityHighIcon className="
+                            mobileChip"/>}
+                                    color="secondary"/>
+                        : null
+                }
+
+                {
+                    props.us && story.children.length === 0 ?
                         !smallChip ?
                             <Chip className="chip" label="Nicht auf deutsch erschienen" color="default"/>
                             : <Chip className="chip" label="n/a" color="default"/>
@@ -286,7 +312,23 @@ export function ContainsTitleSimple(props) {
                 }
 
                 {
-                    props.item.onlytb && !props.item.parent ?
+                    props.item.reprintOf ?
+                        !smallChip ?
+                            <Chip className="chip" label="Nachdruck" color="default"/>
+                            : <Chip className="chip" label="ND" color="default"/>
+                        : null
+                }
+
+                {
+                    props.item.reprints && props.item.reprints.length > 0 ?
+                        !smallChip ?
+                            <Chip className="chip" label="Nachgedruckt" color="default"/>
+                            : <Chip className="chip" label="ND" color="default"/>
+                        : null
+                }
+
+                {
+                    story.onlytb && !story.parent ?
                         <Chip className="chip"
                               label={!smallChip ? "Nur in Taschenbuch" : "TB"}
                               color="primary"/>
@@ -327,6 +369,12 @@ export function ContainsTitleDetailed(props) {
                 <Typography className="heading headingAddInfo">
                     {props.item.addinfo ? props.item.addinfo : null}
                 </Typography>
+                <Typography className="heading headingAddInfo">
+                    {props.item.pages && props.item.pages.length > 0? "Seiten " + pagesArrayToString(props.item.pages) : null}
+                </Typography>
+                <Typography className="heading headingAddInfo">
+                    {props.item.coloured === false ? "Schwarz-Weiß" : null}
+                </Typography>
             </div>
 
             <div className="chips">
@@ -350,9 +398,57 @@ export function ContainsTitleDetailed(props) {
                 }
 
                 {
-                    props.item.firstapp && props.item.parent ?
+                    (props.item.firstapp && !(props.firstpartly || props.firstmonochrome || props.firstsmall)) && props.item.parent ?
                         <Chip className="chip"
                               label={!smallChip ? "Erstveröffentlichung" : "1."}
+                              color="primary"/>
+                        : null
+                }
+
+                {
+                    props.item.firstpartly && props.item.parent ?
+                        <Chip className="chip"
+                              label={!smallChip ? "Erste Teilveröffentlichung" : "1."}
+                              color="primary"/>
+                        : null
+                }
+
+                {
+                    props.item.firstcomplete && props.item.parent ?
+                        <Chip className="chip"
+                              label={!smallChip ? "Erste Komplettveröffentlichung" : "1."}
+                              color="primary"/>
+                        : null
+                }
+
+                {
+                    props.item.firstsmall && props.item.parent ?
+                        <Chip className="chip"
+                              label={!smallChip ? "Erstveröffentlichung (Verkleinert)" : "1."}
+                              color="primary"/>
+                        : null
+                }
+
+                {
+                    props.item.firstfullsize && props.item.parent ?
+                        <Chip className="chip"
+                              label={!smallChip ? "Erstveröffentlichung (Originalgröße)" : "1."}
+                              color="primary"/>
+                        : null
+                }
+
+                {
+                    props.item.firstmonochrome && props.item.parent ?
+                        <Chip className="chip"
+                              label={!smallChip ? "Erste S/W Veröffentlichung" : "1."}
+                              color="primary"/>
+                        : null
+                }
+
+                {
+                    props.item.firstcoloured && props.item.parent ?
+                        <Chip className="chip"
+                              label={!smallChip ? "Erste Farbveröffentlichung" : "1."}
                               color="primary"/>
                         : null
                 }
@@ -390,7 +486,7 @@ export function ContainsTitleDetailed(props) {
 }
 
 function Variants(props) {
-    if (props.issue.variants.length === 1)
+    if (props.issue.variants.length <= 1)
         return null;
 
     return (
@@ -486,7 +582,9 @@ export function toChipList(items, props, type, role) {
         filter[filterType].push(t);
 
         list.push(
-            <Chip key={i} className="chip partOfChip" label={item.name} onClick={() => props.navigate(props.us ? "/us" : "/de", {filter: JSON.stringify(filter)})}/>
+            <Tooltip title={"Der erweiterte Filter ist aktuell deaktiviert"}>
+                <Chip key={i} className="chip partOfChip" label={item.name} /*onClick={() => props.navigate(props.us ? "/us" : "/de", {filter: JSON.stringify(filter)})}*//>
+            </Tooltip>
         );
 
         if(i !== items.length-1)

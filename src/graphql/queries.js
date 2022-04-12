@@ -13,7 +13,7 @@ const exportQuery = gql`query Export($filter: Filter!, $type: String!){
     export(filter: $filter, type: $type)
 }`;
 
-const publishers = gql`query Publishers($pattern: String, $us: Boolean!, $offset: Int, $filter: Filter){
+const publishers = gql`query Publishers($pattern: String, $us: Boolean!, $offset: Int!, $filter: Filter){
     publishers(pattern: $pattern, us: $us, offset: $offset, filter: $filter) {
         name,
         us
@@ -33,8 +33,8 @@ const series = gql`query Series($pattern: String, $publisher: PublisherInput!, $
     }
 }`;
 
-const issues = gql`query Issues($pattern: String, $series: SeriesInput!, $offset: Int, $filter: Filter){
-    issues(pattern: $pattern, series: $series, offset: $offset, filter: $filter) {
+const issues = gql`query Issues($series: SeriesInput!, $offset: Int, $filter: Filter){
+    issues(series: $series, offset: $offset, filter: $filter) {
         title,
         number,
         series {
@@ -134,6 +134,7 @@ const seriesd = gql`query Seriesd($series: SeriesInput!){
     seriesd(series: $series) {
         title,
         volume,
+        genre,
         startyear,
         endyear,
         issueCount,
@@ -176,7 +177,7 @@ const seriesd = gql`query Seriesd($series: SeriesInput!){
     }
 }`;
 
-const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
+const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean) {
     issue(issue: $issue, edit: $edit) {
         title,
         number,
@@ -217,9 +218,18 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
         stories {
             title,
             addinfo,
+            pages,
+            coloured,
             number,
             children {
                 addinfo,
+                pages,
+                coloured,
+                firstapp,
+                firstcomplete,
+                firstpartly,
+                firstmonochrome,
+                firstcoloured,
                 issue {
                     number,
                     series {
@@ -280,18 +290,162 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                     role
                 }   
             },
-			onlyapp,
+            parent {
+                title,
+                number,
+                individuals {
+                    name,
+                    type
+                },
+                appearances {
+                    name,
+                    type,
+                    role
+                },  
+                issue {
+                    number,
+                    series {
+                        title,
+                        startyear,
+                        endyear,
+                        volume,
+                        publisher {
+                            name,
+                            us      
+                        }
+                    }
+                },
+                onlyapp,
+                firstapp,
+                onlytb,
+                onlyoneprint,
+                exclusive,
+                firstcomplete,
+                firstpartly,
+                firstmonochrome,
+                firstcoloured,
+                onlypartly,
+                onlymonochrome,
+                parent {
+                    title,
+                    number,
+                    pages,
+                    coloured,
+                    issue {
+                        number,
+                        series {
+                            title,
+                            startyear,
+                            endyear,
+                            volume,
+                            publisher {
+                                name,
+                                us      
+                            }
+                        },
+                        format,
+                        variant,
+                        stories {
+                            number
+                        },
+                        arcs {
+                            title,
+                            type
+                        }   
+                    },
+                    individuals {
+                        name,
+                        type
+                    },
+                    appearances {
+                        name,
+                        type,
+                        role
+                    }   
+                },
+                children {
+                    addinfo,
+                    pages,
+                    coloured,
+                    firstapp,
+                    firstcomplete,
+                    firstpartly,
+                    firstmonochrome,
+                    firstcoloured,
+                    issue {
+                        number,
+                        series {
+                            title,
+                            volume,
+                            startyear,
+                            endyear,
+                            publisher {
+                                name,
+                                us
+                            }
+                        },
+                        format,
+                        variant
+                    }
+                }
+            },
+            reprints {
+                issue {
+                    number,
+                    format,
+                    series {
+                        title,
+                        volume,
+                        startyear,
+                        endyear,
+                        publisher {
+                            name,
+							us
+                        }
+                    }
+                }
+            },
+            reprintOf {
+                issue {
+                    number,
+                    format,
+                    series {
+                        title,
+                        volume,
+                        startyear,
+                        endyear,
+                        publisher {
+                            name,
+							us
+                        }
+                    }
+                }
+            },
+            onlyapp,
             firstapp,
             onlytb,
             onlyoneprint,
-            exclusive
+            exclusive,
+            firstcomplete,
+            firstpartly,
+            firstmonochrome,
+            firstcoloured,
+            onlypartly,
+            onlymonochrome
         },
         covers {
             url,
             addinfo,
             number,
+            fullsize, 
+            coloured,
             children {
                 addinfo,
+                firstapp,
+                firstcomplete,
+                firstpartly,
+                firstmonochrome,
+                firstcoloured,
                 issue {
                     number,
                     format,
@@ -330,8 +484,16 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                 }
             }
             onlyapp,
-            firstapp,
+            onlytb,
+            onlyoneprint,
             exclusive,
+            firstapp,
+            firstcomplete,
+            firstpartly,
+            firstmonochrome,
+            firstcoloured,
+            onlypartly,
+            onlymonochrome
             individuals {
                 name,
                 type
@@ -359,6 +521,7 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
         },
         variant,
         verified,
+        edited,
         addinfo
     }
 }`;

@@ -1048,6 +1048,10 @@ div[class^="MuiExpansionPanelSummary-content-"] {
     margin: 4px 0 !important;
 }
 
+button[class*="MuiIconButton-disabled"] {
+    color: rgba(100, 100, 100, 1) !important;
+}
+
 span[class^="MuiSwitch-bar-"] {
     background-color: darkgrey;
 }
@@ -1081,7 +1085,12 @@ span[class^="MuiSwitch-bar-"] {
 
 .issueStoryIssueItem {
     justify-content: space-between !important;
-    padding: 6px !important;
+    padding: 6px 6px 6px 0 !important;
+}
+
+.issueStoryIssueReprint {
+    justify-content: space-between !important;
+    padding: 6px 6px 6px 0 !important;
 }
 
 .issueStoryIssueButton {

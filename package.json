@@ -20,7 +20,6 @@
     "expand-range": "^2.0.2",
     "expand-tilde": "^2.0.2",
     "filename-regex": "^2.0.1",
-    "fork-ts-checker-webpack-plugin-alt": "^0.4.14",
     "formik": "^1.5.7",
     "formik-material-ui": "0.0.16",
     "graphql": "^14.3.1",

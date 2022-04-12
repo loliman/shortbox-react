@@ -61,10 +61,12 @@ export function getSelected(params, us) {
     if (params.publisher) {
         selected.publisher = {};
         selected.publisher.name = decodeURIComponent(params.publisher);
+        selected.publisher.us = us;
     }
     if (params.series) {
         selected.series = {publisher: {}};
         selected.series.publisher.name = selected.publisher.name;
+        selected.series.publisher.us = us;
         selected.publisher = undefined;
 
         let series = decodeURIComponent(params.series);
@@ -77,6 +79,7 @@ export function getSelected(params, us) {
         selected.issue.series.title = selected.series.title;
         selected.issue.series.publisher = {};
         selected.issue.series.publisher.name = selected.series.publisher.name;
+        selected.issue.series.publisher.us = us;
         selected.series = undefined;
         selected.issue.number = decodeURIComponent(params.issue);
     }

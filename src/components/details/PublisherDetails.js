@@ -43,7 +43,7 @@ class PublisherDetails extends React.Component {
 
                     return (
                         <Layout handleScroll={fetchMore}>
-                            <Query query={publisher} variables={selected} notifyOnNetworkStatusChange
+                            <Query query={publisher} variables={{publisher: {name: this.props.selected.publisher.name, us: this.props.us}}} notifyOnNetworkStatusChange
                                    onCompleted={() => this.props.unregisterLoadingComponent("PublisherDetails_details")}
                                    onError={() => this.props.unregisterLoadingComponent("PublisherDetails_details")}>
                                 {({error, data}) => {

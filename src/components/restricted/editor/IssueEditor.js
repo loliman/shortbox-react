@@ -9,7 +9,7 @@ import Button from "@material-ui/core/Button";
 import withContext from "../../generic/withContext";
 import CardHeader from "@material-ui/core/CardHeader";
 import {apps, arcs, individuals, issue, issues, publishers, series} from "../../../graphql/queries";
-import {decapitalize, stripItem, wrapItem} from "../../../util/util";
+import {decapitalize, pagesStringToArray, stripItem, wrapItem} from "../../../util/util";
 import AutoComplete from "../../generic/AutoComplete";
 import {addToCache, removeFromCache, updateInCache} from "./Editor";
 import CardMedia from "@material-ui/core/CardMedia";
@@ -210,6 +210,8 @@ class IssueEditor extends React.Component {
 
                             if(variables.item.stories)
                                 variables.item.stories = variables.item.stories.map(story => {
+                                   story.pages = pagesStringToArray(story.pages);
+
                                    if(story.series)
                                        story.series = stripItem(story.series);
                                    if(story.individuals)
@@ -685,11 +687,31 @@ function StoryFields(props) {
                 />
 
                 <FastField
-                    className={props.desktop ? "field field35" : "field field100"}
+                    className={props.desktop ? "field field10" : "field field100"}
+                    name={"stories[" + props.index + "].pages"}
+                    disabled={props.disabled}
+                    label="Seiten"
+                    component={TextField}
+                />
+
+                <FastField
+                    className={props.desktop ? "field field30" : "field field100"}
                     name={"stories[" + props.index + "].addinfo"}
                     disabled={props.disabled}
                     label="Weitere Informationen"
                     component={TextField}
+                />
+
+                <FormControlLabel
+                    control={
+                        <Switch
+                            checked={props.items[props.index].coloured}
+                            onChange={() => {
+                                props.setFieldValue("stories[" + props.index + "].coloured", !props.items[props.index].coloured);
+                            }}
+                            color="secondary"/>
+                    }
+                    label="Farbe"
                 />
 
                 {!props.us ? <ExclusiveToggle {...props}/> : null}
@@ -877,7 +899,7 @@ function StoryFieldsExclusive(props) {
             <div className="storyAddInputContainer">
                 <AutoComplete
                     query={individuals}
-                    type={"COLOURIST"}
+                    type={"COLORIST"}
                     name={"stories[" + index + "].individuals"}
                     nameField="name"
                     label="Kolorist"
@@ -1210,7 +1232,28 @@ function CoverFields(props) {
                     disabled={props.disabled}
                     component={TextField}
                 />
-
+                <FormControlLabel
+                    control={
+                        <Switch
+                            checked={props.items[props.index].coloured}
+                            onChange={() => {
+                                props.setFieldValue("covers[" + props.index + "].coloured", !props.items[props.index].coloured);
+                            }}
+                            color="secondary"/>
+                    }
+                    label="Farbe"
+                />
+                <FormControlLabel
+                    control={
+                        <Switch
+                            checked={props.items[props.index].fullsize}
+                            onChange={() => {
+                                props.setFieldValue("covers[" + props.index + "].fullsize", !props.items[props.index].fullsize);
+                            }}
+                            color="secondary"/>
+                    }
+                    label="Originalgröße"
+                />
                 {!props.us ? <ExclusiveToggle {...props}/> : null}
             </div>
 
@@ -1414,7 +1457,9 @@ const storyDefault = {
     },
     individuals: [],
     addinfo: '',
+    pages: '',
     exclusive: false,
+    coloured: true,
 };
 
 const featureDefault = {
@@ -1439,9 +1484,11 @@ const coverDefault = {
         },
         number: 0
     },
+    fullsize: true,
+    coloured: true,
     individuals: [],
     addinfo: '',
     number: 0,
-    exclusive: false,
+    exclusive: false
 };
 export default withContext(IssueEditor);
