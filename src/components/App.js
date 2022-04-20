@@ -66,7 +66,7 @@ class App extends React.Component {
                         <Route exact path="/filter/de" component={Filter}/>
                         <Route exact path="/filter/us" component={Filter}/>
 
-                        <Route exact path="/login" component={/*Login*/Home}/>
+                        <Route exact path="/login" component={Login}/>
 
                         <Route exact path="/contact" component={Contact}/>
                         <Route exact path="/impress" component={Impress}/>

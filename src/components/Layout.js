@@ -67,13 +67,10 @@ class Layout extends React.Component {
 
 function LogIn(props) {
     return (
-        <Tooltip title={"Der Login ist aktuell deaktiviert"}>
-            <span className="spanLink"
-                    //onClick={() => props.navigate("/login")}
-        >
-                Login
-            </span>
-        </Tooltip>
+        <span className="spanLink"
+                onClick={() => props.navigate("/login")}>
+            Login
+        </span>
     );
 }
 
