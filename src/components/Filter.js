@@ -671,7 +671,7 @@ function Filter(props) {
                                                 <AutoComplete
                                                     query={individuals}
                                                     name={"individuals"}
-                                                    type={"COLOURIST"}
+                                                    type={"COLORIST"}
                                                     nameField="name"
                                                     label="Kolorist"
                                                     isMulti

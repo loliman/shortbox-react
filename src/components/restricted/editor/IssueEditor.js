@@ -877,7 +877,7 @@ function StoryFieldsExclusive(props) {
             <div className="storyAddInputContainer">
                 <AutoComplete
                     query={individuals}
-                    type={"COLOURIST"}
+                    type={"COLORIST"}
                     name={"stories[" + index + "].individuals"}
                     nameField="name"
                     label="Kolorist"

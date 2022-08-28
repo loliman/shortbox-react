@@ -157,12 +157,13 @@ class AutoCompleteContainer extends React.Component {
                 if(option.pattern)
                     return "";
 
-                if (option[this.props.nameField] === (this.props.isMulti || this.props.creatable ?
-                    (this.props.field.value ? this.props.field.value[this.props.nameField] : "")
+                if (JSON.stringify(option) === (this.props.isMulti || this.props.creatable ?
+                    (this.props.field.value ? JSON.stringify(this.props.field.value) : "")
                     : this.props.field.value))
                     label = option[this.props.nameField];
-                else
+                else {
                     label = this.props.generateLabel(option);
+                }
 
                 return typeof label === "string" ? label : option[this.props.nameField];
             },
@@ -337,7 +338,7 @@ function Option(props) {
     let label = props.children;
 
     if(thick && thick.length > 0) {
-        let thickString = thick[0].substr(2, thick[0].length-4);
+        let thickString = thick[0].substring(2, thick[0].length-4);
         thick = (<Typography variant={"caption"} className="searchCaption">&nbsp;&nbsp;{thickString}</Typography>);
         label = label.replace("!!" + thickString + "!!", "");
     }
@@ -345,17 +346,28 @@ function Option(props) {
     let labels = [];
     let query = props.selectProps.inputValue.split(" ");
 
-    query.forEach(q => {
-        let before = label.substring(0, label.toLowerCase().indexOf(q));
-        let between = label.substring(label.toLowerCase().indexOf(q), label.toLowerCase().indexOf(q) + q.length);
-        let after = label.substring(label.toLowerCase().indexOf(q) + q.length, label.length);
-
-        labels.push(before);
-        labels.push(<b key={between}>{between}</b>);
-        label = after;
+    query.forEach((q, i) => {
+        if (q !== '') {
+            let r = new RegExp(q, "ig");
+            label = label.replace(r, "!!#"+i+"#!!");
+        }
     });
 
-    labels.push(label);
+    label.split("!!").forEach(l => {
+        if (l !== "") {
+            try {
+                if (l.length === 3 && (l.substring(1, 2) === "0" || parseInt(l.substring(1, 2)))) {
+                    let thick = query[l.substring(1, 2) === "0" ? 0 : parseInt(l.substring(1, 2))];
+
+                    labels.push(<b key={thick}>{thick}</b>);
+                } else {
+                    labels.push(l);
+                }
+            } catch (e) {
+                //ignore
+            }
+        }
+    })
 
     return (
         <MenuItem
