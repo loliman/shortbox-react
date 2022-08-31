@@ -28,6 +28,7 @@ function IssueEdit(props) {
                     defaultValues.updatedAt = undefined;
                     defaultValues.cover = defaultValues.cover ? defaultValues.cover : '';
                     defaultValues.pages = defaultValues.pages ? defaultValues.pages : 0;
+                    defaultValues.comicguideid = defaultValues.comicguideid ? defaultValues.comicguideid : 0;
                     defaultValues.limitation = defaultValues.limitation ? defaultValues.limitation : 0;
 
                     let oldIndividuals = [];

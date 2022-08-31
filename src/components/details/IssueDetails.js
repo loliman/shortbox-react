@@ -190,6 +190,10 @@ class Cover extends React.Component {
 
         let coverUrl = (issue.cover && issue.cover.url && issue.cover.url !== '') ? issue.cover.url : "/nocover.jpg";
 
+        if (issue.comicguideid && issue.comicguideid !== 0) {
+            coverUrl = "https://www.comicguide.de/pics/large/" + issue.comicguideid + ".jpg";
+        }
+
         return (
             <React.Fragment>
                 <CardMedia

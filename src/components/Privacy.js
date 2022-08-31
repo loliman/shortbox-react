@@ -444,6 +444,18 @@ function Privacy(props) {
 
                 <br/>
 
+                <Typography variant="h6">ComicGuide</Typography>
+
+                <br/>
+
+                <Typography>Wir binden Bilder des Anbieters Star Media, Albert-Schweitzer-Str. 1, 22844 Norderstedt ein.
+                    Nach Angaben von Star Media werden die Daten der Nutzer allein zu Zwecken der Darstellung der Bilder im Browser der Nutzer verwendet. Die Einbindung erfolgt auf Grundlage unserer berechtigten Interessen an einer korrekten und vollständigen Darstellung von Covern deutscher Ausgaben, sowie Berücksichtigung möglicher lizenzrechtlicher Restriktionen für deren Einbindung. Datenschutzerklärung: <a
+                        target="_blank" rel="noopener noreferrer nofollow"
+                        href="https://www.fandom.com/privacy-policy">https://www.comicguide.de/index.php/component/content/article?id=9</a>.
+                </Typography>
+
+                <br/>
+
                 <Typography><a href="https://datenschutz-generator.de" rel="noopener noreferrer nofollow" target="_blank">Erstellt
                     mit Datenschutz-Generator.de von RA Dr. Thomas Schwenke</a></Typography>
 

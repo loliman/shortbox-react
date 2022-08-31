@@ -183,6 +183,7 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
         format,
         limitation,
         pages,
+        comicguideid,
         releasedate,
         price,
         currency,

@@ -58,6 +58,7 @@ class IssueEditor extends React.Component {
                 currency: currencies[0],
                 individuals: [],
                 addinfo: '',
+                comicguideid: 0,
                 stories: [],
                 features: [],
                 covers: []
@@ -187,6 +188,7 @@ class IssueEditor extends React.Component {
                                 variables.item.format = undefined;
                                 variables.item.limitation = undefined;
                                 variables.item.pages = undefined;
+                                variables.item.comicguideid = undefined;
                                 variables.item.price = undefined;
                                 variables.item.currency = undefined;
                             }
@@ -536,6 +538,21 @@ class IssueEditor extends React.Component {
                                         rows={10}
                                         component={TextField}
                                     />
+
+                                    {
+                                        !values.series.publisher.us ?
+                                            <React.Fragment>
+                                                <br/>
+                                                <FastField
+                                                    className={this.props.desktop ? "field field35" : "field field100"}
+                                                    name="comicguideid"
+                                                    label="Comicguide ID"
+                                                    type="number"
+                                                    component={TextField}
+                                                />
+                                                <br/>
+                                            </React.Fragment> : null
+                                    }
 
                                     <br/>
                                     <br/>

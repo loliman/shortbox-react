@@ -11,6 +11,7 @@ import IssueDetails, {
 } from "./IssueDetails";
 import {stripItem} from "../../util/util";
 import Chip from "@material-ui/core/Chip";
+import {generateLabel} from "../../util/hierarchy";
 
 var dateFormat = require('dateformat');
 
@@ -65,8 +66,29 @@ function Bottom(props) {
                       noEntriesHint="Dieser Ausgabe sind noch keine Cover zugeordnet"
                       items={props.issue.covers} itemTitle={<ContainsTitleDetailed {...props}/>}
                       itemDetails={<CoverDetails/>}/>
+
+            <br/>
+            <br/>
+
+            {
+                props.issue.comicguideid && props.issue.comicguideid !== 0 ?
+                    <Typography className="spanLink">
+                        Das Cover für&nbsp;
+                        <a href={generateComicGuideId(props.issue)} rel="noopener noreferrer nofollow"
+                           target="_blank">{generateLabel(props.issue.series) + " #" + props.issue.number}</a>
+                        &nbsp;wird bereitgestellt vom&nbsp;
+                        <a href="https://www.comicguide.de" rel="noopener noreferrer nofollow" target="_blank">deutschen ComicGuide</a>
+                        &nbsp;und darf nicht ohne Genehmigung weiterverbreitet werden.
+                    </Typography>:
+                    null
+            }
         </React.Fragment>
     );
+}
+
+function generateComicGuideId(issue) {
+    let url = " https://www.comicguide.de/book/" + issue.comicguideid;
+    return url;
 }
 
 function CoverDetails(props) {
