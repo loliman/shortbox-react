@@ -342,6 +342,7 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
             format,
             variant,
             number,
+            comicguideid,
             series {
                 title,
                 volume,

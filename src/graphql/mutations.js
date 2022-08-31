@@ -199,6 +199,7 @@ const createIssue = gql`mutation CreateIssue($item: IssueInput!){
             format,
             variant,
             number,
+            comicguideid,
             series {
                 title,
                 volume,
@@ -383,6 +384,7 @@ const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
             format,
             variant,
             number,
+            comicguideid,
             series {
                 title,
                 volume,

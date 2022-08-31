@@ -418,6 +418,10 @@ function Variants(props) {
 function Variant(props) {
     let coverUrl = (props.variant.cover && props.variant.cover.url && props.variant.cover.url !== '') ? props.variant.cover.url : "/nocover_simple.jpg";
 
+    if (props.variant.comicguideid && props.variant.comicguideid !== 0) {
+        coverUrl = "https://www.comicguide.de/pics/large/" + props.variant.comicguideid + ".jpg";
+    }
+
     return (
         <GridListTile onClick={() => props.navigate(props.to)} className="tile">
             <img src={coverUrl}
