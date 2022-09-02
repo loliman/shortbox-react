@@ -109,6 +109,10 @@ const publisher = gql`query Publisher($publisher: PublisherInput!){
             variant,
             createdAt,
             updatedAt,
+            cover {
+                url
+            },
+            comicguideid,
             series {
                 title,
                 volume,
@@ -124,6 +128,10 @@ const publisher = gql`query Publisher($publisher: PublisherInput!){
             variant,
             createdAt,
             updatedAt,
+            cover {
+                url
+            },
+            comicguideid,
             series {
                 title,
                 volume,
@@ -151,6 +159,10 @@ const seriesd = gql`query Seriesd($series: SeriesInput!){
             variant,
             createdAt,
             updatedAt,
+            cover {
+                url
+            },
+            comicguideid,
             series {
                 title,
                 volume,
@@ -166,6 +178,10 @@ const seriesd = gql`query Seriesd($series: SeriesInput!){
             variant,
             createdAt,
             updatedAt,
+            cover {
+                url
+            },
+            comicguideid,
             series {
                 title,
                 volume,
