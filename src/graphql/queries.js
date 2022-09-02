@@ -37,6 +37,10 @@ const issues = gql`query Issues($pattern: String, $series: SeriesInput!, $offset
     issues(pattern: $pattern, series: $series, offset: $offset, filter: $filter) {
         title,
         number,
+        comicguideid,
+        cover {
+            url
+        },
         series {
             title,
             volume,
@@ -77,6 +81,10 @@ export const lastEdited = gql`query LastEdited($filter: Filter, $offset: Int) {
         title,
         createdAt,
         updatedAt,
+        comicguideid,
+        cover {
+            url
+        },
         series {
             title,
             volume,

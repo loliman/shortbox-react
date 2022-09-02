@@ -5,6 +5,7 @@ import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import {withContext} from "./generic";
 import React from "react";
+import CardMedia from "@material-ui/core/CardMedia/CardMedia";
 
 var dateFormat = require('dateformat');
 
@@ -22,8 +23,17 @@ function IssuePreview(props) {
             variant += "/" + props.issue.variant;
     }
 
+    let coverUrl = (props.issue.cover && props.issue.cover.url && props.issue.cover.url !== '') ? props.issue.cover.url : "/nocover.jpg";
+
+    if (props.issue.comicguideid && props.issue.comicguideid !== 0) {
+        coverUrl = "https://www.comicguide.de/pics/small/" + props.issue.comicguideid + ".jpg";
+    }
+
     return (
         <Card className="issuePreview" onClick={() => props.navigate(generateUrl(props.issue, props.us))}>
+            <CardMedia
+                image={coverUrl}
+                style={{float: "left", width: '90px', height: '137px', margin: '5px', border: '1px solid #f0f0f0'}}/>
             <CardContent>
                 <div className="issueTitleContainer">
                     <Typography variant="subtitle1" className="issuePreviewTitle">{generateLabel(props.issue.series) + " #" + props.issue.number}</Typography>
