@@ -33,7 +33,7 @@ function IssuePreview(props) {
         <Card className="issuePreview" onClick={() => props.navigate(generateUrl(props.issue, props.us))}>
             <CardMedia
                 image={coverUrl}
-                style={{float: "left", width: '90px', height: '137px', margin: '5px', border: '1px solid #f0f0f0'}}/>
+                style={{float: "left", width: '90px', height: '137px', margin: '5px', border: '1px solid #f0f0f0', borderRadius: '3px'}}/>
             <CardContent>
                 <div className="issueTitleContainer">
                     <Typography variant="subtitle1" className="issuePreviewTitle">{generateLabel(props.issue.series) + " #" + props.issue.number}</Typography>
