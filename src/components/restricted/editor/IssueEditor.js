@@ -530,6 +530,21 @@ class IssueEditor extends React.Component {
                                             </React.Fragment>
                                     }
 
+                                    {
+                                        !values.series.publisher.us ?
+                                            <React.Fragment>
+                                                <FastField
+                                                    className={this.props.desktop ? "field field35" : "field field100"}
+                                                    name="comicguideid"
+                                                    label="Comicguide ID"
+                                                    type="number"
+                                                    component={TextField}
+                                                />
+                                            </React.Fragment> : null
+                                    }
+
+                                    <br/>
+
                                     <FastField
                                         className={this.props.desktop ? "field field35" : "field field100"}
                                         name="addinfo"
@@ -539,21 +554,6 @@ class IssueEditor extends React.Component {
                                         component={TextField}
                                     />
 
-                                    {
-                                        !values.series.publisher.us ?
-                                            <React.Fragment>
-                                                <br/>
-                                                <FastField
-                                                    className={this.props.desktop ? "field field35" : "field field100"}
-                                                    name="comicguideid"
-                                                    label="Comicguide ID"
-                                                    type="number"
-                                                    component={TextField}
-                                                />
-                                                <br/>
-                                            </React.Fragment> : null
-                                    }
-
                                     <br/>
                                     <br/>
 
@@ -562,19 +562,19 @@ class IssueEditor extends React.Component {
 
                                     <br/>
 
-                                    {
+                                    {/*
                                         !values.series.publisher.us ?
                                             <React.Fragment>
                                                 <Features setFieldValue={setFieldValue} values={values} items={values.features} {...this.props}/>
 
                                                 <br/>
                                             </React.Fragment> : null
-                                    }
 
                                     <Covers setFieldValue={setFieldValue} items={values.covers} {...this.props}
                                         us={values.series.publisher.us} values={values}/>
 
                                     <br/>
+                                    */}
 
                                     <div className="formButtons">
                                         <Button disabled={isSubmitting}

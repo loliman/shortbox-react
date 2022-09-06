@@ -54,7 +54,7 @@ function Bottom(props) {
             <br/>
             <br/>
 
-            <Contains {...props} header="Weitere Inhalte"
+            {/*<Contains {...props} header="Weitere Inhalte"
                       noEntriesHint="Dieser Ausgabe sind noch keine weiteren Inhalte zugeordnet"
                       items={props.issue.features} itemTitle={<ContainsTitleSimple/>}
                       itemDetails={<FeatureDetails/>}/>
@@ -68,7 +68,7 @@ function Bottom(props) {
                       itemDetails={<CoverDetails/>}/>
 
             <br/>
-            <br/>
+            <br/>*/}
 
             {
                 props.issue.comicguideid && props.issue.comicguideid !== 0 ?
