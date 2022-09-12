@@ -425,16 +425,6 @@ class IssueEditor extends React.Component {
                                             </React.Fragment> : null
                                     }
 
-                                    <FastField
-                                        className={this.props.desktop ? "field field35" : "field field100"}
-                                        name="releasedate"
-                                        label="Erscheinungsdatum"
-                                        type="date"
-                                        InputLabelProps={{ shrink: true }}
-                                        component={TextField}
-                                    />
-                                    <br/>
-
                                     {
                                         !values.series.publisher.us ?
                                             <React.Fragment>
@@ -461,9 +451,29 @@ class IssueEditor extends React.Component {
                                                     ))}
                                                 </FastField>
                                                 <br/>
+
+                                                <FastField
+                                                    className={this.props.desktop ? "field field35" : "field field100"}
+                                                    name="releasedate"
+                                                    label="Erscheinungsdatum"
+                                                    type="date"
+                                                    InputLabelProps={{ shrink: true }}
+                                                    component={TextField}
+                                                />
+                                                <br/>
                                             </React.Fragment> :
 
                                             <React.Fragment>
+                                                <FastField
+                                                    className={this.props.desktop ? "field field35" : "field field100"}
+                                                    name="releasedate"
+                                                    label="Erscheinungsdatum"
+                                                    type="date"
+                                                    InputLabelProps={{ shrink: true }}
+                                                    component={TextField}
+                                                />
+                                                <br/>
+
                                                 <AutoComplete
                                                     query={individuals}
                                                     name="individuals"

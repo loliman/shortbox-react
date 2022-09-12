@@ -338,36 +338,12 @@ function Option(props) {
     let label = props.children;
 
     if(thick && thick.length > 0) {
-        let thickString = thick[0].substring(2, thick[0].length-4);
+        let thickString = thick[0].substring(2, thick[0].length-2);
         thick = (<Typography variant={"caption"} className="searchCaption">&nbsp;&nbsp;{thickString}</Typography>);
         label = label.replace("!!" + thickString + "!!", "");
     }
 
-    let labels = [];
-    let query = props.selectProps.inputValue.split(" ");
-
-    query.forEach((q, i) => {
-        if (q !== '') {
-            let r = new RegExp(q, "ig");
-            label = label.replace(r, "!!#"+i+"#!!");
-        }
-    });
-
-    label.split("!!").forEach(l => {
-        if (l !== "") {
-            try {
-                if (l.length === 3 && (l.substring(1, 2) === "0" || parseInt(l.substring(1, 2)))) {
-                    let thick = query[l.substring(1, 2) === "0" ? 0 : parseInt(l.substring(1, 2))];
-
-                    labels.push(<b key={thick}>{thick}</b>);
-                } else {
-                    labels.push(l);
-                }
-            } catch (e) {
-                //ignore
-            }
-        }
-    })
+    let labels = [label];
 
     return (
         <MenuItem
