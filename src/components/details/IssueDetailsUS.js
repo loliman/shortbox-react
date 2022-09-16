@@ -42,7 +42,7 @@ function Bottom(props) {
             <br/>
             <br/>
 
-            <Contains {...props} header="Geschichten"
+            <Contains {...props} header=""
                       noEntriesHint="Dieser Ausgabe sind noch keine Geschichten zugeordnet"
                       items={props.issue.stories} itemTitle={<ContainsTitleSimple {...props}/>}
                       itemDetails={<StoryDetails/>}/>
@@ -50,13 +50,13 @@ function Bottom(props) {
             <br/>
             <br/>
 
-            <Contains {...props} header="Cover erschienen in"
+            {/*<Contains {...props} header="Cover erschienen in"
                       noEntriesHint="Das Cover ist noch keinen deutschen Ausgaben zugeordnet"
                       items={props.issue.covers[0] ? props.issue.covers[0].children.map(c => c.issue) : []}
                       itemTitle={<ContainsTitleDetailed {...props}/>}/>
 
             <br/>
-            <br/>
+            <br/>*/}
 
             <Typography className="spanLink">
                 Informationen über&nbsp;

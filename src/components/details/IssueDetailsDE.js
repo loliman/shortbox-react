@@ -46,7 +46,7 @@ function Bottom(props) {
             <br/>
             <br/>
 
-            <Contains {...props} header="Geschichten"
+            <Contains {...props} header=""
                       noEntriesHint="Dieser Ausgabe sind noch keine Geschichten zugeordnet"
                       items={props.issue.stories} itemTitle={<ContainsTitleDetailed {...props}/>}
                       itemDetails={<StoryDetails/>}/>
@@ -71,7 +71,7 @@ function Bottom(props) {
             <br/>*/}
 
             {
-                props.issue.comicguideid && props.issue.comicguideid !== 0 ?
+                props.issue.cover ?
                     <Typography className="spanLink">
                         Das Cover für&nbsp;
                         <a href={generateComicGuideId(props.issue)} rel="noopener noreferrer nofollow"

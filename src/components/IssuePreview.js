@@ -25,10 +25,6 @@ function IssuePreview(props) {
 
     let coverUrl = (props.issue.cover && props.issue.cover.url && props.issue.cover.url !== '') ? props.issue.cover.url : "/nocover.jpg";
 
-    if (props.issue.comicguideid && props.issue.comicguideid !== 0) {
-        coverUrl = "https://www.comicguide.de/pics/small/" + props.issue.comicguideid + ".jpg";
-    }
-
     return (
         <Card className="issuePreview" onClick={() => props.navigate(generateUrl(props.issue, props.us))}>
             <CardMedia

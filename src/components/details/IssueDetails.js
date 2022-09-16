@@ -190,10 +190,6 @@ class Cover extends React.Component {
 
         let coverUrl = (issue.cover && issue.cover.url && issue.cover.url !== '') ? issue.cover.url : "/nocover.jpg";
 
-        if (issue.comicguideid && issue.comicguideid !== 0) {
-            coverUrl = "https://www.comicguide.de/pics/large/" + issue.comicguideid + ".jpg";
-        }
-
         return (
             <React.Fragment>
                 <CardMedia
@@ -417,10 +413,6 @@ function Variants(props) {
 
 function Variant(props) {
     let coverUrl = (props.variant.cover && props.variant.cover.url && props.variant.cover.url !== '') ? props.variant.cover.url : "/nocover_simple.jpg";
-
-    if (props.variant.comicguideid && props.variant.comicguideid !== 0) {
-        coverUrl = "https://www.comicguide.de/pics/large/" + props.variant.comicguideid + ".jpg";
-    }
 
     return (
         <GridListTile onClick={() => props.navigate(props.to)} className="tile">
