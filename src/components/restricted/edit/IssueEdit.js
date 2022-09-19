@@ -62,6 +62,7 @@ function IssueEdit(props) {
                             appearances: !exclusive ? undefined : (story.appearances ? story.appearances.map(i => stripItem(i)) : []),
                             parent: exclusive ? undefined : {
                                 number: story.parent.number,
+                                title: story.parent.title,
                                 issue: {
                                     series: {
                                         title: story.parent.issue.series.title,

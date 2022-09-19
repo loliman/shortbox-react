@@ -694,6 +694,14 @@ function StoryFields(props) {
     return (
         <React.Fragment>
             <div className="storyAddInputContainer">
+                <span style={{
+                    color: "gray", fontSize: "small"
+                }}>
+                    {props.items[props.index].parent.title}
+                </span>
+
+                <br/>
+
                 <FastField
                     className="field field3"
                     name={"stories[" + props.index + "].number"}
