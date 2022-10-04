@@ -332,10 +332,9 @@ export function ContainsTitleDetailed(props) {
                 </Typography>
             </div>
 
-            {!props.isCover ?
             <div className="chips">
                 {
-                    props.item.url && props.item.number === 0 ?
+                    !props.isCover && props.item.url && props.item.number === 0 ?
                         !smallChip ?
                             <Chip className="chip" label="Cover" color="default"/>
                             : <Chip className="chip" label="C" color="default"/>
@@ -343,7 +342,7 @@ export function ContainsTitleDetailed(props) {
                 }
 
                 {
-                    props.item.onlyapp && props.item.parent ?
+                    !props.isCover && props.item.onlyapp && props.item.parent ?
                         !smallChip ?
                             <Chip className="chip" label="Einzige Veröffentlichung" color="secondary"
                                   icon={<PriorityHighIcon/>}/>
@@ -354,7 +353,7 @@ export function ContainsTitleDetailed(props) {
                 }
 
                 {
-                    props.item.firstapp && props.item.parent ?
+                    !props.isCover && props.item.firstapp && props.item.parent ?
                         <Chip className="chip"
                               label={!smallChip ? "Erstveröffentlichung" : "1."}
                               color="primary"/>
@@ -362,7 +361,7 @@ export function ContainsTitleDetailed(props) {
                 }
 
                 {
-                    props.item.onlytb && props.item.parent ?
+                    !props.isCover && props.item.onlytb && props.item.parent ?
                         <Chip className="chip"
                               label={!smallChip ? "Sonst nur in Taschenbuch" : "TB"}
                               color="default"/>
@@ -370,7 +369,7 @@ export function ContainsTitleDetailed(props) {
                 }
 
                 {
-                    exclusive ?
+                    !props.isCover && exclusive ?
                         !smallChip ?
                             <Chip className="chip" label="Exklusiv" color="secondary"
                                   icon={<PriorityHighIcon/>}/>
@@ -388,7 +387,7 @@ export function ContainsTitleDetailed(props) {
                         <SearchIcon fontSize="small"/>
                     </IconButton>
                 </Tooltip>
-            </div> : ''}
+            </div> 
         </div>
     )
 }
