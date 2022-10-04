@@ -433,7 +433,7 @@ export function IndividualList(props) {
     return(
         <ChipList us={props.us} navigate={props.navigate} label={props.label} hideIfEmpty={props.hideIfEmpty}
                   type={props.type} appRole={props.role}
-                  items={props.item.parent ? props.item.parent.individuals : props.item.individuals}
+                  items={props.item.parent && props.type !== "TRANSLATOR" ? props.item.parent.individuals : props.item.individuals}
                   individual={true}/>
     );
 }

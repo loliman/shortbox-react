@@ -205,8 +205,18 @@ class IssueEditor extends React.Component {
                                 variables.item.publisher = stripItem(variables.item.publisher);
                             if(variables.item.series)
                                 variables.item.series = stripItem(variables.item.series);
-                            if(variables.item.individuals)
-                                variables.item.individuals = variables.item.individuals.map(item => stripItem(item));
+                            if(variables.item.individuals) {
+                                let i = [];
+
+                                variables.item.individuals.forEach(item => {
+                                    if (!i[item.name]) {
+                                        i[item.name] = {name: item.name, type: []};
+                                    }
+                                    i[item.name].type.push(item.type);
+                                });
+
+                                variables.item.individuals = i.map(x => x);
+                            }
                             if(variables.item.arcs)
                                 variables.item.arcs = variables.item.arcs.map(item => stripItem(item));
 
@@ -214,8 +224,21 @@ class IssueEditor extends React.Component {
                                 variables.item.stories = variables.item.stories.map(story => {
                                    if(story.series)
                                        story.series = stripItem(story.series);
-                                   if(story.individuals)
-                                       story.individuals = story.individuals.map(item => stripItem(item));
+                                   if(story.individuals) {
+                                       let i = [];
+
+                                       story.individuals.forEach(item => {
+                                           if (!i[item.name]) {
+                                               i[item.name] = {name: item.name, type: []};
+                                           }
+
+                                           i[item.name].type.push(item.type);
+                                       });
+
+                                       story.individuals = [];
+                                       for (let k in i)
+                                           story.individuals.push(i[k]);
+                                   }
 
                                     if(story.appearances)
                                         story.appearances = story.appearances.map(item => stripItem(item));
@@ -227,8 +250,18 @@ class IssueEditor extends React.Component {
 
                             if(variables.item.features)
                                 variables.item.features = variables.item.features.map(feature => {
-                                    if(feature.individuals)
-                                        feature.individuals= feature.individuals.map(item => stripItem(item));
+                                    if(feature.individuals) {
+                                        let i = [];
+
+                                        feature.individuals.forEach(item => {
+                                            if (!i[item.name]) {
+                                                i[item.name] = {name: item.name, type: []};
+                                            }
+
+                                            i[item.name].type.push(item.type);
+                                        });
+                                        feature.individuals = i.map(x => x);
+                                    }
 
                                     return feature;
                                 });
@@ -237,12 +270,26 @@ class IssueEditor extends React.Component {
                                 variables.item.covers = variables.item.covers.map(cover => {
                                     if(cover.series)
                                         cover.series = stripItem(cover.series);
-                                    if(cover.individuals)
-                                        cover.individuals = cover.individuals.map(item => stripItem(item));
+
+                                    if(cover.individuals) {
+                                        let i = [];
+
+                                        cover.individuals.forEach(item => {
+                                            if (!i[item.name]) {
+                                                i[item.name] = {name: item.name, type: []};
+                                            }
+
+                                            i[item.name].type.push(item.type);
+                                        });
+                                        cover.individuals = i.map(x => x);
+                                    }
+
                                     if(cover.parent && cover.parent.issue && cover.parent.issue.series)
                                         cover.parent.issue.series = stripItem(cover.parent.issue.series);
                                     return cover;
                                 });
+
+                            console.log(variables);
 
                             await mutation({
                                 variables: variables
@@ -579,12 +626,12 @@ class IssueEditor extends React.Component {
 
                                                 <br/>
                                             </React.Fragment> : null
-
+*/}
                                     <Covers setFieldValue={setFieldValue} items={values.covers} {...this.props}
                                         us={values.series.publisher.us} values={values}/>
 
                                     <br/>
-                                    */}
+
 
                                     <div className="formButtons">
                                         <Button disabled={isSubmitting}
@@ -807,9 +854,10 @@ function StoryFieldsNonExclusive(props) {
             <AutoComplete
                 query={individuals}
                 name={"stories[" + index + "].individuals"}
-                nameField="name"
                 type={"TRANSLATOR"}
+                nameField="name"
                 label="Übersetzer"
+                disabled={props.disabled}
                 isMulti
                 creatable
                 variables={{pattern: getPattern(values.stories[index].individuals, "name")}}
@@ -826,6 +874,8 @@ function StoryFieldsNonExclusive(props) {
 export function updateField(option, live, values, setFieldValue, field, pattern) {
     if(typeof option !== "string" || option.trim() !== "") {
         if (live) {
+            values = values ? values : [];
+
             let arr = JSON.parse(JSON.stringify(values));
 
             if(arr.length === 0 || !arr[arr.length-1].pattern) {

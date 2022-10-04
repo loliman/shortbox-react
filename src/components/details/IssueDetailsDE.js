@@ -60,15 +60,17 @@ function Bottom(props) {
                       itemDetails={<FeatureDetails/>}/>
 
             <br/>
-            <br/>
-
-            <Contains {...props} header="Covergalerie"
-                      noEntriesHint="Dieser Ausgabe sind noch keine Cover zugeordnet"
-                      items={props.issue.covers} itemTitle={<ContainsTitleDetailed {...props}/>}
-                      itemDetails={<CoverDetails/>}/>
-
-            <br/>
             <br/>*/}
+
+            { props.issue.covers && props.issue.covers.length > 0 ?
+                <div><Contains {...props} header="Cover"
+                               noEntriesHint="Dieser Ausgabe sind noch keine Cover zugeordnet"
+                               items={props.issue.covers} itemTitle={<ContainsTitleDetailed {...props}/>}
+                               itemDetails={<CoverDetails/>}/>
+
+                    <br/>
+                    <br/></div> : null
+            }
 
             {
                 props.issue.cover ?
@@ -146,7 +148,7 @@ function StoryDetails(props) {
             <IndividualList us={props.us} navigate={props.navigate} label={"Inker"} type={"INKER"} item={props.item} />
             <IndividualList us={props.us} navigate={props.navigate} label={"Kolorist"} type={"COLORIST"} item={props.item} />
             <IndividualList us={props.us} navigate={props.navigate} label={"Letterer"} type={"LETTERER"} item={props.item} />
-            <IndividualList us={props.us} navigate={props.navigate} label={"Übersetzer"} type={"TRANSLATOR"} item={props.item} hideIfEmpty={true}/>
+            <IndividualList us={props.us} navigate={props.navigate} label={"Übersetzer"} type={"TRANSLATOR"} item={props.item} />
             <IndividualList us={props.us} navigate={props.navigate} label={"Verleger"} type={"EDITOR"} item={props.item} />
 
             {
