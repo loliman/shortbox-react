@@ -20,7 +20,7 @@ function IssuePreview(props) {
     if (props.issue.format) {
         variant += props.issue.format;
         if (props.issue.variant)
-            variant += "/" + props.issue.variant;
+            variant += " (" + props.issue.variant + ' Variant)';
     }
 
     let coverUrl = (props.issue.cover && props.issue.cover.url && props.issue.cover.url !== '') ? props.issue.cover.url : "/nocover.jpg";

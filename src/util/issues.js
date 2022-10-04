@@ -24,7 +24,7 @@ export function generateIssueSubHeader(item) {
     if (item.format) {
         header += " " + item.format;
         if (item.variant)
-            header += " " + item.variant;
+            header += " (" + item.variant + " Variant)";
     }
     return header;
 }

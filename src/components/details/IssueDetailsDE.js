@@ -65,7 +65,7 @@ function Bottom(props) {
             { props.issue.covers && props.issue.covers.length > 0 ?
                 <div><Contains {...props} header="Cover"
                                noEntriesHint="Dieser Ausgabe sind noch keine Cover zugeordnet"
-                               items={props.issue.covers} itemTitle={<ContainsTitleDetailed {...props}/>}
+                               items={props.issue.covers} itemTitle={<ContainsTitleDetailed isCover={true} {...props}/>}
                                itemDetails={<CoverDetails/>}/>
 
                     <br/>

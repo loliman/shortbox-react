@@ -318,10 +318,13 @@ export function ContainsTitleDetailed(props) {
             <div className="headingContainer">
                 <div>
                     <Typography
-                        className="heading itemTitle">{generateItemTitle(props.item.issue ? props.item.issue : props.item) + variant}
+                        className="heading itemTitle">{generateItemTitle(props.item.issue ? props.item.issue : props.item)}
                     </Typography>
                     {parentTitle && !(props.mobile && !props.mobileLandscape)
                         ? <Typography className="parentTitle">{parentTitle}</Typography>
+                        : null}
+                    {variant && !(props.mobile && !props.mobileLandscape)
+                        ? <Typography className="parentTitle">{variant} Variant</Typography>
                         : null}
                 </div>
                 <Typography className="heading headingAddInfo">
@@ -329,6 +332,7 @@ export function ContainsTitleDetailed(props) {
                 </Typography>
             </div>
 
+            {!props.isCover ?
             <div className="chips">
                 {
                     props.item.url && props.item.number === 0 ?
@@ -384,7 +388,7 @@ export function ContainsTitleDetailed(props) {
                         <SearchIcon fontSize="small"/>
                     </IconButton>
                 </Tooltip>
-            </div>
+            </div> : ''}
         </div>
     )
 }
@@ -419,7 +423,7 @@ function Variant(props) {
             <img src={coverUrl}
                  alt={props.variant.variant + ' (' + props.variant.format + ')'}/>
             <GridListTileBar
-                title={(props.variant.variant ? props.variant.variant : 'Reguläre Ausgabe') + ' (' + props.variant.format + ')'}
+                title={props.variant.format + ' (' + (props.variant.variant ? props.variant.variant + ' Variant' : 'Reguläre Ausgabe') + ')'}
                 classes={{
                     root: "titleBar",
                     title: "title",
