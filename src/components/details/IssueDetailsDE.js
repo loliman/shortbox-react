@@ -97,7 +97,7 @@ function CoverDetails(props) {
     return (
         <div>
             <div className="individualListContainer"><Typography><b>Artist</b></Typography> {
-                toChipList(props.item.parent.individuals.filter(item => item.type.includes('ARTIST')) ? props.item.parent.individuals.filter(item => item.type.includes('ARTIST')) : props.item, props, "ARTIST")
+                props.item.parent ? toChipList(props.item.parent.individuals.filter(item => item.type.includes('ARTIST')) ? props.item.parent.individuals.filter(item => item.type.includes('ARTIST')) : props.item, props, "ARTIST") : ""
             } </div>
         </div>
     );

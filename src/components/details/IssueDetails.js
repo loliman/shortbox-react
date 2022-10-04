@@ -369,7 +369,7 @@ export function ContainsTitleDetailed(props) {
                 }
 
                 {
-                    !props.isCover && exclusive ?
+                    exclusive ?
                         !smallChip ?
                             <Chip className="chip" label="Exklusiv" color="secondary"
                                   icon={<PriorityHighIcon/>}/>
@@ -379,14 +379,14 @@ export function ContainsTitleDetailed(props) {
                         : null
                 }
 
-                <Tooltip title="Zur Ausgabe">
+                { !exclusive ? <Tooltip title="Zur Ausgabe">
                     <IconButton className="detailsIcon"
                                 onClick={() => props.navigate(exclusive ? "" : generateUrl(issue, !props.us), {filter: null})}
                                 aria-label="Details"
                                 disabled={exclusive}>
                         <SearchIcon fontSize="small"/>
                     </IconButton>
-                </Tooltip>
+                </Tooltip> : null}
             </div>
         </div>
     )

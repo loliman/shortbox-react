@@ -121,18 +121,11 @@ class AutoCompleteContainer extends React.Component {
             },
 
             options: this.props.loading ? [] : this.props.options,
-            onChange: (option) => {
+            onChange: (option, event) => {
                 if(Array.isArray(option)) {
-                    let options = [];
-                    option = option.filter(o => !o.pattern);
-
-                    option.forEach(o => {
-                        o.type = !o.type ? this.props.type : o.type;
-                        o.role = !o.role ? this.props.type : o.role;
-                        options.push(o);
-                    });
-
-                    this.props.onChange(options);
+                    event.type = this.props.type;
+                    event.role = this.props.type;
+                    this.props.onChange(event);
                 } else
                     this.props.onChange(option);
             },

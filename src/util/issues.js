@@ -12,7 +12,7 @@ export function generateItemTitle(item) {
     } else if (item.series)
         return generateLabel(item.series) + " #" + item.number;
     else
-        return "Ohne Titel";
+        return "Exklusiv hier erschienen";
 }
 
 export function generateIssueSubHeader(item) {

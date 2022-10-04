@@ -212,7 +212,8 @@ class IssueEditor extends React.Component {
                                     if (!i[item.name]) {
                                         i[item.name] = {name: item.name, type: []};
                                     }
-                                    i[item.name].type.push(item.type);
+
+                                    i[item.name].type = item.type;
                                 });
 
                                 variables.item.individuals = i.map(x => x);
@@ -232,7 +233,7 @@ class IssueEditor extends React.Component {
                                                i[item.name] = {name: item.name, type: []};
                                            }
 
-                                           i[item.name].type.push(item.type);
+                                           i[item.name].type = item.type;
                                        });
 
                                        story.individuals = [];
@@ -240,8 +241,14 @@ class IssueEditor extends React.Component {
                                            story.individuals.push(i[k]);
                                    }
 
-                                    if(story.appearances)
+                                    if(story.appearances) {
                                         story.appearances = story.appearances.map(item => stripItem(item));
+                                        story.appearances.forEach(a => {
+                                            if (a.type === "FEATURED" || a.type === "ANTAGONIST" || a.type === "SUPPORTING" || a.type === "OTHER")
+                                                a.type = "CHARACTER";
+                                        })
+
+                                    }
 
                                    if(story.parent && story.parent.issue && story.parent.issue.series)
                                        story.parent.issue.series = stripItem(story.parent.issue.series);
@@ -258,7 +265,7 @@ class IssueEditor extends React.Component {
                                                 i[item.name] = {name: item.name, type: []};
                                             }
 
-                                            i[item.name].type.push(item.type);
+                                            i[item.name].type = item.type;
                                         });
                                         feature.individuals = i.map(x => x);
                                     }
@@ -279,7 +286,7 @@ class IssueEditor extends React.Component {
                                                 i[item.name] = {name: item.name, type: []};
                                             }
 
-                                            i[item.name].type.push(item.type);
+                                            i[item.name].type = item.type;
                                         });
                                         cover.individuals = i.map(x => x);
                                     }
@@ -288,8 +295,6 @@ class IssueEditor extends React.Component {
                                         cover.parent.issue.series = stripItem(cover.parent.issue.series);
                                     return cover;
                                 });
-
-                            console.log(variables);
 
                             await mutation({
                                 variables: variables
@@ -744,7 +749,7 @@ function StoryFields(props) {
                 <span style={{
                     color: "gray", fontSize: "small"
                 }}>
-                    {props.items[props.index].parent.title}
+                    {props.items[props.index].parent ? props.items[props.index].parent.title : ""}
                 </span>
 
                 <br/>
@@ -880,7 +885,7 @@ export function updateField(option, live, values, setFieldValue, field, pattern)
 
             if(arr.length === 0 || !arr[arr.length-1].pattern) {
                 let dummy = {pattern: true};
-                dummy[pattern] = "";
+                dummy[pattern] = option;
                 arr.push(dummy);
             }
             else {
@@ -892,7 +897,73 @@ export function updateField(option, live, values, setFieldValue, field, pattern)
             setFieldValue(field, arr);
         }
         else {
-            setFieldValue(field, option)
+            let selected = JSON.parse(JSON.stringify(values));
+            let previous;
+
+            switch (option.action) {
+                case 'deselect-option':
+                case 'select-option':
+                    previous = selected.filter(v => v.name === option.option.name);
+
+                    if (previous.length > 0) {
+                        if (option.option.__typename === "Appearance") {
+                            previous[0].type = option.type;
+                            previous[0].role = option.role;
+                        } else {
+                            if(previous[0].type.filter(v => v === option.type).length === 0) {
+                                previous[0].type.push(option.type);
+                                if(previous[0].role)
+                                    previous[0].role.push(option.role);
+                            }
+                        }
+                    } else {
+                        let value = option.option;
+
+                        if (option.option.__typename === "Appearance") {
+                            value.type = option.type;
+                            value.role = option.role;
+                        } else {
+                            value.type = [option.type];
+                            value.role = [option.role];
+                        }
+
+                        selected.push(value);
+                    }
+
+                    break;
+
+                case 'remove-value':
+                    if (option.name.indexOf("appearances") > 0) {
+                        console.log(selected);
+                        selected = selected.filter(v => v.name + v.type !== option.removedValue.name + option.type);
+                        console.log(selected);
+                    } else {
+                        previous = selected.filter(v => v.name === option.removedValue.name);
+
+                        if (previous.length > 0) {
+                            previous[0].type = previous[0].type.filter(v => v !== option.type);
+                        }
+                    }
+
+                    break;
+
+                case 'clear':
+                    if (option.name.indexOf("appearances") > 0) {
+                        selected = selected.filter(v => v.type !== option.type);
+                    } else {
+                        selected.forEach(s => {
+                            s.type = s.type.filter(v => v !== option.type);
+                        })
+                    }
+                    break;
+
+                default:
+                    break;
+
+            }
+
+            selected = selected.filter(s => s.type.length > 0);
+            setFieldValue(field, selected);
         }
     }
 }
@@ -1040,10 +1111,7 @@ function StoryFieldsExclusive(props) {
                     isMulti
                     creatable
                     variables={{pattern: getPattern(values.stories[index].appearances, "name"), type: "CHARACTER"}}
-                    onChange={(option, live) => {
-                        option.role = "ANTAGONIST";
-                        updateField(option, live, values.stories[index].appearances, setFieldValue, "stories[" + index + "].appearances", "name")
-                    }}
+                    onChange={(option, live) => updateField(option, live, values.stories[index].appearances, setFieldValue, "stories[" + index + "].appearances", "name")}
                     style={{
                         width: props.desktop ? "33.3%" : "100%"
                     }}

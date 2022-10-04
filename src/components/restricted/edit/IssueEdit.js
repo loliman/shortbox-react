@@ -50,6 +50,7 @@ function IssueEdit(props) {
                     defaultValues.arcs = oldArcs;
 
                     let oldStories = [];
+
                     defaultValues.stories.forEach(story => {
                         let exclusive = story.exclusive || defaultValues.series.publisher.us;
 
@@ -58,8 +59,8 @@ function IssueEdit(props) {
                             number: story.number,
                             addinfo: story.addinfo,
                             exclusive: exclusive,
-                            individuals: !exclusive ? undefined : (story.individuals ? story.individuals.map(i => stripItem(i)) : []),
-                            appearances: !exclusive ? undefined : (story.appearances ? story.appearances.map(i => stripItem(i)) : []),
+                            individuals: !exclusive && !story.individuals ? undefined : (story.individuals ? story.individuals.map(i => stripItem(i)) : []),
+                            appearances: !exclusive && !story.individuals ? undefined : (story.appearances ? story.appearances.map(i => stripItem(i)) : []),
                             parent: exclusive ? undefined : {
                                 number: story.parent.number,
                                 title: story.parent.title,
