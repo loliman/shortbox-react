@@ -29,16 +29,22 @@ function IssuePreview(props) {
         <Card className="issuePreview" onClick={() => props.navigate(generateUrl(props.issue, props.us))}>
             <CardMedia
                 image={coverUrl}
-                style={{float: "left", width: '91px', height: '137px', margin: '5px', marginRight: '20px', border: '1px solid #f0f0f0', borderRadius: '3px'}}/>
+                style={{float: "left", width: '91px', height: '141px', margin: '5px', marginRight: '20px', border: '1px solid #f0f0f0', borderRadius: '3px'}}/>
             <CardContent>
-                <div className="issueTitleContainer">
-                    <Typography variant="subtitle1" className="issuePreviewTitle">{generateLabel(props.issue.series) + " #" + props.issue.number}</Typography>
+                <div className="issueTitleContainer" style={{justifyContent: 'space-between'}}>
+                    <div>
+                        <Typography variant="subtitle1" className="issuePreviewTitle">{generateLabel(props.issue.series) + " #" + props.issue.number}</Typography>
 
-                    {
-                        props.issue.title !== '' ?
-                            <Typography className="issuePreviewSubTitle" variant={"subtitle2"}>{props.issue.title}</Typography> :
-                            null
-                    }
+                        {
+                            props.issue.title !== '' ?
+                                <Typography className="issuePreviewSubTitle" variant={"subtitle2"}>{props.issue.title}</Typography> :
+                                null
+                        }
+                    </div>
+
+                    {props.issue.verified ?
+                        <img style={{float: 'right', marginTop: '-10px'}} className="verifiedBadge" src="/verified_badge.png"
+                             alt="verifiziert" height="35"/> : null}
                 </div>
 
                 {

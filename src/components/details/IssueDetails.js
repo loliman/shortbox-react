@@ -387,7 +387,7 @@ export function ContainsTitleDetailed(props) {
                         <SearchIcon fontSize="small"/>
                     </IconButton>
                 </Tooltip>
-            </div> 
+            </div>
         </div>
     )
 }

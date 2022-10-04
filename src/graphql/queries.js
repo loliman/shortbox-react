@@ -78,6 +78,7 @@ export const lastEdited = gql`query LastEdited($filter: Filter, $offset: Int) {
         number,
         format,
         variant,
+        verified,
         title,
         createdAt,
         updatedAt,
