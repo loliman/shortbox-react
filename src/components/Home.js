@@ -55,7 +55,9 @@ class Home extends React.Component {
                                                     Aus diesem Grund unterliegen alle auf Shortbox gelisteten Informationen der&nbsp;
                                                     <a href="https://creativecommons.org/licenses/by/3.0/de/" rel="noopener noreferrer nofollow"
                                                        target="_blank">Creative Commons License 3.0</a> und stehen somit, unter Angabe der Quelle,
-                                                    jedem zur freien und kostenlosen Verfügung. Ausgenommen sind davon lediglich durch den ComicGuide bereitgestellte Cover, welche nicht ohne Genehmigung weiter verbreitet werden dürfen.
+                                                    jedem zur freien und kostenlosen Verfügung. Ausgenommen sind davon lediglich durch den&nbsp;
+                                                    <a href="https://www.comicguide.de/index.php" rel="noopener noreferrer nofollow"
+                                                       target="_blank">ComicGuide</a> bereitgestellte Cover, welche nicht ohne Genehmigung weiter verbreitet werden dürfen.
                                                 </Typography>
 
                                                 <br />
@@ -115,6 +117,7 @@ function HomePlaceholder(props) {
 
                 <div className="ui placeholder">
                     <div className="medium line"/>
+                    <div className="very long line"/>
                     <div className="very long line"/>
                 </div>
 

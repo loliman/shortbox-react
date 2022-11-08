@@ -31,16 +31,14 @@ function IssuePreview(props) {
                 image={coverUrl}
                 style={{float: "left", width: '91px', height: '141px', margin: '5px', marginRight: '20px', border: '1px solid #f0f0f0', borderRadius: '3px'}}/>
             <CardContent>
-                <div className="issueTitleContainer" style={{justifyContent: 'space-between'}}>
-                    <div>
-                        <Typography variant="subtitle1" className="issuePreviewTitle">{generateLabel(props.issue.series) + " #" + props.issue.number}</Typography>
+                <div className="issueTitleContainer">
+                    <Typography variant="subtitle1" className="issuePreviewTitle">{generateLabel(props.issue.series) + " #" + props.issue.number}</Typography>
 
-                        {
-                            props.issue.title !== '' ?
-                                <Typography className="issuePreviewSubTitle" variant={"subtitle2"}>{props.issue.title}</Typography> :
-                                null
-                        }
-                    </div>
+                    {
+                        props.issue.title !== '' ?
+                            <Typography className="issuePreviewSubTitle" variant={"subtitle2"}>{props.issue.title}</Typography> :
+                            null
+                    }
 
                     {props.issue.verified ?
                         <img style={{float: 'right', marginTop: '-10px'}} className="verifiedBadge" src="/verified_badge.png"
@@ -58,7 +56,7 @@ function IssuePreview(props) {
 
                 {
                     props.issue.releasedate ?
-                        <Typography>Erschienen {dateFormat(new Date(props.issue.releasedate), "dd.mm.yyyy")}</Typography> :
+                        <Typography>Erschienen am {dateFormat(new Date(props.issue.releasedate), "dd.mm.yyyy")}</Typography> :
                     props.issue.createdAt === props.issue.updatedAt ?
                         <Typography>Hinzugefügt {date} um {time}</Typography> :
                         <Typography>Bearbeitet {date} um {time}</Typography>

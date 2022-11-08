@@ -36,6 +36,8 @@ class TopBar extends React.Component {
     render() {
         const {toogleDrawer, us, mobile, mobileLandscape, tablet, tabletLandscape} = this.props;
 
+        console.log((mobile && !mobileLandscape));
+
         let isFilter;
         if(this.props.query && this.props.query.filter)
             isFilter = this.props.query.filter;
@@ -53,16 +55,26 @@ class TopBar extends React.Component {
                         >
                             <MenuIcon />
                         </IconButton>
+                    </div>
 
-                        <img onClick={() => this.props.navigate(us ? "/us" : "/de")}
-                             id="logo" src="/Shortbox_Logo.png" alt="Shortbox" height="40"/>
-                        <Typography variant="h6" color="inherit" className="appTitle" noWrap>
-                            {
-                                (mobile && !mobileLandscape) ?
-                                    <BreadCrumbMenu {...this.props} /> :
-                                    <BreadCrumbMenuMobile {...this.props} />
-                            }
-                        </Typography>
+                    <div style={{order: 1, paddingTop: "4px", display: "flex", maxWidth: mobile ? "36%" : "100%"}}>
+                    {
+                        ((mobile && !mobileLandscape)
+                            && (this.props.level === HierarchyLevel.SERIES
+                            || this.props.level === HierarchyLevel.PUBLISHER
+                            || this.props.level === HierarchyLevel.ISSUE)) ?
+                            null :
+                            <img onClick={() => this.props.navigate(us ? "/us" : "/de")}
+                                 id="logo" src="/Shortbox_Logo.png" alt="Shortbox" height="40"/>
+                    }
+
+                    <Typography variant="h6" color="inherit" className="appTitle" noWrap>
+                        {
+                            (mobile && !mobileLandscape) ?
+                                <BreadCrumbMenu {...this.props} /> :
+                                <BreadCrumbMenuMobile {...this.props} />
+                        }
+                    </Typography>
                     </div>
 
                     <div id="headerRight">

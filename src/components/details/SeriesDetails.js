@@ -11,6 +11,8 @@ import EditButton from "../restricted/EditButton";
 import IssuePreview, {IssuePreviewPlaceholder} from "../IssuePreview";
 import withContext from "../generic/withContext";
 import PaginatedQuery from "../generic/PaginatedQuery";
+import {Card} from "@material-ui/core";
+import IssuePreviewSmall, {IssuePreviewPlaceholderSmall} from "../IssuePreviewSmall";
 
 class SeriesDetails extends React.Component {
     componentDidMount() {
@@ -67,86 +69,68 @@ class SeriesDetails extends React.Component {
                                     return(
                                         <React.Fragment>
                                             <CardHeader title={generateLabel(data.seriesd)}
+                                                        subheader={data.seriesd.startyear + ' - ' + (data.seriesd.active ? "heute" : data.seriesd.endyear)}
                                                         action={<EditButton item={data.seriesd}/>}/>
 
                                             <CardContent className="cardContent">
-                                                <Typography variant="h6">Allgemeine Informationen</Typography>
-
-                                                <br />
-
-                                                <Typography>Gestartet: {data.seriesd.startyear}</Typography>
-                                                <Typography>Beendet: {data.seriesd.active ? "läuft noch" : data.seriesd.endyear}</Typography>
-                                                <Typography>
-                                                    {
-                                                        !this.props.us ?
-                                                            "Anzahl Comics mit Marvel Material: " :
-                                                            "Anzahl Comics mit auf deutsch vorliegendem Material: "
-                                                    }
-                                                    {data.seriesd.issueCount}
-                                                </Typography>
-
-                                                <br />
-                                                <br />
                                                 {
                                                     data.seriesd.addinfo ?
                                                         <React.Fragment>
+                                                            <br />
+                                                            <br />
+
                                                             <Typography dangerouslySetInnerHTML={{__html: data.seriesd.addinfo}} />
 
-                                                            <br />
                                                             <br />
                                                         </React.Fragment> : null
                                                 }
 
                                                 {
                                                     data.seriesd.firstIssue ?
-                                                        <React.Fragment>
-                                                            <Typography variant="h6">
-                                                                {
-                                                                    !this.props.us ?
-                                                                        first + "veröffentlichtes Comic mit Marvel Material" :
-                                                                        "Frühestes Comic mit auf deutsch veröffentlichtem Material"
-                                                                }
-                                                            </Typography>
+                                                        <Card>
+                                                            <CardHeader title= {
+                                                                !this.props.us ?
+                                                                    first + "veröffentlichtes Comic mit Marvel Material" :
+                                                                    "Frühestes Comic mit auf deutsch veröffentlichtem Material"
+                                                            }/>
 
-                                                            <br/>
-
-                                                            <IssuePreview {...this.props} issue={data.seriesd.firstIssue}/>
-
-                                                            <br/>
-                                                        </React.Fragment> : null
+                                                            <CardContent>
+                                                                <IssuePreview {...this.props} issue={data.seriesd.firstIssue}/>
+                                                            </CardContent>
+                                                        </Card>: null
                                                 }
-
-                                                {
-                                                    data.seriesd.lastIssue && data.seriesd.issueCount > 1 ?
-                                                        <React.Fragment>
-                                                            <Typography variant="h6">
-                                                                {
-                                                                    !this.props.us ?
-                                                                        "Letztes veröffentlichtes Comic mit Marvel Material" :
-                                                                        "Spätestes Comic mit auf deutsch veröffentlichtem Material"
-                                                                }
-                                                            </Typography>
-
-                                                            <br/>
-
-                                                            <IssuePreview {...this.props} issue={data.seriesd.lastIssue}/>
-
-                                                            <br/>
-                                                        </React.Fragment> : null
-                                                }
-
-                                                <Typography variant="h6">Letzte Änderungen</Typography>
 
                                                 <br />
 
-                                                <div className="history">
-                                                    {
-                                                        lastEdited.map((i, idx) => <IssuePreview {...this.props} key={idx} issue={i}/>)
-                                                    }
+                                                {
+                                                    data.seriesd.lastIssue && data.seriesd.issueCount > 1 ?
+                                                        <Card>
+                                                            <CardHeader title= {
+                                                                !this.props.us ?
+                                                                    "Letztes veröffentlichtes Comic mit Marvel Material" :
+                                                                    "Spätestes Comic mit auf deutsch veröffentlichtem Material"
+                                                            }/>
 
-                                                    {loading}
-                                                </div>
+                                                            <CardContent>
+                                                                <IssuePreview {...this.props} issue={data.seriesd.lastIssue}/>
+                                                            </CardContent>
+                                                        </Card> : null
+                                                }
+
+                                                <br />
+
+                                                <Card>
+                                                    <CardHeader title="Letzte Änderungen"/>
+
+                                                    <CardContent>
+                                                        {
+                                                            lastEdited.map((i, idx) => <IssuePreviewSmall {...this.props} key={idx} issue={i}/>)
+                                                        }
+                                                    </CardContent>
+                                                </Card>
                                             </CardContent>
+
+                                            {loading}
                                         </React.Fragment>
                                     );
                                 }}
@@ -165,67 +149,51 @@ function SeriesDetailsPlaceholder(props) {
             <CardHeader title={<div className="ui placeholder cardHeaderPlaceholder">
                 <div className={"header"}>
                     <div className="medium line"/>
+                    <div className="short line"/>
                 </div>
             </div>} />
 
             <CardContent className="cardContent">
-                <br />
-                <div className="ui placeholder">
-                    <div className="header">
-                        <div className="short line"/>
-                    </div>
-                </div>
-
-                <br />
-
-                <div className="ui placeholder placeholderTypographyLine"><div className="very short line"/></div>
-                <div className="ui placeholder placeholderTypographyLine"><div className="very short line"/></div>
-                <div className="ui placeholder placeholderTypographyLine"><div className="short line"/></div>
-
-                <br />
-                <br />
-                <br />
-
-                <div className="ui placeholder">
-                    <div className="header">
-                        <div className="long line"/>
-                    </div>
-                </div>
+                <Card>
+                    <CardHeader title={<div className="ui placeholder cardHeaderPlaceholder">
+                        <div className={"header"}>
+                            <div className="medium line"/>
+                        </div>
+                    </div>} />
+                    <CardContent>
+                        <IssuePreviewPlaceholder />
+                    </CardContent>
+                </Card>
 
                 <br/>
 
-                <IssuePreviewPlaceholder />
-
-                <br/>
-                <br />
-
-                <div className="ui placeholder">
-                    <div className="header">
-                        <div className="long line"/>
-                    </div>
-                </div>
-
-                <br/>
-
-                <IssuePreviewPlaceholder />
-                <br />
-                <br />
-
-                <div className="ui placeholder">
-                    <div className="header">
-                        <div className="long line"/>
-                    </div>
-                </div>
+                <Card>
+                    <CardHeader title={<div className="ui placeholder cardHeaderPlaceholder">
+                        <div className={"header"}>
+                            <div className="medium line"/>
+                        </div>
+                    </div>} />
+                    <CardContent>
+                        <IssuePreviewPlaceholder />
+                    </CardContent>
+                </Card>
 
                 <br />
 
-                <div className="history">
-                    <IssuePreviewPlaceholder key={1} />
-                    <IssuePreviewPlaceholder key={2} />
-                    <IssuePreviewPlaceholder key={3} />
-                    <IssuePreviewPlaceholder key={4} />
-                    <IssuePreviewPlaceholder key={5} />
-                </div>
+                <Card>
+                    <CardHeader title={<div className="ui placeholder cardHeaderPlaceholder">
+                        <div className={"header"}>
+                            <div className="medium line"/>
+                        </div>
+                    </div>} />
+                    <CardContent>
+                        <IssuePreviewPlaceholderSmall />
+                        <IssuePreviewPlaceholderSmall />
+                        <IssuePreviewPlaceholderSmall />
+                        <IssuePreviewPlaceholderSmall />
+                        <IssuePreviewPlaceholderSmall />
+                    </CardContent>
+                </Card>
             </CardContent>
         </React.Fragment>
     );

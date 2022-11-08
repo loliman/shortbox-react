@@ -50,10 +50,14 @@ function Bottom(props) {
             <br/>
             <br/>
 
+            { props.issue.covers && props.issue.covers.length > 0 && props.issue.covers[0].children
+            && props.issue.covers[0].children.length > 0 ?
+
             <Contains {...props} header="Cover erschienen in"
                       noEntriesHint="Das Cover ist noch keinen deutschen Ausgaben zugeordnet"
                       items={props.issue.covers[0] ? props.issue.covers[0].children.map(c => c.issue) : []}
-                      itemTitle={<ContainsTitleDetailed {...props}/>}/>
+                      itemTitle={<ContainsTitleDetailed {...props}/>}/> : null
+            }
 
             <br/>
             <br/>

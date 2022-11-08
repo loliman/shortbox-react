@@ -30,6 +30,8 @@ body {
     align-self: center;
     margin-left: 10px;
     cursor: pointer;
+    height: auto;
+    max-height: 40px;
 }
 
 #toolbar {
@@ -40,12 +42,11 @@ body {
 }
 
 #headerLeft {
-    order: 1;
+    order: 0;
     flex: 1;
     opacity: 1;
-    padding-right: 20px;
     overflow: hidden;
-    min-width: auto;
+    min-width: 35px;
     max-width: fit-content;
     align-self: center;
     transition:all 0.1s ease;
@@ -542,7 +543,7 @@ _:-ms-fullscreen, :root #main {
         max-width: 100%;
         order: 2;
         flex: 0.15;
-        margin-left: auto;
+        margin-left: 10px;
         transition:flex 0.3s ease;
         align-self: center;
         -webkit-transition: flex 0.3s ease;
@@ -657,6 +658,10 @@ _:-ms-fullscreen, :root #main {
     #headerSearch .outerAutoComplete {
         border: none !important;
     }
+
+    .issueTitleContainer {
+        max-width: 16em;
+    }
 }
 
 /*
@@ -724,6 +729,10 @@ _:-ms-fullscreen, :root #main {
 
     #headerSearch .outerAutoComplete {
         border: none !important;
+    }
+
+    .issueTitleContainer {
+        max-width: 16em;
     }
 }
 
@@ -858,6 +867,10 @@ _:-ms-fullscreen, :root #main {
 
     #headerSearch .outerAutoComplete {
         border: none !important;
+    }
+
+    .issueTitleContainer {
+        max-width: 16em;
     }
 }
 
@@ -1054,6 +1067,13 @@ span[class^="MuiSwitch-bar-"] {
 
 .summary {
     border: 0px solid #f0f0f0 !important;
+    -webkit-box-shadow: unset !important;
+    -moz-box-shadow: unset !important;
+    box-shadow: unset !important;
+}
+
+.summary-sm {
+    border: 1px solid #f0f0f0 !important;
     -webkit-box-shadow: unset !important;
     -moz-box-shadow: unset !important;
     box-shadow: unset !important;
@@ -1261,15 +1281,24 @@ span[class^="MuiSwitch-bar-"] {
     display: flex;
     align-items: flex-end;
     text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .issuePreviewTitle {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .issuePreviewSubTitle {
     width: auto;
     padding-left: 5px;
     padding-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .itemTitle {
@@ -1431,6 +1460,10 @@ span[class^="MuiSwitch-bar-"] {
 }
 
 .issuePreviewHeaderPlaceholder {
+    width: 100% !important;
+    margin-top: -4px !important;
+    margin-bottom: 8px !important;
+    padding-right: 0 !important;
 }
 
 .placeholderTypographyLine {
@@ -1442,7 +1475,8 @@ span[class^="MuiSwitch-bar-"] {
 }
 
 .cardHeaderPlaceholder {
-    margin-top: 20px;
+    margin-top: 22px;
+    margin-bottom: 2px;
 }
 
 .mediaPreview {

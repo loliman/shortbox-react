@@ -5,7 +5,6 @@ import IssueDetails, {
     AppearanceList,
     Contains,
     ContainsTitleDetailed,
-    ContainsTitleSimple,
     DetailsRow,
     IndividualList, toChipList
 } from "./IssueDetails";
