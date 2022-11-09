@@ -555,13 +555,11 @@ function expanded(item, filter) {
 
     if(item.__typename === 'Story') {
         if(currentFilter.arcs)
-            currentFilter.arcs.forEach(i => {
-                if(compare.issue)
-                    compare.issue.arcs.forEach(o => {
-                        if(i.title === o.title && i.type === o.type)
-                            expanded = true;
-                    })
-            });
+            if(compare.issue)
+                compare.issue.arcs.forEach(o => {
+                    if(currentFilter.arcs === o.title)
+                        expanded = true;
+                })
 
         if(currentFilter.individuals)
             currentFilter.individuals.forEach(i => {
@@ -572,12 +570,10 @@ function expanded(item, filter) {
             });
 
         if(currentFilter.appearances)
-            currentFilter.appearances.forEach(i => {
-                compare.appearances.forEach(o => {
-                    if(i.name === o.name && i.type === o.type)
-                        expanded = true;
-                })
-            });
+            compare.appearances.forEach(o => {
+                if(currentFilter.appearances === o.name)
+                    expanded = true;
+            })
     } else if(item.__typename === 'Cover') {
         if(currentFilter.individuals)
             currentFilter.individuals.forEach(i => {

@@ -907,7 +907,7 @@ export function updateField(option, live, values, setFieldValue, field, pattern)
                     previous = selected.filter(v => v.name === option.option.name && !v.pattern);
 
                     if (previous.length > 0) {
-                        if (option.option.__typename === "Appearance" || option.option.__typename === "Arc") {
+                        if (option.option.__typename === "Appearance") {
                             previous[0].type = option.type;
                             previous[0].role = option.role;
                         } else {
@@ -920,7 +920,7 @@ export function updateField(option, live, values, setFieldValue, field, pattern)
                     } else {
                         let value = option.option;
 
-                        if (option.option.__typename === "Appearance" || option.option.__typename === "Arc") {
+                        if (option.option.__typename === "Appearance") {
                             value.type = option.type;
                             value.role = option.role;
                         } else {
@@ -934,7 +934,7 @@ export function updateField(option, live, values, setFieldValue, field, pattern)
                     break;
 
                 case 'remove-value':
-                    if (option.name.indexOf("appearances") >= 0 || option.name.indexOf("arcs") >= 0) {
+                    if (option.name.indexOf("appearances") >= 0) {
                         if(option.removedValue.name)
                             selected = selected.filter(v => v.name + v.type !== option.removedValue.name + option.type);
                         else
@@ -953,9 +953,7 @@ export function updateField(option, live, values, setFieldValue, field, pattern)
                     break;
 
                 case 'clear':
-                    if(option.name.indexOf("arcs") >= 0) {
-                        selected = [];
-                    } else if (option.name.indexOf("appearances") >= 0) {
+                    if (option.name.indexOf("appearances") >= 0) {
                         selected = selected.filter(v => v.type !== option.type);
                     } else {
                         selected.forEach(s => {

@@ -41,9 +41,9 @@ function Filter(props) {
             publishers: [],
             series: [],
             numbers: [{number: "", compare: ">", variant: ""}],
-            arcs: [],
+            arcs: "",
             individuals: [],
-            appearances: [],
+            appearances: "",
             firstPrint: false,
             onlyPrint: false,
             otherTb: false,
@@ -86,11 +86,11 @@ function Filter(props) {
         if(!defaultValues.numbers)
             defaultValues.numbers = [{number: "", compare: ">", variant: ""}];
         if(!defaultValues.arcs)
-            defaultValues.arcs = [];
+            defaultValues.arcs = "";
         if(!defaultValues.individuals)
             defaultValues.individuals = [];
         if(!defaultValues.appearances)
-            defaultValues.appearances = [];
+            defaultValues.appearances = "";
         if(!defaultValues.firstPrint)
             defaultValues.firstPrint = false;
         if(!defaultValues.onlyPrint)
@@ -155,14 +155,18 @@ function Filter(props) {
                         if(v.numbers.length === 0)
                             v.numbers = undefined;
                     }
-                    if (values.arcs.length > 0) {
+                    /*if (values.arcs.length > 0) {
                         v.arcs = [];
                         values.arcs.forEach((o) => {
                             let item = stripItem(o);
                             item.role = undefined;
                             v.arcs.push(item);
                         });
+                    }*/
+                    if (values.arcs) {
+                        v.arcs = values.arcs;
                     }
+
                     if (values.individuals.length > 0) {
                         v.individuals = [];
                         values.individuals.forEach((o) => {
@@ -171,11 +175,14 @@ function Filter(props) {
                             v.individuals.push(item);
                         });
                     }
-                    if (values.appearances.length > 0) {
+                    /*if (values.appearances.length > 0) {
                         v.appearances = [];
                         values.appearances.forEach((o) => {
                             v.appearances.push(stripItem(o))
                         });
+                    }*/
+                    if (values.appearances) {
+                        v.appearances = values.appearances;
                     }
                     if (values.firstPrint)
                         v.firstPrint = true;
@@ -558,18 +565,24 @@ function Filter(props) {
                                     </React.Fragment> : null
                                 }
 
-                                <AutoComplete
+                                <FastField
+                                    className={props.desktop ? "field field40" : "field field90"}
+                                    name={"arcs"}
+                                    style={{
+                                        width: props.desktop ? "40%" : "99%"
+                                    }}
+                                    label="Teil von (Event, Story Arc, Story Line)"
+                                    component={TextField}
+                                />
+
+                                {/*<AutoComplete
                                     query={arcs}
                                     name={"arcs"}
                                     nameField="title"
-                                    type="EVENT"
                                     label="Teil von (Event, Story Arc, Story Line)"
                                     isMulti
                                     variables={{pattern: getPattern(values.arcs, "title")}}
                                     onChange={(option, live) => updateField(option, live, values.arcs, setFieldValue, "arcs", "title")}
-                                    style={{
-                                        width: props.desktop ? "40%" : "99%"
-                                    }}
                                     generateLabel={(e) => {
                                         let type;
                                         switch (e.type) {
@@ -586,7 +599,7 @@ function Filter(props) {
 
                                        return e.title + " (" + type + ")";
                                     }}
-                                />
+                                />*/}
 
                                 <br/>
                                 <br/>
@@ -748,7 +761,18 @@ function Filter(props) {
                                     <React.Fragment>
                                         <Typography variant="h6">Auftritte</Typography>
 
-                                        <AutoComplete
+                                        <FastField
+                                            className={props.desktop ? "field field40" : "field field90"}
+                                            name={"appearances"}
+                                            style={{
+                                                width: props.desktop ? "40%" : "99%"
+                                            }}
+                                            label="Auftritte (Personen, Gegenstände, Orte, ...)"
+                                            component={TextField}
+                                        />
+
+
+                                        {/*<AutoComplete
                                             query={apps}
                                             name={"appearances"}
                                             nameField="name"
@@ -760,7 +784,7 @@ function Filter(props) {
                                                 width: props.desktop ? "80%" : "99%"
                                             }}
                                             generateLabel={(e) => getType(e) + e.name}
-                                        />
+                                        />*/}
 
                                         <br/>
                                         <br/>
@@ -784,7 +808,7 @@ function Filter(props) {
                                                     numbers: [{number: "", compare: ">", variant: ""}],
                                                     arcs: [],
                                                     individuals: [],
-                                                    appearances: [],
+                                                    appearances: "",
                                                     firstPrint: false,
                                                     onlyPrint: false,
                                                     otherTb: false,

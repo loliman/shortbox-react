@@ -5,14 +5,17 @@ import Layout from "../Layout";
 import {Query} from "react-apollo";
 import QueryResult from "../generic/QueryResult";
 import {lastEdited, publisher} from "../../graphql/queries";
-import {generateLabel, getSelected} from "../../util/hierarchy";
+import {generateLabel, generateUrl, getSelected} from "../../util/hierarchy";
 import Typography from "@material-ui/core/es/Typography/Typography";
 import EditButton from "../restricted/EditButton";
 import withContext from "../generic/withContext";
 import IssuePreview, {IssuePreviewPlaceholder} from "../IssuePreview";
 import PaginatedQuery from "../generic/PaginatedQuery";
-import {Card} from "@material-ui/core";
+import {Card, Select} from "@material-ui/core";
 import IssuePreviewSmall, {IssuePreviewPlaceholderSmall} from "../IssuePreviewSmall";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
 
 class PublisherDetails extends React.Component {
     componentDidMount() {
@@ -23,8 +26,25 @@ class PublisherDetails extends React.Component {
     render() {
         let selected = getSelected(this.props.match.params);
 
+        let filter;
+        if(this.props.query && this.props.query.filter) {
+            try {
+                filter = JSON.parse(this.props.query.filter);
+                filter.us = this.props.us;
+                filter.publishers = [{
+                    name: this.props.selected.publisher.name,
+                    us: this.props.us
+                }];
+            } catch (e) {
+                //
+            }
+        } else {
+            filter = {us: this.props.us, publishers: [{name: this.props.selected.publisher.name, us: this.props.us}]};
+        }
+
         return (
-            <PaginatedQuery query={lastEdited} variables={{filter: {us: this.props.us, publishers: [{name: this.props.selected.publisher.name}]}}}
+            <PaginatedQuery query={lastEdited} variables={{filter: filter,
+                order: this.props.query ? this.props.query.order : 'updatedAt'}}
                             onCompleted={() => this.props.unregisterLoadingComponent("PublisherDetails_history")}>
                 {({error, data, fetchMore, fetching, hasMore}) => {
                     let lastEdited = data ? data.lastEdited : [];
@@ -52,7 +72,7 @@ class PublisherDetails extends React.Component {
                                     if (this.props.appIsLoading || error || lastEditedError || !data.publisher)
                                         return <QueryResult error={error || lastEditedError} data={data ? data.publisher : null}
                                                             selected={selected}
-                                                            placeholder={<PublisherDetailsPlaceholder />}
+                                                            placeholder={<PublisherDetailsPlaceholder {...this.props} />}
                                                             placeholderCount={1}/>;
 
                                     let first = data.publisher.issueCount === 1 ? (data.publisher.active ? "Bisher einziges " : "Einziges ") : "Erstes ";
@@ -76,8 +96,8 @@ class PublisherDetails extends React.Component {
                                                 }
 
                                                 {
-                                                    data.publisher.firstIssue ?
-                                                        <Card>
+                                                    !this.props.query.filter && data.publisher.firstIssue ?
+                                                        <Card className={"issuePreview"}>
                                                             <CardHeader title= {
                                                                 !this.props.us ?
                                                                     first + "veröffentlichtes Comic mit Marvel Material" :
@@ -90,11 +110,11 @@ class PublisherDetails extends React.Component {
                                                         </Card>: null
                                                 }
 
-                                                <br />
+                                                { !this.props.query.filter ? <br /> : null }
 
                                                 {
-                                                    data.publisher.lastIssue && data.publisher.issueCount > 1 ?
-                                                        <Card>
+                                                    !this.props.query.filter && data.publisher.lastIssue && data.publisher.issueCount > 1 ?
+                                                        <Card className={"issuePreview"}>
                                                             <CardHeader title= {
                                                                 !this.props.us ?
                                                                     "Letztes veröffentlichtes Comic mit Marvel Material" :
@@ -107,12 +127,33 @@ class PublisherDetails extends React.Component {
                                                         </Card> : null
                                                 }
 
-                                                <br />
+                                                { !this.props.query.filter ? <br /> : null }
 
-                                                <Card>
+                                                <Card className={"issuePreview"}>
                                                     <CardHeader title="Letzte Änderungen"/>
 
                                                     <CardContent>
+                                                        <FormControl className={"field field10"} style={{float:"right", width: "200px"}}>
+                                                            <InputLabel id="demo-simple-select-label">Sortieren nach</InputLabel>
+                                                            <Select
+                                                                id="demo-simple-select"
+                                                                value={this.props.query.order ? this.props.query.order : "updatedAt"}
+                                                                label="Sortieren nach"
+                                                                onChange={e =>
+                                                                    this.props.navigate(generateUrl(this.props.selected, this.props.us),
+                                                                        {filter: this.props.query.filter, order: e.target.value})}>
+                                                                <MenuItem value={"updatedAt"}>Änderungsdatum</MenuItem>
+                                                                <MenuItem value={"createdAt"}>Erfassungsdatum</MenuItem>
+                                                                <MenuItem value={"releasedate"}>Erscheinungsdatum</MenuItem>
+                                                                <MenuItem value={"series"}>Serie</MenuItem>
+                                                                <MenuItem value={"publisher"}>Verlag</MenuItem>
+                                                            </Select>
+                                                        </FormControl>
+
+                                                        <br />
+                                                        <br />
+                                                        <br />
+
                                                         {
                                                             lastEdited.map((i, idx) => <IssuePreviewSmall {...this.props} key={idx} issue={i}/>)
                                                         }
@@ -144,7 +185,9 @@ function PublisherDetailsPlaceholder(props) {
             </div>} />
 
             <CardContent className="cardContent">
-                <Card>
+
+            { !props.query.filter ? <React.Fragment>
+                <Card className={"issuePreview"}>
                     <CardHeader title={<div className="ui placeholder cardHeaderPlaceholder">
                         <div className={"header"}>
                             <div className="medium line"/>
@@ -157,7 +200,7 @@ function PublisherDetailsPlaceholder(props) {
 
                 <br/>
 
-                <Card>
+                <Card className={"issuePreview"}>
                     <CardHeader title={<div className="ui placeholder cardHeaderPlaceholder">
                         <div className={"header"}>
                             <div className="medium line"/>
@@ -168,9 +211,9 @@ function PublisherDetailsPlaceholder(props) {
                     </CardContent>
                 </Card>
 
-                <br />
+                <br /> </React.Fragment> : null}
 
-                <Card>
+                <Card className={"issuePreview"}>
                     <CardHeader title={<div className="ui placeholder cardHeaderPlaceholder">
                         <div className={"header"}>
                             <div className="medium line"/>

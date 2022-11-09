@@ -50,7 +50,6 @@ function IssuePreview(props) {
                         <Typography className="issuePreviewTitleVariant" variant={"caption"}>{variant}</Typography> :
                         null
                 }
-                <Typography variant="caption">{generateLabel(props.issue.series.publisher)}</Typography>
 
                 <br />
 

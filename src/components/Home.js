@@ -8,6 +8,11 @@ import QueryResult from "./generic/QueryResult";
 import {withContext} from "./generic";
 import IssuePreview, {IssuePreviewPlaceholder} from "./IssuePreview";
 import PaginatedQuery from "./generic/PaginatedQuery";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import {Select} from "@material-ui/core";
+import {generateUrl} from "../util/hierarchy";
 
 class Home extends React.Component {
     componentDidMount() {
@@ -15,8 +20,21 @@ class Home extends React.Component {
     }
 
     render() {
+        let filter;
+        if(this.props.query && this.props.query.filter) {
+            try {
+                filter = JSON.parse(this.props.query.filter);
+                filter.us = this.props.us;
+            } catch (e) {
+                //
+            }
+        } else {
+            filter = {us: this.props.us};
+        }
+
         return (
-            <PaginatedQuery query={lastEdited} variables={{filter: {us: this.props.us}}}
+            <PaginatedQuery query={lastEdited} variables={{filter: filter,
+                            order: this.props.query ? this.props.query.order : 'updatedAt'}}
                             onCompleted={() => this.props.unregisterLoadingComponent("Home")}>
                 {({error, data, fetchMore, fetching, hasMore, networkStatus}) => {
                     let loading;
@@ -42,7 +60,7 @@ class Home extends React.Component {
                                             <CardHeader title="Willkommen auf Shortbox "
                                                         subheader="Das deutsche Archiv für Marvel Comics "/>
 
-                                            <CardContent className="cardContent">
+                                            <CardContent className="cardContent" style={{display: "flex", flexDirection: "column"}}>
                                                 <Typography>
                                                     Shortbox listet alle deutschen Marvel Veröffentlichungen detailliert auf und ordnet diese den entsprechenden US Geschichten zu.<br /><br />
 
@@ -62,6 +80,25 @@ class Home extends React.Component {
 
                                                 <br />
                                                 <br />
+
+                                                <FormControl className={"field field10"} style={{alignSelf: "end", width: "200px"}}>
+                                                    <InputLabel id="demo-simple-select-label">Sortieren nach</InputLabel>
+                                                    <Select
+                                                        id="demo-simple-select"
+                                                        value={this.props.query.order ? this.props.query.order : "updatedAt"}
+                                                        label="Sortieren nach"
+                                                        onChange={e =>
+                                                            this.props.navigate(generateUrl(this.props.selected, this.props.us),
+                                                                {filter: this.props.query.filter, order: e.target.value})}>
+                                                        <MenuItem value={"updatedAt"}>Änderungsdatum</MenuItem>
+                                                        <MenuItem value={"createdAt"}>Erfassungsdatum</MenuItem>
+                                                        <MenuItem value={"releasedate"}>Erscheinungsdatum</MenuItem>
+                                                        <MenuItem value={"series"}>Serie</MenuItem>
+                                                        <MenuItem value={"publisher"}>Verlag</MenuItem>
+                                                    </Select>
+                                                </FormControl>
+
+                                                <br/>
 
                                                 <div className="history">
                                                     {data.lastEdited.map((i, idx) => <IssuePreview {...this.props} key={idx} issue={i}/>)}
