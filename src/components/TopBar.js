@@ -36,8 +36,6 @@ class TopBar extends React.Component {
     render() {
         const {toogleDrawer, us, mobile, mobileLandscape, tablet, tabletLandscape} = this.props;
 
-        console.log((mobile && !mobileLandscape));
-
         let isFilter;
         if(this.props.query && this.props.query.filter)
             isFilter = this.props.query.filter;

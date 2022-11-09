@@ -562,7 +562,8 @@ function Filter(props) {
                                     query={arcs}
                                     name={"arcs"}
                                     nameField="title"
-                                    label="Teil von"
+                                    type="EVENT"
+                                    label="Teil von (Event, Story Arc, Story Line)"
                                     isMulti
                                     variables={{pattern: getPattern(values.arcs, "title")}}
                                     onChange={(option, live) => updateField(option, live, values.arcs, setFieldValue, "arcs", "title")}
@@ -751,7 +752,7 @@ function Filter(props) {
                                             query={apps}
                                             name={"appearances"}
                                             nameField="name"
-                                            label="Auftritte"
+                                            label="Auftritte (Personen, Gegenstände, Orte, ...)"
                                             isMulti
                                             variables={{pattern: getPattern(values.appearances, "name")}}
                                             onChange={(option, live) => updateField(option, live, values.appearances, setFieldValue, "appearances", "name")}

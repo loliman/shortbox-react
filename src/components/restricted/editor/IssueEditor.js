@@ -25,6 +25,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import MenuItem from "@material-ui/core/MenuItem";
 import Tooltip from "@material-ui/core/Tooltip";
+import {isArray} from "lodash";
 
 
 const formats = ['Heft', 'Mini Heft', 'Magazin', 'Prestige', 'Softcover', 'Hardcover', 'Taschenbuch', 'Album',
@@ -897,16 +898,16 @@ export function updateField(option, live, values, setFieldValue, field, pattern)
             setFieldValue(field, arr);
         }
         else {
-            let selected = JSON.parse(JSON.stringify(values));
+            let selected = JSON.parse(JSON.stringify(values.filter(v => !v.pattern)));
             let previous;
 
             switch (option.action) {
                 case 'deselect-option':
                 case 'select-option':
-                    previous = selected.filter(v => v.name === option.option.name);
+                    previous = selected.filter(v => v.name === option.option.name && !v.pattern);
 
                     if (previous.length > 0) {
-                        if (option.option.__typename === "Appearance") {
+                        if (option.option.__typename === "Appearance" || option.option.__typename === "Arc") {
                             previous[0].type = option.type;
                             previous[0].role = option.role;
                         } else {
@@ -919,7 +920,7 @@ export function updateField(option, live, values, setFieldValue, field, pattern)
                     } else {
                         let value = option.option;
 
-                        if (option.option.__typename === "Appearance") {
+                        if (option.option.__typename === "Appearance" || option.option.__typename === "Arc") {
                             value.type = option.type;
                             value.role = option.role;
                         } else {
@@ -933,14 +934,18 @@ export function updateField(option, live, values, setFieldValue, field, pattern)
                     break;
 
                 case 'remove-value':
-                    if (option.name.indexOf("appearances") > 0) {
-                        console.log(selected);
-                        selected = selected.filter(v => v.name + v.type !== option.removedValue.name + option.type);
-                        console.log(selected);
+                    if (option.name.indexOf("appearances") >= 0 || option.name.indexOf("arcs") >= 0) {
+                        if(option.removedValue.name)
+                            selected = selected.filter(v => v.name + v.type !== option.removedValue.name + option.type);
+                        else
+                            selected = selected.filter(v => v.title + v.type !== option.removedValue.title + option.type);
                     } else {
-                        previous = selected.filter(v => v.name === option.removedValue.name);
+                        if(option.removedValue.name)
+                            previous = selected.filter(v => v.name === option.removedValue.name);
+                        else
+                            previous = selected.filter(v => v.title === option.removedValue.title);
 
-                        if (previous.length > 0) {
+                        if (previous.length > 0 && isArray(previous[0].type)) {
                             previous[0].type = previous[0].type.filter(v => v !== option.type);
                         }
                     }
@@ -948,7 +953,9 @@ export function updateField(option, live, values, setFieldValue, field, pattern)
                     break;
 
                 case 'clear':
-                    if (option.name.indexOf("appearances") > 0) {
+                    if(option.name.indexOf("arcs") >= 0) {
+                        selected = [];
+                    } else if (option.name.indexOf("appearances") >= 0) {
                         selected = selected.filter(v => v.type !== option.type);
                     } else {
                         selected.forEach(s => {
