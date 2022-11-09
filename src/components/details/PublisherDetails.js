@@ -137,7 +137,7 @@ class PublisherDetails extends React.Component {
                                                             <InputLabel id="demo-simple-select-label">Sortieren nach</InputLabel>
                                                             <Select
                                                                 id="demo-simple-select"
-                                                                value={this.props.query.order ? this.props.query.order : "updatedAt"}
+                                                                value={this.props.query && this.props.query.order ? this.props.query.order : "updatedAt"}
                                                                 label="Sortieren nach"
                                                                 onChange={e =>
                                                                     this.props.navigate(generateUrl(this.props.selected, this.props.us),
