@@ -141,7 +141,7 @@ class PublisherDetails extends React.Component {
                                                                 label="Sortieren nach"
                                                                 onChange={e =>
                                                                     this.props.navigate(generateUrl(this.props.selected, this.props.us),
-                                                                        {filter: this.props.query.filter, order: e.target.value})}>
+                                                                        {filter: this.props.query? this.props.query.filter : null, order: e.target.value})}>
                                                                 <MenuItem value={"updatedAt"}>Änderungsdatum</MenuItem>
                                                                 <MenuItem value={"createdAt"}>Erfassungsdatum</MenuItem>
                                                                 <MenuItem value={"releasedate"}>Erscheinungsdatum</MenuItem>
