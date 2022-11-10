@@ -97,7 +97,7 @@ class PublisherDetails extends React.Component {
 
                                                 {
                                                     (!this.props.query || !this.props.query.filter) && data.publisher.firstIssue ?
-                                                        <Card className={"issuePreview"}>
+                                                        <React.Fragment>
                                                             <CardHeader title= {
                                                                 !this.props.us ?
                                                                     first + "veröffentlichtes Comic mit Marvel Material" :
@@ -107,14 +107,14 @@ class PublisherDetails extends React.Component {
                                                             <CardContent>
                                                                 <IssuePreview {...this.props} issue={data.publisher.firstIssue}/>
                                                             </CardContent>
-                                                        </Card>: null
+                                                        </React.Fragment>: null
                                                 }
 
                                                 { (!this.props.query || !this.props.query.filter) ? <br /> : null }
 
                                                 {
                                                     (!this.props.query || !this.props.query.filter) && data.publisher.lastIssue && data.publisher.issueCount > 1 ?
-                                                        <Card className={"issuePreview"}>
+                                                        <React.Fragment>
                                                             <CardHeader title= {
                                                                 !this.props.us ?
                                                                     "Letztes veröffentlichtes Comic mit Marvel Material" :
@@ -124,12 +124,12 @@ class PublisherDetails extends React.Component {
                                                             <CardContent>
                                                                 <IssuePreview {...this.props} issue={data.publisher.lastIssue}/>
                                                             </CardContent>
-                                                        </Card> : null
+                                                        </React.Fragment> : null
                                                 }
 
                                                 { (!this.props.query || !this.props.query.filter) ? <br /> : null }
 
-                                                <Card className={"issuePreview"}>
+                                                <React.Fragment>
                                                     <CardHeader title="Letzte Änderungen"/>
 
                                                     <CardContent>
@@ -158,7 +158,7 @@ class PublisherDetails extends React.Component {
                                                             lastEdited.map((i, idx) => <IssuePreviewSmall {...this.props} key={idx} issue={i}/>)
                                                         }
                                                     </CardContent>
-                                                </Card>
+                                                </React.Fragment>
                                             </CardContent>
 
                                             {loading}
@@ -187,7 +187,7 @@ function PublisherDetailsPlaceholder(props) {
             <CardContent className="cardContent">
 
             { !props.query || !props.query.filter ? <React.Fragment>
-                <Card className={"issuePreview"}>
+                <React.Fragment>
                     <CardHeader title={<div className="ui placeholder cardHeaderPlaceholder">
                         <div className={"header"}>
                             <div className="medium line"/>
@@ -196,11 +196,11 @@ function PublisherDetailsPlaceholder(props) {
                     <CardContent>
                         <IssuePreviewPlaceholder />
                     </CardContent>
-                </Card>
+                </React.Fragment>
 
                 <br/>
 
-                <Card className={"issuePreview"}>
+                <React.Fragment>
                     <CardHeader title={<div className="ui placeholder cardHeaderPlaceholder">
                         <div className={"header"}>
                             <div className="medium line"/>
@@ -209,11 +209,11 @@ function PublisherDetailsPlaceholder(props) {
                     <CardContent>
                         <IssuePreviewPlaceholder />
                     </CardContent>
-                </Card>
+                </React.Fragment>
 
                 <br /> </React.Fragment> : null}
 
-                <Card className={"issuePreview"}>
+                <React.Fragment>
                     <CardHeader title={<div className="ui placeholder cardHeaderPlaceholder">
                         <div className={"header"}>
                             <div className="medium line"/>
@@ -226,7 +226,7 @@ function PublisherDetailsPlaceholder(props) {
                         <IssuePreviewPlaceholderSmall />
                         <IssuePreviewPlaceholderSmall />
                     </CardContent>
-                </Card>
+                </React.Fragment>
             </CardContent>
         </React.Fragment>
     );

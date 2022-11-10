@@ -119,7 +119,7 @@ class SeriesDetails extends React.Component {
 
                                                 {
                                                     (!this.props.query || !this.props.query.filter) && data.seriesd.firstIssue ?
-                                                        <Card className={"issuePreview"}>
+                                                        <React.Fragment>
                                                             <CardHeader title= {
                                                                 !this.props.us ?
                                                                     first + "veröffentlichtes Comic mit Marvel Material" :
@@ -129,14 +129,14 @@ class SeriesDetails extends React.Component {
                                                             <CardContent>
                                                                 <IssuePreview {...this.props} issue={data.seriesd.firstIssue}/>
                                                             </CardContent>
-                                                        </Card>: null
+                                                        </React.Fragment>: null
                                                 }
 
                                                 { (!this.props.query || !this.props.query.filter) ? <br /> : null }
 
                                                 {
                                                     (!this.props.query || !this.props.query.filter) && data.seriesd.lastIssue && data.seriesd.issueCount > 1 ?
-                                                        <Card className={"issuePreview"}>
+                                                        <React.Fragment>
                                                             <CardHeader title= {
                                                                 !this.props.us ?
                                                                     "Letztes veröffentlichtes Comic mit Marvel Material" :
@@ -146,12 +146,12 @@ class SeriesDetails extends React.Component {
                                                             <CardContent>
                                                                 <IssuePreview {...this.props} issue={data.seriesd.lastIssue}/>
                                                             </CardContent>
-                                                        </Card> : null
+                                                        </React.Fragment> : null
                                                 }
 
                                                 { (!this.props.query || !this.props.query.filter) ? <br /> : null }
 
-                                                <Card className={"issuePreview"}>
+                                                <React.Fragment>
                                                     <CardHeader title="Letzte Änderungen"/>
 
                                                     <FormControl className={"field field10"} style={{float:"right", width: "200px"}}>
@@ -180,7 +180,7 @@ class SeriesDetails extends React.Component {
                                                             lastEdited.map((i, idx) => <IssuePreviewSmall {...this.props} key={idx} issue={i}/>)
                                                         }
                                                     </CardContent>
-                                                </Card>
+                                                </React.Fragment>
                                             </CardContent>
 
                                             {loading}
@@ -208,7 +208,7 @@ function SeriesDetailsPlaceholder(props) {
 
             <CardContent className="cardContent">
                 { !props.query || !props.query.filter ? <React.Fragment>
-                    <Card className={"issuePreview"}>
+                    <React.Fragment>
                         <CardHeader title={<div className="ui placeholder cardHeaderPlaceholder">
                             <div className={"header"}>
                                 <div className="medium line"/>
@@ -217,11 +217,11 @@ function SeriesDetailsPlaceholder(props) {
                         <CardContent>
                             <IssuePreviewPlaceholder />
                         </CardContent>
-                    </Card>
+                    </React.Fragment>
 
                     <br/>
 
-                    <Card className={"issuePreview"}>
+                    <React.Fragment>
                         <CardHeader title={<div className="ui placeholder cardHeaderPlaceholder">
                             <div className={"header"}>
                                 <div className="medium line"/>
@@ -230,11 +230,11 @@ function SeriesDetailsPlaceholder(props) {
                         <CardContent>
                             <IssuePreviewPlaceholder />
                         </CardContent>
-                    </Card>
+                    </React.Fragment>
 
                     <br /> </React.Fragment> : null}
 
-                <Card className={"issuePreview"}>
+                <React.Fragment>
                     <CardHeader title={<div className="ui placeholder cardHeaderPlaceholder">
                         <div className={"header"}>
                             <div className="medium line"/>
@@ -247,7 +247,7 @@ function SeriesDetailsPlaceholder(props) {
                         <IssuePreviewPlaceholderSmall />
                         <IssuePreviewPlaceholderSmall />
                     </CardContent>
-                </Card>
+                </React.Fragment>
             </CardContent>
         </React.Fragment>
     );
