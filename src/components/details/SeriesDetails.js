@@ -118,7 +118,7 @@ class SeriesDetails extends React.Component {
                                                 }
 
                                                 {
-                                                    !this.props.query.filter && data.seriesd.firstIssue ?
+                                                    (!this.props.query || !this.props.query.filter) && data.seriesd.firstIssue ?
                                                         <Card className={"issuePreview"}>
                                                             <CardHeader title= {
                                                                 !this.props.us ?
@@ -132,10 +132,10 @@ class SeriesDetails extends React.Component {
                                                         </Card>: null
                                                 }
 
-                                                { !this.props.query.filter ? <br /> : null }
+                                                { (!this.props.query || !this.props.query.filter) ? <br /> : null }
 
                                                 {
-                                                    !this.props.query.filter && data.seriesd.lastIssue && data.seriesd.issueCount > 1 ?
+                                                    (!this.props.query || !this.props.query.filter) && data.seriesd.lastIssue && data.seriesd.issueCount > 1 ?
                                                         <Card className={"issuePreview"}>
                                                             <CardHeader title= {
                                                                 !this.props.us ?
@@ -149,7 +149,7 @@ class SeriesDetails extends React.Component {
                                                         </Card> : null
                                                 }
 
-                                                { !this.props.query.filter ? <br /> : null }
+                                                { (!this.props.query || !this.props.query.filter) ? <br /> : null }
 
                                                 <Card className={"issuePreview"}>
                                                     <CardHeader title="Letzte Änderungen"/>
