@@ -128,7 +128,7 @@ class IssueDetails extends React.Component {
                                                     type = "Story Arc";
                                             }
 
-                                            return <Chip key={i} className="chip partOfChip" label={arc.title + " (" + type + ")"} color={color} onClick={() => this.props.navigate(us ? "/us" : "/de", {filter: JSON.stringify({arcs: [stripItem(arc)], story: true, us: us})})}/>;
+                                            return <Chip key={i} className="chip partOfChip" label={arc.title + " (" + type + ")"} color={color} onClick={() => this.props.navigate(us ? "/us" : "/de", {filter: JSON.stringify({arcs: arc.title, story: true, us: us})})}/>;
                                         })
                                     }
 
@@ -470,6 +470,8 @@ export function toChipList(items, props, type, role) {
         return <Chip key={0} className="chip" variant={"outlined"} label="Unbekannt"/>;
     }
 
+    console.log(items);
+
     let list = [];
     items.forEach((item, i) => {
         let filterType = item.__typename.toLocaleLowerCase() + "s";
@@ -480,13 +482,22 @@ export function toChipList(items, props, type, role) {
             filter.cover = true;
             filter.story = undefined;
         }
+
         filter.us = props.us;
 
         filter[filterType] = [];
-        let t = {};
-        t.name = item.name;
-        t.type = type;
-        filter[filterType].push(t);
+
+        if(item.__typename === "Appearance") {
+            filter[filterType] = item.name;
+        } else if(item.__typename === "Arc") {
+            filter[filterType] = item.title;
+        } else {
+            let t = {};
+
+            t.name = item.name;
+            t.type = type;
+            filter[filterType].push(t);
+        }
 
         list.push(
             <Chip key={i} className="chip partOfChip" label={item.name} onClick={() => props.navigate(props.us ? "/us" : "/de", {filter: JSON.stringify(filter)})}/>

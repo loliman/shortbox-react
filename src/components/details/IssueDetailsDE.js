@@ -134,7 +134,7 @@ function StoryDetails(props) {
                                         type = "Story Arc";
                                 }
 
-                                return <Chip key={i} className="chip partOfChip" label={arc.title + " (" + type + ")"} color={color} onClick={() => props.navigate(props.us ? "/us" : "/de", {filter: JSON.stringify({arcs: [stripItem(arc)], story: true, us: props.us})})}/>;
+                                return <Chip key={i} className="chip partOfChip" label={arc.title + " (" + type + ")"} color={color} onClick={() => props.navigate(props.us ? "/us" : "/de", {filter: JSON.stringify({arcs: arc.title, story: true, us: props.us})})}/>;
                             })
                         }
                         <br /><br /><br />
