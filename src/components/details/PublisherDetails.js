@@ -152,8 +152,8 @@ class PublisherDetails extends React.Component {
                                                     <br />
 
                                                     <CardContent>
-                                                        {
-                                                            lastEdited.map((i, idx) => <IssuePreviewSmall {...this.props} key={idx} issue={i}/>)
+                                                        {   lastEdited ?
+                                                            lastEdited.map((i, idx) => <IssuePreviewSmall {...this.props} key={idx} issue={i}/>) : null
                                                         }
                                                     </CardContent>
                                                 </React.Fragment>

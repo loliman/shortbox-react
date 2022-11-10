@@ -175,7 +175,7 @@ class SeriesDetails extends React.Component {
 
                                                     <CardContent>
                                                         {
-                                                            lastEdited.map((i, idx) => <IssuePreviewSmall {...this.props} key={idx} issue={i}/>)
+                                                            lastEdited ? lastEdited.map((i, idx) => <IssuePreviewSmall {...this.props} key={idx} issue={i}/>) : null
                                                         }
                                                     </CardContent>
                                                 </React.Fragment>

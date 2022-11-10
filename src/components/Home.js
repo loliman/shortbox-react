@@ -31,7 +31,6 @@ class Home extends React.Component {
         } else {
             filter = {us: this.props.us};
         }
-        console.log(this.props.query);
 
         return (
             <PaginatedQuery query={lastEdited} variables={{filter: filter,
@@ -102,7 +101,7 @@ class Home extends React.Component {
                                                 <br/>
 
                                                 <div className="history">
-                                                    {data.lastEdited.map((i, idx) => <IssuePreview {...this.props} key={idx} issue={i}/>)}
+                                                    {data.lastEdited? data.lastEdited.map((i, idx) => <IssuePreview {...this.props} key={idx} issue={i}/>) : null}
 
                                                     {loading}
                                                 </div>

@@ -470,8 +470,6 @@ export function toChipList(items, props, type, role) {
         return <Chip key={0} className="chip" variant={"outlined"} label="Unbekannt"/>;
     }
 
-    console.log(items);
-
     let list = [];
     items.forEach((item, i) => {
         let filterType = item.__typename.toLocaleLowerCase() + "s";
