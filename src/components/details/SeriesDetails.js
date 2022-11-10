@@ -152,8 +152,6 @@ class SeriesDetails extends React.Component {
                                                 { (!this.props.query || !this.props.query.filter) ? <br /> : null }
 
                                                 <React.Fragment>
-                                                    <CardHeader title="Letzte Änderungen"/>
-
                                                     <FormControl className={"field field10"} style={{float:"right", width: "200px"}}>
                                                         <InputLabel id="demo-simple-select-label">Sortieren nach</InputLabel>
                                                         <Select
