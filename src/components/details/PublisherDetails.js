@@ -132,28 +132,28 @@ class PublisherDetails extends React.Component {
                                                 <React.Fragment>
                                                     <CardHeader title="Letzte Änderungen"/>
 
+                                                    <FormControl className={"field field10"} style={{float:"right", width: "200px"}}>
+                                                        <InputLabel id="demo-simple-select-label">Sortieren nach</InputLabel>
+                                                        <Select
+                                                            id="demo-simple-select"
+                                                            value={this.props.query && this.props.query.order ? this.props.query.order : "updatedAt"}
+                                                            label="Sortieren nach"
+                                                            onChange={e =>
+                                                                this.props.navigate(generateUrl(this.props.selected, this.props.us),
+                                                                    {filter: this.props.query? this.props.query.filter : null, order: e.target.value})}>
+                                                            <MenuItem value={"updatedAt"}>Änderungsdatum</MenuItem>
+                                                            <MenuItem value={"createdAt"}>Erfassungsdatum</MenuItem>
+                                                            <MenuItem value={"releasedate"}>Erscheinungsdatum</MenuItem>
+                                                            <MenuItem value={"series"}>Serie</MenuItem>
+                                                            <MenuItem value={"publisher"}>Verlag</MenuItem>
+                                                        </Select>
+                                                    </FormControl>
+
+                                                    <br />
+                                                    <br />
+                                                    <br />
+                                                    
                                                     <CardContent>
-                                                        <FormControl className={"field field10"} style={{float:"right", width: "200px"}}>
-                                                            <InputLabel id="demo-simple-select-label">Sortieren nach</InputLabel>
-                                                            <Select
-                                                                id="demo-simple-select"
-                                                                value={this.props.query && this.props.query.order ? this.props.query.order : "updatedAt"}
-                                                                label="Sortieren nach"
-                                                                onChange={e =>
-                                                                    this.props.navigate(generateUrl(this.props.selected, this.props.us),
-                                                                        {filter: this.props.query? this.props.query.filter : null, order: e.target.value})}>
-                                                                <MenuItem value={"updatedAt"}>Änderungsdatum</MenuItem>
-                                                                <MenuItem value={"createdAt"}>Erfassungsdatum</MenuItem>
-                                                                <MenuItem value={"releasedate"}>Erscheinungsdatum</MenuItem>
-                                                                <MenuItem value={"series"}>Serie</MenuItem>
-                                                                <MenuItem value={"publisher"}>Verlag</MenuItem>
-                                                            </Select>
-                                                        </FormControl>
-
-                                                        <br />
-                                                        <br />
-                                                        <br />
-
                                                         {
                                                             lastEdited.map((i, idx) => <IssuePreviewSmall {...this.props} key={idx} issue={i}/>)
                                                         }
