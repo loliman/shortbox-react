@@ -186,7 +186,7 @@ function PublisherDetailsPlaceholder(props) {
 
             <CardContent className="cardContent">
 
-            { !props.query.filter ? <React.Fragment>
+            { !props.query || !props.query.filter ? <React.Fragment>
                 <Card className={"issuePreview"}>
                     <CardHeader title={<div className="ui placeholder cardHeaderPlaceholder">
                         <div className={"header"}>
