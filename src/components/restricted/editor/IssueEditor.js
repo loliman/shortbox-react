@@ -934,9 +934,7 @@ export function updateField(option, live, values, setFieldValue, field, pattern)
 
                 case 'remove-value':
                     if (option.name.indexOf("appearances") > 0) {
-                        console.log(selected);
                         selected = selected.filter(v => v.name + v.type !== option.removedValue.name + option.type);
-                        console.log(selected);
                     } else {
                         previous = selected.filter(v => v.name === option.removedValue.name);
 
@@ -957,12 +955,20 @@ export function updateField(option, live, values, setFieldValue, field, pattern)
                     }
                     break;
 
-                default:
+                case 'create-option':
+                    selected.push({
+                        name: values[values.length-1].name,
+                        type: [option.type],
+                        role: [option.role]
+                    });
+
                     break;
 
+                default:
+                    return;
             }
 
-            selected = selected.filter(s => s.type.length > 0);
+            selected = selected.filter(s => !s.pattern && s.type.length > 0);
             setFieldValue(field, selected);
         }
     }
