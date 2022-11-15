@@ -25,7 +25,6 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import MenuItem from "@material-ui/core/MenuItem";
 import Tooltip from "@material-ui/core/Tooltip";
-import {isArray} from "lodash";
 
 
 const formats = ['Heft', 'Mini Heft', 'Magazin', 'Prestige', 'Softcover', 'Hardcover', 'Taschenbuch', 'Album',
@@ -63,7 +62,7 @@ class IssueEditor extends React.Component {
                 stories: [],
                 features: [],
                 covers: []
-        };
+            };
 
         this.state = {
             defaultValues: defaultValues,
@@ -105,16 +104,16 @@ class IssueEditor extends React.Component {
                               defVariables.issue.series.publisher.us = undefined;
                               defVariables.issue.number = defaultValues.number;
                               if(defaultValues.format !== '')
-                                defVariables.issue.format = defaultValues.format;
+                                  defVariables.issue.format = defaultValues.format;
                               if(defaultValues.variant !== '')
                                   defVariables.issue.variant = defaultValues.variant;
 
                               res.series.publisher.us = false;
 
                               try {
-                                updateInCache(cache, issue, defVariables, defVariables, wrapItem(res));
+                                  updateInCache(cache, issue, defVariables, defVariables, wrapItem(res));
                               } catch (e) {
-                                //ignore cache exception;
+                                  //ignore cache exception;
                               }
 
                               try {
@@ -224,23 +223,23 @@ class IssueEditor extends React.Component {
 
                             if(variables.item.stories)
                                 variables.item.stories = variables.item.stories.map(story => {
-                                   if(story.series)
-                                       story.series = stripItem(story.series);
-                                   if(story.individuals) {
-                                       let i = [];
+                                    if(story.series)
+                                        story.series = stripItem(story.series);
+                                    if(story.individuals) {
+                                        let i = [];
 
-                                       story.individuals.forEach(item => {
-                                           if (!i[item.name]) {
-                                               i[item.name] = {name: item.name, type: []};
-                                           }
+                                        story.individuals.forEach(item => {
+                                            if (!i[item.name]) {
+                                                i[item.name] = {name: item.name, type: []};
+                                            }
 
-                                           i[item.name].type = item.type;
-                                       });
+                                            i[item.name].type = item.type;
+                                        });
 
-                                       story.individuals = [];
-                                       for (let k in i)
-                                           story.individuals.push(i[k]);
-                                   }
+                                        story.individuals = [];
+                                        for (let k in i)
+                                            story.individuals.push(i[k]);
+                                    }
 
                                     if(story.appearances) {
                                         story.appearances = story.appearances.map(item => stripItem(item));
@@ -251,9 +250,9 @@ class IssueEditor extends React.Component {
 
                                     }
 
-                                   if(story.parent && story.parent.issue && story.parent.issue.series)
-                                       story.parent.issue.series = stripItem(story.parent.issue.series);
-                                   return story;
+                                    if(story.parent && story.parent.issue && story.parent.issue.series)
+                                        story.parent.issue.series = stripItem(story.parent.issue.series);
+                                    return story;
                                 });
 
                             if(variables.item.features)
@@ -390,7 +389,7 @@ class IssueEditor extends React.Component {
 
                                     <FastField
                                         disabled={!values.series.publisher.name ||
-                                        values.series.publisher.name.trim().length === 0}
+                                            values.series.publisher.name.trim().length === 0}
                                         className={this.props.desktop ? "field field10" : "field field25"}
                                         name="series.volume"
                                         label="Volume"
@@ -621,7 +620,7 @@ class IssueEditor extends React.Component {
                                     <br/>
 
                                     <Stories setFieldValue={setFieldValue} items={values.stories} {...this.props} values={values}
-                                        us={values.series.publisher.us}/>
+                                             us={values.series.publisher.us}/>
 
                                     <br/>
 
@@ -634,7 +633,7 @@ class IssueEditor extends React.Component {
                                             </React.Fragment> : null
 */}
                                     <Covers setFieldValue={setFieldValue} items={values.covers} {...this.props}
-                                        us={values.series.publisher.us} values={values}/>
+                                            us={values.series.publisher.us} values={values}/>
 
                                     <br/>
 
@@ -700,10 +699,10 @@ class Cover extends React.Component {
                     onClose={() => this.triggerCoverIsOpen()}/>
 
                 <IconButton className="removeBtnCover" aria-label="Entfernen"
-                    onClick={() => {
-                    this.setState({cover: null});
-                    this.props.onDelete();
-                }}>
+                            onClick={() => {
+                                this.setState({cover: null});
+                                this.props.onDelete();
+                            }}>
                     <DeleteIcon/>
                 </IconButton>
             </div>
@@ -809,30 +808,30 @@ function StoryFieldsNonExclusive(props) {
     return (
         <div className="storyAddInputContainer">
             <AutoComplete
-                    query={series}
-                    name={"stories[" + index + "].parent.issue.series"}
-                    nameField="title"
-                    label="Serie"
-                    creatable
-                    variables={{pattern: values.stories[index].parent.issue.series.title, publisher: {name: "*", us: true}}}
-                    onChange={(option, live) => {
-                        if(typeof option !== "string" || option.trim() !== "") {
-                            if (live) {
-                                setFieldValue("stories[" + index + "].parent.issue.series.title", option)
-                            }
-                            else {
-                                if(option && !option.volume)
-                                    option.volume = 0;
-
-                                setFieldValue("stories[" + index + "].parent.issue.series", option ? option : {title: '', volume: 0});
-                            }
+                query={series}
+                name={"stories[" + index + "].parent.issue.series"}
+                nameField="title"
+                label="Serie"
+                creatable
+                variables={{pattern: values.stories[index].parent.issue.series.title, publisher: {name: "*", us: true}}}
+                onChange={(option, live) => {
+                    if(typeof option !== "string" || option.trim() !== "") {
+                        if (live) {
+                            setFieldValue("stories[" + index + "].parent.issue.series.title", option)
                         }
-                    }}
-                    style={{
-                        width: props.desktop ? "40%" : "99%"
-                    }}
-                    generateLabel={generateSeriesLabelWithYears}
-                />
+                        else {
+                            if(option && !option.volume)
+                                option.volume = 0;
+
+                            setFieldValue("stories[" + index + "].parent.issue.series", option ? option : {title: '', volume: 0});
+                        }
+                    }
+                }}
+                style={{
+                    width: props.desktop ? "40%" : "99%"
+                }}
+                generateLabel={generateSeriesLabelWithYears}
+            />
 
             <FastField
                 className={props.desktop ? "field field5" : "field field25"}
@@ -898,13 +897,13 @@ export function updateField(option, live, values, setFieldValue, field, pattern)
             setFieldValue(field, arr);
         }
         else {
-            let selected = JSON.parse(JSON.stringify(values.filter(v => !v.pattern)));
+            let selected = JSON.parse(JSON.stringify(values));
             let previous;
 
             switch (option.action) {
                 case 'deselect-option':
                 case 'select-option':
-                    previous = selected.filter(v => v.name === option.option.name && !v.pattern);
+                    previous = selected.filter(v => v.name === option.option.name);
 
                     if (previous.length > 0) {
                         if (option.option.__typename === "Appearance") {
@@ -934,18 +933,14 @@ export function updateField(option, live, values, setFieldValue, field, pattern)
                     break;
 
                 case 'remove-value':
-                    if (option.name.indexOf("appearances") >= 0) {
-                        if(option.removedValue.name)
-                            selected = selected.filter(v => v.name + v.type !== option.removedValue.name + option.type);
-                        else
-                            selected = selected.filter(v => v.title + v.type !== option.removedValue.title + option.type);
+                    if (option.name.indexOf("appearances") > 0) {
+                        console.log(selected);
+                        selected = selected.filter(v => v.name + v.type !== option.removedValue.name + option.type);
+                        console.log(selected);
                     } else {
-                        if(option.removedValue.name)
-                            previous = selected.filter(v => v.name === option.removedValue.name);
-                        else
-                            previous = selected.filter(v => v.title === option.removedValue.title);
+                        previous = selected.filter(v => v.name === option.removedValue.name);
 
-                        if (previous.length > 0 && isArray(previous[0].type)) {
+                        if (previous.length > 0) {
                             previous[0].type = previous[0].type.filter(v => v !== option.type);
                         }
                     }
@@ -953,7 +948,7 @@ export function updateField(option, live, values, setFieldValue, field, pattern)
                     break;
 
                 case 'clear':
-                    if (option.name.indexOf("appearances") >= 0) {
+                    if (option.name.indexOf("appearances") > 0) {
                         selected = selected.filter(v => v.type !== option.type);
                     } else {
                         selected.forEach(s => {
