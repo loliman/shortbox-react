@@ -89,6 +89,8 @@ export const lastEdited = gql`query LastEdited($filter: Filter, $offset: Int, $o
         series {
             title,
             volume,
+            startyear,
+            endyear,
             publisher {
                 name
             }
@@ -117,6 +119,8 @@ const publisher = gql`query Publisher($publisher: PublisherInput!){
             series {
                 title,
                 volume,
+                startyear,
+                endyear,
                 publisher {
                     name
                 }
@@ -136,6 +140,8 @@ const publisher = gql`query Publisher($publisher: PublisherInput!){
             series {
                 title,
                 volume,
+                startyear,
+                endyear,
                 publisher {
                     name
                 }
@@ -167,6 +173,8 @@ const seriesd = gql`query Seriesd($series: SeriesInput!){
             series {
                 title,
                 volume,
+                startyear,
+                endyear,
                 publisher {
                     name
                 }
@@ -186,6 +194,8 @@ const seriesd = gql`query Seriesd($series: SeriesInput!){
             series {
                 title,
                 volume,
+                startyear,
+                endyear,
                 publisher {
                     name
                 }
