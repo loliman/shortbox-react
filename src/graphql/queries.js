@@ -255,6 +255,7 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
             addinfo,
             number,
             children {
+                number,
                 addinfo,
                 issue {
                     number,
@@ -327,6 +328,7 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
             addinfo,
             number,
             children {
+                number,
                 addinfo,
                 issue {
                     number,

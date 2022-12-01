@@ -122,6 +122,12 @@ function TypeListEntry(props) {
             label = '#' + item.number + ' ' + item.series.title;
     }
 
+    let isBold = {};
+
+    if(level === HierarchyLevel.ISSUE && props.selected.issue.number === item.number) {
+        isBold = {fontWeight: "bold"};
+    }
+
     return (
         <div className="itemContainer">
             <ListItem onClick={() => {
@@ -132,7 +138,7 @@ function TypeListEntry(props) {
                       }}
                       button>
                 <ListItemText className="itemText"
-                              primary={label}
+                    primary={<Typography style={isBold}>{label}</Typography>}
                 />
             </ListItem>
         </div>

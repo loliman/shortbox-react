@@ -232,7 +232,7 @@ export function Contains(props) {
 
 function ContainsSimpleItem(props) {
     return (
-        <ExpansionPanel className="story" defaultExpanded={expanded(props.item, props.query ? props.query.filter : null)}>
+        <ExpansionPanel className="story" defaultExpanded={expanded(props.item, props.query)}>
             <ExpansionPanelSummary className="summary">
                 {React.cloneElement(props.itemTitle, {navigate: props.navigate, item: props.item, us: props.us, simple: true})}
             </ExpansionPanelSummary>
@@ -242,7 +242,7 @@ function ContainsSimpleItem(props) {
 
 function ContainsItem(props) {
     return (
-        <ExpansionPanel className="story" defaultExpanded={expanded(props.item, props.query ? props.query.filter : null)}>
+        <ExpansionPanel className="story" defaultExpanded={expanded(props.item, props.query)}>
             <ExpansionPanelSummary className="summary" expandIcon={<ExpandMoreIcon/>}>
                 {React.cloneElement(props.itemTitle, {navigate: props.navigate, item: props.item, us: props.us})}
             </ExpansionPanelSummary>
@@ -381,7 +381,7 @@ export function ContainsTitleDetailed(props) {
 
                 { !exclusive ? <Tooltip title="Zur Ausgabe">
                     <IconButton className="detailsIcon"
-                                onClick={() => props.navigate(exclusive ? "" : generateUrl(issue, !props.us), {filter: null})}
+                        onClick={() => props.navigate(exclusive ? "" : generateUrl(issue, !props.us), {expand:  props.item.parent.number, filter: null})}
                                 aria-label="Details"
                                 disabled={exclusive}>
                         <SearchIcon fontSize="small"/>
@@ -508,7 +508,14 @@ export function toChipList(items, props, type, role) {
     return list;
 }
 
-function expanded(item, filter) {
+function expanded(item, query) {
+    if(query && query.expand) {
+        if(query.expand === item.number + "")
+            return true
+    }
+
+    let filter = query ? query.filter : null;
+
     if(!filter)
         return false;
 

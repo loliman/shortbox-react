@@ -123,6 +123,8 @@ function StoryDetails(props) {
                             if (!child.issue)
                                 return null;
 
+                            console.log(props.item.children);
+
                             return (
                                 <ListItem key={idx} className="issueStoryIssueItem" divider={props.item.children.length-1 !== idx}>
                                     <div>
@@ -139,7 +141,7 @@ function StoryDetails(props) {
                                     </div>
                                     <Tooltip title="Zur Ausgabe">
                                         <IconButton className="detailsIcon issueStoryIssueButton"
-                                                    onClick={() => props.navigate(generateUrl(child.issue), {filter: null})}
+                                            onClick={() => props.navigate(generateUrl(child.issue), {expand: child.number, filter: null})}
                                                     aria-label="Details">
                                             <SearchIcon fontSize="small"/>
                                         </IconButton>
