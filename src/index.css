@@ -103,7 +103,7 @@ body {
 }
 
 #headerSearch {
-    max-width: 100%;
+    min-width: 10%;
     order: 2;
     flex: 0.1;
     margin-left: auto;
