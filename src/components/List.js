@@ -128,13 +128,15 @@ function TypeListEntry(props) {
         isBold = {fontWeight: "bold"};
     }
 
+    console.log(props);
+
     return (
         <div className="itemContainer">
             <ListItem onClick={() => {
                           if ((mobile && !mobileLandscape) && (level === HierarchyLevel.SERIES || level === HierarchyLevel.ISSUE))
                               toogleDrawer();
 
-                          props.navigate(generateUrl(item, us));
+                          props.navigate(generateUrl(item, us), {expand: null, filter: props.query ? props.query.filter : null});
                       }}
                       button>
                 <ListItemText className="itemText"
