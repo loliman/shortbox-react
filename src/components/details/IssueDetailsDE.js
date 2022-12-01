@@ -72,7 +72,7 @@ function Bottom(props) {
             }
 
             {
-                props.issue.cover ?
+                props.issue.comicguideid ?
                     <Typography className="spanLink">
                         Das Cover für&nbsp;
                         <a href={generateComicGuideId(props.issue)} rel="noopener noreferrer nofollow"
