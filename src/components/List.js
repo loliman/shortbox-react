@@ -144,13 +144,16 @@ function TypeListEntry(props) {
                       }}
                       button>
                 <ListItemText className="itemText"
-                    primary={<Typography style={isBold}>{label}                {
-                        item.variants && item.variants.length > 1 ?
-                        <Tooltip title={"Mit Varianten"}>
-                        <Icon style={{fontSize: "10px"}} color={"disabled"}>auto_awesome</Icon>
-                        </Tooltip> :
-                        null
-                    }</Typography>}
+                              primary={<Typography style={isBold}>
+                                  <div style={{display: "flex"}}>
+                                      <div>{label}</div>
+                                      {item.variants && item.variants.length > 1 ?
+                                      <Tooltip title={"Mit " + item.variants.length + " Varianten"}>
+                                          <Typography className={"material-icons"} style={{color: "gray", paddingLeft: '2px', fontSize: "8px"}} color={"disabled"}>+{item.variants.length}</Typography>
+                                      </Tooltip> :
+                                      null}
+                                  </div>
+                                </Typography>}
                 />
 
 
