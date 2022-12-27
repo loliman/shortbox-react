@@ -123,8 +123,6 @@ function StoryDetails(props) {
                             if (!child.issue)
                                 return null;
 
-                            console.log(props.item.children);
-
                             return (
                                 <ListItem key={idx} className="issueStoryIssueItem" divider={props.item.children.length-1 !== idx}>
                                     <div>

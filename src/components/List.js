@@ -10,14 +10,12 @@ import {ScrollContainer} from "react-router-scroll-4";
 import {withContext} from "./generic";
 import {generateLabel, generateUrl, HierarchyLevel} from "../util/hierarchy";
 import PaginatedQuery from "./generic/PaginatedQuery";
+import Tooltip from "@material-ui/core/es/Tooltip/Tooltip";
+import {Icon} from "@material-ui/core";
 
 class List extends React.Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            scrollKey: "listContainer-" + new Date().getTime()
-        };
     }
 
     componentDidMount() {
@@ -56,7 +54,6 @@ class List extends React.Component {
                 onOpen={() => toogleDrawer()}
                 className={drawerOpen ? 'drawer-open' : 'drawer-close'}
                 id="drawer">
-                <ScrollContainer scrollKey={this.state.scrollKey}>
                     <PaginatedQuery query={query} variables={selected} onCompleted={() => this.props.unregisterLoadingComponent("List")}>
                         {({error, data, fetchMore, fetching, hasMore, networkStatus}) => {
                             let content;
@@ -77,7 +74,10 @@ class List extends React.Component {
                             else content = data[queryName].map((i, idx) => {
                                     return <TypeListEntry {...this.props}
                                                           handleMenuOpen={handleMenuOpen}
-                                                          key={idx} item={i}/>
+                                                          onClick={(e) => this.setState({
+                                                              scrollPosition: e
+                                                          })}
+                                                          idx={idx} key={idx} item={i}/>
                                 });
 
                             if(hasMore && content.length > 0)
@@ -97,13 +97,17 @@ class List extends React.Component {
                                 );
 
                             return (
-                                <MuiList id="list" onScroll={fetchMore}>
-                                    {content}
-                                </MuiList>
+                                <ScrollContainer scrollKey="listScrollContainer"
+                                                 shouldUpdateScroll={(prevRouterProps, { location, history }) => {
+                                                     return [0, this.state ? this.state.scrollPosition : 0];
+                                                 }}>
+                                    <MuiList id="list" onScroll={fetchMore}>
+                                        {content}
+                                    </MuiList>
+                                </ScrollContainer>
                             )
                         }}
                     </PaginatedQuery>
-                </ScrollContainer>
             </SwipeableDrawer>
         );
     }
@@ -128,11 +132,11 @@ function TypeListEntry(props) {
         isBold = {fontWeight: "bold"};
     }
 
-    console.log(props);
-
     return (
-        <div className="itemContainer">
+        <div className="itemContainer" id={"itemContainer" + props.idx}>
             <ListItem onClick={() => {
+                         props.onClick(document.getElementById("itemContainer" + props.idx).offsetHeight * props.idx);
+
                           if ((mobile && !mobileLandscape) && (level === HierarchyLevel.SERIES || level === HierarchyLevel.ISSUE))
                               toogleDrawer();
 
@@ -140,8 +144,16 @@ function TypeListEntry(props) {
                       }}
                       button>
                 <ListItemText className="itemText"
-                    primary={<Typography style={isBold}>{label}</Typography>}
+                    primary={<Typography style={isBold}>{label}                {
+                        item.variants && item.variants.length > 1 ?
+                        <Tooltip title={"Mit Varianten"}>
+                        <Icon style={{fontSize: "10px", marginBottom: '5px'}} color={"disabled"}>auto_awesome</Icon>
+                        </Tooltip> :
+                        null
+                    }</Typography>}
                 />
+
+
             </ListItem>
         </div>
     );

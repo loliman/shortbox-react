@@ -49,7 +49,10 @@ const issues = gql`query Issues($pattern: String, $series: SeriesInput!, $offset
             }
         },
         format,
-        variant
+        variant,
+        variants {
+            variant
+        }
     }
 }`;
 
