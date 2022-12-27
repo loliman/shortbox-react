@@ -75,7 +75,7 @@ class List extends React.Component {
                                     return <TypeListEntry {...this.props}
                                                           handleMenuOpen={handleMenuOpen}
                                                           onClick={(e) => this.setState({
-                                                              scrollPosition: e
+                                                              scrollPosition: e * idx - (e * 4)
                                                           })}
                                                           idx={idx} key={idx} item={i}/>
                                 });
@@ -135,7 +135,7 @@ function TypeListEntry(props) {
     return (
         <div className="itemContainer" id={"itemContainer" + props.idx}>
             <ListItem onClick={() => {
-                         props.onClick(document.getElementById("itemContainer" + props.idx).offsetHeight * props.idx);
+                         props.onClick(document.getElementById("itemContainer" + props.idx).offsetHeight);
 
                           if ((mobile && !mobileLandscape) && (level === HierarchyLevel.SERIES || level === HierarchyLevel.ISSUE))
                               toogleDrawer();
@@ -147,7 +147,7 @@ function TypeListEntry(props) {
                     primary={<Typography style={isBold}>{label}                {
                         item.variants && item.variants.length > 1 ?
                         <Tooltip title={"Mit Varianten"}>
-                        <Icon style={{fontSize: "10px", marginBottom: '5px'}} color={"disabled"}>auto_awesome</Icon>
+                        <Icon style={{fontSize: "10px"}} color={"disabled"}>auto_awesome</Icon>
                         </Tooltip> :
                         null
                     }</Typography>}
