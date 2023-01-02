@@ -144,7 +144,7 @@ function TypeListEntry(props) {
                                       <div>{label}</div>
                                       {item.variants && item.variants.length > 1 ?
                                       <Tooltip title={"+" + (item.variants.length-1) + " Varianten"}>
-                                          <Typography className={"material-icons"} style={{color: "gray", paddingLeft: '2px', fontSize: "8px"}} color={"disabled"}>+{item.variants.length}</Typography>
+                                          <Typography className={"material-icons"} style={{color: "gray", paddingLeft: '2px', fontSize: "8px"}} color={"disabled"}>+{item.variants.length-1}</Typography>
                                       </Tooltip> :
                                       null}
                                   </div>
