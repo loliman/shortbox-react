@@ -325,6 +325,7 @@ const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
             },
 			onlyapp,
             firstapp,
+            otheronlytb,
             onlytb,
             onlyoneprint,
             exclusive

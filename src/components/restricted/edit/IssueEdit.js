@@ -58,6 +58,7 @@ function IssueEdit(props) {
                             title: story.title,
                             number: story.number,
                             addinfo: story.addinfo,
+                            part: story.part,
                             exclusive: exclusive,
                             individuals: !exclusive && !story.individuals ? undefined : (story.individuals ? story.individuals.map(i => stripItem(i)) : []),
                             appearances: !exclusive && !story.individuals ? undefined : (story.appearances ? story.appearances.map(i => stripItem(i)) : []),

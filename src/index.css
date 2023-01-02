@@ -1169,6 +1169,10 @@ span[class^="MuiSwitch-bar-"] {
     width: calc(35% + 6px);
 }
 
+.field352 {
+    width: calc(34% + 3px);
+}
+
 .field40 {
     width: calc(40% - 5px);
 }
@@ -1717,4 +1721,20 @@ div div.ball {
     100% {
         transform: translateY(-30px);
     }
+}
+
+.asLink:hover {
+    border-radius: 15px;
+    background-color: rgba(0, 0, 0, 0.08);
+}
+
+.asLink {
+    cursor: pointer;
+    font-weight: lighter;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+.tbchip {
+    background-color: #ffb300 !important;
 }

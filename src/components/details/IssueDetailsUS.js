@@ -45,7 +45,7 @@ function Bottom(props) {
             <Contains {...props} header=""
                       noEntriesHint="Dieser Ausgabe sind noch keine Geschichten zugeordnet"
                       items={props.issue.stories} itemTitle={<ContainsTitleSimple {...props}/>}
-                      itemDetails={<StoryDetails/>}/>
+                      itemDetails={<StoryDetails issue={props.issue}/>}/>
 
             <br/>
             <br/>
@@ -79,6 +79,8 @@ function Bottom(props) {
 }
 
 function StoryDetails(props) {
+    let story = props.item.parent ? props.item.parent : props.item;
+
     return (
         <div className="usStoryContainer">
             <div className="usStoryDetails">
@@ -113,9 +115,85 @@ function StoryDetails(props) {
                 }
             </div>
 
+            {!props.item.reprintOf ? null :
+                <React.Fragment>
+                    <br/>
+
+                    <Typography variant="h6">Nachdruck von</Typography>
+
+                    <List className="issueStoryIssueList">
+
+                        <ListItem className="issueStoryIssueItem">
+                            <div>
+                                <div className="headingContainer">
+                                    <Typography
+                                        className="issueStoryIssue">{generateLabel(props.item.reprintOf.issue.series) + " #" + props.item.reprintOf.issue.number}</Typography>
+                                    <Typography className="parentTitle">
+                                        {props.item.reprintOf.addinfo ? props.item.reprintOf.addinfo : null}
+                                    </Typography>
+                                </div>
+                                <Typography className="issueStoryIssue issueStoryIssuePublisher">
+                                    {generateLabel(props.item.reprintOf.issue.series.publisher)}
+                                </Typography>
+                            </div>
+                            <Tooltip title="Zur Ausgabe">
+                                <IconButton className="detailsIcon issueStoryIssueButton"
+                                            onClick={() => props.navigate(generateUrl(props.item.reprintOf.issue, true), {expand: props.item.reprintOf.number, filter: null})}
+                                            aria-label="Details">
+                                    <SearchIcon fontSize="small"/>
+                                </IconButton>
+                            </Tooltip>
+                        </ListItem>
+                    </List>
+                </React.Fragment>
+            }
+
+            {!story.reprints || story.reprints.length === 0 ? null :
+                <React.Fragment>
+                    <br/>
+
+                    <Typography variant="h6">Nachgedruckt in</Typography>
+
+                    <List className="issueStoryIssueList">
+                        {
+                            story.reprints.map((child, idx) => {
+                                if (!child.issue)
+                                    return null;
+
+                                return (
+                                    <ListItem key={idx} className="issueStoryIssueItem" divider={story.reprints.length-1 !== idx}>
+                                        <div>
+                                            <div className="headingContainer">
+                                                <Typography
+                                                    className="issueStoryIssue">{generateLabel(child.issue.series) + " #" + child.issue.number}</Typography>
+                                                <Typography className="parentTitle">
+                                                    {child.addinfo ? child.addinfo : null}
+                                                </Typography>
+                                            </div>
+                                            <Typography className="issueStoryIssue issueStoryIssuePublisher">
+                                                {generateLabel(child.issue.series.publisher)}
+                                            </Typography>
+                                        </div>
+                                        <Tooltip title="Zur Ausgabe">
+                                            <IconButton className="detailsIcon issueStoryIssueButton"
+                                                        onClick={() => props.navigate(generateUrl(child.issue, true), {expand: child.number, filter: null})}
+                                                        aria-label="Details">
+                                                <SearchIcon fontSize="small"/>
+                                            </IconButton>
+                                        </Tooltip>
+                                    </ListItem>
+                                );
+                            })
+                        }
+                    </List>
+                </React.Fragment>
+            }
+
             {props.item.children.length === 0 ? null :
             <React.Fragment>
                 <br/>
+
+                <Typography variant="h6">Auf deutsch erschienen in</Typography>
 
                 <List className="issueStoryIssueList">
                     {
@@ -123,19 +201,40 @@ function StoryDetails(props) {
                             if (!child.issue)
                                 return null;
 
+                            let addinfoText = "";
+                            if (child.part && child.part !== null && child.part.indexOf("/x") === -1) {
+                                addinfoText += "Teil " + child.part.replace("/", " von ");
+                            }
+                            if(addinfoText !== "" && child.addinfo && child.addinfo !== null) {
+                                addinfoText += ", ";
+                            }
+                            if(child.addinfo && child.addinfo !== null) {
+                                addinfoText += child.addinfo;
+                            }
+
                             return (
                                 <ListItem key={idx} className="issueStoryIssueItem" divider={props.item.children.length-1 !== idx}>
                                     <div>
                                         <div className="headingContainer">
                                             <Typography
-                                                className="issueStoryIssue">{generateLabel(child.issue.series) + " #" + child.issue.number}</Typography>
-                                            <Typography className="parentTitle">
-                                                {child.addinfo ? child.addinfo : null}
+                                                className="issueStoryIssue">{generateLabel(child.issue.series) + " #" + child.issue.number} {child.issue.title ? "- " + child.issue.title : ""}</Typography>
+
+                                            <Typography className="issueStoryIssue issueStoryIssuePublisher">
+                                                    {generateLabel(child.issue.series.publisher)}
                                             </Typography>
                                         </div>
-                                        <Typography className="issueStoryIssue issueStoryIssuePublisher">
-                                            {generateLabel(child.issue.series.publisher)}
-                                        </Typography>
+
+                                        {
+                                            child.parent.issue.number === props.issue.number
+                                            && child.parent.issue.series.title === props.issue.series.title
+                                            && child.parent.issue.series.volume === props.issue.series.volume
+                                                ? null
+                                                : <Typography className="parentTitle" onClick={() => props.navigate(generateUrl(child.parent.issue, true), {expand: child.parent.number, filter: null})}>Als
+                                                    <span className="asLink">{generateLabel(child.parent.issue.series) + " #" + child.parent.issue.number}</span>
+                                                  </Typography>
+                                        }
+
+                                        {addinfoText !== "" ? <Typography className="parentTitle">{addinfoText}</Typography> : null}
                                     </div>
                                     <Tooltip title="Zur Ausgabe">
                                         <IconButton className="detailsIcon issueStoryIssueButton"

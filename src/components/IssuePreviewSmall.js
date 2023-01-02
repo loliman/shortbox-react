@@ -1,7 +1,5 @@
 import {today} from "../util/util";
-import Card from "@material-ui/core/Card";
 import {generateLabel, generateUrl} from "../util/hierarchy";
-import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import {withContext} from "./generic";
 import React from "react";

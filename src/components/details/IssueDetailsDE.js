@@ -8,7 +8,6 @@ import IssueDetails, {
     DetailsRow,
     IndividualList, toChipList
 } from "./IssueDetails";
-import {stripItem} from "../../util/util";
 import Chip from "@material-ui/core/Chip";
 import {generateLabel} from "../../util/hierarchy";
 
@@ -53,14 +52,6 @@ function Bottom(props) {
             <br/>
             <br/>
 
-            {/*<Contains {...props} header="Weitere Inhalte"
-                      noEntriesHint="Dieser Ausgabe sind noch keine weiteren Inhalte zugeordnet"
-                      items={props.issue.features} itemTitle={<ContainsTitleSimple/>}
-                      itemDetails={<FeatureDetails/>}/>
-
-            <br/>
-            <br/>*/}
-
             { props.issue.covers && props.issue.covers.length > 0 ?
                 <div><Contains {...props} header="Cover"
                                noEntriesHint="Dieser Ausgabe sind noch keine Cover zugeordnet"
@@ -88,8 +79,7 @@ function Bottom(props) {
 }
 
 function generateComicGuideId(issue) {
-    let url = " https://www.comicguide.de/book/" + issue.comicguideid;
-    return url;
+    return " https://www.comicguide.de/book/" + issue.comicguideid;
 }
 
 function CoverDetails(props) {
@@ -98,14 +88,6 @@ function CoverDetails(props) {
             <div className="individualListContainer"><Typography><b>Artist</b></Typography> {
                 props.item.parent ? toChipList(props.item.parent.individuals.filter(item => item.type.includes('ARTIST')) ? props.item.parent.individuals.filter(item => item.type.includes('ARTIST')) : props.item, props, "ARTIST") : ""
             } </div>
-        </div>
-    );
-}
-
-function FeatureDetails(props) {
-    return (
-        <div>
-            <div className="individualListContainer"><Typography><b>Autor</b></Typography> {toChipList(props.item.individuals.filter(item => item.type.includes('WRITER')), props, "WRITER")}</div>
         </div>
     );
 }
@@ -134,7 +116,7 @@ function StoryDetails(props) {
                                         type = "Story Arc";
                                 }
 
-                                return <Chip key={i} className="chip partOfChip" label={arc.title + " (" + type + ")"} color={color} onClick={() => props.navigate(props.us ? "/us" : "/de", {filter: JSON.stringify({arcs: arc.title, story: true, us: props.us})})}/>;
+                                return <Chip key={i} className="chip partOfChip" label={arc.title + " (" + type + ")"} color={color} onClick={() => props.navigate(props.us ? "/us" : "/de", {filter: JSON.stringify({arcs: arc.title, us: props.us})})}/>;
                             })
                         }
                         <br /><br /><br />

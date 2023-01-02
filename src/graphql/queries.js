@@ -45,7 +45,8 @@ const issues = gql`query Issues($pattern: String, $series: SeriesInput!, $offset
             title,
             volume,
             publisher {
-                name
+                name,
+                us
             }
         },
         format,
@@ -95,7 +96,30 @@ export const lastEdited = gql`query LastEdited($filter: Filter, $offset: Int, $o
             startyear,
             endyear,
             publisher {
-                name
+                name,
+                us
+            }
+        },
+        stories {
+            onlyapp,
+            firstapp,
+            onlytb,
+            exclusive,
+            otheronlytb,
+            onlyoneprint,
+            children {
+                number
+            },
+            reprintOf {
+                number
+            },
+            reprints {
+                number
+            },
+            parent {
+                children {
+                    number
+                }
             }
         }
     }
@@ -125,10 +149,33 @@ const publisher = gql`query Publisher($publisher: PublisherInput!){
                 startyear,
                 endyear,
                 publisher {
-                    name
+                    name,
+                    us
                 }
             },
-            releasedate
+            releasedate,
+            stories {
+                onlyapp,
+                firstapp,
+                onlytb,
+                exclusive,
+                otheronlytb,
+                onlyoneprint,
+                children {
+                    number
+                },
+                reprintOf {
+                    number
+                },
+                reprints {
+                    number
+                },
+                parent {
+                    children {
+                        number
+                    }
+                }
+            }  
         },
         lastIssue {
             number,
@@ -146,10 +193,33 @@ const publisher = gql`query Publisher($publisher: PublisherInput!){
                 startyear,
                 endyear,
                 publisher {
-                    name
+                    name,
+                    us
                 }
             },
-            releasedate
+            releasedate,
+            stories {
+                onlyapp,
+                firstapp,
+                onlytb,
+                exclusive,
+                otheronlytb,
+                onlyoneprint,
+                children {
+                    number
+                },
+                reprintOf {
+                    number
+                },
+                reprints {
+                    number
+                },
+                parent {
+                    children {
+                        number
+                    }
+                }
+            }  
         },
         active,
         addinfo,
@@ -179,10 +249,33 @@ const seriesd = gql`query Seriesd($series: SeriesInput!){
                 startyear,
                 endyear,
                 publisher {
-                    name
+                    name,
+                    us
                 }
             },
-            releasedate
+            releasedate,
+            stories {
+                onlyapp,
+                firstapp,
+                onlytb,
+                exclusive,
+                otheronlytb,
+                onlyoneprint,
+                children {
+                    number
+                },
+                reprintOf {
+                    number
+                },
+                reprints {
+                    number
+                },
+                parent {
+                    children {
+                        number
+                    }
+                }
+            }  
         },
         lastIssue {
             number,
@@ -200,10 +293,33 @@ const seriesd = gql`query Seriesd($series: SeriesInput!){
                 startyear,
                 endyear,
                 publisher {
-                    name
+                    name,
+                    us
                 }
             },
-            releasedate
+            releasedate,
+            stories {
+                onlyapp,
+                firstapp,
+                onlytb,
+                exclusive,
+                otheronlytb,
+                onlyoneprint,
+                children {
+                    number
+                },
+                reprintOf {
+                    number
+                },
+                reprints {
+                    number
+                },
+                parent {
+                    children {
+                        number
+                    }
+                }
+            }  
         },
         active,
         addinfo,
@@ -256,12 +372,49 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
         stories {
             title,
             addinfo,
+            part
             number,
-            children {
+            reprints {
                 number,
                 addinfo,
                 issue {
                     number,
+                    series {
+                        title,
+                        volume,
+                        startyear,
+                        endyear,
+                        publisher {
+                            name,
+							us
+                        }
+                    },
+                    format,
+                    variant
+                }
+            },
+            children {
+                parent {
+                    issue {
+                        number,
+                        series {
+                            title,
+                            volume,
+                            startyear,
+                            endyear,
+                            publisher {
+                                name,
+                                us
+                            }
+                        },
+                    }
+                }
+                number,
+                addinfo,
+                part,
+                issue {
+                    number,
+                    title,
                     series {
                         title,
                         volume,
@@ -284,10 +437,44 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                 name,
                 type,
                 role
-            },                                                                                           
+            },  
+            reprintOf {
+                title,
+                number,
+                issue {
+                    number,
+                    series {
+                        title,
+                        startyear,
+                        endyear,
+                        volume,
+                        publisher {
+                            name,
+                            us      
+                        }
+                    },
+                },
+            },                                                                                         
             parent {
                 title,
                 number,
+                reprintOf {
+                    title,
+                    number,
+                    issue {
+                        number,
+                        series {
+                            title,
+                            startyear,
+                            endyear,
+                            volume,
+                            publisher {
+                                name,
+                                us      
+                            }
+                        },
+                    },
+                },  
                 issue {
                     number,
                     series {
@@ -303,7 +490,7 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                     format,
                     variant,
                     stories {
-                        number
+                        number    
                     },
                     arcs {
                         title,
@@ -322,6 +509,7 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
             },
 			onlyapp,
             firstapp,
+            otheronlytb,
             onlytb,
             onlyoneprint,
             exclusive

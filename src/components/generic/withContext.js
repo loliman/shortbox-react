@@ -55,6 +55,7 @@ function withContext(WrappedComponent) {
 function navigate(props, url, query, currentQuery) {
     let lastUrl = props.location ? props.location.pathname : null;
     let q = currentQuery ? currentQuery : {};
+    q['expand'] = undefined;
 
     if(query) {
         for (let p in query) {

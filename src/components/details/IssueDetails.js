@@ -29,7 +29,6 @@ import GridList from "@material-ui/core/GridList/GridList";
 import GridListTile from "@material-ui/core/GridListTile/GridListTile";
 import GridListTileBar from "@material-ui/core/GridListTileBar/GridListTileBar";
 import EditButton from "../restricted/EditButton";
-import {stripItem} from "../../util/util";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
 
 class IssueDetails extends React.Component {
@@ -128,7 +127,7 @@ class IssueDetails extends React.Component {
                                                     type = "Story Arc";
                                             }
 
-                                            return <Chip key={i} className="chip partOfChip" label={arc.title + " (" + type + ")"} color={color} onClick={() => this.props.navigate(us ? "/us" : "/de", {filter: JSON.stringify({arcs: arc.title, story: true, us: us})})}/>;
+                                            return <Chip key={i} className="chip partOfChip" label={arc.title + " (" + type + ")"} color={color} onClick={() => this.props.navigate(us ? "/us" : "/de", {filter: JSON.stringify({arcs: arc.title, us: us})})}/>;
                                         })
                                     }
 
@@ -259,7 +258,7 @@ export function ContainsTitleSimple(props) {
     return (
         <div className={props.simple ? "storyTitle storyTitleSimple" : "storyTitle"}>
             <div className="headingContainer">
-                <Typography className="heading">{generateItemTitle(props.item)}</Typography>
+                <Typography className="heading">{generateItemTitle(props.item, props.us)}</Typography>
                 <Typography className="heading headingAddInfo">
                     {props.item.addinfo ? props.item.addinfo : null}
                 </Typography>
@@ -269,11 +268,18 @@ export function ContainsTitleSimple(props) {
                 {
                     props.item.onlyoneprint && !props.item.parent ?
                         !smallChip ?
-                            <Chip className="chip" label="Nur einfach auf deutsch veröffentlicht" color="secondary"
-                                  icon={<PriorityHighIcon/>}/>
+                            <Chip className="chip" label="Nur einfach auf deutsch veröffentlicht" color="secondary"/>
                             : <Chip className="chip" label={<PriorityHighIcon className="
                             mobileChip"/>}
                                     color="secondary"/>
+                        : null
+                }
+
+                {
+                    props.item.onlytb && !props.item.parent ?
+                        <Chip className="chip"
+                              label={!smallChip ? "Nur in Taschenbuch" : "TB"}
+                              color="primary"/>
                         : null
                 }
 
@@ -286,10 +292,18 @@ export function ContainsTitleSimple(props) {
                 }
 
                 {
-                    props.item.onlytb && !props.item.parent ?
-                        <Chip className="chip"
-                              label={!smallChip ? "Nur in Taschenbuch" : "TB"}
-                              color="primary"/>
+                    props.item.reprintOf ?
+                        !smallChip ?
+                            <Chip className="chip" label="Nachdruck" color="default"/>
+                            : <Chip className="chip" label="ND" color="default"/>
+                        : null
+                }
+
+                {
+                    props.item.reprints && props.item.reprints.length > 0 ?
+                        !smallChip ?
+                            <Chip className="chip" label="Nachgedruckt" color="default"/>
+                            : <Chip className="chip" label="ND" color="default"/>
                         : null
                 }
             </div>
@@ -313,6 +327,17 @@ export function ContainsTitleDetailed(props) {
     if(!props.item.title && props.item.parent && props.item.parent.title)
         parentTitle = props.item.parent.title;
 
+    let addinfoText = "";
+    if (props.item.part && props.item.part !== null && props.item.part.indexOf("/x") === -1) {
+        addinfoText += "Teil " + props.item.part.replace("/", " von ");
+    }
+    if(addinfoText !== "" && props.item.addinfo && props.item.addinfo !== null) {
+        addinfoText += ", ";
+    }
+    if(props.item.addinfo && props.item.addinfo !== null) {
+        addinfoText += props.item.addinfo;
+    }
+
     return (
         <div className={props.simple ? "storyTitle storyTitleSimple" : "storyTitle"}>
             <div className="headingContainer">
@@ -327,8 +352,14 @@ export function ContainsTitleDetailed(props) {
                         ? <Typography className="parentTitle">{variant} Variant</Typography>
                         : null}
                 </div>
+
+                {props.item.parent && props.item.parent.reprintOf
+                    ? <Typography className="parentTitle" onClick={() => props.navigate(generateUrl(props.item.parent.reprintOf.issue, true), {expand: props.item.parent.reprintOf.number, filter: null})}>Original erschienen als
+                        <span className="asLink">{generateLabel(props.item.parent.reprintOf.issue)}</span></Typography>
+                    : null}
+
                 <Typography className="heading headingAddInfo">
-                    {props.item.addinfo ? props.item.addinfo : null}
+                   {addinfoText !== "" ? addinfoText : null}
                 </Typography>
             </div>
 
@@ -344,8 +375,7 @@ export function ContainsTitleDetailed(props) {
                 {
                     !props.isCover && props.item.onlyapp && props.item.parent ?
                         !smallChip ?
-                            <Chip className="chip" label="Einzige Veröffentlichung" color="secondary"
-                                  icon={<PriorityHighIcon/>}/>
+                            <Chip className="chip" label="Einzige Veröffentlichung" color="secondary"/>
                             : <Chip className="chip" label={<PriorityHighIcon className="
                             mobileChip"/>}
                                     color="secondary"/>
@@ -361,8 +391,8 @@ export function ContainsTitleDetailed(props) {
                 }
 
                 {
-                    !props.isCover && props.item.onlytb && props.item.parent ?
-                        <Chip className="chip"
+                    !props.isCover && props.item.otheronlytb && props.item.parent ?
+                        <Chip className="tbchip chip"
                               label={!smallChip ? "Sonst nur in Taschenbuch" : "TB"}
                               color="default"/>
                         : null
@@ -371,8 +401,7 @@ export function ContainsTitleDetailed(props) {
                 {
                     exclusive ?
                         !smallChip ?
-                            <Chip className="chip" label="Exklusiv" color="secondary"
-                                  icon={<PriorityHighIcon/>}/>
+                            <Chip className="chip" label="Exklusiv" color="secondary"/>
                             : <Chip className="chip" label={<PriorityHighIcon className="
                             mobileChip"/>}
                                     color="secondary"/>
@@ -531,10 +560,10 @@ function expanded(item, query) {
 
     expanded = (currentFilter.onlyPrint && item.onlyapp) || expanded;
     expanded = (currentFilter.firstPrint && item.firstapp) || expanded;
+    expanded = (currentFilter.otherOnlyTb && item.otheronlytb) || expanded;
     expanded = (currentFilter.onlyTb && item.onlytb) || expanded;
     expanded = (currentFilter.onlyOnePrint && item.onlyoneprint) || expanded;
     expanded = (currentFilter.exclusive && item.exclusive) || expanded;
-    expanded = (currentFilter.otherTb && item.onlytb) || expanded;
     expanded = (currentFilter.noPrint && item.children.length) || expanded;
 
     if(currentFilter.series && compare.issue.series) {

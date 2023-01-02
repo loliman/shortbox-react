@@ -11,7 +11,7 @@ import EditButton from "../restricted/EditButton";
 import IssuePreview, {IssuePreviewPlaceholder} from "../IssuePreview";
 import withContext from "../generic/withContext";
 import PaginatedQuery from "../generic/PaginatedQuery";
-import {Card, Select} from "@material-ui/core";
+import {Select} from "@material-ui/core";
 import IssuePreviewSmall, {IssuePreviewPlaceholderSmall} from "../IssuePreviewSmall";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -109,10 +109,10 @@ class SeriesDetails extends React.Component {
                                                     data.seriesd.addinfo ?
                                                         <React.Fragment>
                                                             <br />
-                                                            <br />
 
                                                             <Typography dangerouslySetInnerHTML={{__html: data.seriesd.addinfo}} />
 
+                                                            <br />
                                                             <br />
                                                         </React.Fragment> : null
                                                 }
@@ -217,6 +217,7 @@ function SeriesDetailsPlaceholder(props) {
                         </CardContent>
                     </React.Fragment>
 
+                    <br/>
                     <br/>
 
                     <React.Fragment>

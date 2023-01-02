@@ -11,7 +11,7 @@ import EditButton from "../restricted/EditButton";
 import withContext from "../generic/withContext";
 import IssuePreview, {IssuePreviewPlaceholder} from "../IssuePreview";
 import PaginatedQuery from "../generic/PaginatedQuery";
-import {Card, Select} from "@material-ui/core";
+import {Select} from "@material-ui/core";
 import IssuePreviewSmall, {IssuePreviewPlaceholderSmall} from "../IssuePreviewSmall";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -87,10 +87,10 @@ class PublisherDetails extends React.Component {
                                                     data.publisher.addinfo ?
                                                         <React.Fragment>
                                                             <br />
-                                                            <br />
 
                                                             <Typography dangerouslySetInnerHTML={{__html: data.publisher.addinfo}} />
 
+                                                            <br />
                                                             <br />
                                                         </React.Fragment> : null
                                                 }
@@ -196,6 +196,7 @@ function PublisherDetailsPlaceholder(props) {
                     </CardContent>
                 </React.Fragment>
 
+                <br/>
                 <br/>
 
                 <React.Fragment>

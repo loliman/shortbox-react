@@ -11,13 +11,8 @@ import {withContext} from "./generic";
 import {generateLabel, generateUrl, HierarchyLevel} from "../util/hierarchy";
 import PaginatedQuery from "./generic/PaginatedQuery";
 import Tooltip from "@material-ui/core/es/Tooltip/Tooltip";
-import {Icon} from "@material-ui/core";
 
 class List extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     componentDidMount() {
         if(!(this.props.mobile || (this.props.tablet && !this.props.tabletLandscape)))
             this.props.registerLoadingComponent("List");
@@ -148,7 +143,7 @@ function TypeListEntry(props) {
                                   <div style={{display: "flex"}}>
                                       <div>{label}</div>
                                       {item.variants && item.variants.length > 1 ?
-                                      <Tooltip title={"Mit " + item.variants.length + " Varianten"}>
+                                      <Tooltip title={"+" + item.variants.length + " Varianten"}>
                                           <Typography className={"material-icons"} style={{color: "gray", paddingLeft: '2px', fontSize: "8px"}} color={"disabled"}>+{item.variants.length}</Typography>
                                       </Tooltip> :
                                       null}

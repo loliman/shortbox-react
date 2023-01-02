@@ -120,10 +120,10 @@ export function generateLabel(item) {
         let year = "";
 
         if (item.issue.series.startyear)
-            if(item.issue.series.startyear === item.series.endyear)
+            //if(item.issue.series.startyear === item.issue.series.endyear)
                 year = ' (' + item.issue.series.startyear + ')';
-            else
-                year = ' (' + item.issue.series.startyear + ' - ' + ((!item.issue.series.endyear || item.issue.series.endyear === 0) ? '...' : item.issue.series.endyear) + ')';
+            //else
+            //    year = ' (' + item.issue.series.startyear + ' - ' + ((!item.issue.series.endyear || item.issue.series.endyear === 0) ? '...' : item.issue.series.endyear) + ')';
 
         return item.issue.series.title + (item.issue.series.publisher ? ' (Vol. ' + romanize(item.issue.series.volume) + ')' : '') + (year ? year : "") + ' #' + item.issue.number;
     }

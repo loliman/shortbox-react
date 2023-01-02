@@ -624,14 +624,6 @@ class IssueEditor extends React.Component {
 
                                     <br/>
 
-                                    {/*
-                                        !values.series.publisher.us ?
-                                            <React.Fragment>
-                                                <Features setFieldValue={setFieldValue} values={values} items={values.features} {...this.props}/>
-
-                                                <br/>
-                                            </React.Fragment> : null
-*/}
                                     <Covers setFieldValue={setFieldValue} items={values.covers} {...this.props}
                                             us={values.series.publisher.us} values={values}/>
 
@@ -772,10 +764,18 @@ function StoryFields(props) {
                 />
 
                 <FastField
-                    className={props.desktop ? "field field35" : "field field100"}
+                    className={props.desktop ? "field field30" : "field field100"}
                     name={"stories[" + props.index + "].addinfo"}
                     disabled={props.disabled}
                     label="Weitere Informationen"
+                    component={TextField}
+                />
+
+                <FastField
+                    className={props.desktop ? "field field10" : "field field100"}
+                    name={"stories[" + props.index + "].part"}
+                    disabled={props.disabled}
+                    label="Teil"
                     component={TextField}
                 />
 
@@ -788,18 +788,7 @@ function StoryFields(props) {
 }
 
 function generateSeriesLabelWithYears(series) {
-    let label = generateLabel(series);
-
-    /*if(series.startyear) {
-        label += " (" + series.startyear + " - ";
-        if(series.endyear === 0)
-            label += "...";
-        else
-            label += series.endyear;
-        label += ")";
-    }*/
-
-    return label;
+    return generateLabel(series);
 }
 
 function StoryFieldsNonExclusive(props) {
@@ -1264,65 +1253,6 @@ function StoryFieldsExclusive(props) {
     );
 }
 
-function Features(props) {
-    return (
-        <React.Fragment>
-            <div>
-                <CardHeader className="left" title="Weitere Inhalte"/>
-                <AddContainsButton type="features" default={featureDefault} {...props} />
-            </div>
-
-            <br />
-
-            <Contains {...props} type="features" default={featureDefault} fields={<FeatureFields />} />
-        </React.Fragment>
-    );
-}
-
-function FeatureFields(props) {
-    return (
-        <div className="storyAddInputContainer">
-            <FastField
-                className="field field3"
-                name={"features[" + props.index + "].number"}
-                label="#"
-                type="number"
-                component={TextField}
-            />
-
-            <FastField
-                className={props.desktop ? "field field30" : "field field95"}
-                name={"features[" + props.index + "].title"}
-                label="Titel"
-                component={TextField}
-            />
-
-            <AutoComplete
-                query={individuals}
-                name={"features[" + props.index + "].individuals"}
-                nameField="name"
-                type={"WRITER"}
-                label="Autor"
-                isMulti
-                creatable
-                variables={{pattern: getPattern(props.values.features[props.index].individuals, "name")}}
-                onChange={(option, live) => updateField(option, live, props.values.features[props.index], props.setFieldValue, "features[" + props.index + "].individuals")}
-                style={{
-                    width: props.desktop ? "30%" : "100%"
-                }}
-                generateLabel={(e) => e.name}
-            />
-
-            <FastField
-                className={props.desktop ? "field field30" : "field field100"}
-                name={"features[" + props.index + "].addinfo"}
-                label="Weitere Informationen"
-                component={TextField}
-            />
-        </div>
-    );
-}
-
 function Covers(props) {
     return (
         <React.Fragment>
@@ -1573,14 +1503,8 @@ const storyDefault = {
     },
     individuals: [],
     addinfo: '',
+    part: '',
     exclusive: false,
-};
-
-const featureDefault = {
-    title: '',
-    addinfo: '',
-    individuals: [],
-    number: 0
 };
 
 const coverDefault = {
