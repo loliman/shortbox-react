@@ -143,7 +143,7 @@ function TypeListEntry(props) {
                                   <div style={{display: "flex"}}>
                                       <div>{label}</div>
                                       {item.variants && item.variants.length > 1 ?
-                                      <Tooltip title={"+" + item.variants.length + " Varianten"}>
+                                      <Tooltip title={"+" + item.variants.length-1 + " Varianten"}>
                                           <Typography className={"material-icons"} style={{color: "gray", paddingLeft: '2px', fontSize: "8px"}} color={"disabled"}>+{item.variants.length}</Typography>
                                       </Tooltip> :
                                       null}

@@ -291,7 +291,7 @@ function Filter(props) {
                                             }
                                             label="Einzige Veröffentlichung"
                                         />
-                                        
+
                                         <FormControlLabel
                                             className="switchEditor"
                                             control={
