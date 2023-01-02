@@ -81,7 +81,7 @@ function IssuePreview(props) {
                 {
                     !props.us && props.issue.stories.filter(s => s.exclusive).length > 0 ?
                         !smallChip ?
-                            <Chip className="chip" label="Exklusiv" color="secondary"/>
+                            <Chip className="chip" label="Exklusiver Inhalt" color="secondary"/>
                             : <Chip className="chip" label={<PriorityHighIcon className="
                             mobileChip"/>}
                                     color="secondary"/>
