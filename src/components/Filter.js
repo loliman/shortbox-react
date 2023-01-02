@@ -283,19 +283,6 @@ function Filter(props) {
                                             className="switchEditor"
                                             control={
                                                 <Switch
-                                                    checked={values.firstPrint}
-                                                    onChange={() => {
-                                                        setFieldValue("firstPrint", !values.firstPrint);
-                                                    }}
-                                                    color="secondary"/>
-                                            }
-                                            label="Erstveröffentlichung"
-                                        />
-
-                                        <FormControlLabel
-                                            className="switchEditor"
-                                            control={
-                                                <Switch
                                                     checked={values.onlyPrint}
                                                     onChange={() => {
                                                         setFieldValue("onlyPrint", !values.onlyPrint);
@@ -303,6 +290,19 @@ function Filter(props) {
                                                     color="secondary"/>
                                             }
                                             label="Einzige Veröffentlichung"
+                                        />
+                                        
+                                        <FormControlLabel
+                                            className="switchEditor"
+                                            control={
+                                                <Switch
+                                                    checked={values.firstPrint}
+                                                    onChange={() => {
+                                                        setFieldValue("firstPrint", !values.firstPrint);
+                                                    }}
+                                                    color="secondary"/>
+                                            }
+                                            label="Erstveröffentlichung"
                                         />
 
                                         <FormControlLabel
