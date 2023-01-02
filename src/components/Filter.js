@@ -315,7 +315,7 @@ function Filter(props) {
                                                     }}
                                                     color="secondary"/>
                                             }
-                                            label="Sonst nur in TB"
+                                            label="Sonst nur in Taschenbuch"
                                         />
 
                                         <FormControlLabel
@@ -328,7 +328,7 @@ function Filter(props) {
                                                     }}
                                                     color="secondary"/>
                                             }
-                                            label="Exklusiv"
+                                            label="Exklusiver Inhalt"
                                         />
 
                                         <FormControlLabel
@@ -355,7 +355,7 @@ function Filter(props) {
                                                     }}
                                                     color="secondary"/>
                                             }
-                                            label="Nur in TB"
+                                            label="Nur in Taschenbuch"
                                         />
 
                                         <FormControlLabel
