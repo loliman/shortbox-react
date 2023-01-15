@@ -90,6 +90,7 @@ class IssueDetails extends React.Component {
 
                                     <Variants us={us} issue={data.issue} navigate={this.props.navigate}/>
 
+                                <div className={"detailsWrapper"}>
                                     <div className="details">
                                         <DetailsTable issue={issue} details={this.props.details} navigate={this.props.navigate} us={us}/>
                                         <Cover issue={issue}/>
@@ -98,14 +99,13 @@ class IssueDetails extends React.Component {
                                     {
                                         data.issue.addinfo && data.issue.addinfo !== "" ?
                                             <React.Fragment>
-                                                <br/>
-                                                <Paper className="detailsPaper">
+                                                <Paper className="addinfo">
                                                     <Typography dangerouslySetInnerHTML={{__html: data.issue.addinfo}} />
                                                 </Paper>
                                             </React.Fragment> :
                                             null
                                     }
-
+                                </div>
                                     {
                                         arcs.length > 0 ? <br /> : null
                                     }
@@ -732,6 +732,33 @@ function StoryPreview(props) {
             </ExpansionPanelSummary>
         </ExpansionPanel>
     );
+}
+
+export function toShortboxDate(date) {
+    if (date.indexOf("01.01.") > -1) {
+        return date.substring(6);
+    } else if(date.indexOf("01.") === 0) {
+        date = date.substring(2);
+    }
+
+    date = date
+        .replace(".01.", ". Januar ")
+        .replace(".02.", ". Februar ")
+        .replace(".03.", ". März ")
+        .replace(".04.", ". April ")
+        .replace(".05.", ". Mai ")
+        .replace(".06.", ". Juni ")
+        .replace(".07.", ". Juli ")
+        .replace(".08.", ". August ")
+        .replace(".09.", ". September ")
+        .replace(".10.", ". Oktober ")
+        .replace(".11.", ". November ")
+        .replace(".12.", ". Dezember ");
+
+    if(date.startsWith("."))
+        date = date.substring(2).trim();
+
+    return date;
 }
 
 export default withContext(IssueDetails);

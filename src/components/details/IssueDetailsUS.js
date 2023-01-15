@@ -12,7 +12,7 @@ import IssueDetails, {
     Contains,
     ContainsTitleDetailed,
     ContainsTitleSimple,
-    DetailsRow, IndividualList, toChipList
+    DetailsRow, IndividualList, toChipList, toShortboxDate
 } from "./IssueDetails";
 
 var dateFormat = require('dateformat');
@@ -27,7 +27,7 @@ function Details(props) {
     return (
         <React.Fragment>
             <DetailsRow key="releasedate" label="Erscheinungsdatum"
-                        value={dateFormat(new Date(props.issue.releasedate), "dd.mm.yyyy")}/>
+                        value={toShortboxDate(dateFormat(new Date(props.issue.releasedate), "dd.mm.yyyy"))}/>
             <DetailsRow key="coverartists" label="Cover Artists"
                         value={toChipList(props.issue && props.issue.cover ? props.issue.cover.individuals.filter(item => item.type.includes('ARTIST')) : null, props, "ARTIST")}/>
             <DetailsRow key="editor" label="Editor"

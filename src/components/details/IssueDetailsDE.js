@@ -6,7 +6,7 @@ import IssueDetails, {
     Contains,
     ContainsTitleDetailed,
     DetailsRow,
-    IndividualList, toChipList
+    IndividualList, toChipList, toShortboxDate
 } from "./IssueDetails";
 import Chip from "@material-ui/core/Chip";
 import {generateLabel} from "../../util/hierarchy";
@@ -29,11 +29,23 @@ function Details(props) {
                                 value={props.issue.limitation + " Exemplare"}/> :
                     null
             }
-            <DetailsRow key="pages" label="Seiten" value={props.issue.pages}/>
+
+            {
+                props.issue.pages && props.issue.pages > 0 ?
+                    <DetailsRow key="pages" label="Seiten"
+                                value={props.issue.pages}/> :
+                    null
+            }
+
             <DetailsRow key="releasedate" label="Erscheinungsdatum"
-                        value={dateFormat(new Date(props.issue.releasedate), "dd.mm.yyyy")}/>
-            <DetailsRow key="price" label="Preis"
-                        value={props.issue.price + ' ' + props.issue.currency}/>
+                        value={toShortboxDate(dateFormat(new Date(props.issue.releasedate), "dd.mm.yyyy"))}/>
+
+            {
+                props.issue.price && props.issue.price > 0 ?
+                    <DetailsRow key="price" label="Preis"
+                                value={props.issue.price + ' ' + props.issue.currency}/> :
+                    null
+            }
         </React.Fragment>
     );
 }
