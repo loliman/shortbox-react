@@ -8,6 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import {Mutation} from "react-apollo";
 import {logout} from "../graphql/mutations";
 import Cookies from "./Cookies";
+import {generateUrl} from "../util/hierarchy";
 
 class Layout extends React.Component {
     constructor(props) {
@@ -46,6 +47,21 @@ class Layout extends React.Component {
                                     <span className="spanDif">|</span>
                                     <span className="spanLink"
                                           onClick={() => this.props.navigate("/privacy")}>Datenschutz</span>
+                                    <span className="spanDif">|</span>
+                                    <span className="spanLink"
+                                          onClick={() => {
+                                              if(this.props.cookies.get("newDesign") === "true")
+                                                  this.props.cookies.set("newDesign", "false");
+                                              else
+                                                  this.props.cookies.set("newDesign", "true");
+
+                                              this.props.navigate(generateUrl(this.props.selected, this.props.us),
+                                                  {
+                                                      filter: this.props.query ? this.props.query.filter : null,
+                                                      order: this.props.query ? this.props.query.order : null,
+                                                      direction: this.props.query ? this.props.query.direction : null
+                                                  })
+                                          }}>Zu {this.props.cookies.get("newDesign") === "true" ? 'altem' : 'neuem'} Design wechseln</span>
                                     <span className="spanDif">|</span>
                                     {
                                         !session ? <LogIn {...this.props}/> : <LogOut {...this.props}/>

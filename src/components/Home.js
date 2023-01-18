@@ -13,6 +13,8 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import {Select} from "@material-ui/core";
 import {generateUrl} from "../util/hierarchy";
+import IconButton from "@material-ui/core/IconButton";
+import {ArrowDownward, ArrowUpward} from "@material-ui/icons";
 
 class Home extends React.Component {
     componentDidMount() {
@@ -34,7 +36,8 @@ class Home extends React.Component {
 
         return (
             <PaginatedQuery query={lastEdited} variables={{filter: filter,
-                            order: this.props.query ? this.props.query.order : 'updatedAt'}}
+                            order: this.props.query ? this.props.query.order : 'updatedAt',
+                            direction: this.props.query ? this.props.query.direction : 'DESC'}}
                             onCompleted={() => this.props.unregisterLoadingComponent("Home")}>
                 {({error, data, fetchMore, fetching, hasMore, networkStatus}) => {
                     let loading;
@@ -81,22 +84,39 @@ class Home extends React.Component {
                                                 <br />
                                                 <br />
 
-                                                <FormControl className={"field field10"} style={{alignSelf: "end", width: "200px"}}>
-                                                    <InputLabel id="demo-simple-select-label">Sortieren nach</InputLabel>
-                                                    <Select
-                                                        id="demo-simple-select"
-                                                        value={this.props.query && this.props.query.order ? this.props.query.order : "updatedAt"}
-                                                        label="Sortieren nach"
-                                                        onChange={e =>
-                                                            this.props.navigate(generateUrl(this.props.selected, this.props.us),
-                                                                {filter: this.props.query ? this.props.query.filter : null, order: e.target.value})}>
-                                                        <MenuItem value={"updatedAt"}>Änderungsdatum</MenuItem>
-                                                        <MenuItem value={"createdAt"}>Erfassungsdatum</MenuItem>
-                                                        <MenuItem value={"releasedate"}>Erscheinungsdatum</MenuItem>
-                                                        <MenuItem value={"series"}>Serie</MenuItem>
-                                                        <MenuItem value={"publisher"}>Verlag</MenuItem>
-                                                    </Select>
-                                                </FormControl>
+                                                <div style={{alignSelf: "end", width: "250px"}}>
+                                                    <FormControl className={"field field75"}>
+                                                        <InputLabel id="demo-simple-select-label">Sortieren nach</InputLabel>
+                                                        <Select
+                                                            id="demo-simple-select"
+                                                            value={this.props.query && this.props.query.order ? this.props.query.order : "updatedAt"}
+                                                            label="Sortieren nach"
+                                                            onChange={e =>
+                                                                this.props.navigate(generateUrl(this.props.selected, this.props.us),
+                                                                    {
+                                                                        filter: this.props.query ? this.props.query.filter : null,
+                                                                        order: e.target.value,
+                                                                        direction: this.props.query ? this.props.query.direction : null,
+                                                                    })}>
+                                                            <MenuItem value={"updatedAt"}>Änderungsdatum</MenuItem>
+                                                            <MenuItem value={"createdAt"}>Erfassungsdatum</MenuItem>
+                                                            <MenuItem value={"releasedate"}>Erscheinungsdatum</MenuItem>
+                                                            <MenuItem value={"series"}>Serie</MenuItem>
+                                                            <MenuItem value={"publisher"}>Verlag</MenuItem>
+                                                        </Select>
+                                                    </FormControl>
+
+                                                    <IconButton aria-label="Reihenfolge" style={{marginTop: '23px', height: '10px', width: '10px'}}
+                                                                onClick={e =>
+                                                                    this.props.navigate(generateUrl(this.props.selected, this.props.us),
+                                                                        {
+                                                                            filter: this.props.query ? this.props.query.filter : null,
+                                                                            order: this.props.query ? this.props.query.order : null,
+                                                                            direction: this.props.query.direction !== 'DESC'? 'DESC' : 'ASC'
+                                                                        })}>
+                                                        {this.props.query && this.props.query.direction !== 'DESC' ? <ArrowUpward /> : <ArrowDownward />}
+                                                    </IconButton>
+                                                </div>
 
                                                 <br/>
 

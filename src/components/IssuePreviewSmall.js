@@ -20,36 +20,41 @@ function IssuePreviewSmall(props) {
             variant += " (" + props.issue.variant + ' Variant)';
     }
 
+    let coverUrl = (props.issue.cover && props.issue.cover.url && props.issue.cover.url !== '') ? props.issue.cover.url : "";
+
     return (
-        <ExpansionPanelSummary className="summary-sm">
-            <div style={{width: "100%"}}>
-                <div className="issueTitleContainer">
-                    <Typography variant="subtitle1" className="issuePreviewTitle">{generateLabel(props.issue.series) + " #" + props.issue.number}</Typography>
+        <div style={props.cookies.get('newDesign') === "true" ? {background: 'white url(' + coverUrl + ') no-repeat 100% 40%', backgroundSize: '35%'} : {}}>
+            <ExpansionPanelSummary className="summary-sm" style={props.cookies.get('newDesign') === "true" ? {background: 'linear-gradient(to right, rgba(255, 255, 255, 1) 65%, rgba(255, 255, 255, 0))'} : {}}>
+                <div style={{width: "100%"}}>
+                    <div className="issueTitleContainer">
+                        <Typography variant="subtitle1" className="issuePreviewTitle">{generateLabel(props.issue.series) + " #" + props.issue.number}</Typography>
+
+                        {
+                            props.issue.title !== '' ?
+                                <Typography className="issuePreviewSubTitle" variant={"subtitle2"}>{props.issue.title}</Typography> :
+                                null
+                        }
+                    </div>
 
                     {
-                        props.issue.title !== '' ?
-                            <Typography className="issuePreviewSubTitle" variant={"subtitle2"}>{props.issue.title}</Typography> :
+                        variant !== '' ?
+                            <Typography className="issuePreviewTitleVariant" variant={"caption"}>{variant}</Typography> :
                             null
                     }
                 </div>
 
-                {
-                    variant !== '' ?
-                        <Typography className="issuePreviewTitleVariant" variant={"caption"}>{variant}</Typography> :
-                        null
-                }
-            </div>
-
-            <div style={{paddingRight: "0"}}>
-                <Tooltip title="Zur Serie">
-                    <IconButton className="detailsIcon"
-                                onClick={() => props.navigate(generateUrl(props.issue, props.us))}
-                                aria-label="Details">
-                        <SearchIcon fontSize="small"/>
-                    </IconButton>
-                </Tooltip>
-            </div>
-        </ExpansionPanelSummary>
+                <div style={{paddingRight: "0", paddingTop: "2px"}}>
+                    <Tooltip title="Zur Serie">
+                        <IconButton className="detailsIcon"
+                                    style={{background: 'rgba(255, 255, 255, 0.75)'}}
+                                    onClick={() => props.navigate(generateUrl(props.issue, props.us))}
+                                    aria-label="Details">
+                            <SearchIcon fontSize="small"/>
+                        </IconButton>
+                    </Tooltip>
+                </div>
+            </ExpansionPanelSummary>
+        </div>
     );
 }
 

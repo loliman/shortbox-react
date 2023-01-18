@@ -77,8 +77,8 @@ const arcs = gql`query Arcs($pattern: String, $type: String, $offset: Int) {
     }
 }`;
 
-export const lastEdited = gql`query LastEdited($filter: Filter, $offset: Int, $order: String) {
-    lastEdited(filter: $filter, offset: $offset, order: $order) {
+export const lastEdited = gql`query LastEdited($filter: Filter, $offset: Int, $order: String, $direction: String) {
+    lastEdited(filter: $filter, offset: $offset, order: $order, direction: $direction) {
         number,
         format,
         variant,
