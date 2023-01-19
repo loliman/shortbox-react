@@ -21,7 +21,7 @@ function IssuePreview(props) {
             variant += " (" + props.issue.variant + ' Variant)';
     }
 
-    let coverUrl = (props.issue.cover && props.issue.cover.url && props.issue.cover.url !== '') ? props.issue.cover.url : "";
+    let coverUrl = (props.issue.cover && props.issue.cover.url && props.issue.cover.url !== '') ? props.issue.cover.url : props.cookies.get('newDesign') === "true" ? "" : "/nocover.jpg";
     let smallChip = props.mobile || props.mobileLandscape || ((props.tablet || props.tabletLandscape) && props.drawerOpen);
 
     return (

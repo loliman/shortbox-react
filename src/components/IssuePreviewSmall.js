@@ -23,7 +23,8 @@ function IssuePreviewSmall(props) {
     let coverUrl = (props.issue.cover && props.issue.cover.url && props.issue.cover.url !== '') ? props.issue.cover.url : "";
 
     return (
-        <div style={props.cookies.get('newDesign') === "true" ? {background: 'white url(' + coverUrl + ') no-repeat 100% 40%', backgroundSize: '35%'} : {}}>
+        <div style={props.cookies.get('newDesign') === "true" ? {background: 'white url(' + coverUrl + ') no-repeat 100% 40%', backgroundSize: '35%'} : {}}
+            onClick={() => props.cookies.get('newDesign') === "true" ? props.navigate(generateUrl(props.issue, props.us)) : null}>
             <ExpansionPanelSummary className="summary-sm" style={props.cookies.get('newDesign') === "true" ? {background: 'linear-gradient(to right, rgba(255, 255, 255, 1) 65%, rgba(255, 255, 255, 0))'} : {}}>
                 <div style={{width: "100%"}}>
                     <div className="issueTitleContainer">
@@ -43,16 +44,21 @@ function IssuePreviewSmall(props) {
                     }
                 </div>
 
-                <div style={{paddingRight: "0", paddingTop: "2px"}}>
-                    <Tooltip title="Zur Serie">
-                        <IconButton className="detailsIcon"
-                                    style={{background: 'rgba(255, 255, 255, 0.75)'}}
+                {
+                    props.cookies.get('newDesign') === "true"
+                        ? null
+                        : <div style={{paddingRight: "0", paddingTop: "2px"}}>
+                            <Tooltip title="Zur Ausgabe">
+                                <IconButton className="detailsIcon"
+                                    style={{marginLef: '5px', background: 'rgba(255, 255, 255, 0.75)'}}
                                     onClick={() => props.navigate(generateUrl(props.issue, props.us))}
                                     aria-label="Details">
-                            <SearchIcon fontSize="small"/>
-                        </IconButton>
-                    </Tooltip>
-                </div>
+                                    <SearchIcon fontSize="small"/>
+                                </IconButton>
+                            </Tooltip>
+                        </div>
+
+                }
             </ExpansionPanelSummary>
         </div>
     );

@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "name": "Run Shortbox Frontend",
+            "type": "command",
+            "program": "npm",
+            "args": ["start"]
+        }
+    ]
+}
