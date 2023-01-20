@@ -35,7 +35,7 @@ class SearchBar extends React.Component {
                                             document.activeElement.blur();
                                         }
                                         this.onFocus(null, false);
-                                        navigate(node.url, us);
+                                        navigate(null, node.url, us);
                                     }
 
                                 }}

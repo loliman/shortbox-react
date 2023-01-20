@@ -42,7 +42,7 @@ class AddFab extends React.Component {
                                 tooltipTitle="Verlag"
                                 tooltipOpen
                                 onMouseDown={(e) => {
-                                    navigate("/create/publisher");
+                                    navigate(e, "/create/publisher");
                                     this.handleClick();
                                 }}
                             />
@@ -52,7 +52,7 @@ class AddFab extends React.Component {
                                 tooltipTitle="Serie"
                                 tooltipOpen
                                 onMouseDown={(e) => {
-                                    navigate("/create/series");
+                                    navigate(e, "/create/series");
                                     this.handleClick();
                                 }}
                             />
@@ -62,7 +62,7 @@ class AddFab extends React.Component {
                                 tooltipTitle="Ausgabe"
                                 tooltipOpen
                                 onMouseDown={(e) => {
-                                    navigate("/create/issue");
+                                    navigate(e, "/create/issue");
                                     this.handleClick();
                                 }}
                             />

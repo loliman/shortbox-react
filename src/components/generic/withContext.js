@@ -30,7 +30,7 @@ function withContext(WrappedComponent) {
                     navigate: (e, url, query) => {
                         let newTab = (e && (e.metaKey || e.ctrlKey || e.keyCode === 91 || e.keyCode === 224 || e.button === 1));
 
-                        if(e.button !== 1 && e.button !== 0)
+                        if(e && e.button !== 1 && e.button !== 0)
                             return;
                         
                         context.resetLoadingComponents();
