@@ -36,8 +36,8 @@ class Home extends React.Component {
 
         return (
             <PaginatedQuery query={lastEdited} variables={{filter: filter,
-                            order: this.props.query ? this.props.query.order : 'updatedAt',
-                            direction: this.props.query ? this.props.query.direction : 'DESC'}}
+                            order: this.props.query && this.props.query.order ? this.props.query.order : 'updatedAt',
+                            direction: this.props.query && this.props.query.direction ? this.props.query.direction : 'DESC'}}
                             onCompleted={() => this.props.unregisterLoadingComponent("Home")}>
                 {({error, data, fetchMore, fetching, hasMore, networkStatus}) => {
                     let loading;
@@ -112,9 +112,9 @@ class Home extends React.Component {
                                                                         {
                                                                             filter: this.props.query ? this.props.query.filter : null,
                                                                             order: this.props.query ? this.props.query.order : null,
-                                                                            direction: this.props.query.direction !== 'DESC'? 'DESC' : 'ASC'
+                                                                            direction: this.props.query && this.props.query.direction && this.props.query.direction !== 'DESC'? 'DESC' : 'ASC'
                                                                         })}>
-                                                        {this.props.query && this.props.query.direction !== 'DESC' ? <ArrowUpward /> : <ArrowDownward />}
+                                                        {this.props.query && this.props.query.direction && this.props.query.direction !== 'DESC' ? <ArrowUpward /> : <ArrowDownward />}
                                                     </IconButton>
                                                 </div>
 
