@@ -48,7 +48,7 @@ class TopBar extends React.Component {
                     <div id="headerLeft">
                         <IconButton
                             color="inherit"
-                            onClick={() => toogleDrawer()}
+                            onMouseDown={(e) => toogleDrawer()}
                             className="menuButton"
                         >
                             <MenuIcon />
@@ -62,7 +62,7 @@ class TopBar extends React.Component {
                             || this.props.level === HierarchyLevel.PUBLISHER
                             || this.props.level === HierarchyLevel.ISSUE)) ?
                             null :
-                            <img onClick={() => this.props.navigate(us ? "/us" : "/de")}
+                            <img onMouseDown={(e) => this.props.navigate(e, us ? "/us" : "/de")}
                                  id="logo" src="/Shortbox_Logo.png" alt="Shortbox" height="40"/>
                     }
 
@@ -79,9 +79,9 @@ class TopBar extends React.Component {
                         <Tooltip title={isFilter ? "Filter aktiv" : "Filtern"}>
                             <IconButton
                                 color={isFilter ? "secondary" : "inherit"}
-                                onClick={(e) => {
+                                onMouseDown={(e) => {
                                     if(!isFilter)
-                                        this.props.navigate(us ? "/filter/us" : "/filter/de");
+                                        this.props.navigate(e, us ? "/filter/us" : "/filter/de");
                                     else
                                         this.handleFilterMenuOpen(e);
                                 }}
@@ -106,9 +106,9 @@ class TopBar extends React.Component {
                                     }}>
 
                                     <MenuItem key="edit"
-                                              onClick={() => {
+                                              onMouseDown={(e) => {
                                                   this.handleFilterMenuClose();
-                                                  this.props.navigate(us ? "/filter/us" : "/filter/de");
+                                                  this.props.navigate(e, us ? "/filter/us" : "/filter/de");
                                               }}>
                                         <ListItemIcon>
                                             <EditIcon/>
@@ -118,7 +118,7 @@ class TopBar extends React.Component {
                                         </Typography>
                                     </MenuItem>
 
-                                    <MenuItem key="export" onClick={() => this.handleExport()}>
+                                    <MenuItem key="export" onMouseDown={(e) => this.handleExport()}>
                                         <ListItemIcon>
                                             <CloudDownloadIcon/>
                                         </ListItemIcon>
@@ -128,9 +128,9 @@ class TopBar extends React.Component {
                                     </MenuItem>
                                     )}
 
-                                    <MenuItem key="reset" onClick={() => {
+                                    <MenuItem key="reset" onMouseDown={(e) => {
                                         this.handleFilterMenuClose();
-                                        this.props.navigate(generateUrl(this.props.selected, this.props.us), {filter: null});
+                                        this.props.navigate(e, generateUrl(this.props.selected, this.props.us), {filter: null});
                                     }}>
                                         <ListItemIcon>
                                             <ClearIcon/>
@@ -155,7 +155,7 @@ class TopBar extends React.Component {
                                     <Switch
                                         checked={us}
                                         onChange={() => {
-                                            this.props.navigate(us ? "/de" : "/us", {filter: null})
+                                            this.props.navigate(null, us ? "/de" : "/us", {filter: null})
                                         }}
                                         color="secondary"/>
                                 </Tooltip>
@@ -165,7 +165,7 @@ class TopBar extends React.Component {
                 </Toolbar>
 
                 {
-                    (mobile || (tablet && !tabletLandscape)) ? <div id="searchOverlay" className={this.state.searchbarFocus ? "" : "searchOverlayHidden"} onClick={(e) => this.onFocus(e, false)}/> : null
+                    (mobile || (tablet && !tabletLandscape)) ? <div id="searchOverlay" className={this.state.searchbarFocus ? "" : "searchOverlayHidden"} onMouseDown={(e) => this.onFocus(e, false)}/> : null
                 }
             </AppBar>
         );
@@ -279,8 +279,8 @@ function BreadCrumbLink(props) {
     return (
         <React.Fragment>
             <span className="breadCrumbLink"
-                  onClick={() => {
-                      props.navigate(props.to);
+                  onMouseDown={(e) => {
+                      props.navigate(e, props.to);
                   }}>
                 {props.label}
             </span>

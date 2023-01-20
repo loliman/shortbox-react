@@ -14,8 +14,8 @@ function getDisplayName(WrappedComponent) {
 
 function withContext(WrappedComponent) {
     const WithContext = props => (
-        <AppContext.Consumer>
-            {(context) => {
+            <AppContext.Consumer>
+                {(context) => {
                 let us = props.match.url.indexOf("/us") === 0 || props.match.url.indexOf("/edit/us") === 0 || props.match.url.indexOf("/filter/us") === 0;
                 let selected = getSelected(props.match.params, us);
                 let currentQuery = props.location.search ? queryString.parse(props.location.search) : null;
@@ -27,9 +27,14 @@ function withContext(WrappedComponent) {
                     selected: selected,
                     query: currentQuery,
                     level: getHierarchyLevel(selected),
-                    navigate: (url, query) => {
+                    navigate: (e, url, query) => {
+                        let newTab = (e && (e.metaKey || e.ctrlKey || e.keyCode === 91 || e.keyCode === 224 || e.button === 1));
+
+                        if(e.button !== 1 && e.button !== 0)
+                            return;
+                        
                         context.resetLoadingComponents();
-                        navigate(props, url, query, currentQuery)
+                        navigate(props, url, query, currentQuery, newTab)
                     }
                 };
 
@@ -52,7 +57,7 @@ function withContext(WrappedComponent) {
     )(WithContext);
 }
 
-function navigate(props, url, query, currentQuery) {
+function navigate(props, url, query, currentQuery, newTab) {
     let lastUrl = props.location ? props.location.pathname : null;
     let q = currentQuery ? currentQuery : {};
     q['expand'] = undefined;
@@ -65,7 +70,10 @@ function navigate(props, url, query, currentQuery) {
         }
     }
 
-    props.history.push((lastUrl === url && query === currentQuery ? (props.us ? "/us" : "/de") : url) + "?" + queryString.stringify(q));
+    if(newTab)
+        window.open((lastUrl === url && query === currentQuery ? (props.us ? "/us" : "/de") : url) + "?" + queryString.stringify(q), '_blank', 'noreferrer');
+    else
+        props.history.push((lastUrl === url && query === currentQuery ? (props.us ? "/us" : "/de") : url) + "?" + queryString.stringify(q));
 }
 
 function createAppTitle(params, url) {

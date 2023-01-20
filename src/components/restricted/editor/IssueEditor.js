@@ -632,7 +632,7 @@ class IssueEditor extends React.Component {
 
                                     <div className="formButtons">
                                         <Button disabled={isSubmitting}
-                                                onClick={() => {
+                                                onMouseDown={(e) => {
                                                     values = defaultValues;
                                                     resetForm();
                                                 }}
@@ -641,7 +641,7 @@ class IssueEditor extends React.Component {
                                         </Button>
 
                                         <Button disabled={isSubmitting}
-                                                onClick={() => this.props.navigate(lastLocation ? lastLocation.pathname : "/")}
+                                                onMouseDown={(e) => this.props.navigate(e, lastLocation ? lastLocation.pathname : "/")}
                                                 color="primary">
                                             Abbrechen
                                         </Button>
@@ -682,7 +682,7 @@ class Cover extends React.Component {
                     image={this.createPreview(this.props.cover)}
                     title="Cover Vorschau"
                     className="media field100"
-                    onClick={() => this.triggerCoverIsOpen()}/>
+                    onMouseDown={(e) => this.triggerCoverIsOpen()}/>
 
                 <Lightbox
                     showImageCount={false}
@@ -691,7 +691,7 @@ class Cover extends React.Component {
                     onClose={() => this.triggerCoverIsOpen()}/>
 
                 <IconButton className="removeBtnCover" aria-label="Entfernen"
-                            onClick={() => {
+                            onMouseDown={(e) => {
                                 this.setState({cover: null});
                                 this.props.onDelete();
                             }}>
@@ -1425,7 +1425,7 @@ class ContainsItem extends React.Component {
 function AddContainsButton(props) {
     return (
         <IconButton disabled={props.disabled} className="addBtn" aria-label="Hinzufügen"
-                    onClick={() => {
+                    onMouseDown={(e) => {
                         let items = props.items;
                         let def = JSON.parse(JSON.stringify(props.default));
                         def.number = props.items.length+1;
@@ -1440,7 +1440,7 @@ function AddContainsButton(props) {
 function RemoveContainsButton(props) {
     return (
         <IconButton disabled={props.disabled} className="removeBtn" aria-label="Entfernen"
-                    onClick={() => {
+                    onMouseDown={(e) => {
                         let items = props.items.filter(e => JSON.stringify(e) !== JSON.stringify(props.item));
                         props.setFieldValue(props.type, items, true);
                     }}>

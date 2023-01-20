@@ -163,7 +163,7 @@ class SeriesDetails extends React.Component {
                                                                 value={this.props.query && this.props.query.order ? this.props.query.order : "updatedAt"}
                                                                 label="Sortieren nach"
                                                                 onChange={e =>
-                                                                    this.props.navigate(generateUrl(this.props.selected, this.props.us),
+                                                                    this.props.navigate(e, generateUrl(this.props.selected, this.props.us),
                                                                         {
                                                                             filter: this.props.query ? this.props.query.filter : null,
                                                                             order: e.target.value,
@@ -178,8 +178,8 @@ class SeriesDetails extends React.Component {
                                                         </FormControl>
 
                                                         <IconButton aria-label="Reihenfolge" style={{marginTop: '23px', height: '10px', width: '10px'}}
-                                                                    onClick={e =>
-                                                                        this.props.navigate(generateUrl(this.props.selected, this.props.us),
+                                                                    onMouseDown={(e) =>
+                                                                        this.props.navigate(e, generateUrl(this.props.selected, this.props.us),
                                                                             {
                                                                                 filter: this.props.query ? this.props.query.filter : null,
                                                                                 order: this.props.query ? this.props.query.order : null,

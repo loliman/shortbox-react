@@ -17,7 +17,7 @@ function Login(props) {
                   onCompleted={(data) => {
                       props.enqueueSnackbar("Willkommen!", {variant: 'success'});
                       props.handleLogin(data.login);
-                      props.navigate(props.lastLocation ? props.lastLocation.pathname : "/");
+                      props.navigate(null, props.lastLocation ? props.lastLocation.pathname : "/");
                   }}
                   onError={(errors) => {
                       let message = (errors.graphQLErrors && errors.graphQLErrors.length > 0) ? ' [' + errors.graphQLErrors[0].message + ']' : '';
@@ -65,7 +65,7 @@ function Login(props) {
                                     />
                                     <div id="loginButtons">
                                         <Button disabled={isSubmitting}
-                                                onClick={() => props.navigate(props.lastLocation ? props.lastLocation.pathname : "/")}
+                                                onMouseDown={(e) => props.navigate(e, props.lastLocation ? props.lastLocation.pathname : "/")}
                                                 color="secondary">
                                             Abbrechen
                                         </Button>

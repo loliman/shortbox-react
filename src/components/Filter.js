@@ -182,7 +182,7 @@ function Filter(props) {
                     }
 
                     let url = lastLocation ? lastLocation.pathname : "/" + (props.us ? 'us' : 'de');
-                    props.navigate(url, {filter: JSON.stringify(v) !== "{}" ? JSON.stringify(v) : null});
+                    props.navigate(null, url, {filter: JSON.stringify(v) !== "{}" ? JSON.stringify(v) : null});
 
                     actions.setSubmitting(false);
                 }}>
@@ -256,7 +256,7 @@ function Filter(props) {
                                                 {
                                                     i === values.releasedates.length - 1 ?
                                                         <IconButton className="addBtnFilter" aria-label="Hinzufügen"
-                                                                    onClick={() => {
+                                                                    onMouseDown={(e) => {
                                                                         let o = JSON.parse(JSON.stringify(values.releasedates));
                                                                         o.push({date: "1900-01-01", compare: ">"});
                                                                         setFieldValue("releasedates", o);
@@ -456,7 +456,7 @@ function Filter(props) {
                                                             i === values.numbers.length - 1 ?
                                                                 <IconButton className="addBtnFilter"
                                                                             aria-label="Hinzufügen"
-                                                                            onClick={() => {
+                                                                            onMouseDown={(e) => {
                                                                                 let o = JSON.parse(JSON.stringify(values.numbers));
                                                                                 o.push({
                                                                                     number: "",
@@ -640,7 +640,7 @@ function Filter(props) {
 
                                 <div className="formButtons">
                                     <Button disabled={isSubmitting}
-                                            onClick={() => {
+                                            onMouseDown={(e) => {
                                                 resetForm({
                                                     formats: [],
                                                     withVariants: false,
@@ -666,7 +666,7 @@ function Filter(props) {
                                     </Button>
 
                                     <Button disabled={isSubmitting}
-                                            onClick={() => submitForm()}
+                                            onMouseDown={(e) => submitForm()}
                                             color="primary">
                                         Abbrechen
                                     </Button>

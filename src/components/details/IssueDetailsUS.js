@@ -138,7 +138,7 @@ function StoryDetails(props) {
                             </div>
                             <Tooltip title="Zur Ausgabe">
                                 <IconButton className="detailsIcon issueStoryIssueButton"
-                                            onClick={() => props.navigate(generateUrl(props.item.reprintOf.issue, true), {expand: props.item.reprintOf.number, filter: null})}
+                                            onMouseDown={(e) => props.navigate(e, generateUrl(props.item.reprintOf.issue, true), {expand: props.item.reprintOf.number, filter: null})}
                                             aria-label="Details">
                                     <SearchIcon fontSize="small"/>
                                 </IconButton>
@@ -176,7 +176,7 @@ function StoryDetails(props) {
                                         </div>
                                         <Tooltip title="Zur Ausgabe">
                                             <IconButton className="detailsIcon issueStoryIssueButton"
-                                                        onClick={() => props.navigate(generateUrl(child.issue, true), {expand: child.number, filter: null})}
+                                                        onMouseDown={(e) => props.navigate(e, generateUrl(child.issue, true), {expand: child.number, filter: null})}
                                                         aria-label="Details">
                                                 <SearchIcon fontSize="small"/>
                                             </IconButton>
@@ -229,7 +229,7 @@ function StoryDetails(props) {
                                             && child.parent.issue.series.title === props.issue.series.title
                                             && child.parent.issue.series.volume === props.issue.series.volume
                                                 ? null
-                                                : <Typography className="parentTitle" onClick={() => props.navigate(generateUrl(child.parent.issue, true), {expand: child.parent.number, filter: null})}>Als
+                                                : <Typography className="parentTitle" onMouseDown={(e) => props.navigate(e, generateUrl(child.parent.issue, true), {expand: child.parent.number, filter: null})}>Als
                                                     <span className="asLink">{generateLabel(child.parent.issue.series) + " #" + child.parent.issue.number}</span>
                                                   </Typography>
                                         }
@@ -238,7 +238,7 @@ function StoryDetails(props) {
                                     </div>
                                     <Tooltip title="Zur Ausgabe">
                                         <IconButton className="detailsIcon issueStoryIssueButton"
-                                            onClick={() => props.navigate(generateUrl(child.issue), {expand: child.number, filter: null})}
+                                            onMouseDown={(e) => props.navigate(e, generateUrl(child.issue), {expand: child.number, filter: null})}
                                                     aria-label="Details">
                                             <SearchIcon fontSize="small"/>
                                         </IconButton>

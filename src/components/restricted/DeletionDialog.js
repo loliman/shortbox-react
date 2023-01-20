@@ -45,7 +45,7 @@ function DeletionDialog(props) {
                 {getDeleteConfimText(level, item)}
             </DialogContent>
             <DialogActions>
-                <Button onClick={() => handleClose()} color="primary">
+                <Button onMouseDown={(e) => handleClose()} color="primary">
                     Abbrechen
                 </Button>
 
@@ -104,7 +104,7 @@ function DeletionDialog(props) {
                               handleClose();
                           }}>
                     {(deleteMutation) => (
-                        <Button color="secondary" onClick={() => {
+                        <Button color="secondary" onMouseDown={(e) => {
                             let toDelete = {};
                             if(level === HierarchyLevel.ISSUE) {
                                 toDelete.number = item.number;

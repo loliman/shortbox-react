@@ -179,7 +179,7 @@ class PublisherEditor extends React.Component {
 
                                     <div className="formButtons">
                                         <Button disabled={isSubmitting}
-                                                onClick={() => {
+                                                onMouseDown={(e) => {
                                                     values = defaultValues;
                                                     resetForm();
                                                 }}
@@ -188,7 +188,7 @@ class PublisherEditor extends React.Component {
                                         </Button>
 
                                         <Button disabled={isSubmitting}
-                                                onClick={() => this.props.navigate(lastLocation ? lastLocation.pathname : "/")}
+                                                onMouseDown={(e) => this.props.navigate(e, lastLocation ? lastLocation.pathname : "/")}
                                                 color="primary">
                                             Abbrechen
                                         </Button>

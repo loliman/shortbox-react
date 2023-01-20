@@ -38,24 +38,24 @@ class Layout extends React.Component {
                             <div id="footer">
                                 <Typography>
                                     <span className="spanLink"
-                                          onClick={() => this.props.navigate("/contact")}>Kontakt
+                                          onMouseDown={(e) => this.props.navigate(e, "/contact")}>Kontakt
                                         {!this.props.mobile || this.props.mobileLandscape ? "/Fehler melden/Unterstützen" : ""}
                                     </span>
                                     <span className="spanDif">|</span>
                                     <span className="spanLink"
-                                          onClick={() => this.props.navigate("/impress")}>Impressum</span>
+                                          onMouseDown={(e) => this.props.navigate(e, "/impress")}>Impressum</span>
                                     <span className="spanDif">|</span>
                                     <span className="spanLink"
-                                          onClick={() => this.props.navigate("/privacy")}>Datenschutz</span>
+                                          onMouseDown={(e) => this.props.navigate(e, "/privacy")}>Datenschutz</span>
                                     <span className="spanDif">|</span>
                                     <span className="spanLink"
-                                          onClick={() => {
+                                          onMouseDown={(e) => {
                                               if(this.props.cookies.get("newDesign") === "true")
                                                   this.props.cookies.set("newDesign", "false");
                                               else
                                                   this.props.cookies.set("newDesign", "true");
 
-                                              this.props.navigate(generateUrl(this.props.selected, this.props.us),
+                                              this.props.navigate(e, generateUrl(this.props.selected, this.props.us),
                                                   {
                                                       filter: this.props.query ? this.props.query.filter : null,
                                                       order: this.props.query ? this.props.query.order : null,
@@ -83,7 +83,7 @@ class Layout extends React.Component {
 function LogIn(props) {
     return (
         <span className="spanLink"
-                onClick={() => props.navigate("/login")}>
+                onMouseDown={(e) => props.navigate(e, "/login")}>
             Login
         </span>
     );
@@ -108,7 +108,7 @@ function LogOut(props) {
                   }}
                   ignoreResults>
             {(logout) => (
-                <span className="spanLink" onClick={() => {
+                <span className="spanLink" onMouseDown={(e) => {
                     logout({
                         variables: {
                             user: {

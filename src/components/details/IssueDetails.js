@@ -127,7 +127,7 @@ class IssueDetails extends React.Component {
                                                     type = "Story Arc";
                                             }
 
-                                            return <Chip key={i} className="chip partOfChip" label={arc.title + " (" + type + ")"} color={color} onClick={() => this.props.navigate(us ? "/us" : "/de", {filter: JSON.stringify({arcs: arc.title, us: us})})}/>;
+                                            return <Chip key={i} className="chip partOfChip" label={arc.title + " (" + type + ")"} color={color} onMouseDown={(e) => this.props.navigate(e, us ? "/us" : "/de", {filter: JSON.stringify({arcs: arc.title, us: us})})}/>;
                                         })
                                     }
 
@@ -196,7 +196,7 @@ class Cover extends React.Component {
                     title={generateLabel(issue)}
                     className="media"
                     style={{width: '45vh'}}
-                    onClick={() => this.triggerIsOpen()}/>
+                    onMouseDown={(e) => this.triggerIsOpen()}/>
 
                 <Lightbox
                     showImageCount={false}
@@ -354,7 +354,7 @@ export function ContainsTitleDetailed(props) {
                 </div>
 
                 {props.item.parent && props.item.parent.reprintOf
-                    ? <Typography className="parentTitle" onClick={() => props.navigate(generateUrl(props.item.parent.reprintOf.issue, true), {expand: props.item.parent.reprintOf.number, filter: null})}>Original erschienen als
+                    ? <Typography className="parentTitle" onMouseDown={(e) => props.navigate(e, generateUrl(props.item.parent.reprintOf.issue, true), {expand: props.item.parent.reprintOf.number, filter: null})}>Original erschienen als
                         <span className="asLink">{generateLabel(props.item.parent.reprintOf.issue)}</span></Typography>
                     : null}
 
@@ -410,7 +410,7 @@ export function ContainsTitleDetailed(props) {
 
                 { !exclusive ? <Tooltip title="Zur Ausgabe">
                     <IconButton className="detailsIcon"
-                        onClick={() => props.navigate(exclusive ? "" : generateUrl(issue, !props.us), {expand:  props.item.parent.number, filter: null})}
+                        onMouseDown={(e) => props.navigate(e, exclusive ? "" : generateUrl(issue, !props.us), {expand:  props.item.parent.number, filter: null})}
                                 aria-label="Details"
                                 disabled={exclusive}>
                         <SearchIcon fontSize="small"/>
@@ -447,7 +447,7 @@ function Variant(props) {
     let coverUrl = (props.variant.cover && props.variant.cover.url && props.variant.cover.url !== '') ? props.variant.cover.url : "/nocover_simple.jpg";
 
     return (
-        <GridListTile onClick={() => props.navigate(props.to)} className="tile">
+        <GridListTile onMouseDown={(e) => props.navigate(e, props.to)} className="tile">
             <img src={coverUrl}
                  alt={props.variant.variant + ' (' + props.variant.format + ')'}/>
             <GridListTileBar
@@ -527,7 +527,7 @@ export function toChipList(items, props, type, role) {
         }
 
         list.push(
-            <Chip key={i} className="chip partOfChip" label={item.name} onClick={() => props.navigate(props.us ? "/us" : "/de", {filter: JSON.stringify(filter)})}/>
+            <Chip key={i} className="chip partOfChip" label={item.name} onMouseDown={(e) => props.navigate(e, props.us ? "/us" : "/de", {filter: JSON.stringify(filter)})}/>
         );
 
         if(i !== items.length-1)

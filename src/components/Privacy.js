@@ -38,7 +38,7 @@ function Privacy(props) {
                     33100 Paderborn, Deutschland<br/>
                     E-Mail: <a href='mailto:christian.riese@gmail.com'>christian.riese@gmail.com</a><br/>
                     Link zum Impressum: <span className="spanLink"
-                                              onClick={() => props.navigate("/impress")}>Impressum</span>
+                                              onMouseDown={(e) => props.navigate(e, "/impress")}>Impressum</span>
                 </Typography>
 
                 <br/>

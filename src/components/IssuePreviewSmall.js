@@ -24,7 +24,7 @@ function IssuePreviewSmall(props) {
 
     return (
         <div style={props.cookies.get('newDesign') === "true" ? {background: 'white url(' + coverUrl + ') no-repeat 100% 40%', backgroundSize: '35%'} : {}}
-            onClick={() => props.cookies.get('newDesign') === "true" ? props.navigate(generateUrl(props.issue, props.us)) : null}>
+            onMouseDown={(e) => props.cookies.get('newDesign') === "true" ? props.navigate(e, generateUrl(props.issue, props.us)) : null}>
             <ExpansionPanelSummary className="summary-sm" style={props.cookies.get('newDesign') === "true" ? {background: 'linear-gradient(to right, rgba(255, 255, 255, 1) 65%, rgba(255, 255, 255, 0))'} : {}}>
                 <div style={{width: "100%"}}>
                     <div className="issueTitleContainer">
@@ -51,7 +51,7 @@ function IssuePreviewSmall(props) {
                             <Tooltip title="Zur Ausgabe">
                                 <IconButton className="detailsIcon"
                                     style={{marginLef: '5px', background: 'rgba(255, 255, 255, 0.75)'}}
-                                    onClick={() => props.navigate(generateUrl(props.issue, props.us))}
+                                    onMouseDown={(e) => props.navigate(e, generateUrl(props.issue, props.us))}
                                     aria-label="Details">
                                     <SearchIcon fontSize="small"/>
                                 </IconButton>

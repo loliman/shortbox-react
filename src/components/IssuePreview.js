@@ -27,7 +27,7 @@ function IssuePreview(props) {
     return (
         <Card className="issuePreview"
               style={props.cookies.get('newDesign') === "true" ? {background: 'white url(' + coverUrl + ') no-repeat 100% 50%', backgroundSize: '75%'} : {}}
-              onClick={() => props.navigate(generateUrl(props.issue, props.us))}>
+              onMouseDown={(e) => props.navigate(e, generateUrl(props.issue, props.us))}>
             <div style={props.cookies.get('newDesign') === "true" ? {background: 'linear-gradient(to right, rgba(255, 255, 255, 1) 30%, rgba(255, 255, 255, 0))'} : {}}>
                 {   props.cookies.get('newDesign') !== "true"
                     ? <CardMedia

@@ -35,7 +35,7 @@ function ExportDialog(props) {
                             csv
                         </Button>
 
-                        <Button onClick={() => props.handleClose()} color="primary">
+                        <Button onMouseDown={(e) => props.handleClose()} color="primary">
                             Abbrechen
                         </Button>
                         )}

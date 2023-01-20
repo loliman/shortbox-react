@@ -41,7 +41,7 @@ class AddFab extends React.Component {
                                 icon={<AccountBalanceIcon/>}
                                 tooltipTitle="Verlag"
                                 tooltipOpen
-                                onClick={() => {
+                                onMouseDown={(e) => {
                                     navigate("/create/publisher");
                                     this.handleClick();
                                 }}
@@ -51,7 +51,7 @@ class AddFab extends React.Component {
                                 icon={<ListIcon/>}
                                 tooltipTitle="Serie"
                                 tooltipOpen
-                                onClick={() => {
+                                onMouseDown={(e) => {
                                     navigate("/create/series");
                                     this.handleClick();
                                 }}
@@ -61,7 +61,7 @@ class AddFab extends React.Component {
                                 icon={<BookIcon/>}
                                 tooltipTitle="Ausgabe"
                                 tooltipOpen
-                                onClick={() => {
+                                onMouseDown={(e) => {
                                     navigate("/create/issue");
                                     this.handleClick();
                                 }}
