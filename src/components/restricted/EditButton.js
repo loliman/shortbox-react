@@ -25,7 +25,7 @@ class EditButton extends React.Component {
                         aria-label="More"
                         aria-owns={Boolean(this.props.anchorEl) ? 'long-menu' : undefined}
                         aria-haspopup="true"
-                        onMouseDown={(e) => this.handleEditDropdownOpen(e, this.props.item)}>
+                        onClick={(e) => this.handleEditDropdownOpen(e, this.props.item)}>
                         <MoreVertIcon/>
                     </IconButton>
                     <Dropdown EditDropdown={this.state.EditDropdown}

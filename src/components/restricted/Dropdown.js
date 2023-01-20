@@ -61,7 +61,7 @@ class Dropdown extends React.Component {
                         }
 
                         <MenuItem key="edit"
-                                  onMouseDown={(e) => {
+                                  onClick={() => {
                                       let us = false;
                                       switch (this.props.level) {
                                           case HierarchyLevel.ISSUE:
@@ -74,7 +74,7 @@ class Dropdown extends React.Component {
                                               us = this.props.EditDropdown.item.us;
                                       }
 
-                                      this.props.navigate(e, "/edit" + generateUrl(this.props.EditDropdown.item, us));
+                                      this.props.navigate(null, "/edit" + generateUrl(this.props.EditDropdown.item, us));
                                       this.props.handleClose();
                                   }}>
                             <ListItemIcon>
@@ -85,7 +85,7 @@ class Dropdown extends React.Component {
                             </Typography>
                         </MenuItem>
 
-                        <MenuItem disabled={!canDelete} key="delete" onMouseDown={(e) => this.handleDelete()}>
+                        <MenuItem disabled={!canDelete} key="delete" onClick={() => this.handleDelete()}>
                             <ListItemIcon>
                                 <DeleteIcon/>
                             </ListItemIcon>
@@ -149,7 +149,7 @@ function VerifyMenuItem(props) {
                       props.enqueueSnackbar("Ausgabe konnte nicht " + (item.verified ? "falsifiziert" : "verifiziert") + " werden" + message, {variant: 'error'});
                   }}>
             {(verifyIssue, {error}) => (
-                <MenuItem key="verify" onMouseDown={(e) => {
+                <MenuItem key="verify" onClick={() => {
                     verifyIssue({
                         variables: {
                             item: variables

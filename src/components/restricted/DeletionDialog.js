@@ -86,7 +86,7 @@ function DeletionDialog(props) {
                                   }
                           }}
                           onCompleted={(data) => {
-                              navigate(generateUrl(parent, props.us));
+                              navigate(null, generateUrl(parent, props.us));
 
                               let mutationName = deleteMutation.definitions[0].name.value;
                               mutationName = mutationName.substr(0, 1).toLocaleLowerCase() + mutationName.substr(1);

@@ -149,7 +149,7 @@ class IssueEditor extends React.Component {
                       }}
                       onCompleted={(data) => {
                           enqueueSnackbar(generateLabel(data[mutationName]) + successMessage, {variant: 'success'});
-                          navigate(generateUrl(data[mutationName], data[mutationName].series.publisher.us));
+                          navigate(null, generateUrl(data[mutationName], data[mutationName].series.publisher.us));
                       }}
                       onError={(errors) => {
                           let message = (errors.graphQLErrors && errors.graphQLErrors.length > 0) ? ' [' + errors.graphQLErrors[0].message + ']' : '';
