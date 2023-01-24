@@ -214,6 +214,7 @@ const createIssue = gql`mutation CreateIssue($item: IssueInput!){
         },
         variant,
         verified,
+        collected,
         addinfo
    }
 }`;
@@ -404,6 +405,7 @@ const editIssue = gql`mutation EditIssue($old: IssueInput!, $item: IssueInput!){
         },
         variant,
         verified,
+        collected,
         addinfo
    }
 }`;
@@ -425,6 +427,26 @@ const verifyIssue = gql`mutation VerifyIssue($item: IssueInput!){
                 us
             } 
         }  
+   }
+}`;
+
+const addIssueToCollection = gql`mutation AddIssueToCollection($item: IssueInput!){
+   addIssueToCollection(item: $item) {
+        id,
+        number,
+        series {
+            id,
+            title,
+            startyear,
+            endyear,
+            volume,
+            addinfo,
+            publisher {
+                id,
+                name,
+                us
+            }
+        }
    }
 }`;
 
@@ -467,4 +489,4 @@ function getDeleteMutation(level) {
 export {login, logout, getDeleteMutation,
     createIssue, createSeries, createPublisher,
     editIssue, editSeries, editPublisher,
-    verifyIssue}
+    verifyIssue, addIssueToCollection}

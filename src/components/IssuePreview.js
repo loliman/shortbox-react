@@ -46,9 +46,15 @@ function IssuePreview(props) {
                                 null
                         }
 
-                        {props.issue.verified ?
-                            <img style={{float: 'right', marginTop: '-10px'}} className="verifiedBadge" src="/verified_badge.png"
-                                 alt="verifiziert" height="35"/> : null}
+                        <div style={{float: 'right', marginTop: '-10px'}}>
+                            {props.issue.verified ?
+                                <img className="verifiedBadge" src="/verified_badge.png"
+                                    alt="verifiziert" height="25"/> : null}
+
+                            {props.issue.collected && props.session ?
+                                <img className="verifiedBadge" src="/collected_badge.png"
+                                    alt="gesammelt" height="25"/> : null}
+                        </div>
                     </div>
 
                     {

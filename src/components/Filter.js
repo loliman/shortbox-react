@@ -48,7 +48,8 @@ function Filter(props) {
             reprint: false,
             otherOnlyTb: false,
             onlyOnePrint: false,
-            noPrint: false
+            noPrint: false,
+            onlyCollected: false
         };
     else {
         if (!defaultValues.formats)
@@ -97,6 +98,8 @@ function Filter(props) {
             defaultValues.noPrint = false;
         if (!defaultValues.onlyOnePrint)
             defaultValues.onlyOnePrint = false;
+        if (!defaultValues.onlyCollected)
+            defaultValues.onlyCollected = false;
     }
 
     return (
@@ -176,6 +179,8 @@ function Filter(props) {
                         v.noPrint = true;
                     if (values.onlyOnePrint)
                         v.onlyOnePrint = true;
+                    if (values.onlyCollected)
+                        v.onlyCollected = true;
 
                     if (JSON.stringify(v) !== "{}") {
                         v.us = us;
@@ -270,6 +275,21 @@ function Filter(props) {
                                         )
                                     })
                                 }
+
+
+
+                                {props.session ? <React.Fragment> <br /><FormControlLabel
+                                    className="switchEditor"
+                                    control={
+                                        <Switch
+                                            checked={values.onlyCollected}
+                                            onChange={() => {
+                                            setFieldValue("onlyCollected", !values.onlyCollected);
+                                        }}
+                                            color="secondary"/>
+                                    }
+                                    label="Nur Gesammelte"
+                                /></React.Fragment> : null }
 
                                 <br/>
                                 <br/>
@@ -659,6 +679,7 @@ function Filter(props) {
                                                     otherOnlyTb: false,
                                                     noPrint: false,
                                                     onlyOnePrint: false,
+                                                    onlyCollected: false
                                                 });
                                             }}
                                             color="secondary">

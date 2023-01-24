@@ -14,8 +14,9 @@ import {withContext} from "../generic";
 import {updateInCache} from "./editor/Editor";
 import {Mutation} from "react-apollo";
 import {issue} from "../../graphql/queries";
-import {verifyIssue} from "../../graphql/mutations";
+import {addIssueToCollection, verifyIssue} from "../../graphql/mutations";
 import {stripItem, wrapItem} from "../../util/util";
+import {Icon} from "@material-ui/core";
 
 class Dropdown extends React.Component {
     constructor(props) {
@@ -58,6 +59,12 @@ class Dropdown extends React.Component {
                             this.props.level === HierarchyLevel.ISSUE ?
                                 <VerifyMenuItem item={this.props.EditDropdown.item}
                                                 enqueueSnackbar={this.props.enqueueSnackbar} /> : null
+                        }
+
+                        {
+                            this.props.level === HierarchyLevel.ISSUE ?
+                                <CollectionMenuItem item={this.props.EditDropdown.item}
+                                    enqueueSnackbar={this.props.enqueueSnackbar} /> : null
                         }
 
                         <MenuItem key="edit"
@@ -166,6 +173,56 @@ function VerifyMenuItem(props) {
             )}
         </Mutation>
     )
+}
+
+function CollectionMenuItem(props) {
+    let item = stripItem(JSON.parse(JSON.stringify(props.item)));
+    let variables = {};
+    variables.number = item.number;
+    variables.series = item.series;
+    variables.series.publisher.us = undefined;
+    variables.format = item.format;
+    if(item.variant !== "") {
+        variables.variant = item.variant;
+    }
+
+    return (
+            <Mutation mutation={addIssueToCollection}
+                update={(cache, result) => {
+                let update = JSON.parse(JSON.stringify(props.item));
+                update.collected = !update.collected;
+
+                try {
+                    updateInCache(cache, issue, wrapItem(variables), item, {issue: update});
+                } catch (e) {
+                    //ignore cache exception;
+                }
+            }}
+                onCompleted={(data) => {
+                props.enqueueSnackbar(generateLabel(item) + " " + (item.collected ? "aus Sammlung entfernt" : "zur Sammlung hinzugefügt"), {variant: 'success'});
+            }}
+                onError={(errors) => {
+                let message = (errors.graphQLErrors && errors.graphQLErrors.length > 0) ? ' [' + errors.graphQLErrors[0].message + ']' : '';
+                props.enqueueSnackbar("Ausgabe konnte nicht " + (item.collected ? "aus Sammlung entfernt" : "zur Sammlung hinzugefügt") + " werden" + message, {variant: 'error'});
+            }}>
+                {(addIssueToCollection, {error}) => (
+                        <MenuItem key="addIssueToCollection" onClick={() => {
+                            addIssueToCollection({
+                                variables: {
+                                    item: variables
+                                }
+                            })
+                        }}>
+                            <ListItemIcon>
+                                {item.collected ? <Icon>playlist_remove</Icon> : <Icon>playlist_add</Icon>}
+                            </ListItemIcon>
+                            <Typography variant="inherit" noWrap>
+                                {item.collected ? "Aus Sammlung entfernen" : "Zur Sammlung hinzufügen"}
+                            </Typography>
+                        </MenuItem>
+                        )}
+            </Mutation>
+            )
 }
 
 export default withContext(Dropdown);

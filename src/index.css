@@ -1177,7 +1177,11 @@ span[class^="MuiSwitch-bar-"] {
 }
 
 .verifiedBadge {
-    margin-top: 7px;
+    background: white;
+    border-radius: 35px;
+    padding: 5px;
+    margin-left: 5px;
+    margin-top: 10px;
 }
 
 #form-delete-dialog-title > h2 {
@@ -1322,6 +1326,7 @@ span[class^="MuiSwitch-bar-"] {
 .issueTitleContainer {
     display: flex;
     align-items: flex-end;
+    justify-content: space-between;
     text-align: left;
     white-space: nowrap;
     overflow: hidden;

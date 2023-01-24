@@ -81,7 +81,10 @@ class IssueDetails extends React.Component {
                                                 <div>
                                                     {issue.verified ?
                                                         <img className="verifiedBadge" src="/verified_badge.png"
-                                                             alt="verifiziert" height="35"/> : null}
+                                                            alt="verifiziert" height="35"/> : null}
+                                                    {issue.collected && this.props.session ?
+                                                        <img className="verifiedBadge" src="/collected_badge.png"
+                                                            alt="gesammelt" height="35"/> : null}
                                                     <EditButton item={data.issue}/>
                                                 </div>
                                             }/>

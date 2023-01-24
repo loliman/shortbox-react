@@ -83,6 +83,7 @@ export const lastEdited = gql`query LastEdited($filter: Filter, $offset: Int, $o
         format,
         variant,
         verified,
+        collected,
         title,
         createdAt,
         updatedAt,
@@ -589,6 +590,7 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
         },
         variant,
         verified,
+        collected,
         addinfo
     }
 }`;
