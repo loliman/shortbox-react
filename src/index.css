@@ -689,10 +689,6 @@ _:-ms-fullscreen, :root #main {
     #headerSearch .outerAutoComplete {
         border: none !important;
     }
-
-    .issueTitleContainer {
-        max-width: 14em;
-    }
 }
 
 /*
@@ -760,10 +756,6 @@ _:-ms-fullscreen, :root #main {
 
     #headerSearch .outerAutoComplete {
         border: none !important;
-    }
-
-    .issueTitleContainer {
-        max-width: 14em;
     }
 }
 
@@ -905,10 +897,6 @@ _:-ms-fullscreen, :root #main {
 
     #headerSearch .outerAutoComplete {
         border: none !important;
-    }
-
-    .issueTitleContainer {
-        max-width: 14em;
     }
 }
 
@@ -1327,6 +1315,15 @@ span[class^="MuiSwitch-bar-"] {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.issueTitleContainerInner {
+    display: flex;
+    align-items: flex-end;
     text-align: left;
     white-space: nowrap;
     overflow: hidden;

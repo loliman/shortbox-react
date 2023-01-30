@@ -38,13 +38,15 @@ function IssuePreview(props) {
 
                 <CardContent style={{paddingBottom: '20px'}}>
                     <div className="issueTitleContainer">
-                        <Typography variant="subtitle1" className="issuePreviewTitle">{generateLabel(props.issue.series) + " #" + props.issue.number}</Typography>
+                        <div className="issueTitleContainerInner">
+                            <Typography variant="subtitle1" className="issuePreviewTitle">{generateLabel(props.issue.series) + " #" + props.issue.number}</Typography>
 
-                        {
-                            props.issue.title !== '' ?
-                                <Typography className="issuePreviewSubTitle" variant={"subtitle2"}>{props.issue.title}</Typography> :
-                                null
-                        }
+                            {
+                                props.issue.title !== '' ?
+                                    <Typography className="issuePreviewSubTitle" variant={"subtitle2"}>{props.issue.title}</Typography> :
+                                    null
+                            }
+                        </div>
 
                         <div style={{float: 'right', marginTop: '-10px'}}>
                             {props.issue.verified ?

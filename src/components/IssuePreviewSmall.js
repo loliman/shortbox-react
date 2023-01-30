@@ -27,7 +27,7 @@ function IssuePreviewSmall(props) {
             onMouseDown={(e) => props.cookies.get('newDesign') === "true" ? props.navigate(e, generateUrl(props.issue, props.us)) : null}>
             <ExpansionPanelSummary className="summary-sm" style={props.cookies.get('newDesign') === "true" ? {background: 'linear-gradient(to right, rgba(255, 255, 255, 1) 65%, rgba(255, 255, 255, 0))'} : {}}>
                 <div style={{width: "100%"}}>
-                    <div className="issueTitleContainer">
+                    <div className="issueTitleContainerInner">
                         <Typography variant="subtitle1" className="issuePreviewTitle">{generateLabel(props.issue.series) + " #" + props.issue.number}</Typography>
 
                         {

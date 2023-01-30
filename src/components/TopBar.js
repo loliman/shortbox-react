@@ -48,7 +48,7 @@ class TopBar extends React.Component {
                     <div id="headerLeft">
                         <IconButton
                             color="inherit"
-                            onMouseDown={(e) => toogleDrawer()}
+                            onClick={(e) => toogleDrawer()}
                             className="menuButton"
                         >
                             <MenuIcon />
@@ -79,7 +79,7 @@ class TopBar extends React.Component {
                         <Tooltip title={isFilter ? "Filter aktiv" : "Filtern"}>
                             <IconButton
                                 color={isFilter ? "secondary" : "inherit"}
-                                onMouseDown={(e) => {
+                                onClick={(e) => {
                                     if(!isFilter)
                                         this.props.navigate(e, us ? "/filter/us" : "/filter/de");
                                     else
@@ -106,7 +106,7 @@ class TopBar extends React.Component {
                                     }}>
 
                                     <MenuItem key="edit"
-                                              onMouseDown={(e) => {
+                                              onClick={(e) => {
                                                   this.handleFilterMenuClose();
                                                   this.props.navigate(e, us ? "/filter/us" : "/filter/de");
                                               }}>
@@ -118,7 +118,7 @@ class TopBar extends React.Component {
                                         </Typography>
                                     </MenuItem>
 
-                                    <MenuItem key="export" onMouseDown={(e) => this.handleExport()}>
+                                    <MenuItem key="export" onClick={(e) => this.handleExport()}>
                                         <ListItemIcon>
                                             <CloudDownloadIcon/>
                                         </ListItemIcon>
@@ -128,7 +128,7 @@ class TopBar extends React.Component {
                                     </MenuItem>
                                     )}
 
-                                    <MenuItem key="reset" onMouseDown={(e) => {
+                                    <MenuItem key="reset" onClick={(e) => {
                                         this.handleFilterMenuClose();
                                         this.props.navigate(e, generateUrl(this.props.selected, this.props.us), {filter: null});
                                     }}>
@@ -165,7 +165,7 @@ class TopBar extends React.Component {
                 </Toolbar>
 
                 {
-                    (mobile || (tablet && !tabletLandscape)) ? <div id="searchOverlay" className={this.state.searchbarFocus ? "" : "searchOverlayHidden"} onMouseDown={(e) => this.onFocus(e, false)}/> : null
+                    (mobile || (tablet && !tabletLandscape)) ? <div id="searchOverlay" className={this.state.searchbarFocus ? "" : "searchOverlayHidden"} onClick={(e) => this.onFocus(e, false)}/> : null
                 }
             </AppBar>
         );
