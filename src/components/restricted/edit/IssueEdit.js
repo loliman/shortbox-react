@@ -24,6 +24,7 @@ function IssueEdit(props) {
 
                     defaultValues.variants = undefined;
                     defaultValues.verified = undefined;
+                    defaultValues.collected = undefined;
                     defaultValues.createdAt = undefined;
                     defaultValues.updatedAt = undefined;
                     defaultValues.cover = defaultValues.cover ? defaultValues.cover : '';
