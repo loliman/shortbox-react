@@ -141,15 +141,19 @@ function TypeListEntry(props) {
                       button>
                 <ListItemText className="itemText"
                               primary={<Typography style={isBold}>
-                                  <div style={{display: "flex"}}>
+                                  <div style={{display: "flex", justifyContent: "space-between"}}>
                                       <div>{label}</div>
-                                      {item.variants && item.variants.length > 1 ?
+                                      <div style={{display: "flex"}}>{item.variants && item.variants.length > 1 ?
                                           <Tooltip title={"+" + (item.variants.length - 1) + " Varianten"}>
                                               <Typography className={"material-icons"}
                                                           style={{color: "gray", paddingLeft: '2px', fontSize: "8px"}}
                                                           color={"disabled"}>+{item.variants.length - 1}</Typography>
                                           </Tooltip> :
                                           null}
+
+                                      {(item.collected || (item.variants && item.variants.filter(v => v.collected).length > 0)) && props.session ?
+                                          <img className="verifiedBadge" style={{margin: "0"}} src="/collected_badge.png"
+                                               alt="gesammelt" height="21"/> : null}</div>
                                   </div>
                               </Typography>}
                 />

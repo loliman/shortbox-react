@@ -10,6 +10,7 @@ import CardHeader from "@material-ui/core/CardHeader/CardHeader";
 import CardContent from "@material-ui/core/CardContent/CardContent";
 import {withContext} from "./generic";
 import {LoginSchema} from "../util/yupSchema";
+import { withApollo } from "react-apollo";
 
 function Login(props) {
     return (
@@ -17,6 +18,9 @@ function Login(props) {
                   onCompleted={(data) => {
                       props.enqueueSnackbar("Willkommen!", {variant: 'success'});
                       props.handleLogin(data.login);
+
+                      props.client.resetStore();
+
                       props.navigate(null, props.lastLocation ? props.lastLocation.pathname : "/");
                   }}
                   onError={(errors) => {
@@ -86,4 +90,4 @@ function Login(props) {
     );
 }
 
-export default withContext(Login);
+export default withApollo(withContext(Login));

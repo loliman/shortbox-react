@@ -91,7 +91,7 @@ class IssueDetails extends React.Component {
 
                                 <CardContent className="cardContent">
 
-                                    <Variants us={us} issue={data.issue} navigate={this.props.navigate}/>
+                                    <Variants us={us} issue={data.issue} session={this.props.session} navigate={this.props.navigate}/>
 
                                 <div className={"detailsWrapper"}>
                                     <div className="details">
@@ -218,15 +218,15 @@ class Cover extends React.Component {
 export function Contains(props) {
     return (
         <div className="stories">
-            <CardHeader title={props.header}/>
+            {props.header ? <CardHeader title={props.header}/> : null}
 
             {props.items.length === 0 ?
                 <Typography className="noRelationsWarning">{props.noEntriesHint}</Typography> :
                 props.items.map((item, idx) => {
                     if (!props.itemDetails)
-                        return <ContainsSimpleItem {...props} key={idx} item={item}/>;
+                        return <ContainsSimpleItem {...props} idx={idx} isLast={idx === props.items.length-1} key={idx} item={item}/>;
                     else
-                        return <ContainsItem {...props} key={idx} item={item}/>;
+                        return <ContainsItem {...props} idx={idx} key={idx} isLast={idx === props.items.length-1} item={item}/>;
                 })}
         </div>
     );
@@ -243,8 +243,21 @@ function ContainsSimpleItem(props) {
 }
 
 function ContainsItem(props) {
+    let style;
+    if(props.idx === 0) {
+        if (props.isLast) {
+            style = {borderRadius: '8px 8px 8px 8px'};
+        } else {
+            style = {borderRadius: '8px 8px 0 0'};
+        }
+    } else if (props.isLast) {
+        style = {borderRadius: '0 0 8px 8px'};
+    } else {
+        style = {borderRadius: '0 0 0 0'};
+    }
+
     return (
-        <ExpansionPanel className="story" defaultExpanded={expanded(props.item, props.query)}>
+        <ExpansionPanel style={style} className="story" defaultExpanded={expanded(props.item, props.query)}>
             <ExpansionPanelSummary className="summary" expandIcon={<ExpandMoreIcon/>}>
                 {React.cloneElement(props.itemTitle, {navigate: props.navigate, item: props.item, us: props.us})}
             </ExpansionPanelSummary>
@@ -309,6 +322,22 @@ export function ContainsTitleSimple(props) {
                             : <Chip className="chip" label="ND" color="default"/>
                         : null
                 }
+
+                {
+                    props.item.collectedmultipletimes && props.session ?
+                        !smallChip ?
+                            <Chip className="chip" label="Mehrfach auf deutsch gesammelt" style={{backgroundColor: "#4eaf51", color: "white"}}/>
+                            : <Chip className="chip" label="Mehrfach" style={{backgroundColor: "#4eaf51", color: "white"}}/>
+                        : null
+                }
+
+                {
+                    !props.item.collectedmultipletimes && props.item.collected && props.session ?
+                        !smallChip ?
+                            <Chip className="chip" label="Auf deutsch gesammelt" style={{backgroundColor: "#4eaf51", color: "white"}}/>
+                            : <Chip className="chip" label="Gesammelt" style={{backgroundColor: "#4eaf51", color: "white"}}/>
+                        : null
+                }
             </div>
         </div>
     )
@@ -334,10 +363,10 @@ export function ContainsTitleDetailed(props) {
     if (props.item.part && props.item.part !== null && props.item.part.indexOf("/x") === -1) {
         addinfoText += "Teil " + props.item.part.replace("/", " von ");
     }
-    if(addinfoText !== "" && props.item.addinfo && props.item.addinfo !== null) {
+    if (addinfoText !== "" && props.item.addinfo && props.item.addinfo !== null) {
         addinfoText += ", ";
     }
-    if(props.item.addinfo && props.item.addinfo !== null) {
+    if (props.item.addinfo && props.item.addinfo !== null) {
         addinfoText += props.item.addinfo;
     }
 
@@ -411,6 +440,22 @@ export function ContainsTitleDetailed(props) {
                         : null
                 }
 
+                {
+                    props.item.parent && props.item.parent.collectedmultipletimes && props.session ?
+                        !smallChip ?
+                            <Chip className="chip" label="Mehrfach auf deutsch gesammelt" style={{backgroundColor: "#4eaf51", color: "white"}}/>
+                            : <Chip className="chip" label="Mehrfach" style={{backgroundColor: "#4eaf51", color: "white"}}/>
+                        : null
+                }
+
+                {
+                    !props.issue.collected && props.item.parent && !props.item.parent.collectedmultipletimes && props.item.parent.collected && props.session ?
+                        !smallChip ?
+                            <Chip className="chip" label="Auf deutsch gesammelt" style={{backgroundColor: "#4eaf51", color: "white"}}/>
+                            : <Chip className="chip" label="Gesammelt" style={{backgroundColor: "#4eaf51", color: "white"}}/>
+                        : null
+                }
+
                 { !exclusive ? <Tooltip title="Zur Ausgabe">
                     <IconButton className="detailsIcon"
                         onMouseDown={(e) => props.navigate(e, exclusive ? "" : generateUrl(issue, !props.us), {expand:  props.item.parent.number, filter: null})}
@@ -437,7 +482,7 @@ function Variants(props) {
             <div className="coverGallery">
                 <GridList className="gridList" cols={2.5}>
                     {props.issue.variants.map((variant, idx) => {
-                            return (<Variant to={generateUrl(variant, props.us)} navigate={props.navigate}
+                            return (<Variant session={props.session} to={generateUrl(variant, props.us)} navigate={props.navigate}
                                                            key={idx} variant={variant}/>);
                     })}
                 </GridList>
@@ -453,11 +498,18 @@ function Variant(props) {
         <GridListTile onMouseDown={(e) => props.navigate(e, props.to)} className="tile">
             <img src={coverUrl}
                  alt={props.variant.variant + ' (' + props.variant.format + ')'}/>
+
+
             <GridListTileBar
-                title={props.variant.format + ' (' + (props.variant.variant ? props.variant.variant + ' Variant' : 'Reguläre Ausgabe') + ')'}
+                title={<div style={{display: "flex", justifyContent: "space-between"}}>
+                    <div style={{alignSelf: "end", paddingLeft: "5px"}}>{props.variant.format + ' (' + (props.variant.variant ? props.variant.variant + ' Variant' : 'Reguläre Ausgabe') + ')'}</div>
+                    {props.variant.collected && props.session ? <img className="verifiedBadge" style={{justifySelf: 'end', marginTop: '0'}} src="/collected_badge.png"
+                                                                     alt="gesammelt" height="25"/> : null}
+                </div>}
                 classes={{
                     root: "titleBar",
                     title: "title",
+                    titleWrap: "titleWrap"
                 }}
             />
         </GridListTile>

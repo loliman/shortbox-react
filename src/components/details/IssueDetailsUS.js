@@ -45,7 +45,7 @@ function Bottom(props) {
             <Contains {...props} header=""
                       noEntriesHint="Dieser Ausgabe sind noch keine Geschichten zugeordnet"
                       items={props.issue.stories} itemTitle={<ContainsTitleSimple {...props}/>}
-                      itemDetails={<StoryDetails issue={props.issue}/>}/>
+                      itemDetails={<StoryDetails issue={props.issue} session={props.session}/>}/>
 
             <br/>
             <br/>
@@ -236,13 +236,21 @@ function StoryDetails(props) {
 
                                         {addinfoText !== "" ? <Typography className="parentTitle">{addinfoText}</Typography> : null}
                                     </div>
-                                    <Tooltip title="Zur Ausgabe">
-                                        <IconButton className="detailsIcon issueStoryIssueButton"
-                                            onMouseDown={(e) => props.navigate(e, generateUrl(child.issue), {expand: child.number, filter: null})}
-                                                    aria-label="Details">
-                                            <SearchIcon fontSize="small"/>
-                                        </IconButton>
-                                    </Tooltip>
+
+                                    <div style={{display: "flex", alignItems: "center"}}>
+                                        {
+                                            child.issue.collected && props.session ?  <img src="/collected_badge.png" height={25} style={{justifySelf: "center"}}
+                                                                          alt="gesammelt"/> : null
+                                        }
+
+                                        <Tooltip title="Zur Ausgabe">
+                                            <IconButton className="detailsIcon issueStoryIssueButton"
+                                                onMouseDown={(e) => props.navigate(e, generateUrl(child.issue), {expand: child.number, filter: null})}
+                                                        aria-label="Details">
+                                                <SearchIcon fontSize="small"/>
+                                            </IconButton>
+                                        </Tooltip>
+                                    </div>
                                 </ListItem>
                             );
                         })

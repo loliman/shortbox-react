@@ -38,6 +38,7 @@ const issues = gql`query Issues($pattern: String, $series: SeriesInput!, $offset
         title,
         number,
         comicguideid,
+        collected,
         cover {
             url
         },
@@ -52,6 +53,7 @@ const issues = gql`query Issues($pattern: String, $series: SeriesInput!, $offset
         format,
         variant,
         variants {
+            collected,
             variant
         }
     }
@@ -108,7 +110,12 @@ export const lastEdited = gql`query LastEdited($filter: Filter, $offset: Int, $o
             exclusive,
             otheronlytb,
             onlyoneprint,
+            collectedmultipletimes, collected, ,
+            number,
             children {
+                issue { 
+                    collected 
+                },
                 number
             },
             reprintOf {
@@ -118,7 +125,11 @@ export const lastEdited = gql`query LastEdited($filter: Filter, $offset: Int, $o
                 number
             },
             parent {
+                collectedmultipletimes, collected, ,
                 children {
+                    issue { 
+                        collected 
+                    },
                     number
                 }
             }
@@ -162,9 +173,17 @@ const publisher = gql`query Publisher($publisher: PublisherInput!){
                 exclusive,
                 otheronlytb,
                 onlyoneprint,
+                collectedmultipletimes, collected, ,
+                number,
                 children {
+                    parent {
+                        collectedmultipletimes, collected, 
+                    },
+                    issue { 
+                        collected 
+                    },
                     number
-                },
+                }  
                 reprintOf {
                     number
                 },
@@ -172,7 +191,10 @@ const publisher = gql`query Publisher($publisher: PublisherInput!){
                     number
                 },
                 parent {
+                    number,
+                    collectedmultipletimes, collected, ,
                     children {
+issue { collected },
                         number
                     }
                 }
@@ -206,9 +228,15 @@ const publisher = gql`query Publisher($publisher: PublisherInput!){
                 exclusive,
                 otheronlytb,
                 onlyoneprint,
+collectedmultipletimes, collected, ,
+                number,
                 children {
+                                   parent {
+                        collectedmultipletimes, collected, 
+                    },
+issue { collected },
                     number
-                },
+                }  
                 reprintOf {
                     number
                 },
@@ -216,9 +244,12 @@ const publisher = gql`query Publisher($publisher: PublisherInput!){
                     number
                 },
                 parent {
+                collectedmultipletimes, collected, ,
+                    number,
                     children {
+issue { collected },
                         number
-                    }
+                    }  
                 }
             }  
         },
@@ -262,9 +293,15 @@ const seriesd = gql`query Seriesd($series: SeriesInput!){
                 exclusive,
                 otheronlytb,
                 onlyoneprint,
+collectedmultipletimes, collected, ,
+                number,
                 children {
-                    number
-                },
+                                    parent {
+                        collectedmultipletimes, collected, 
+                    },
+issue { collected },
+                    number,
+                }  
                 reprintOf {
                     number
                 },
@@ -272,9 +309,12 @@ const seriesd = gql`query Seriesd($series: SeriesInput!){
                     number
                 },
                 parent {
+                collectedmultipletimes, collected, ,
+                    number,
                     children {
-                        number
-                    }
+issue { collected },
+                        number,
+                    }  
                 }
             }  
         },
@@ -306,9 +346,15 @@ const seriesd = gql`query Seriesd($series: SeriesInput!){
                 exclusive,
                 otheronlytb,
                 onlyoneprint,
+collectedmultipletimes, collected, ,
+                number,
                 children {
-                    number
-                },
+                                    parent {
+                        collectedmultipletimes, collected, 
+                    },
+issue { collected },
+                    number,
+                }  
                 reprintOf {
                     number
                 },
@@ -316,9 +362,12 @@ const seriesd = gql`query Seriesd($series: SeriesInput!){
                     number
                 },
                 parent {
+                collectedmultipletimes, collected, ,
+                    number,
                     children {
-                        number
-                    }
+issue { collected },
+                        number,
+                    }  
                 }
             }  
         },
@@ -391,10 +440,14 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                         }
                     },
                     format,
-                    variant
+                    variant,
+                    collected
                 }
             },
             children {
+                issue { collected },
+                part,
+                number,
                 parent {
                     issue {
                         number,
@@ -408,6 +461,7 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                                 us
                             }
                         },
+                        collected
                     }
                 }
                 number,
@@ -427,7 +481,8 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                         }
                     },
                     format,
-                    variant
+                    variant,
+                    collected
                 }
             },
             individuals {
@@ -454,11 +509,13 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                             us      
                         }
                     },
+                    collected,
                 },
             },                                                                                         
             parent {
                 title,
                 number,
+                collectedmultipletimes, collected, ,
                 reprintOf {
                     title,
                     number,
@@ -474,6 +531,7 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                                 us      
                             }
                         },
+                        collected
                     },
                 },  
                 issue {
@@ -491,12 +549,17 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                     format,
                     variant,
                     stories {
-                        number    
+                        number,
+                        children {
+issue { collected },
+                            number
+                        }  
                     },
                     arcs {
                         title,
                         type
-                    }   
+                    },
+                    collected   
                 },
                 individuals {
                     name,
@@ -513,6 +576,7 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
             otheronlytb,
             onlytb,
             onlyoneprint,
+collectedmultipletimes, collected, ,
             exclusive
         },
         covers {
@@ -520,12 +584,14 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
             addinfo,
             number,
             children {
+issue { collected },
                 number,
                 addinfo,
                 issue {
                     number,
                     format,
                     variant,
+                    collected,
                     series {
                         title,
                         volume,
@@ -543,6 +609,7 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                     variant,
                     format,
                     number,
+                    collected,
                     series {
                         title,
                         startyear,
@@ -572,6 +639,7 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
             variant,
             number,
             comicguideid,
+            collected,
             series {
                 title,
                 volume,
@@ -606,6 +674,8 @@ function getListQuery(level) {
     }
 }
 
-export {getListQuery,
+export {
+    getListQuery,
     publisher, seriesd, issue, search,
-    publishers, series, issues, individuals, apps, arcs, exportQuery};
+    publishers, series, issues, individuals, apps, arcs, exportQuery
+};

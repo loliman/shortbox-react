@@ -24,6 +24,33 @@ function IssuePreview(props) {
     let coverUrl = (props.issue.cover && props.issue.cover.url && props.issue.cover.url !== '') ? props.issue.cover.url : props.cookies.get('newDesign') === "true" ? "" : "/nocover.jpg";
     let smallChip = props.mobile || props.mobileLandscape || ((props.tablet || props.tabletLandscape) && props.drawerOpen);
 
+    let collected = !!props.issue.collected;
+    let collectedMultipleTimes = false;
+    let sellable = 0;
+
+    if (props.us) {
+        props.issue.stories.forEach(s => {
+            if (!collectedMultipleTimes && s.collectedmultipletimes === true) {
+                collectedMultipleTimes = true;
+            }
+
+            s.children.forEach(c => {
+                if (!collected)
+                    collected = !!(c.issue.collected && !collected);
+            })
+        })
+    } else {
+        props.issue.stories.forEach(s => {
+            if (s.parent && s.parent.collectedmultipletimes === true) {
+                sellable++;
+            }
+
+            if (!collectedMultipleTimes && s.parent && s.parent.collectedmultipletimes === true) {
+                collectedMultipleTimes = true;
+            }
+        })
+    }
+
     return (
         <Card className="issuePreview"
               style={props.cookies.get('newDesign') === "true" ? {background: 'white url(' + coverUrl + ') no-repeat 100% 50%', backgroundSize: '75%'} : {}}
@@ -53,7 +80,7 @@ function IssuePreview(props) {
                                 <img className="verifiedBadge" src="/verified_badge.png"
                                     alt="verifiziert" height="25"/> : null}
 
-                            {props.issue.collected && props.session ?
+                            {collected && props.session ?
                                 <img className="verifiedBadge" src="/collected_badge.png"
                                     alt="gesammelt" height="25"/> : null}
                         </div>
@@ -109,6 +136,22 @@ function IssuePreview(props) {
                             !smallChip ?
                                 <Chip className="chip" label="Reiner Nachdruck" color="default"/>
                                 : <Chip className="chip" label="ND" color="default"/>
+                            : null
+                    }
+
+                    {
+                        props.issue.collected && collectedMultipleTimes && props.session ?
+                            !smallChip ?
+                                <Chip className="chip" label="Mehrfach auf deutsch gesammelt" style={{backgroundColor: "#4eaf51", color: "white"}}/>
+                                : <Chip className="chip" label="Mehrfach" style={{backgroundColor: "#4eaf51", color: "white"}}/>
+                            : null
+                    }
+
+                    {
+                        props.issue.collected && sellable > 0 && sellable === props.issue.stories.length && props.session ?
+                            !smallChip ?
+                                <Chip className="chip" label="Verkaufbar" style={{backgroundColor: "#4eaf51", color: "white"}}/>
+                                : <Chip className="chip" label="Verkaufbar" style={{backgroundColor: "#4eaf51", color: "white"}}/>
                             : null
                     }
 

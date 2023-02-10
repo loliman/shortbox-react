@@ -5,7 +5,7 @@ import List from "./List";
 import {withContext} from "./generic";
 import AddFab from "./restricted/AddFab";
 import Typography from "@material-ui/core/Typography";
-import {Mutation} from "react-apollo";
+import {Mutation, withApollo} from "react-apollo";
 import {logout} from "../graphql/mutations";
 import Cookies from "./Cookies";
 import {generateUrl} from "../util/hierarchy";
@@ -99,6 +99,7 @@ function LogOut(props) {
                           enqueueSnackbar("Logout fehlgeschlagen", {variant: 'error'});
                       else {
                           enqueueSnackbar("Auf Wiedersehen!", {variant: 'success'});
+                          props.client.resetStore();
                           handleLogout();
                       }
                   }}
@@ -125,4 +126,4 @@ function LogOut(props) {
     );
 }
 
-export default withContext(Layout);
+export default withApollo(withContext(Layout));

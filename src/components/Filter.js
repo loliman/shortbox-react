@@ -49,7 +49,9 @@ function Filter(props) {
             otherOnlyTb: false,
             onlyOnePrint: false,
             noPrint: false,
-            onlyCollected: false
+            onlyCollected: false,
+            onlyNotCollected: false,
+            sellable: false
         };
     else {
         if (!defaultValues.formats)
@@ -100,6 +102,10 @@ function Filter(props) {
             defaultValues.onlyOnePrint = false;
         if (!defaultValues.onlyCollected)
             defaultValues.onlyCollected = false;
+        if (!defaultValues.onlyNotCollected)
+            defaultValues.onlyNotCollected = false;
+        if (!defaultValues.sellable)
+            defaultValues.sellable = false;
     }
 
     return (
@@ -181,6 +187,10 @@ function Filter(props) {
                         v.onlyOnePrint = true;
                     if (values.onlyCollected)
                         v.onlyCollected = true;
+                    if (values.onlyNotCollected)
+                        v.onlyNotCollected = true;
+                    if (values.sellable)
+                        v.sellable = true;
 
                     if (JSON.stringify(v) !== "{}") {
                         v.us = us;
@@ -284,12 +294,34 @@ function Filter(props) {
                                         <Switch
                                             checked={values.onlyCollected}
                                             onChange={() => {
-                                            setFieldValue("onlyCollected", !values.onlyCollected);
-                                        }}
+                                                setFieldValue("onlyCollected", !values.onlyCollected);
+                                            }}
                                             color="secondary"/>
                                     }
-                                    label="Nur Gesammelte"
-                                /></React.Fragment> : null }
+                                    label="Nur in Sammlung"
+                                /><FormControlLabel
+                                    className="switchEditor"
+                                    control={
+                                        <Switch
+                                            checked={values.onlyNotCollected}
+                                            onChange={() => {
+                                                setFieldValue("onlyNotCollected", !values.onlyNotCollected);
+                                            }}
+                                            color="secondary"/>
+                                    }
+                                    label="Nur nicht in Sammlung"
+                                /> <FormControlLabel
+                                    className="switchEditor"
+                                    control={
+                                    <Switch
+                                    checked={values.sellable}
+                                    onChange={() => {
+                                    setFieldValue("sellable", !values.sellable);
+                                }}
+                                    color="secondary"/>
+                                }
+                                    label="Verkaufbar"
+                                    /></React.Fragment> : null }
 
                                 <br/>
                                 <br/>
@@ -679,7 +711,9 @@ function Filter(props) {
                                                     otherOnlyTb: false,
                                                     noPrint: false,
                                                     onlyOnePrint: false,
-                                                    onlyCollected: false
+                                                    onlyCollected: false,
+                                                    onlyNotCollected: false,
+                                                    sellable: false
                                                 });
                                             }}
                                             color="secondary">

@@ -390,6 +390,7 @@ _:-ms-fullscreen, :root #main {
 }
 
 .media {
+    border-radius: 8px;
     align-self: center;
     margin-top: 10px !important;
     height: 55vh !important;
@@ -939,6 +940,10 @@ _:-ms-fullscreen, :root #main {
     background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 70%, rgba(0, 0, 0, 0) 100%) !important;
 }
 
+.titleWrap{
+    margin-left: 10px !important;
+}
+
 .coverGallery {
     flex-wrap: nowrap !important;
     padding-bottom: 2% !important;
@@ -952,6 +957,12 @@ _:-ms-fullscreen, :root #main {
 .tile {
     width: 25% !important;
     height: 140px !important;
+    padding: 1px;
+}
+
+.tile > div {
+    border-radius: 8px;
+    border: 1px solid #f0f0f0 !important;
 }
 
 .tile:hover {
@@ -987,11 +998,9 @@ _:-ms-fullscreen, :root #main {
     background-size: contain !important;
     background-position: center !important;
     background-color: rgba(0, 0, 0, 0.1) !important;
-    border-width: 1px !important;
-    border-color: darkgray !important;
-    border-style: solid !important;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
     margin-left: 10px;
-    box-shadow: 0px 1px 5px 0px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 3px 1px -2px rgba(0, 0, 0, 0.12);
+    border: 1px solid #f0f0f0 !important;
 }
 
 .media:hover {
@@ -1006,7 +1015,7 @@ _:-ms-fullscreen, :root #main {
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
     display: flex;
     padding: 5px;
-    border-radius: 0 !important;
+    border-radius: 8px !important;
     margin-left: 5px
 }
 
@@ -1021,7 +1030,6 @@ _:-ms-fullscreen, :root #main {
 }
 
 .story {
-    border-radius: 0 !important;
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
 }
 
@@ -1295,7 +1303,7 @@ span[class^="MuiSwitch-bar-"] {
 }
 
 .issuePreview {
-    border-radius: 1px !important;
+    border-radius: 8px !important;
     margin-bottom: 10px;
     width: 100%;
     border: 1px solid #f0f0f0 !important;
