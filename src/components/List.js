@@ -105,6 +105,7 @@ function TypeListEntry(props) {
         isBold = {fontWeight: "bold"};
     }
 
+    let variants = item.variants ? (item.variants.length - 1) : 0;
     return (
         <div className="itemContainer" id={"itemContainer" + props.idx}>
             <ListItem onMouseDown={(e) => {
@@ -119,7 +120,7 @@ function TypeListEntry(props) {
                                   <div style={{display: "flex", justifyContent: "space-between"}}>
                                       <div>{label}</div>
                                       <div style={{display: "flex"}}>{item.variants && item.variants.length > 1 ?
-                                          <Tooltip title={"+" + (item.variants.length - 1) + " Varianten"}>
+                                          <Tooltip title={"+" + variants + (variants === 1 ? " Variante" : " Varianten")}>
                                               <Typography className={"material-icons"}
                                                           style={{color: "gray", paddingLeft: '2px', fontSize: "8px"}}
                                                           color={"disabled"}>+{item.variants.length - 1}</Typography>
@@ -167,23 +168,30 @@ function NoEntries(props) {
 }
 
 function scroll(state, props) {
-    let level = props.level;
-    let query = getListQuery(level);
-    let queryName = query.definitions[0].name.value.toLowerCase();
+    if(props && props.level) {
+        let level = props.level;
+        if (level === HierarchyLevel.SERIES || level === HierarchyLevel.ISSUE)  {
+            let query = getListQuery(level);
+            let queryName = query.definitions[0].name.value.toLowerCase();
 
-    if (state &&
-        state.data[queryName] &&
-        (level === HierarchyLevel.SERIES || level === HierarchyLevel.ISSUE) &&
-        props.selected.issue) {
-        let idx = state.data[queryName].findIndex(d => d.number === props.selected.issue.number);
+            if (state &&
+                state.data && state.data[queryName] &&
+                props.selected.issue) {
+                let idx = state.data[queryName].findIndex(d => d.number === props.selected.issue.number);
 
-        let height = state.data[queryName]
-            .filter((d, i) => i <= idx)
-            .map((d, idx) => document.getElementById("itemContainer" + idx) ? document.getElementById("itemContainer" + idx).offsetHeight : 0)
-            .reduce((a, b) => a + b)
+                let height = 0;
 
-        height -= document.getElementById("itemContainer" + idx) ? document.getElementById("itemContainer" + idx).offsetHeight : 0;
-        document.getElementById("list").scrollTop = height - 100;
+                let offsets = state.data[queryName]
+                    .filter((d, i) => i <= idx)
+                    .map((d, idx) => document.getElementById("itemContainer" + idx) ? document.getElementById("itemContainer" + idx).offsetHeight : 0);
+
+                if(offsets.length > 0)
+                    height = offsets.reduce((a, b) => a + b);
+
+                height -= document.getElementById("itemContainer" + idx) ? document.getElementById("itemContainer" + idx).offsetHeight : 0;
+                document.getElementById("list").scrollTop = height - 100;
+            }
+        }
     }
 }
 
