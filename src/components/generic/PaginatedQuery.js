@@ -35,6 +35,7 @@ class PaginatedQuery extends React.Component {
                 {({loading, error, data, fetchMore, networkStatus}) => {
                     let queryName = this.props.query.definitions[0].name.value;
                     queryName = queryName[0].toLowerCase() + queryName.slice(1);
+
                     let offset = (data && data[queryName]) ? data[queryName].length : 0;
 
                     let fetchMoreVars = {};

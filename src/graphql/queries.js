@@ -13,15 +13,15 @@ const exportQuery = gql`query Export($filter: Filter!, $type: String!){
     export(filter: $filter, type: $type)
 }`;
 
-const publishers = gql`query Publishers($pattern: String, $us: Boolean!, $offset: Int, $filter: Filter){
-    publishers(pattern: $pattern, us: $us, offset: $offset, filter: $filter) {
+const publishers = gql`query Publishers($pattern: String, $us: Boolean!, $filter: Filter){
+    publishers(pattern: $pattern, us: $us, filter: $filter) {
         name,
         us
     }
 }`;
 
-const series = gql`query Series($pattern: String, $publisher: PublisherInput!, $offset: Int, $filter: Filter){
-    series(pattern: $pattern, publisher: $publisher, offset: $offset, filter: $filter) {
+const series = gql`query Series($pattern: String, $publisher: PublisherInput!, $filter: Filter){
+    series(pattern: $pattern, publisher: $publisher, filter: $filter) {
         title,
         volume,
         startyear,
@@ -33,8 +33,8 @@ const series = gql`query Series($pattern: String, $publisher: PublisherInput!, $
     }
 }`;
 
-const issues = gql`query Issues($pattern: String, $series: SeriesInput!, $offset: Int, $filter: Filter){
-    issues(pattern: $pattern, series: $series, offset: $offset, filter: $filter) {
+const issues = gql`query Issues($pattern: String, $series: SeriesInput!, $filter: Filter){
+    issues(pattern: $pattern, series: $series, filter: $filter) {
         title,
         number,
         comicguideid,

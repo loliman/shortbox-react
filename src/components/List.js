@@ -6,16 +6,14 @@ import {getListQuery} from '../graphql/queries'
 import QueryResult from './generic/QueryResult';
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer/SwipeableDrawer";
 import Typography from "@material-ui/core/es/Typography/Typography";
-import {ScrollContainer} from "react-router-scroll-4";
 import {withContext} from "./generic";
 import {generateLabel, generateUrl, HierarchyLevel} from "../util/hierarchy";
-import PaginatedQuery from "./generic/PaginatedQuery";
 import Tooltip from "@material-ui/core/es/Tooltip/Tooltip";
+import {Query} from "react-apollo";
 
 class List extends React.Component {
-    componentDidMount() {
-        if (!(this.props.mobile || (this.props.tablet && !this.props.tabletLandscape)))
-            this.props.registerLoadingComponent("List");
+    componentDidUpdate() {
+        scroll(this.state, this.props)
     }
 
     render() {
@@ -49,9 +47,12 @@ class List extends React.Component {
                 onOpen={() => toogleDrawer()}
                 className={drawerOpen ? 'drawer-open' : 'drawer-close'}
                 id="drawer">
-                <PaginatedQuery query={query} variables={selected}
-                                onCompleted={() => this.props.unregisterLoadingComponent("List")}>
-                    {({error, data, fetchMore, fetching, hasMore, networkStatus}) => {
+                <Query  query={query} variables={selected}
+                        fetchPolicy={this.state && this.state.data ? null : "cache-and-network"}
+                        onCompleted={(data) => {
+                            this.setState({data: data});
+                        }}>
+                    {({error, data, networkStatus}) => {
                         let content;
 
                         if (this.props.appIsLoading || error || !data[queryName] || networkStatus === 2) {
@@ -70,40 +71,16 @@ class List extends React.Component {
                         else content = data[queryName].map((i, idx) => {
                                 return <TypeListEntry {...this.props}
                                                       handleMenuOpen={handleMenuOpen}
-                                                      onClick={(e) => this.setState({
-                                                          scrollPosition: e * idx - (e * 4)
-                                                      })}
                                                       idx={idx} key={idx} item={i}/>
                             });
 
-                        if (hasMore && content.length > 0)
-                            content.push(
-                                <ListItem key={"balls"}>
-                                    <ListItemText>
-                                        <div className="ballsContainer">
-                                            {fetching ?
-                                                <React.Fragment>
-                                                    <div className="ball ball-one"/>
-                                                    <div className="ball ball-two"/>
-                                                    <div className="ball ball-three"/>
-                                                </React.Fragment> : null}
-                                        </div>
-                                    </ListItemText>
-                                </ListItem>
-                            );
-
                         return (
-                            <ScrollContainer scrollKey="listScrollContainer"
-                                             shouldUpdateScroll={(prevRouterProps, {location, history}) => {
-                                                 return [0, this.state ? this.state.scrollPosition : 0];
-                                             }}>
-                                <MuiList id="list" onScroll={fetchMore}>
-                                    {content}
-                                </MuiList>
-                            </ScrollContainer>
+                            <MuiList id="list">
+                                {content}
+                            </MuiList>
                         )
                     }}
-                </PaginatedQuery>
+                </Query>
             </SwipeableDrawer>
         );
     }
@@ -131,8 +108,6 @@ function TypeListEntry(props) {
     return (
         <div className="itemContainer" id={"itemContainer" + props.idx}>
             <ListItem onMouseDown={(e) => {
-                props.onClick(document.getElementById("itemContainer" + props.idx).offsetHeight);
-
                 if ((mobile && !mobileLandscape) && (level === HierarchyLevel.SERIES || level === HierarchyLevel.ISSUE))
                     toogleDrawer();
 
@@ -189,6 +164,27 @@ function NoEntries(props) {
             <Typography className="queryResultText">Keine Einträge gefunden</Typography>
         </div>
     );
+}
+
+function scroll(state, props) {
+    let level = props.level;
+    let query = getListQuery(level);
+    let queryName = query.definitions[0].name.value.toLowerCase();
+
+    if (state &&
+        state.data[queryName] &&
+        (level === HierarchyLevel.SERIES || level === HierarchyLevel.ISSUE) &&
+        props.selected.issue) {
+        let idx = state.data[queryName].findIndex(d => d.number === props.selected.issue.number);
+
+        let height = state.data[queryName]
+            .filter((d, i) => i <= idx)
+            .map((d, idx) => document.getElementById("itemContainer" + idx) ? document.getElementById("itemContainer" + idx).offsetHeight : 0)
+            .reduce((a, b) => a + b)
+
+        height -= document.getElementById("itemContainer" + idx) ? document.getElementById("itemContainer" + idx).offsetHeight : 0;
+        document.getElementById("list").scrollTop = height - 100;
+    }
 }
 
 export default withContext(List);

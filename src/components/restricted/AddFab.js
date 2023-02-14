@@ -7,6 +7,8 @@ import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
 import BookIcon from "@material-ui/icons/Book";
 import ListIcon from "@material-ui/icons/List";
 import {withContext} from "../generic";
+import {generateUrl, HierarchyLevel} from "../../util/hierarchy";
+import {FileCopy} from "@material-ui/icons";
 
 class AddFab extends React.Component {
     constructor(props) {
@@ -66,6 +68,22 @@ class AddFab extends React.Component {
                                     this.handleClick();
                                 }}
                             />
+                            {        this.props.level === HierarchyLevel.ISSUE ?
+                                        <SpeedDialAction
+                                            key="issue"
+                                            icon={<FileCopy/>}
+                                            tooltipTitle="Variant"
+                                            tooltipOpen
+                                            onMouseDown={(e) => {
+                                                let selected = JSON.parse(JSON.stringify(this.props.selected));
+                                                selected.issue.format = undefined;
+                                                selected.issue.variant = undefined;
+
+                                                navigate(e, "/copy" + generateUrl(selected, this.props.us));
+                                                this.handleClick();
+                                            }}
+                                        /> : null
+                            }
                         </SpeedDial>
                     </div>
                 </ClickAwayListener>

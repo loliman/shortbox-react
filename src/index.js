@@ -14,13 +14,12 @@ import {SnackbarProvider} from 'notistack';
 import {InMemoryCache} from 'apollo-cache-inmemory';
 import {setContext} from 'apollo-link-context';
 import {BrowserRouter} from "react-router-dom";
-import {ScrollContext} from 'react-router-scroll-4';
 import {LastLocationProvider} from "react-router-last-location";
 import Button from "@material-ui/core/Button/Button";
 import {createUploadLink} from "apollo-upload-client";
 
 const uploadLink = createUploadLink({
-    uri: 'https://api.shortbox.de'
+    uri: 'http://localhost:4000'
 });
 
 const authLink = setContext((_, {headers}) => {
@@ -49,20 +48,18 @@ const client = new ApolloClient({
 ReactDOM.render(
     <BrowserRouter>
         <LastLocationProvider>
-            <ScrollContext>
-                <SnackbarProvider maxSnack={3}
-                                  action={[
-                                      <Button key="hide" className="snackbarbtn" color="primary" size="small">
-                                          Verbergen
-                                      </Button>
-                                  ]}>
-                    <CookiesProvider>
-                        <ApolloProvider client={client}>
-                            <App />
-                        </ApolloProvider>
-                    </CookiesProvider>
-                </SnackbarProvider>
-            </ScrollContext>
+            <SnackbarProvider maxSnack={3}
+                              action={[
+                                  <Button key="hide" className="snackbarbtn" color="primary" size="small">
+                                      Verbergen
+                                  </Button>
+                              ]}>
+                <CookiesProvider>
+                    <ApolloProvider client={client}>
+                        <App />
+                    </ApolloProvider>
+                </CookiesProvider>
+            </SnackbarProvider>
         </LastLocationProvider>
     </BrowserRouter>,
     document.getElementById('root')

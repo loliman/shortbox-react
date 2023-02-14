@@ -67,16 +67,16 @@ class IssueEditor extends React.Component {
         this.state = {
             defaultValues: defaultValues,
             header: props.edit ?
-                generateLabel(defaultValues) + " bearbeiten" :
+                generateLabel(defaultValues) + " bearbeiten" : props.copy ? generateLabel(defaultValues) + " kopieren" :
                 "Ausgabe erstellen",
             submitLabel: props.edit ?
-                "Speichern" :
+                "Speichern" : props.copy ? "Kopieren" :
                 "Erstellen",
             successMessage: props.edit ?
-                " erfolgreich gespeichert" :
+                " erfolgreich gespeichert" : props.copy ? " erfolgreich kopiert" :
                 " erfolgreich erstellt",
             errorMessage: props.edit ?
-                generateLabel(defaultValues) + " konnte nicht gespeichert werden" :
+                generateLabel(defaultValues) + " konnte nicht gespeichert werden" : props.copy ? " konnte nicht kopiert werden" :
                 "Ausgabe konnte nicht erstellt werden"
         }
     }
