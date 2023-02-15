@@ -443,15 +443,15 @@ export function ContainsTitleDetailed(props) {
                 {
                     props.item.parent && props.item.parent.collectedmultipletimes && props.session ?
                         !smallChip ?
-                            <Chip className="chip" label="Mehrfach auf deutsch gesammelt" style={{backgroundColor: "#4eaf51", color: "white"}}/>
+                            <Chip className="chip" label="Mehrfach gesammelt" style={{backgroundColor: "#4eaf51", color: "white"}}/>
                             : <Chip className="chip" label="Mehrfach" style={{backgroundColor: "#4eaf51", color: "white"}}/>
                         : null
                 }
 
                 {
-                    !props.issue.collected && props.item.parent && !props.item.parent.collectedmultipletimes && props.item.parent.collected && props.session ?
+                    props.item.parent && !props.item.parent.collectedmultipletimes && props.item.parent.collected && props.session ?
                         !smallChip ?
-                            <Chip className="chip" label="Auf deutsch gesammelt" style={{backgroundColor: "#4eaf51", color: "white"}}/>
+                            <Chip className="chip" label="Gesammelt" style={{backgroundColor: "#4eaf51", color: "white"}}/>
                             : <Chip className="chip" label="Gesammelt" style={{backgroundColor: "#4eaf51", color: "white"}}/>
                         : null
                 }

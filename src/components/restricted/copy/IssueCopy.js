@@ -30,12 +30,12 @@ function IssueCopy(props) {
                     defaultValues.pages = defaultValues.pages ? defaultValues.pages : 0;
                     defaultValues.comicguideid = defaultValues.comicguideid ? defaultValues.comicguideid : 0;
                     defaultValues.limitation = defaultValues.limitation ? defaultValues.limitation : 0;
-                    defaultValues.stories = undefined;
-                    defaultValues.individuals = undefined;
-                    defaultValues.arcs = undefined;
-                    defaultValues.covers = undefined;
+                    defaultValues.stories = [];
+                    defaultValues.individuals = [];
+                    defaultValues.arcs = [];
+                    defaultValues.covers = [];
                     defaultValues.cover = undefined;
-                    defaultValues.features = undefined;
+                    defaultValues.features = [];
 
                     return (
                         <IssueEditor copy
