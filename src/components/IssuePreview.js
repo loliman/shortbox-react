@@ -140,9 +140,9 @@ function IssuePreview(props) {
                     }
 
                     {
-                        props.issue.collected && collectedMultipleTimes && props.session ?
+                        collectedMultipleTimes && props.session ?
                             !smallChip ?
-                                <Chip className="chip" label="Mehrfach auf deutsch gesammelt" style={{backgroundColor: "#4eaf51", color: "white"}}/>
+                                <Chip className="chip" label={"Mehrfach " + (props.us ? "auf deutsch " : "") + "gesammelt"} style={{backgroundColor: "#4eaf51", color: "white"}}/>
                                 : <Chip className="chip" label="Mehrfach" style={{backgroundColor: "#4eaf51", color: "white"}}/>
                             : null
                     }
