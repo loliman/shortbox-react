@@ -69,9 +69,8 @@ class IssueEditor extends React.Component {
             header: props.edit ?
                 generateLabel(defaultValues) + " bearbeiten" : props.copy ? generateLabel(defaultValues) + " kopieren" :
                 "Ausgabe erstellen",
-            submitLabel: props.edit ?
-                "Speichern" : props.copy ? "Kopieren" :
-                "Erstellen",
+            submitLabel: "Fertig",
+            submitAndCopyLabel: "Fertig und kopieren",
             successMessage: props.edit ?
                 " erfolgreich gespeichert" : props.copy ? " erfolgreich kopiert" :
                 " erfolgreich erstellt",
@@ -89,7 +88,7 @@ class IssueEditor extends React.Component {
 
     render() {
         const {lastLocation, navigate, enqueueSnackbar, edit, mutation} = this.props;
-        const {defaultValues, header, submitLabel, successMessage, errorMessage} = this.state;
+        const {defaultValues, header, submitLabel, submitAndCopyLabel, successMessage, errorMessage} = this.state;
 
         let mutationName = decapitalize(mutation.definitions[0].name.value);
 
@@ -149,7 +148,15 @@ class IssueEditor extends React.Component {
                       }}
                       onCompleted={(data) => {
                           enqueueSnackbar(generateLabel(data[mutationName]) + successMessage, {variant: 'success'});
-                          navigate(null, generateUrl(data[mutationName], data[mutationName].series.publisher.us));
+
+                          if(!this.state.copy)
+                              navigate(null, generateUrl(data[mutationName], data[mutationName].series.publisher.us));
+                          else {
+                              let selected = JSON.parse(JSON.stringify(data[mutationName]));
+                              selected.format = undefined;
+                              selected.variant = undefined;
+                              navigate(null, "/copy/issue" + generateUrl(selected, selected.series.publisher.us));
+                          }
                       }}
                       onError={(errors) => {
                           let message = (errors.graphQLErrors && errors.graphQLErrors.length > 0) ? ' [' + errors.graphQLErrors[0].message + ']' : '';
@@ -641,18 +648,39 @@ class IssueEditor extends React.Component {
                                         </Button>
 
                                         <Button disabled={isSubmitting}
-                                                onMouseDown={(e) => this.props.navigate(e, lastLocation ? lastLocation.pathname : "/")}
+                                                onMouseDown={(e) => {
+                                                    if(this.state.copy) {
+                                                        this.props.navigate(e, generateUrl(this.props.selected, this.props.selected.us));
+                                                    } else {
+                                                        this.props.navigate(e, lastLocation ? lastLocation.pathname : "/");
+                                                    }
+                                                }}
                                                 color="primary">
                                             Abbrechen
                                         </Button>
 
-                                        <Button
-                                            className="createButton"
-                                            disabled={isSubmitting}
-                                            onClick={submitForm}
-                                            color="primary">
-                                            {submitLabel}
-                                        </Button>
+                                        <div className={"createButton"}>
+                                            <Button
+                                                disabled={isSubmitting}
+                                                onClick={() => {
+                                                    this.setState({copy: false});
+                                                    submitForm();
+                                                }}
+                                                color="primary">
+                                                {submitLabel}
+                                            </Button>
+
+                                            <Button
+                                                value={"createAndCopy"}
+                                                disabled={isSubmitting}
+                                                onClick={() => {
+                                                    this.setState({copy: true});
+                                                    submitForm();
+                                                }}
+                                                color="primary">
+                                                {submitAndCopyLabel}
+                                            </Button>
+                                        </div>
                                     </div>
                                 </CardContent>
                             </Form>

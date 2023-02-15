@@ -64,7 +64,16 @@ class AddFab extends React.Component {
                                 tooltipTitle="Ausgabe"
                                 tooltipOpen
                                 onMouseDown={(e) => {
-                                    navigate(e, "/create/issue");
+                                    if (this.props.level === HierarchyLevel.PUBLISHER) {
+                                        navigate(e, "/create/issue" + generateUrl(this.props.selected, this.props.us));
+                                    } else if (this.props.level === HierarchyLevel.SERIES) {
+                                        navigate(e, "/create/issue" + generateUrl(this.props.selected, this.props.us));
+                                    } else if (this.props.level === HierarchyLevel.ISSUE) {
+                                        navigate(e, "/create/issue" + generateUrl({series: this.props.selected.issue.series}, this.props.us));
+                                    } else {
+                                        navigate(e, "/create/issue/" + this.props.us);
+                                    }
+
                                     this.handleClick();
                                 }}
                             />
@@ -79,7 +88,7 @@ class AddFab extends React.Component {
                                                 selected.issue.format = undefined;
                                                 selected.issue.variant = undefined;
 
-                                                navigate(e, "/copy" + generateUrl(selected, this.props.us));
+                                                navigate(e, "/copy/issue" + generateUrl(selected, this.props.us));
                                                 this.handleClick();
                                             }}
                                         /> : null

@@ -76,9 +76,13 @@ class App extends React.Component {
                         <PrivateRoute exact session={session} path="/create/publisher" component={PublisherCreate}/>
                         <PrivateRoute exact session={session} path="/create/series" component={SeriesCreate}/>
                         <PrivateRoute exact session={session} path="/create/issue" component={IssueCreate}/>
+                        <PrivateRoute exact session={session} path="/create/issue/de/:publisher" component={IssueCreate}/>
+                        <PrivateRoute exact session={session} path="/create/issue/de/:publisher/:series" component={IssueCreate}/>
+                        <PrivateRoute exact session={session} path="/create/issue/us/:publisher" component={IssueCreate}/>
+                        <PrivateRoute exact session={session} path="/create/issue/us/:publisher/:series" component={IssueCreate}/>
 
-                        <PrivateRoute exact session={session} path="/copy/de/:publisher/:series/:issue" component={IssueCopy}/>
-                        <PrivateRoute exact session={session} path="/copy/us/:publisher/:series/:issue" component={IssueCopy}/>
+                        <PrivateRoute exact session={session} path="/copy/issue/de/:publisher/:series/:issue" component={IssueCopy}/>
+                        <PrivateRoute exact session={session} path="/copy/issue/us/:publisher/:series/:issue" component={IssueCopy}/>
 
                         <PrivateRoute exact session={session} path="/edit/de/:publisher" component={PublisherEdit}/>
                         <PrivateRoute exact session={session} path="/edit/de/:publisher/:series" component={SeriesEdit}/>
