@@ -1330,6 +1330,7 @@ span[class^="MuiSwitch-bar-"] {
 }
 
 .issueTitleContainerInner {
+    max-width: 65vw;
     display: flex;
     align-items: flex-end;
     text-align: left;
