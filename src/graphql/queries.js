@@ -13,15 +13,15 @@ const exportQuery = gql`query Export($filter: Filter!, $type: String!){
     export(filter: $filter, type: $type)
 }`;
 
-const publishers = gql`query Publishers($pattern: String, $us: Boolean!, $filter: Filter){
-    publishers(pattern: $pattern, us: $us, filter: $filter) {
+const publishers = gql`query Publishers($pattern: String, $us: Boolean!, $offset: Int, $filter: Filter){
+    publishers(pattern: $pattern, us: $us, offset: $offset, filter: $filter) {
         name,
         us
     }
 }`;
 
-const series = gql`query Series($pattern: String, $publisher: PublisherInput!, $filter: Filter){
-    series(pattern: $pattern, publisher: $publisher, filter: $filter) {
+const series = gql`query Series($pattern: String, $publisher: PublisherInput!, $offset: Int, $filter: Filter){
+    series(pattern: $pattern, publisher: $publisher, offset: $offset, filter: $filter) {
         title,
         volume,
         startyear,

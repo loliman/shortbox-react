@@ -18,6 +18,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import IconButton from "@material-ui/core/IconButton";
 import {ArrowDownward, ArrowUpward} from "@material-ui/icons";
+import SortContainer from "../SortContainer";
 
 class PublisherDetails extends React.Component {
     componentDidMount() {
@@ -133,47 +134,15 @@ class PublisherDetails extends React.Component {
                                                 { (!this.props.query || !this.props.query.filter) ? <br /> : null }
 
                                                 <React.Fragment>
-                                                    <div style={{float: 'right', width: "250px"}}>
-                                                        <FormControl className={"field field75"}>
-                                                            <InputLabel id="demo-simple-select-label">Sortieren nach</InputLabel>
-                                                            <Select
-                                                                id="demo-simple-select"
-                                                                value={this.props.query && this.props.query.order ? this.props.query.order : "updatedAt"}
-                                                                label="Sortieren nach"
-                                                                onChange={e =>
-                                                                    this.props.navigate(e, generateUrl(this.props.selected, this.props.us),
-                                                                        {
-                                                                            filter: this.props.query ? this.props.query.filter : null,
-                                                                            order: e.target.value,
-                                                                            direction: this.props.query ? this.props.query.direction : null,
-                                                                        })}>
-                                                                <MenuItem value={"updatedAt"}>Änderungsdatum</MenuItem>
-                                                                <MenuItem value={"createdAt"}>Erfassungsdatum</MenuItem>
-                                                                <MenuItem value={"releasedate"}>Erscheinungsdatum</MenuItem>
-                                                                <MenuItem value={"series"}>Serie</MenuItem>
-                                                                <MenuItem value={"publisher"}>Verlag</MenuItem>
-                                                            </Select>
-                                                        </FormControl>
-
-                                                        <IconButton aria-label="Reihenfolge" style={{marginTop: '23px', height: '10px', width: '10px'}}
-                                                                    onMouseDown={(e) =>
-                                                                        this.props.navigate(e, generateUrl(this.props.selected, this.props.us),
-                                                                            {
-                                                                                filter: this.props.query ? this.props.query.filter : null,
-                                                                                order: this.props.query ? this.props.query.order : null,
-                                                                                direction: this.props.query && this.props.query.direction && this.props.query.direction !== 'DESC'? 'DESC' : 'ASC'
-                                                                            })}>
-                                                            {this.props.query && this.props.query.direction && this.props.query.direction !== 'DESC' ? <ArrowUpward /> : <ArrowDownward />}
-                                                        </IconButton>
+                                                    <div style={{display: "flex", justifyContent: "end", marginRight: "1%"}}>
+                                                        <SortContainer {...this.props} />
                                                     </div>
 
-                                                    <br />
-                                                    <br />
                                                     <br />
 
                                                     <CardContent>
                                                         {   lastEdited ?
-                                                            lastEdited.map((i, idx) => <IssuePreviewSmall {...this.props} key={idx} issue={i}/>) : null
+                                                            lastEdited.map((i, idx) => <IssuePreviewSmall {...this.props} isLast={idx === lastEdited.length-1} idx={idx} key={idx} issue={i}/>) : null
                                                         }
                                                     </CardContent>
                                                 </React.Fragment>
@@ -208,7 +177,7 @@ function PublisherDetailsPlaceholder(props) {
                 <React.Fragment>
                     <CardHeader title={<div className="ui placeholder cardHeaderPlaceholder">
                         <div className={"header"}>
-                            <div className="medium line"/>
+                            <div className="short line"/>
                         </div>
                     </div>} />
                     <CardContent>
@@ -235,15 +204,15 @@ function PublisherDetailsPlaceholder(props) {
                 <React.Fragment>
                     <CardHeader title={<div className="ui placeholder cardHeaderPlaceholder">
                         <div className={"header"}>
-                            <div className="medium line"/>
+                            <div className="very short line"/>
                         </div>
                     </div>} />
                     <CardContent>
+                        <IssuePreviewPlaceholderSmall idx={0}/>
                         <IssuePreviewPlaceholderSmall />
                         <IssuePreviewPlaceholderSmall />
                         <IssuePreviewPlaceholderSmall />
-                        <IssuePreviewPlaceholderSmall />
-                        <IssuePreviewPlaceholderSmall />
+                        <IssuePreviewPlaceholderSmall isLast={true}/>
                     </CardContent>
                 </React.Fragment>
             </CardContent>

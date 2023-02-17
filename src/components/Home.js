@@ -11,10 +11,11 @@ import PaginatedQuery from "./generic/PaginatedQuery";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
-import {Select} from "@material-ui/core";
+import {Divider, Select} from "@material-ui/core";
 import {generateUrl} from "../util/hierarchy";
 import IconButton from "@material-ui/core/IconButton";
 import {ArrowDownward, ArrowUpward} from "@material-ui/icons";
+import SortContainer from "./SortContainer";
 
 class Home extends React.Component {
     componentDidMount() {
@@ -84,39 +85,7 @@ class Home extends React.Component {
                                                 <br />
                                                 <br />
 
-                                                <div style={{alignSelf: "end", width: "250px"}}>
-                                                    <FormControl className={"field field75"}>
-                                                        <InputLabel id="demo-simple-select-label">Sortieren nach</InputLabel>
-                                                        <Select
-                                                            id="demo-simple-select"
-                                                            value={this.props.query && this.props.query.order ? this.props.query.order : "updatedAt"}
-                                                            label="Sortieren nach"
-                                                            onChange={e =>
-                                                                this.props.navigate(e, generateUrl(this.props.selected, this.props.us),
-                                                                    {
-                                                                        filter: this.props.query ? this.props.query.filter : null,
-                                                                        order: e.target.value,
-                                                                        direction: this.props.query ? this.props.query.direction : null,
-                                                                    })}>
-                                                            <MenuItem value={"updatedAt"}>Änderungsdatum</MenuItem>
-                                                            <MenuItem value={"createdAt"}>Erfassungsdatum</MenuItem>
-                                                            <MenuItem value={"releasedate"}>Erscheinungsdatum</MenuItem>
-                                                            <MenuItem value={"series"}>Serie</MenuItem>
-                                                            <MenuItem value={"publisher"}>Verlag</MenuItem>
-                                                        </Select>
-                                                    </FormControl>
-
-                                                    <IconButton aria-label="Reihenfolge" style={{marginTop: '23px', height: '10px', width: '10px'}}
-                                                                onMouseDown={(e) =>
-                                                                    this.props.navigate(e, generateUrl(this.props.selected, this.props.us),
-                                                                        {
-                                                                            filter: this.props.query ? this.props.query.filter : null,
-                                                                            order: this.props.query ? this.props.query.order : null,
-                                                                            direction: this.props.query && this.props.query.direction && this.props.query.direction !== 'DESC'? 'DESC' : 'ASC'
-                                                                        })}>
-                                                        {this.props.query && this.props.query.direction && this.props.query.direction !== 'DESC' ? <ArrowUpward /> : <ArrowDownward />}
-                                                    </IconButton>
-                                                </div>
+                                                <SortContainer {...this.props} />
 
                                                 <br/>
 
@@ -176,6 +145,14 @@ function HomePlaceholder(props) {
                     <div className="medium line"/>
                     <div className="very long line"/>
                     <div className="very long line"/>
+                </div>
+
+                <br />
+                <br />
+                <br />
+
+                <div className="ui placeholder">
+                    <div className="very short line"/>
                 </div>
 
                 <br />

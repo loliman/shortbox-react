@@ -22,10 +22,26 @@ function IssuePreviewSmall(props) {
 
     let coverUrl = (props.issue.cover && props.issue.cover.url && props.issue.cover.url !== '') ? props.issue.cover.url : "";
 
+    let style;
+    if(props.idx === 0) {
+        if (props.isLast) {
+            style = {borderRadius: '8px 8px 8px 8px'};
+        } else {
+            style = {borderRadius: '8px 8px 0 0'};
+        }
+    } else if (props.isLast) {
+        style = {borderRadius: '0 0 8px 8px'};
+    } else {
+        style = {borderRadius: '0 0 0 0'};
+    }
+
+    if (props.cookies.get('newDesign') === "true")
+        style.background = 'linear-gradient(to right, rgba(255, 255, 255, 1) 65%, rgba(255, 255, 255, 0))';
+
     return (
         <div style={props.cookies.get('newDesign') === "true" ? {background: 'white url(' + coverUrl + ') no-repeat 100% 40%', backgroundSize: '35%'} : {}}
             onMouseDown={(e) => props.cookies.get('newDesign') === "true" ? props.navigate(e, generateUrl(props.issue, props.us)) : null}>
-            <ExpansionPanelSummary className="summary-sm" style={props.cookies.get('newDesign') === "true" ? {background: 'linear-gradient(to right, rgba(255, 255, 255, 1) 65%, rgba(255, 255, 255, 0))'} : {}}>
+            <ExpansionPanelSummary  className="summary-sm" style={style}>
                 <div style={{width: "100%"}}>
                     <div className="issueTitleContainerInner">
                         <Typography variant="subtitle1" className="issuePreviewTitle">{generateLabel(props.issue.series) + " #" + props.issue.number}</Typography>
@@ -68,8 +84,21 @@ export function IssuePreviewPlaceholderSmall(props) {
     let n = Math.floor(Math.random() * 6);
     let lengths = ["very long", "long", "medium", "short", "very short"];
 
+    let style;
+    if(props.idx === 0) {
+        if (props.isLast) {
+            style = {borderRadius: '8px 8px 8px 8px'};
+        } else {
+            style = {borderRadius: '8px 8px 0 0'};
+        }
+    } else if (props.isLast) {
+        style = {borderRadius: '0 0 8px 8px'};
+    } else {
+        style = {borderRadius: '0 0 0 0'};
+    }
+
     return (
-        <ExpansionPanelSummary className="summary-sm">
+        <ExpansionPanelSummary className="summary-sm" style={style}>
             <div className="ui placeholder issuePreviewHeaderPlaceholder">
                 <div className={lengths[n-1] + " line"}/>
                 <div className={lengths[n-1] + " line"}/>
