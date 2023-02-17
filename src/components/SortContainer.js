@@ -26,7 +26,7 @@ function SortContainer(props) {
                                     order: e.target.value,
                                     direction: props.query ? props.query.direction : null,
                                 })}>
-                        <MenuItem value={"updatedAt"}>?nderungsdatum</MenuItem>
+                        <MenuItem value={"updatedAt"}>Änderungsdatum</MenuItem>
                         <MenuItem value={"createdAt"}>Erfassungsdatum</MenuItem>
                         <MenuItem value={"releasedate"}>Erscheinungsdatum</MenuItem>
                         <MenuItem value={"series"}>Serie</MenuItem>
