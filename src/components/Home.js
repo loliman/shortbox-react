@@ -8,13 +8,6 @@ import QueryResult from "./generic/QueryResult";
 import {withContext} from "./generic";
 import IssuePreview, {IssuePreviewPlaceholder} from "./IssuePreview";
 import PaginatedQuery from "./generic/PaginatedQuery";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import {Divider, Select} from "@material-ui/core";
-import {generateUrl} from "../util/hierarchy";
-import IconButton from "@material-ui/core/IconButton";
-import {ArrowDownward, ArrowUpward} from "@material-ui/icons";
 import SortContainer from "./SortContainer";
 
 class Home extends React.Component {

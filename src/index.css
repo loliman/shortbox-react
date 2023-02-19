@@ -1839,3 +1839,7 @@ div div.ball {
 .tbchip {
     background-color: #ffb300 !important;
 }
+
+.mainIssue > div {
+    border: 2px solid indianred !important;
+}

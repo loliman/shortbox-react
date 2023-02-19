@@ -5,19 +5,13 @@ import Layout from "../Layout";
 import {Query} from "react-apollo";
 import QueryResult from "../generic/QueryResult";
 import {lastEdited, publisher} from "../../graphql/queries";
-import {generateLabel, generateUrl, getSelected} from "../../util/hierarchy";
+import {generateLabel, getSelected} from "../../util/hierarchy";
 import Typography from "@material-ui/core/es/Typography/Typography";
 import EditButton from "../restricted/EditButton";
 import withContext from "../generic/withContext";
 import IssuePreview, {IssuePreviewPlaceholder} from "../IssuePreview";
 import PaginatedQuery from "../generic/PaginatedQuery";
-import {Select} from "@material-ui/core";
 import IssuePreviewSmall, {IssuePreviewPlaceholderSmall} from "../IssuePreviewSmall";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import IconButton from "@material-ui/core/IconButton";
-import {ArrowDownward, ArrowUpward} from "@material-ui/icons";
 import SortContainer from "../SortContainer";
 
 class PublisherDetails extends React.Component {

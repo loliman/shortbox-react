@@ -495,14 +495,14 @@ function Variant(props) {
     let coverUrl = (props.variant.cover && props.variant.cover.url && props.variant.cover.url !== '') ? props.variant.cover.url : "/nocover_simple.jpg";
 
     return (
-        <GridListTile onMouseDown={(e) => props.navigate(e, props.to)} className="tile">
+        <GridListTile onMouseDown={(e) => props.navigate(e, props.to)} className={"tile " + (props.session && props.variant.stories.length > 0 ? "mainIssue" : "")}>
             <img src={coverUrl}
+                 style={{borderRadius: "5px"}}
                  alt={props.variant.variant + ' (' + props.variant.format + ')'}/>
-
 
             <GridListTileBar
                 title={<div style={{display: "flex", justifyContent: "space-between"}}>
-                    <div style={{alignSelf: "end", paddingLeft: "5px"}}>{props.variant.format + ' (' + (props.variant.variant ? props.variant.variant + ' Variant' : 'Reguläre Ausgabe') + ')'}</div>
+                    <div style={{alignSelf: "end", paddingLeft: "5px", textOverflow: "ellipsis", whiteSpace: "nowrap", overflow: "hidden"}}>{props.variant.format + ' (' + (props.variant.variant ? props.variant.variant + ' Variant' : 'Reguläre Ausgabe') + ')'}</div>
                     {props.variant.collected && props.session ? <img className="verifiedBadge" style={{justifySelf: 'end', marginTop: '0'}} src="/collected_badge.png"
                                                                      alt="gesammelt" height="25"/> : null}
                 </div>}

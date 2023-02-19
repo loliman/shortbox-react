@@ -1,7 +1,7 @@
 import React from 'react'
 import CardHeader from "@material-ui/core/CardHeader/CardHeader";
 import CardContent from "@material-ui/core/CardContent/CardContent";
-import {generateLabel, generateUrl} from "../../util/hierarchy";
+import {generateLabel} from "../../util/hierarchy";
 import Layout from "../Layout";
 import {Query} from "react-apollo";
 import QueryResult from "../generic/QueryResult";
@@ -11,13 +11,7 @@ import EditButton from "../restricted/EditButton";
 import IssuePreview, {IssuePreviewPlaceholder} from "../IssuePreview";
 import withContext from "../generic/withContext";
 import PaginatedQuery from "../generic/PaginatedQuery";
-import {Select} from "@material-ui/core";
 import IssuePreviewSmall, {IssuePreviewPlaceholderSmall} from "../IssuePreviewSmall";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import IconButton from "@material-ui/core/IconButton";
-import {ArrowDownward, ArrowUpward} from "@material-ui/icons";
 import SortContainer from "../SortContainer";
 
 class SeriesDetails extends React.Component {

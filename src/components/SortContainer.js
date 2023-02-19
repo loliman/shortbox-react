@@ -5,7 +5,7 @@ import {Divider, Select} from "@material-ui/core";
 import {generateUrl} from "../util/hierarchy";
 import MenuItem from "@material-ui/core/MenuItem";
 import IconButton from "@material-ui/core/IconButton";
-import {ArrowDownward, ArrowUpward, ExpandLess, ExpandMore} from "@material-ui/icons";
+import {ExpandLess, ExpandMore} from "@material-ui/icons";
 import React from "react";
 
 function SortContainer(props) {

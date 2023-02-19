@@ -635,6 +635,9 @@ issue { collected },
             },
         },
         variants {
+            stories {
+                number
+            },
             format,
             variant,
             number,
