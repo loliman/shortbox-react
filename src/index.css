@@ -1009,7 +1009,7 @@ _:-ms-fullscreen, :root #main {
 }
 
 .tile > div {
-    border-radius: 8px;
+    border-radius: 10px;
     border: 1px solid #f0f0f0 !important;
 }
 
@@ -1841,5 +1841,8 @@ div div.ball {
 }
 
 .mainIssue > div {
-    border: 2px solid indianred !important;
+    border: 3px solid indianred !important;
+}
+.selectedVariant > div {
+    border: 3px solid palegoldenrod !important;
 }

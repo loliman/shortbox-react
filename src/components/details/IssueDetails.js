@@ -483,8 +483,8 @@ function Variants(props) {
             <div className="coverGallery">
                 <GridList className="gridList" cols={2.5}>
                     {props.issue.variants.map((variant, idx) => {
-                            return (<Variant session={props.session} to={generateUrl(variant, props.us)} navigate={props.navigate}
-                                                           key={idx} variant={variant}/>);
+                            return (<Variant issue={props.issue} session={props.session} to={generateUrl(variant, props.us)}
+                                             navigate={props.navigate} key={idx} variant={variant}/>);
                     })}
                 </GridList>
             </div>
@@ -494,9 +494,14 @@ function Variants(props) {
 
 function Variant(props) {
     let coverUrl = (props.variant.cover && props.variant.cover.url && props.variant.cover.url !== '') ? props.variant.cover.url : "/nocover_simple.jpg";
+    let selected = props.issue.format === props.variant.format && props.issue.variant === props.variant.variant;
+    let mainIssue = props.session && props.variant.stories.length > 0;
 
     return (
-        <GridListTile onMouseDown={(e) => props.navigate(e, props.to)} className={"tile " + (props.session && props.variant.stories.length > 0 ? "mainIssue" : "")}>
+        <GridListTile onMouseDown={(e) => props.navigate(e, props.to)} className={"tile " +
+            (mainIssue && !selected ? "mainIssue" : "") +
+            (selected ? "selectedVariant" : "")
+        }>
             <img src={coverUrl}
                  style={{borderRadius: "5px"}}
                  alt={props.variant.variant + ' (' + props.variant.format + ')'}/>
