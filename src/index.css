@@ -1843,6 +1843,7 @@ div div.ball {
 .mainIssue > div {
     border: 3px solid indianred !important;
 }
-.selectedVariant > div {
-    border: 3px solid palegoldenrod !important;
+
+.selectedVariant {
+    font-weight: bold;
 }

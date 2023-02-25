@@ -499,8 +499,7 @@ function Variant(props) {
 
     return (
         <GridListTile onMouseDown={(e) => props.navigate(e, props.to)} className={"tile " +
-            (mainIssue && !selected ? "mainIssue" : "") +
-            (selected ? "selectedVariant" : "")
+            (mainIssue ? "mainIssue" : "")
         }>
             <img src={coverUrl}
                  style={{borderRadius: "5px"}}
@@ -508,7 +507,11 @@ function Variant(props) {
 
             <GridListTileBar
                 title={<div style={{display: "flex", justifyContent: "space-between"}}>
-                    <div style={{alignSelf: "end", paddingLeft: "5px", textOverflow: "ellipsis", whiteSpace: "nowrap", overflow: "hidden"}}>{props.variant.format + ' (' + (props.variant.variant ? props.variant.variant + ' Variant' : 'Reguläre Ausgabe') + ')'}</div>
+                    <div
+                        className={
+                            (selected ? "selectedVariant" : "")
+                        }
+                        style={{alignSelf: "end", paddingLeft: "5px", textOverflow: "ellipsis", whiteSpace: "nowrap", overflow: "hidden"}}>{props.variant.format + ' (' + (props.variant.variant ? props.variant.variant + ' Variant' : 'Reguläre Ausgabe') + ')'}</div>
                     {props.variant.collected && props.session ? <img className="verifiedBadge" style={{justifySelf: 'end', marginTop: '0'}} src="/collected_badge.png"
                                                                      alt="gesammelt" height="25"/> : null}
                 </div>}
