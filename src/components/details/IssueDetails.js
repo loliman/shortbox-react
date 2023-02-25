@@ -30,6 +30,7 @@ import GridListTile from "@material-ui/core/GridListTile/GridListTile";
 import GridListTileBar from "@material-ui/core/GridListTileBar/GridListTileBar";
 import EditButton from "../restricted/EditButton";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
+import TitleLine from "../generic/TitleLine";
 
 class IssueDetails extends React.Component {
     render() {
@@ -75,7 +76,7 @@ class IssueDetails extends React.Component {
                                     : null
                                 }
 
-                                <CardHeader title={generateLabel(issue)}
+                                <CardHeader title={<TitleLine title={generateLabel(data.issue)} id={data.issue.id} session={this.props.session}/>}
                                             subheader={this.props.subheader ? generateIssueSubHeader(issue) : ""}
                                             action={
                                                 <div>

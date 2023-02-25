@@ -139,6 +139,7 @@ export const lastEdited = gql`query LastEdited($filter: Filter, $offset: Int, $o
 
 const publisher = gql`query Publisher($publisher: PublisherInput!){
     publisher(publisher: $publisher) {
+    id, 
         name,
         us,
         startyear,
@@ -260,6 +261,7 @@ issue { collected },
 
 const seriesd = gql`query Seriesd($series: SeriesInput!){
     seriesd(series: $series) {
+        id, 
         title,
         volume,
         startyear,
@@ -382,6 +384,7 @@ issue { collected },
 
 const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
     issue(issue: $issue, edit: $edit) {
+    id,
         title,
         number,
         format,

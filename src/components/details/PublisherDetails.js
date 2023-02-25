@@ -13,6 +13,7 @@ import IssuePreview, {IssuePreviewPlaceholder} from "../IssuePreview";
 import PaginatedQuery from "../generic/PaginatedQuery";
 import IssuePreviewSmall, {IssuePreviewPlaceholderSmall} from "../IssuePreviewSmall";
 import SortContainer from "../SortContainer";
+import TitleLine from "../generic/TitleLine";
 
 class PublisherDetails extends React.Component {
     componentDidMount() {
@@ -76,7 +77,7 @@ class PublisherDetails extends React.Component {
                                     let first = data.publisher.issueCount === 1 ? (data.publisher.active ? "Bisher einziges " : "Einziges ") : "Erstes ";
                                     return (
                                         <React.Fragment>
-                                            <CardHeader title={generateLabel(data.publisher)}
+                                            <CardHeader title={<TitleLine title={generateLabel(data.publisher)} id={data.publisher.id} session={this.props.session}/>}
                                                         subheader={data.publisher.startyear + ' - ' + (data.publisher.active ? "heute" : data.publisher.endyear)}
                                                         action={<EditButton item={data.publisher}/>}/>
 

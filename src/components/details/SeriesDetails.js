@@ -13,6 +13,7 @@ import withContext from "../generic/withContext";
 import PaginatedQuery from "../generic/PaginatedQuery";
 import IssuePreviewSmall, {IssuePreviewPlaceholderSmall} from "../IssuePreviewSmall";
 import SortContainer from "../SortContainer";
+import TitleLine from "../generic/TitleLine";
 
 class SeriesDetails extends React.Component {
     componentDidMount() {
@@ -98,7 +99,7 @@ class SeriesDetails extends React.Component {
                                     let first = data.seriesd.issueCount === 1 ? (data.seriesd.active ? "Bisher einziges " : "Einziges ") : "Erstes ";
                                     return(
                                         <React.Fragment>
-                                            <CardHeader title={generateLabel(data.seriesd)}
+                                            <CardHeader title={<TitleLine title={generateLabel(data.seriesd)} id={data.seriesd.id} session={this.props.session}/>}
                                                         subheader={data.seriesd.startyear + ' - ' + (data.seriesd.active ? "heute" : data.seriesd.endyear)}
                                                         action={<EditButton item={data.seriesd}/>}/>
 
