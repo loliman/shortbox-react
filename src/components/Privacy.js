@@ -394,17 +394,6 @@ function Privacy(props) {
 
                 <br/>
 
-                <Typography variant="h6">Google Fonts</Typography>
-
-                <br/>
-
-                <Typography>Wir binden die Schriftarten ("Google Fonts") des Anbieters Google Ireland Limited, Gordon House, Barrow Street, Dublin 4, Irland, ein. Nach Angaben von Google werden die Daten der Nutzer allein zu Zwecken der Darstellung der Schriftarten im Browser der Nutzer verwendet. Die Einbindung erfolgt auf Grundlage unserer berechtigten Interessen an einer technisch sicheren, wartungsfreien und effizienten Nutzung von Schriftarten, deren einheitlicher Darstellung sowie Berücksichtigung möglicher lizenzrechtlicher Restriktionen für deren Einbindung. Datenschutzerklärung: <a
-                    target="_blank" rel="noopener noreferrer nofollow"
-                    href="https://www.google.com/policies/privacy/">https://www.google.com/policies/privacy/</a>.
-                </Typography>
-
-                <br/>
-
                 <Typography variant="h6">Google Analytics</Typography>
 
                 <br/>

@@ -2,18 +2,26 @@
 <html lang="en">
     <head>
         <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-149601722-1"></script>
         <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('set', 'anonymizeIp', true);
-            gtag('config', 'UA-149601722-1');
+            let cookiesAccepted = false;
+
+            let value = `; ${document.cookie}`;
+            let parts = value.split(`; ${'cookiesAccepted'}=`);
+            if (parts.length === 2) cookiesAccepted = parts.pop().split(';').shift();
+
+            if (cookiesAccepted === "true") {
+                document.head.insertAdjacentHTML('beforeend', "<script async src=\"https://www.googletagmanager.com/gtag/js?id=UA-149601722-1\" />");
+                document.head.insertAdjacentHTML('beforeend', "<script data-ad-client=\"ca-pub-9854393097103617\" async src=\"https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js\" />");
+
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('set', 'anonymizeIp', true);
+                gtag('config', 'UA-149601722-1');
+            }
         </script>
 
         <meta charset="utf-8"/>
-        <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
         <meta content="minimum-scale=1, width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport" />
         <meta content="#000000" name="theme-color"/>
@@ -37,8 +45,6 @@
         <meta content="./favicon/ms-icon-144x144.png" name="msapplication-TileImage">
 
         <title>Shortbox - Das deutsche Archiv für Marvel Comics</title>
-
-        <script data-ad-client="ca-pub-9854393097103617" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
     </head>
     <body>
         <noscript>
