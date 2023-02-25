@@ -22,24 +22,28 @@ function IssuePreviewSmall(props) {
 
     let coverUrl = (props.issue.cover && props.issue.cover.url && props.issue.cover.url !== '') ? props.issue.cover.url : "";
 
-    let style;
+    let style = {};
+    let outerStyle = {};
     if(props.idx === 0) {
         if (props.isLast) {
-            style = {borderRadius: '8px 8px 8px 8px'};
+            outerStyle = {borderRadius: '8px 8px 8px 8px'};
         } else {
-            style = {borderRadius: '8px 8px 0 0'};
+            outerStyle = {borderRadius: '8px 8px 0 0'};
         }
     } else if (props.isLast) {
-        style = {borderRadius: '0 0 8px 8px'};
+        outerStyle = {borderRadius: '0 0 8px 8px'};
     } else {
-        style = {borderRadius: '0 0 0 0'};
+        outerStyle = {borderRadius: '0 0 0 0'};
     }
 
-    if (props.cookies.get('newDesign') === "true")
+    if (props.cookies.get('newDesign') === "true") {
         style.background = 'linear-gradient(to right, rgba(255, 255, 255, 1) 65%, rgba(255, 255, 255, 0))';
+        outerStyle.background = 'white url(' + coverUrl + ') no-repeat 100% 40%';
+        outerStyle.backgroundSize = '35%';
+    }
 
     return (
-        <div style={props.cookies.get('newDesign') === "true" ? {background: 'white url(' + coverUrl + ') no-repeat 100% 40%', backgroundSize: '35%'} : {}}
+        <div style={outerStyle}
             onMouseDown={(e) => props.cookies.get('newDesign') === "true" ? props.navigate(e, generateUrl(props.issue, props.us)) : null}>
             <ExpansionPanelSummary  className="summary-sm" style={style}>
                 <div style={{width: "100%"}}>
