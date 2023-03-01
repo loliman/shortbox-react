@@ -25,6 +25,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import MenuItem from "@material-ui/core/MenuItem";
 import Tooltip from "@material-ui/core/Tooltip";
+import TitleLine from "../../generic/TitleLine";
 
 
 export const formats = ['Heft', 'Mini Heft', 'Magazin', 'Prestige', 'Softcover', 'Hardcover', 'Taschenbuch', 'Album',
@@ -311,10 +312,11 @@ class IssueEditor extends React.Component {
                         }}>
                         {({values, resetForm, submitForm, isSubmitting, setFieldValue}) => (
                             <Form>
-                                <CardHeader title={header}
+                                <CardHeader title={<TitleLine title={header} id={this.props.id} session={this.props.session}/>}
                                             action={
                                                 <FormControlLabel
                                                     className="switchEditor"
+                                                    style={{marginLeft: 0, marginTop: 0}}
                                                     control={
                                                         <Tooltip title={(values.series.publisher.us ? "Deutsche" : "US") + " Ausgabe"}>
                                                             <Switch

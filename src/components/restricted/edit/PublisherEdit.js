@@ -28,6 +28,7 @@ function PublisherEdit(props) {
 
                     return (
                         <PublisherEditor edit
+                                         id={data.publisher.id}
                                          mutation={editPublisher}
                                          defaultValues={defaultValues}
                         />

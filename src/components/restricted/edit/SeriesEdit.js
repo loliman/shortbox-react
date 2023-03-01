@@ -27,6 +27,7 @@ function SeriesEdit(props) {
 
                     return (
                         <SeriesEditor edit
+                                      id={data.seriesd.id}
                                       mutation={editSeries}
                                       defaultValues={defaultValues}
                         />

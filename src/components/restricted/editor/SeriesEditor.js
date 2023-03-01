@@ -15,6 +15,7 @@ import {addToCache, removeFromCache, updateInCache} from "./Editor";
 import Tooltip from "@material-ui/core/Tooltip";
 import Switch from "@material-ui/core/Switch";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
+import TitleLine from "../../generic/TitleLine";
 
 class SeriesEditor extends React.Component {
     constructor(props) {
@@ -132,10 +133,11 @@ class SeriesEditor extends React.Component {
                         {({values, resetForm, submitForm, isSubmitting, setFieldValue}) => {
                             return (
                                 <Form>
-                                    <CardHeader title={header}
+                                    <CardHeader title={<TitleLine title={header} id={this.props.id} session={this.props.session}/>}
                                                 action={
                                                     <FormControlLabel
                                                         className="switchEditor"
+                                                        style={{marginLeft: 0, marginTop: 0}}
                                                         control={
                                                             <Tooltip title={(defaultValues.publisher.us ? "Deutscher" : "US") + " Serie"}>
                                                                 <Switch

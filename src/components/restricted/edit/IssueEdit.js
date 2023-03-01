@@ -116,7 +116,8 @@ function IssueEdit(props) {
                     defaultValues.covers = oldCovers;
 
                     return (
-                        <IssueEditor edit
+                        <IssueEditor id={data.issue.id}
+                                     edit
                                      mutation={editIssue}
                                      defaultValues={defaultValues}
                         />
