@@ -51,7 +51,10 @@ function Filter(props) {
             noPrint: false,
             onlyCollected: false,
             onlyNotCollected: false,
-            sellable: false
+            sellable: false,
+            noCover: false,
+            noContent: false,
+            and: false
         };
     else {
         if (!defaultValues.formats)
@@ -106,6 +109,12 @@ function Filter(props) {
             defaultValues.onlyNotCollected = false;
         if (!defaultValues.sellable)
             defaultValues.sellable = false;
+        if (!defaultValues.noCover)
+            defaultValues.noCover = false;
+        if (!defaultValues.noContent)
+            defaultValues.noContent = false;
+        if (!defaultValues.and)
+            defaultValues.and = false;
     }
 
     return (
@@ -191,6 +200,12 @@ function Filter(props) {
                         v.onlyNotCollected = true;
                     if (values.sellable)
                         v.sellable = true;
+                    if (values.noCover)
+                        v.noCover = true;
+                    if (values.noContent)
+                        v.noContent = true;
+                    if (values.and)
+                        v.and = true;
 
                     if (JSON.stringify(v) !== "{}") {
                         v.us = us;
@@ -286,7 +301,46 @@ function Filter(props) {
                                     })
                                 }
 
+                                <br />
 
+                                <FormControlLabel
+                                    className="switchEditor"
+                                    control={
+                                        <Switch
+                                            checked={values.and}
+                                            onChange={() => {
+                                            setFieldValue("and", !values.and);
+                                        }}
+                                            color="secondary"/>
+                                    }
+                                    label="Alle Kriterien müssen erfüllt sein"
+                                />
+
+                                <FormControlLabel
+                                    className="switchEditor"
+                                    control={
+                                    <Switch
+                                        checked={values.noCover}
+                                        onChange={() => {
+                                        setFieldValue("noCover", !values.noCover);
+                                    }}
+                                        color="secondary"/>
+                                }
+                                    label="Ohne Cover"
+                                />
+
+                                <FormControlLabel
+                                    className="switchEditor"
+                                    control={
+                                        <Switch
+                                            checked={values.noContent}
+                                            onChange={() => {
+                                            setFieldValue("noContent", !values.noContent);
+                                        }}
+                                            color="secondary"/>
+                                    }
+                                    label="Ohne Inhalt"
+                                />
 
                                 {props.session ? <React.Fragment> <br /><FormControlLabel
                                     className="switchEditor"
@@ -713,7 +767,10 @@ function Filter(props) {
                                                     onlyOnePrint: false,
                                                     onlyCollected: false,
                                                     onlyNotCollected: false,
-                                                    sellable: false
+                                                    sellable: false,
+                                                    noCover: false,
+                                                    noContent: false,
+                                                    and: false
                                                 });
                                             }}
                                             color="secondary">
