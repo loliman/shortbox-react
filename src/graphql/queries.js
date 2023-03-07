@@ -51,7 +51,6 @@ const issues = gql`query Issues($pattern: String, $series: SeriesInput!, $filter
             }
         },
         format,
-        variant,
         variants {
             collected,
             variant
