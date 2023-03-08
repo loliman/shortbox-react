@@ -833,7 +833,7 @@ export function toShortboxDate(date) {
 export function toIsbn13(isbn) {
     let result = isbn;
     if(isbn.length < 13) {
-        result = convISBN13toISBN10(isbn);
+        result = convISBN10toISBN13(isbn);
     }
 
     return result.substring(0, 3) + "-" + result.substring(3, 4) + "-" + result.substring(4, 9) + "-" + result.substring(9, 12) + "-" + result.substring(12, 13)
