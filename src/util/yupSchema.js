@@ -80,6 +80,8 @@ export const IssueSchema = Yup.object().shape({
         .max(255, 'Maximal 255 Zeichen'),
     format: Yup.string()
         .max(255, 'Maximal 255 Zeichen'),
+    isbn: Yup.string()
+        .test('len', 'Die ISBN muss entweder 10 oder 13 Zeichen lang sein', val => val.length === 10 || val.length === 13),
     variant: Yup.string()
         .max(255, 'Maximal 255 Zeichen'),
     limitation: Yup.number("Bitte geben Sie eine Zahl ein")

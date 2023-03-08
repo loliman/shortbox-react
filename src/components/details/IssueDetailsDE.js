@@ -6,12 +6,12 @@ import IssueDetails, {
     Contains,
     ContainsTitleDetailed,
     DetailsRow,
-    IndividualList, toChipList, toShortboxDate
+    IndividualList, toChipList, toIsbn10, toIsbn13, toShortboxDate
 } from "./IssueDetails";
 import Chip from "@material-ui/core/Chip";
 import {generateLabel} from "../../util/hierarchy";
 
-var dateFormat = require('dateformat');
+const dateFormat = require('dateformat');
 
 function IssueDetailsDE(props) {
     return <IssueDetails bottom={<Bottom {...props}/>}
@@ -44,6 +44,18 @@ function Details(props) {
                 props.issue.price && props.issue.price > 0 ?
                     <DetailsRow key="price" label="Preis"
                                 value={props.issue.price + ' ' + props.issue.currency}/> :
+                    null
+            }
+
+            {
+                props.issue.isbn && props.issue.isbn !== "" ?
+                    <React.Fragment>
+                        <DetailsRow key="isbn10" label="ISBN-10"
+                                    value={toIsbn10(props.issue.isbn)}/>
+
+                        <DetailsRow key="isbn13" label="ISBN-13"
+                                    value={toIsbn13(props.issue.isbn)}/>
+                    </React.Fragment> :
                     null
             }
         </React.Fragment>

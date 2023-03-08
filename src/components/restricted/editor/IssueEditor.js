@@ -60,6 +60,7 @@ class IssueEditor extends React.Component {
                 individuals: [],
                 addinfo: '',
                 comicguideid: 0,
+                isbn: '',
                 stories: [],
                 features: [],
                 covers: []
@@ -197,6 +198,7 @@ class IssueEditor extends React.Component {
                                 variables.item.limitation = undefined;
                                 variables.item.pages = undefined;
                                 variables.item.comicguideid = undefined;
+                                variables.item.isbn = undefined;
                                 variables.item.price = undefined;
                                 variables.item.currency = undefined;
                             }
@@ -609,6 +611,20 @@ class IssueEditor extends React.Component {
                                                     name="comicguideid"
                                                     label="Comicguide ID"
                                                     type="number"
+                                                    component={TextField}
+                                                />
+                                            </React.Fragment> : null
+                                    }
+
+                                    {
+                                        !values.series.publisher.us ?
+                                            <React.Fragment>
+                                                <br />
+                                                <FastField
+                                                    className={this.props.desktop ? "field field35" : "field field100"}
+                                                    name="isbn"
+                                                    label="ISBN"
+                                                    type="string"
                                                     component={TextField}
                                                 />
                                             </React.Fragment> : null

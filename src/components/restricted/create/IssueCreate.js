@@ -22,6 +22,7 @@ function IssueCreate(props) {
         individuals: [],
         addinfo: '',
         comicguideid: 0,
+        isbn: '',
         stories: [],
         features: [],
         covers: []

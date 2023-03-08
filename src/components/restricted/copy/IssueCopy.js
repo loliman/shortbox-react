@@ -22,6 +22,8 @@ function IssueCopy(props) {
                     let defaultValues = JSON.parse(JSON.stringify(data.issue));
 
                     defaultValues.variants = undefined;
+                    defaultValues.variant = '';
+                    defaultValues.isbn = '';
                     defaultValues.verified = undefined;
                     defaultValues.collected = undefined;
                     defaultValues.createdAt = undefined;

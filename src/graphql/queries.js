@@ -385,6 +385,7 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
     issue(issue: $issue, edit: $edit) {
     id,
         title,
+        isbn,
         number,
         format,
         limitation,

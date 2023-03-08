@@ -825,5 +825,78 @@ export function toShortboxDate(date) {
     return date;
 }
 
+/* convISBN.js : converter ISBN10 <-> ISBN13                 */
+/*   Copyright (c) 2007 by H.Tsujimura  <tsupo@na.rim.or.jp> */
+/*   Distributed by LGPL.                                    */
+/*      this script written by H.Tsujimura  20 Jan 2007      */
+
+export function toIsbn13(isbn) {
+    let result = isbn;
+    if(isbn.length < 13) {
+        result = convISBN13toISBN10(isbn);
+    }
+
+    return result.substring(0, 3) + "-" + result.substring(3, 4) + "-" + result.substring(4, 9) + "-" + result.substring(9, 12) + "-" + result.substring(12, 13)
+
+}
+
+export function toIsbn10(isbn) {
+    let result = isbn;
+    if(isbn.length >= 13) {
+        result = convISBN13toISBN10(isbn);
+    }
+
+    return result.substring(0, 1) + "-" + result.substring(1, 6) + "-" + result.substring(6, 9) + "-" + result.substring(9, 10)
+}
+
+function convISBN13toISBN10(str) {
+    let s;
+    let c;
+    let checkDigit = 0;
+    let result = "";
+
+    s = str.substring(3, str.length);
+    for ( let i = 10; i > 1; i-- ) {
+        c = s.charAt(10 - i);
+        checkDigit += (c - 0) * i;
+        result += c;
+    }
+    checkDigit = (11 - (checkDigit % 11)) % 11;
+    result += checkDigit === 10 ? 'X' : (checkDigit + "");
+
+    return result;
+}
+
+function convISBN10toISBN13(str) {
+    let c;
+    let checkDigit = 0;
+    let result = "";
+
+    c = '9';
+    result += c;
+    checkDigit += (c - 0);
+
+    c = '7';
+    result += c;
+    checkDigit += (c - 0) * 3;
+
+    c = '8';
+    result += c;
+    checkDigit += (c - 0);
+
+    for ( let i = 0; i < 9; i++ ) {  // >
+        c = str.charAt(i);
+        if ( i % 2 === 0 )
+            checkDigit += (c - 0) * 3;
+        else
+            checkDigit += (c - 0);
+        result += c;
+    }
+    checkDigit = (10 - (checkDigit % 10)) % 10;
+    result += (checkDigit + "");
+
+    return result;
+}
+
 export default withContext(IssueDetails);
 
