@@ -383,7 +383,7 @@ issue { collected },
 
 const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
     issue(issue: $issue, edit: $edit) {
-    id,
+        id,
         title,
         isbn,
         number,
@@ -431,6 +431,9 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                 number,
                 addinfo,
                 issue {
+                    cover {
+                        url
+                    },
                     number,
                     series {
                         title,
@@ -448,11 +451,16 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                 }
             },
             children {
-                issue { collected },
+                issue { 
+                    collected 
+                },
                 part,
                 number,
                 parent {
                     issue {
+                        cover {
+                            url
+                        },
                         number,
                         series {
                             title,
@@ -471,6 +479,9 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                 addinfo,
                 part,
                 issue {
+                    cover {
+                        url
+                    },
                     number,
                     title,
                     series {
@@ -483,7 +494,6 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
 							us
                         }
                     },
-                    format,
                     variant,
                     collected
                 }
@@ -501,6 +511,9 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                 title,
                 number,
                 issue {
+                    cover {
+                        url
+                    },
                     number,
                     series {
                         title,
@@ -518,11 +531,15 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
             parent {
                 title,
                 number,
-                collectedmultipletimes, collected, ,
+                collectedmultipletimes, 
+                collected,
                 reprintOf {
                     title,
                     number,
                     issue {
+                        cover {
+                            url
+                        },
                         number,
                         series {
                             title,
@@ -538,6 +555,9 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                     },
                 },  
                 issue {
+                    cover {
+                        url
+                    },
                     number,
                     series {
                         title,
@@ -554,7 +574,9 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                     stories {
                         number,
                         children {
-issue { collected },
+                            issue { 
+                                collected 
+                            },
                             number
                         }  
                     },
@@ -579,7 +601,8 @@ issue { collected },
             otheronlytb,
             onlytb,
             onlyoneprint,
-collectedmultipletimes, collected, ,
+            collectedmultipletimes, 
+            collected,
             exclusive
         },
         covers {
@@ -587,10 +610,18 @@ collectedmultipletimes, collected, ,
             addinfo,
             number,
             children {
-issue { collected },
+                issue {
+                    cover {
+                        url
+                    }, 
+                    collected 
+                },
                 number,
                 addinfo,
                 issue {
+                    cover {
+                        url
+                    },
                     number,
                     format,
                     variant,
@@ -609,6 +640,9 @@ issue { collected },
             },
             parent {
                 issue {
+                    cover {
+                        url
+                    },
                     variant,
                     format,
                     number,

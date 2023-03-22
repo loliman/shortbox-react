@@ -68,7 +68,10 @@ function IssuePreviewSmall(props) {
                     props.cookies.get('newDesign') === "true"
                         ? null
                         : <div style={{paddingRight: "0", paddingTop: "2px"}}>
-                            <Tooltip title="Zur Ausgabe">
+                            <Tooltip style={{margin: "1px"}} title={
+                                <img style={{paddingTop: "5px", borderRadius: "3px"}}
+                                     src={props.issue.cover ? props.issue.cover.url : "/nocover.jpg"} width="65px" alt="Zur Ausgabe"/>
+                            }>
                                 <IconButton className="detailsIcon"
                                     style={{marginLef: '5px', background: 'rgba(255, 255, 255, 0.75)'}}
                                     onMouseDown={(e) => props.navigate(e, generateUrl(props.issue, props.us))}

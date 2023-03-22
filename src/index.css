@@ -428,7 +428,6 @@ _:-ms-fullscreen, :root #main {
 
 .detailsPaper {
     margin-top: 10px !important;
-    width: 45vh !important;
     flex-shrink: 0;
     margin-right: -3px !important;
     border: 1px solid #f0f0f0 !important;
@@ -566,10 +565,6 @@ _:-ms-fullscreen, :root #main {
         height: 64px !important;
     }
 
-    .detailsPaper {
-        max-width: 39vh;
-    }
-
     .addinfo {
         margin-top: -7px;
         width: 39vh !important;
@@ -577,8 +572,8 @@ _:-ms-fullscreen, :root #main {
     }
 
     .media {
-        height: 30vh !important;
-        width: 32.5vh !important;
+        height: 43vh !important;
+        width: 35.5vh !important;
     }
 
     .storyAdd > :first-child {
@@ -630,8 +625,8 @@ _:-ms-fullscreen, :root #main {
     }
 
     .media {
-        height: 35vh !important;
-        width: 32.5vh !important;
+        height: 80vh !important;
+        width: 70.5vh !important;
     }
 
     .storyAdd > :first-child {
@@ -662,12 +657,8 @@ _:-ms-fullscreen, :root #main {
     }
 
     .media {
-        height: 53vh !important;
-        width: 32.5vh !important;
-    }
-
-    .detailsPaper {
-        max-width: 94vh;
+        height: 80vh !important;
+        width: 70.5vh !important;
     }
 
     .addinfo {
@@ -1031,6 +1022,10 @@ _:-ms-fullscreen, :root #main {
     margin-right: 5px;
 }
 
+.table td {
+    padding: 4px 25px 4px 24px !important;
+}
+
 .table {
     align-self: center !important;
     text-overflow: ellipsis;
@@ -1038,8 +1033,8 @@ _:-ms-fullscreen, :root #main {
     overflow: hidden;
 }
 
-.table td {
-    max-width: 50vw !important;
+.detailsPaperPreview {
+    min-width: 40vh !important;
 }
 
 .media {
@@ -1075,6 +1070,10 @@ _:-ms-fullscreen, :root #main {
 
 .stories {
     width: 100%;
+}
+
+.story:before {
+ height: 0 !important;
 }
 
 .story {

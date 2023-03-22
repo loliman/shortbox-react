@@ -136,7 +136,10 @@ function StoryDetails(props) {
                                     {generateLabel(props.item.reprintOf.issue.series.publisher)}
                                 </Typography>
                             </div>
-                            <Tooltip title="Zur Ausgabe">
+                            <Tooltip style={{margin: "1px"}} title={
+                                <img style={{paddingTop: "5px", borderRadius: "3px"}}
+                                     src={props.item.reprintOf.issue.cover ? props.item.reprintOf.issue.cover.url : "/nocover.jpg"} width="65px" alt="Zur Ausgabe"/>
+                            }>
                                 <IconButton className="detailsIcon issueStoryIssueButton"
                                             onMouseDown={(e) => props.navigate(e, generateUrl(props.item.reprintOf.issue, true), {expand: props.item.reprintOf.number, filter: null})}
                                             aria-label="Details">
@@ -174,7 +177,10 @@ function StoryDetails(props) {
                                                 {generateLabel(child.issue.series.publisher)}
                                             </Typography>
                                         </div>
-                                        <Tooltip title="Zur Ausgabe">
+                                        <Tooltip style={{padding: "1px"}} title={
+                                            <img style={{paddingTop: "5px", borderRadius: "3px"}}
+                                                 src={child.issue.cover ? child.issue.cover.url : "/nocover.jpg"} width="65px" alt="Zur Ausgabe"/>
+                                        }>
                                             <IconButton className="detailsIcon issueStoryIssueButton"
                                                         onMouseDown={(e) => props.navigate(e, generateUrl(child.issue, true), {expand: child.number, filter: null})}
                                                         aria-label="Details">
@@ -229,9 +235,15 @@ function StoryDetails(props) {
                                             && child.parent.issue.series.title === props.issue.series.title
                                             && child.parent.issue.series.volume === props.issue.series.volume
                                                 ? null
-                                                : <Typography className="parentTitle" onMouseDown={(e) => props.navigate(e, generateUrl(child.parent.issue, true), {expand: child.parent.number, filter: null})}>Als
-                                                    <span className="asLink">{generateLabel(child.parent.issue.series) + " #" + child.parent.issue.number}</span>
-                                                  </Typography>
+                                                :
+                                                <Tooltip style={{margin: "1px"}} title={
+                                                    <img style={{paddingTop: "5px", borderRadius: "3px"}}
+                                                         src={child.parent.issue.cover ? child.parent.issue.cover.url : "/nocover.jpg"} width="65px" alt="Zur Ausgabe"/>
+                                                }>
+                                                    <Typography className="parentTitle" onMouseDown={(e) => props.navigate(e, generateUrl(child.parent.issue, true), {expand: child.parent.number, filter: null})}>Als
+                                                        <span className="asLink">{generateLabel(child.parent.issue.series) + " #" + child.parent.issue.number}</span>
+                                                    </Typography>
+                                                </Tooltip>
                                         }
 
                                         {addinfoText !== "" ? <Typography className="parentTitle">{addinfoText}</Typography> : null}
@@ -243,7 +255,10 @@ function StoryDetails(props) {
                                                                           alt="gesammelt"/> : null
                                         }
 
-                                        <Tooltip title="Zur Ausgabe">
+                                        <Tooltip style={{margin: "1px"}} title={
+                                            <img style={{paddingTop: "5px", borderRadius: "3px"}}
+                                                 src={child.issue.cover ? child.issue.cover.url : "/nocover.jpg"} width="65px" alt="Zur Ausgabe"/>
+                                        }>
                                             <IconButton className="detailsIcon issueStoryIssueButton"
                                                 onMouseDown={(e) => props.navigate(e, generateUrl(child.issue), {expand: child.number, filter: null})}
                                                         aria-label="Details">

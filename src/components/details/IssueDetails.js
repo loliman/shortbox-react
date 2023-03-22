@@ -345,6 +345,7 @@ export function ContainsTitleSimple(props) {
 }
 
 export function ContainsTitleDetailed(props) {
+
     let issue = props.item.parent ? props.item.parent.issue : props.item;
     if(issue && issue.issue) {
         issue.number = issue.issue.number;
@@ -387,8 +388,15 @@ export function ContainsTitleDetailed(props) {
                 </div>
 
                 {props.item.parent && props.item.parent.reprintOf
-                    ? <Typography className="parentTitle" onMouseDown={(e) => props.navigate(e, generateUrl(props.item.parent.reprintOf.issue, true), {expand: props.item.parent.reprintOf.number, filter: null})}>Original erschienen als
+                    ?
+
+                    <Tooltip style={{margin: "1px"}} title={
+                        <img style={{paddingTop: "5px", borderRadius: "3px"}}
+                             src={props.item.parent.reprintOf.issue.cover ? props.item.parent.reprintOf.issue.cover.url : "/nocover.jpg"} width="65px" alt="Zur Ausgabe"/>
+                    }>
+                        <Typography className="parentTitle" onMouseDown={(e) => props.navigate(e, generateUrl(props.item.parent.reprintOf.issue, true), {expand: props.item.parent.reprintOf.number, filter: null})}>Original erschienen als
                         <span className="asLink">{generateLabel(props.item.parent.reprintOf.issue)}</span></Typography>
+                    </Tooltip>
                     : null}
 
                 <Typography className="heading headingAddInfo">
@@ -457,9 +465,15 @@ export function ContainsTitleDetailed(props) {
                         : null
                 }
 
-                { !exclusive ? <Tooltip title="Zur Ausgabe">
+                { !exclusive ? <Tooltip title={
+                        <img style={{paddingTop: "5px", borderRadius: "3px"}}
+                             src={issue.cover ? issue.cover.url : "/nocover.jpg"} width="65px" alt="Zur Ausgabe"/>
+                    }>
                     <IconButton className="detailsIcon"
-                        onMouseDown={(e) => props.navigate(e, exclusive ? "" : generateUrl(issue, !props.us), {expand:  props.item.parent.number, filter: null})}
+                        onMouseDown={(e) => {
+                            e.stopPropagation();
+                            props.navigate(e, exclusive ? "" : generateUrl(issue, !props.us), {filter: null});
+                        }}
                                 aria-label="Details"
                                 disabled={exclusive}>
                         <SearchIcon fontSize="small"/>
@@ -716,7 +730,7 @@ function IssueDetailsPreview() {
 
             <CardContent>
                 <div className={"details"}>
-                    <Paper className="detailsPaper">
+                    <Paper className="detailsPaper detailsPaperPreview">
                         <Table className="table">
                             <TableBody>
                                 <TableRow>
