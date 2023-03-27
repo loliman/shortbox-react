@@ -19,7 +19,8 @@ import Button from "@material-ui/core/Button/Button";
 import {createUploadLink} from "apollo-upload-client";
 
 const uploadLink = createUploadLink({
-    uri: 'http://localhost:4000'
+    uri: 'https://api.shortbox.de'
+    //uri: 'http://localhost:4000'
 });
 
 const authLink = setContext((_, {headers}) => {

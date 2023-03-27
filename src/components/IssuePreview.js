@@ -10,6 +10,8 @@ import PriorityHighIcon from "@material-ui/icons/PriorityHigh";
 import CardMedia from "@material-ui/core/CardMedia/CardMedia";
 
 function IssuePreview(props) {
+    console.log(props);
+
     let date = props.issue.updatedAt.split(" ")[0];
     if(date === today()) date = "heute";
     else date = "am " + date;
@@ -21,7 +23,23 @@ function IssuePreview(props) {
             variant += " (" + props.issue.variant + ' Variant)';
     }
 
-    let coverUrl = (props.issue.cover && props.issue.cover.url && props.issue.cover.url !== '') ? props.issue.cover.url : props.cookies.get('newDesign') === "true" ? "" : "/nocover.jpg";
+    let coverUrl;
+    let blurCover = false;
+
+    if(props.issue.cover && props.issue.cover.url && props.issue.cover.url !== '') {
+        coverUrl = props.issue.cover.url;
+    } else if (!props.us
+        && props.issue.covers.length > 0
+        && props.issue.covers[0].parent
+        && props.issue.covers[0].parent.issue
+        && props.issue.covers[0].parent.issue.cover
+        && props.issue.covers[0].parent.issue.cover.url) {
+        blurCover = true;
+        coverUrl = props.issue.covers[0].parent.issue.cover.url;
+    } else {
+        coverUrl = props.cookies.get('newDesign') === "true" ? "" : "/nocover.jpg";
+    }
+
     let smallChip = props.mobile || props.mobileLandscape || ((props.tablet || props.tabletLandscape) && props.drawerOpen);
 
     let collected = !!props.issue.collected;
@@ -55,11 +73,13 @@ function IssuePreview(props) {
         <Card className="issuePreview"
               style={props.cookies.get('newDesign') === "true" ? {background: 'white url(' + coverUrl + ') no-repeat 100% 50%', backgroundSize: '75%'} : {}}
               onMouseDown={(e) => props.navigate(e, generateUrl(props.issue, props.us))}>
-            <div style={props.cookies.get('newDesign') === "true" ? {background: 'linear-gradient(to right, rgba(255, 255, 255, 1) 30%, rgba(255, 255, 255, 0))'} : {}}>
+            <div className={blurCover ? "blurred" : ""} style={props.cookies.get('newDesign') === "true" ? {background: 'linear-gradient(to right, rgba(255, 255, 255, 1) 30%, rgba(255, 255, 255, 0))'} : {}}>
                 {   props.cookies.get('newDesign') !== "true"
                     ? <CardMedia
                         image={coverUrl}
-                        style={{float: "left", width: '91px', height: '141px', margin: '5px', marginRight: '20px', border: '1px solid #f0f0f0', borderRadius: '3px'}}/>
+                        style={{float: "left", width: '91px', height: '141px', margin: '5px', marginRight: '20px', border: '1px solid #f0f0f0', borderRadius: '3px'}}>
+                        <div className={blurCover ? "blurred" : ""} />
+                    </CardMedia>
                     : null
                 }
 

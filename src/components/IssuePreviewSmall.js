@@ -4,9 +4,7 @@ import Typography from "@material-ui/core/Typography";
 import {withContext} from "./generic";
 import React from "react";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary/ExpansionPanelSummary";
-import Tooltip from "@material-ui/core/es/Tooltip/Tooltip";
-import IconButton from "@material-ui/core/IconButton/IconButton";
-import SearchIcon from "@material-ui/icons/Search";
+import CoverTooltip from "./CoverTooltip";
 
 function IssuePreviewSmall(props) {
     let date = props.issue.updatedAt.split(" ")[0];
@@ -20,7 +18,22 @@ function IssuePreviewSmall(props) {
             variant += " (" + props.issue.variant + ' Variant)';
     }
 
-    let coverUrl = (props.issue.cover && props.issue.cover.url && props.issue.cover.url !== '') ? props.issue.cover.url : "";
+    let coverUrl;
+    let blurCover = false;
+
+    if(props.issue.cover && props.issue.cover.url && props.issue.cover.url !== '') {
+        coverUrl = props.issue.cover.url;
+    } else if (!props.us
+        && props.issue.covers.length > 0
+        && props.issue.covers[0].parent
+        && props.issue.covers[0].parent.issue
+        && props.issue.covers[0].parent.issue.cover
+        && props.issue.covers[0].parent.issue.cover.url) {
+        blurCover = true;
+        coverUrl = props.issue.covers[0].parent.issue.cover.url;
+    } else {
+        coverUrl = props.cookies.get('newDesign') === "true" ? "" : "/nocover.jpg";
+    }
 
     let style = {};
     let outerStyle = {};
@@ -45,7 +58,7 @@ function IssuePreviewSmall(props) {
     return (
         <div style={outerStyle}
             onMouseDown={(e) => props.cookies.get('newDesign') === "true" ? props.navigate(e, generateUrl(props.issue, props.us)) : null}>
-            <ExpansionPanelSummary  className="summary-sm" style={style}>
+            <ExpansionPanelSummary  className={"summary-sm " + (blurCover ? "blurred" : "")} style={style}>
                 <div style={{width: "100%"}}>
                     <div className="issueTitleContainerInner">
                         <Typography variant="subtitle1" className="issuePreviewTitle">{generateLabel(props.issue.series) + " #" + props.issue.number}</Typography>
@@ -68,17 +81,7 @@ function IssuePreviewSmall(props) {
                     props.cookies.get('newDesign') === "true"
                         ? null
                         : <div style={{paddingRight: "0", paddingTop: "2px"}}>
-                            <Tooltip style={{margin: "1px"}} title={
-                                <img style={{paddingTop: "5px", borderRadius: "3px"}}
-                                     src={props.issue.cover ? props.issue.cover.url : "/nocover.jpg"} width="65px" alt="Zur Ausgabe"/>
-                            }>
-                                <IconButton className="detailsIcon"
-                                    style={{marginLef: '5px', background: 'rgba(255, 255, 255, 0.75)'}}
-                                    onMouseDown={(e) => props.navigate(e, generateUrl(props.issue, props.us))}
-                                    aria-label="Details">
-                                    <SearchIcon fontSize="small"/>
-                                </IconButton>
-                            </Tooltip>
+                            <CoverTooltip issue={props.issue} us={props.us} filter={props.filter} />
                         </div>
 
                 }

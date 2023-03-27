@@ -21,9 +21,6 @@ import {generateIssueSubHeader, generateItemTitle} from "../../util/issues";
 import Typography from "@material-ui/core/es/Typography/Typography";
 import Chip from "@material-ui/core/Chip/Chip";
 import PriorityHighIcon from "@material-ui/icons/PriorityHigh";
-import SearchIcon from "@material-ui/icons/Search";
-import Tooltip from "@material-ui/core/es/Tooltip/Tooltip";
-import IconButton from "@material-ui/core/IconButton/IconButton";
 import {generateLabel, generateUrl} from "../../util/hierarchy";
 import GridList from "@material-ui/core/GridList/GridList";
 import GridListTile from "@material-ui/core/GridListTile/GridListTile";
@@ -31,6 +28,7 @@ import GridListTileBar from "@material-ui/core/GridListTileBar/GridListTileBar";
 import EditButton from "../restricted/EditButton";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
 import TitleLine from "../generic/TitleLine";
+import CoverTooltip from "../CoverTooltip";
 
 class IssueDetails extends React.Component {
     render() {
@@ -76,6 +74,12 @@ class IssueDetails extends React.Component {
                                     : null
                                 }
 
+                                {
+                                    /*!us && !issue.cover && issue.covers && issue.covers.length > 0
+                                        ? <SnackbarContent id="noCoverWarning" message="Vom Cover dieser Ausgabe existiert noch kein Scan, weshalb stattdessen ein Platzhalter des US Covers angezeigt wird."  />
+                                        : null*/
+                                }
+
                                 <CardHeader title={<TitleLine title={generateLabel(data.issue)} id={data.issue.id} session={this.props.session}/>}
                                             subheader={this.props.subheader ? generateIssueSubHeader(issue) : ""}
                                             action={
@@ -92,12 +96,12 @@ class IssueDetails extends React.Component {
 
                                 <CardContent className="cardContent">
 
-                                    <Variants us={us} issue={data.issue} session={this.props.session} navigate={this.props.navigate}/>
+                                <Variants us={us} issue={data.issue} session={this.props.session} navigate={this.props.navigate}/>
 
                                 <div className={"detailsWrapper"}>
                                     <div className="details">
                                         <DetailsTable issue={issue} details={this.props.details} navigate={this.props.navigate} us={us}/>
-                                        <Cover issue={issue}/>
+                                        <Cover us={us} issue={issue}/>
                                     </div>
 
                                     {
@@ -189,18 +193,35 @@ class Cover extends React.Component {
     }
 
     render() {
-        const {issue} = this.props;
+        const {issue, us} = this.props;
 
-        let coverUrl = (issue.cover && issue.cover.url && issue.cover.url !== '') ? issue.cover.url : "/nocover.jpg";
+        let coverUrl;
+        let blurCover = false;
+
+        if(issue.cover && issue.cover.url && issue.cover.url !== '') {
+            coverUrl = issue.cover.url;
+        } else if (!us
+            && issue.covers.length > 0
+            && issue.covers[0].parent
+            && issue.covers[0].parent.issue
+            && issue.covers[0].parent.issue.cover
+            && issue.covers[0].parent.issue.cover.url) {
+            blurCover = true;
+            coverUrl = issue.covers[0].parent.issue.cover.url;
+        } else {
+            coverUrl = "/nocover.jpg";
+        }
 
         return (
             <React.Fragment>
                 <CardMedia
                     image={coverUrl}
                     title={generateLabel(issue)}
-                    className="media"
-                    style={{width: '45vh'}}
-                    onMouseDown={(e) => this.triggerIsOpen()}/>
+                    className={"media"}
+                    style={{height: '45vh', top: 0, left: 0}}
+                    onMouseDown={(e) => this.triggerIsOpen()}>
+                    <div className={blurCover ? "blurred" : ""} />
+                </CardMedia>
 
                 <Lightbox
                     showImageCount={false}
@@ -388,15 +409,7 @@ export function ContainsTitleDetailed(props) {
                 </div>
 
                 {props.item.parent && props.item.parent.reprintOf
-                    ?
-
-                    <Tooltip style={{margin: "1px"}} title={
-                        <img style={{paddingTop: "5px", borderRadius: "3px"}}
-                             src={props.item.parent.reprintOf.issue.cover ? props.item.parent.reprintOf.issue.cover.url : "/nocover.jpg"} width="65px" alt="Zur Ausgabe"/>
-                    }>
-                        <Typography className="parentTitle" onMouseDown={(e) => props.navigate(e, generateUrl(props.item.parent.reprintOf.issue, true), {expand: props.item.parent.reprintOf.number, filter: null})}>Original erschienen als
-                        <span className="asLink">{generateLabel(props.item.parent.reprintOf.issue)}</span></Typography>
-                    </Tooltip>
+                    ? <CoverTooltip issue={props.item.parent.reprintOf.issue} us={props.us} number={props.item.parent.reprintOf.number} />
                     : null}
 
                 <Typography className="heading headingAddInfo">
@@ -424,7 +437,7 @@ export function ContainsTitleDetailed(props) {
                 }
 
                 {
-                    !props.isCover && props.item.firstapp && props.item.parent ?
+                    !props.isCover && (!props.item.onlyapp && props.item.firstapp) && props.item.parent ?
                         <Chip className="chip"
                               label={!smallChip ? "Erstveröffentlichung" : "1."}
                               color="primary"/>
@@ -465,20 +478,8 @@ export function ContainsTitleDetailed(props) {
                         : null
                 }
 
-                { !exclusive ? <Tooltip title={
-                        <img style={{paddingTop: "5px", borderRadius: "3px"}}
-                             src={issue.cover ? issue.cover.url : "/nocover.jpg"} width="65px" alt="Zur Ausgabe"/>
-                    }>
-                    <IconButton className="detailsIcon"
-                        onMouseDown={(e) => {
-                            e.stopPropagation();
-                            props.navigate(e, exclusive ? "" : generateUrl(issue, !props.us), {filter: null});
-                        }}
-                                aria-label="Details"
-                                disabled={exclusive}>
-                        <SearchIcon fontSize="small"/>
-                    </IconButton>
-                </Tooltip> : null}
+                { !exclusive ?
+                    <CoverTooltip issue={issue} us={props.us} /> : null}
             </div>
         </div>
     )
@@ -507,9 +508,25 @@ function Variants(props) {
 }
 
 function Variant(props) {
-    let coverUrl = (props.variant.cover && props.variant.cover.url && props.variant.cover.url !== '') ? props.variant.cover.url : "/nocover_simple.jpg";
+    let coverUrl;
+    let blurCover = false;
+
     let selected = props.issue.format === props.variant.format && props.issue.variant === props.variant.variant;
     let mainIssue = props.session && props.variant.stories.length > 0;
+
+    if(props.variant.cover && props.variant.cover.url && props.variant.cover.url !== '') {
+        coverUrl = props.variant.cover.url;
+    } else if (!props.us
+        && props.variant.covers.length > 0
+        && props.variant.covers[0].parent
+        && props.variant.covers[0].parent.issue
+        && props.variant.covers[0].parent.issue.cover
+        && props.variant.covers[0].parent.issue.cover.url) {
+        blurCover = true;
+        coverUrl = props.variant.covers[0].parent.issue.cover.url;
+    } else {
+        coverUrl = "/nocover_simple.jpg";
+    }
 
     return (
         <GridListTile onMouseDown={(e) => props.navigate(e, props.to)} className={"tile " +
@@ -517,6 +534,7 @@ function Variant(props) {
         }>
             <img src={coverUrl}
                  style={{borderRadius: "5px"}}
+                 className={blurCover ? "blurredImage" : ""}
                  alt={props.variant.variant + ' (' + props.variant.format + ')'}/>
 
             <GridListTileBar

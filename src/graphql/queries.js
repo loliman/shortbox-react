@@ -42,6 +42,15 @@ const issues = gql`query Issues($pattern: String, $series: SeriesInput!, $filter
         cover {
             url
         },
+        covers {
+            parent {
+                issue {
+                    cover {
+                        url
+                    }
+                }
+            }
+        },
         series {
             title,
             volume,
@@ -92,6 +101,15 @@ export const lastEdited = gql`query LastEdited($filter: Filter, $offset: Int, $o
         cover {
             url
         },
+        covers {
+            parent {
+                issue {
+                    cover {
+                        url
+                    }
+                }
+            }
+        },
         series {
             title,
             volume,
@@ -102,6 +120,15 @@ export const lastEdited = gql`query LastEdited($filter: Filter, $offset: Int, $o
                 us
             }
         },
+        covers {
+            parent {
+                issue {
+                    cover {
+                        url 
+                    }
+                }
+            }
+        }
         stories {
             onlyapp,
             firstapp,
@@ -153,6 +180,15 @@ const publisher = gql`query Publisher($publisher: PublisherInput!){
             updatedAt,
             cover {
                 url
+            },
+            covers {
+                parent {
+                    issue {
+                        cover {
+                            url
+                        }
+                    }
+                }
             },
             comicguideid,
             series {
@@ -208,6 +244,15 @@ issue { collected },
             updatedAt,
             cover {
                 url
+            },
+            covers {
+                parent {
+                    issue {
+                        cover {
+                            url
+                        }
+                    }
+                }
             },
             comicguideid,
             series {
@@ -275,6 +320,15 @@ const seriesd = gql`query Seriesd($series: SeriesInput!){
             cover {
                 url
             },
+            covers {
+                parent {
+                    issue {
+                        cover {
+                            url
+                        }
+                    }
+                }
+            },
             comicguideid,
             series {
                 title,
@@ -327,6 +381,15 @@ issue { collected },
             updatedAt,
             cover {
                 url
+            },
+            covers {
+                parent {
+                    issue {
+                        cover {
+                            url
+                        }
+                    }
+                }
             },
             comicguideid,
             series {
@@ -405,6 +468,15 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                 type
             }
         },
+        covers {
+            parent {
+                issue {
+                    cover {
+                        url
+                    }
+                }
+            }
+        },
         series {
             title,
             volume,
@@ -434,6 +506,15 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                     cover {
                         url
                     },
+                    covers {
+                        parent {
+                            issue {
+                                cover {
+                                    url
+                                }
+                            }
+                        }
+                    },
                     number,
                     series {
                         title,
@@ -461,6 +542,15 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                         cover {
                             url
                         },
+                        covers {
+                            parent {
+                                issue {
+                                    cover {
+                                        url
+                                    }
+                                }
+                            }
+                        },
                         number,
                         series {
                             title,
@@ -481,6 +571,15 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                 issue {
                     cover {
                         url
+                    },
+                    covers {
+                        parent {
+                            issue {
+                                cover {
+                                    url
+                                }
+                            }
+                        }
                     },
                     number,
                     title,
@@ -514,6 +613,15 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                     cover {
                         url
                     },
+                    covers {
+                        parent {
+                            issue {
+                                cover {
+                                    url
+                                }
+                            }
+                        }
+                    },
                     number,
                     series {
                         title,
@@ -540,6 +648,15 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                         cover {
                             url
                         },
+                        covers {
+                            parent {
+                                issue {
+                                    cover {
+                                        url
+                                    }
+                                }
+                            }
+                        },
                         number,
                         series {
                             title,
@@ -557,6 +674,15 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                 issue {
                     cover {
                         url
+                    },
+                    covers {
+                        parent {
+                            issue {
+                                cover {
+                                    url
+                                }
+                            }
+                        }
                     },
                     number,
                     series {
@@ -614,6 +740,15 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                     cover {
                         url
                     }, 
+                    covers {
+                        parent {
+                            issue {
+                                cover {
+                                    url
+                                }
+                            }
+                        }
+                    },
                     collected 
                 },
                 number,
@@ -621,6 +756,15 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                 issue {
                     cover {
                         url
+                    },
+                    covers {
+                        parent {
+                            issue {
+                                cover {
+                                    url
+                                }
+                            }
+                        }
                     },
                     number,
                     format,
@@ -642,6 +786,15 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
                 issue {
                     cover {
                         url
+                    },
+                    covers {
+                        parent {
+                            issue {
+                                cover {
+                                    url
+                                }
+                            }
+                        }
                     },
                     variant,
                     format,
@@ -672,6 +825,24 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
             },
         },
         variants {
+            covers {
+                parent {
+                    issue {
+                        cover {
+                            url 
+                        }
+                        covers {
+                            parent {
+                                issue {
+                                    cover {
+                                        url
+                                    }
+                                }
+                            }
+                        },
+                    }
+                }
+            },
             stories {
                 number
             },
@@ -690,7 +861,16 @@ const issue = gql`query Issue($issue: IssueInput!, $edit: Boolean){
             },
             cover {
                 url
-            }
+            },
+            covers {
+                parent {
+                    issue {
+                        cover {
+                            url
+                        }
+                    }
+                }
+            },
         },
         arcs {
             title,

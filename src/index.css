@@ -18,6 +18,15 @@ body {
     margin: 2px;
 }
 
+#noCoverWarning {
+    min-width: 99.8%;
+    border-radius: 0;
+    background: rgb(204, 141, 21);
+    border: 2px solid rgb(204, 141, 21);
+    border-radius: 6px 6px 6px 6px;
+    margin: 2px;
+}
+
 #cookieHint {
     border-radius: 0;
     z-index: 1051;
@@ -1845,4 +1854,20 @@ div div.ball {
 
 .selectedVariant {
     font-weight: bold;
+}
+
+.blurred {
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.01);
+    backdrop-filter: blur(6px);
+    border-radius: 3px;
+}
+
+.blurredImage {
+   filter: blur(6px);
+}
+
+.tooltipCover > div {
+    padding: 3px 3px 0;
 }

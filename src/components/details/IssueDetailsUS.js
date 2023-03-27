@@ -1,12 +1,9 @@
 import React from "react";
 import Typography from "@material-ui/core/Typography/Typography";
-import SearchIcon from '@material-ui/icons/Search';
-import IconButton from "@material-ui/core/IconButton/IconButton";
-import Tooltip from "@material-ui/core/es/Tooltip/Tooltip";
 import List from "@material-ui/core/List/List";
 import ListItem from "@material-ui/core/ListItem/ListItem";
 import {withContext} from "../generic";
-import {generateLabel, generateUrl} from "../../util/hierarchy";
+import {generateLabel} from "../../util/hierarchy";
 import IssueDetails, {
     AppearanceList,
     Contains,
@@ -14,6 +11,7 @@ import IssueDetails, {
     ContainsTitleSimple,
     DetailsRow, IndividualList, toChipList, toShortboxDate
 } from "./IssueDetails";
+import CoverTooltip from "../CoverTooltip";
 
 var dateFormat = require('dateformat');
 
@@ -136,16 +134,7 @@ function StoryDetails(props) {
                                     {generateLabel(props.item.reprintOf.issue.series.publisher)}
                                 </Typography>
                             </div>
-                            <Tooltip style={{margin: "1px"}} title={
-                                <img style={{paddingTop: "5px", borderRadius: "3px"}}
-                                     src={props.item.reprintOf.issue.cover ? props.item.reprintOf.issue.cover.url : "/nocover.jpg"} width="65px" alt="Zur Ausgabe"/>
-                            }>
-                                <IconButton className="detailsIcon issueStoryIssueButton"
-                                            onMouseDown={(e) => props.navigate(e, generateUrl(props.item.reprintOf.issue, true), {expand: props.item.reprintOf.number, filter: null})}
-                                            aria-label="Details">
-                                    <SearchIcon fontSize="small"/>
-                                </IconButton>
-                            </Tooltip>
+                            <CoverTooltip issue={props.item.reprintOf.issue} us={props.us} number={props.item.reprintOf.number} />
                         </ListItem>
                     </List>
                 </React.Fragment>
@@ -177,16 +166,7 @@ function StoryDetails(props) {
                                                 {generateLabel(child.issue.series.publisher)}
                                             </Typography>
                                         </div>
-                                        <Tooltip style={{padding: "1px"}} title={
-                                            <img style={{paddingTop: "5px", borderRadius: "3px"}}
-                                                 src={child.issue.cover ? child.issue.cover.url : "/nocover.jpg"} width="65px" alt="Zur Ausgabe"/>
-                                        }>
-                                            <IconButton className="detailsIcon issueStoryIssueButton"
-                                                        onMouseDown={(e) => props.navigate(e, generateUrl(child.issue, true), {expand: child.number, filter: null})}
-                                                        aria-label="Details">
-                                                <SearchIcon fontSize="small"/>
-                                            </IconButton>
-                                        </Tooltip>
+                                        <CoverTooltip issue={child.issue} us={props.us} number={child.number} />
                                     </ListItem>
                                 );
                             })
@@ -235,15 +215,7 @@ function StoryDetails(props) {
                                             && child.parent.issue.series.title === props.issue.series.title
                                             && child.parent.issue.series.volume === props.issue.series.volume
                                                 ? null
-                                                :
-                                                <Tooltip style={{margin: "1px"}} title={
-                                                    <img style={{paddingTop: "5px", borderRadius: "3px"}}
-                                                         src={child.parent.issue.cover ? child.parent.issue.cover.url : "/nocover.jpg"} width="65px" alt="Zur Ausgabe"/>
-                                                }>
-                                                    <Typography className="parentTitle" onMouseDown={(e) => props.navigate(e, generateUrl(child.parent.issue, true), {expand: child.parent.number, filter: null})}>Als
-                                                        <span className="asLink">{generateLabel(child.parent.issue.series) + " #" + child.parent.issue.number}</span>
-                                                    </Typography>
-                                                </Tooltip>
+                                                : <CoverTooltip issue={child.parent.issue} us={props.us} number={child.parent.number} />
                                         }
 
                                         {addinfoText !== "" ? <Typography className="parentTitle">{addinfoText}</Typography> : null}
@@ -255,16 +227,7 @@ function StoryDetails(props) {
                                                                           alt="gesammelt"/> : null
                                         }
 
-                                        <Tooltip style={{margin: "1px"}} title={
-                                            <img style={{paddingTop: "5px", borderRadius: "3px"}}
-                                                 src={child.issue.cover ? child.issue.cover.url : "/nocover.jpg"} width="65px" alt="Zur Ausgabe"/>
-                                        }>
-                                            <IconButton className="detailsIcon issueStoryIssueButton"
-                                                onMouseDown={(e) => props.navigate(e, generateUrl(child.issue), {expand: child.number, filter: null})}
-                                                        aria-label="Details">
-                                                <SearchIcon fontSize="small"/>
-                                            </IconButton>
-                                        </Tooltip>
+                                        <CoverTooltip issue={child.issue} us={props.us} number={child.number} />
                                     </div>
                                 </ListItem>
                             );
