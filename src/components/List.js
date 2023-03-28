@@ -10,6 +10,7 @@ import {withContext} from "./generic";
 import {generateLabel, generateUrl, HierarchyLevel} from "../util/hierarchy";
 import Tooltip from "@material-ui/core/es/Tooltip/Tooltip";
 import {Query} from "react-apollo";
+import CoverTooltip from "./CoverTooltip";
 
 class List extends React.Component {
     componentDidUpdate() {
@@ -106,15 +107,45 @@ function TypeListEntry(props) {
     }
 
     let variants = item.variants ? (item.variants.length - 1) : 0;
-    return (
-        <div className="itemContainer" id={"itemContainer" + props.idx}>
+
+    if(level === HierarchyLevel.ISSUE || level === HierarchyLevel.SERIES)
+        return <CoverTooltip issue={item}>
+            <div className="itemContainer" id={"itemContainer" + props.idx}>
+                <ListItem onMouseDown={(e) => {
+                    if ((mobile && !mobileLandscape) && (level === HierarchyLevel.SERIES || level === HierarchyLevel.ISSUE))
+                        toogleDrawer();
+
+                    props.navigate(e, generateUrl(item, us), {expand: null, filter: props.query ? props.query.filter : null});
+                }} button>
+                    <ListItemText className="itemText"
+                                  primary={<Typography style={isBold}>
+                                      <div style={{display: "flex", justifyContent: "space-between"}}>
+                                          <div>{label}</div>
+                                          <div style={{display: "flex"}}>{item.variants && item.variants.length > 1 ?
+                                              <Tooltip title={"+" + variants + (variants === 1 ? " Variante" : " Varianten")}>
+                                                  <Typography className={"material-icons"}
+                                                              style={{color: "gray", paddingLeft: '2px', fontSize: "8px"}}
+                                                              color={"disabled"}>+{item.variants.length - 1}</Typography>
+                                              </Tooltip> :
+                                              null}
+
+                                              {(item.collected || (item.variants && item.variants.filter(v => v.collected).length > 0)) && props.session ?
+                                                  <img className="verifiedBadge" style={{margin: "0"}} src="/collected_badge.png"
+                                                       alt="gesammelt" height="21"/> : null}</div>
+                                      </div>
+                                  </Typography>}
+                    />
+                </ListItem>
+            </div>
+        </CoverTooltip>;
+    else
+        return <div className="itemContainer" id={"itemContainer" + props.idx}>
             <ListItem onMouseDown={(e) => {
                 if ((mobile && !mobileLandscape) && (level === HierarchyLevel.SERIES || level === HierarchyLevel.ISSUE))
                     toogleDrawer();
 
                 props.navigate(e, generateUrl(item, us), {expand: null, filter: props.query ? props.query.filter : null});
-            }}
-                      button>
+            }} button>
                 <ListItemText className="itemText"
                               primary={<Typography style={isBold}>
                                   <div style={{display: "flex", justifyContent: "space-between"}}>
@@ -127,17 +158,14 @@ function TypeListEntry(props) {
                                           </Tooltip> :
                                           null}
 
-                                      {(item.collected || (item.variants && item.variants.filter(v => v.collected).length > 0)) && props.session ?
-                                          <img className="verifiedBadge" style={{margin: "0"}} src="/collected_badge.png"
-                                               alt="gesammelt" height="21"/> : null}</div>
+                                          {(item.collected || (item.variants && item.variants.filter(v => v.collected).length > 0)) && props.session ?
+                                              <img className="verifiedBadge" style={{margin: "0"}} src="/collected_badge.png"
+                                                   alt="gesammelt" height="21"/> : null}</div>
                                   </div>
                               </Typography>}
                 />
-
-
             </ListItem>
-        </div>
-    );
+        </div>;
 }
 
 function TypeListEntryPlaceholder(props) {

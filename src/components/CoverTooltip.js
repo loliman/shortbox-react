@@ -17,7 +17,7 @@ function CoverTooltip(props) {
         blurCover = true;
         coverUrl = props.issue.covers[0].parent.issue.cover.url;
     } else {
-        coverUrl = props.cookies.get('newDesign') === "true" ? "" : "/nocover.jpg";
+        coverUrl = "/nocover.jpg";
     }
 
     return <Tooltip PopperProps={{
