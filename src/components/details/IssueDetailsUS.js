@@ -3,7 +3,7 @@ import Typography from "@material-ui/core/Typography/Typography";
 import List from "@material-ui/core/List/List";
 import ListItem from "@material-ui/core/ListItem/ListItem";
 import {withContext} from "../generic";
-import {generateLabel} from "../../util/hierarchy";
+import {generateLabel, generateUrl} from "../../util/hierarchy";
 import IssueDetails, {
     AppearanceList,
     Contains,
@@ -12,6 +12,8 @@ import IssueDetails, {
     DetailsRow, IndividualList, toChipList, toShortboxDate
 } from "./IssueDetails";
 import CoverTooltip from "../CoverTooltip";
+import IconButton from "@material-ui/core/IconButton";
+import SearchIcon from "@material-ui/icons/Search";
 
 var dateFormat = require('dateformat');
 
@@ -134,7 +136,13 @@ function StoryDetails(props) {
                                     {generateLabel(props.item.reprintOf.issue.series.publisher)}
                                 </Typography>
                             </div>
-                            <CoverTooltip issue={props.item.reprintOf.issue} us={props.us} number={props.item.reprintOf.number} />
+                            <CoverTooltip issue={props.item.reprintOf.issue} us={props.us} number={props.item.reprintOf.number}>
+                                <IconButton className="detailsIcon issueStoryIssueButton"
+                                    onMouseDown={(e) => props.navigate(e, generateUrl(props.item.reprintOf.issue, true), {expand: props.item.reprintOf.number, filter: null})}
+                                    aria-label="Details">
+                                    <SearchIcon fontSize="small"/>
+                                </IconButton>
+                            </CoverTooltip>
                         </ListItem>
                     </List>
                 </React.Fragment>
@@ -166,7 +174,13 @@ function StoryDetails(props) {
                                                 {generateLabel(child.issue.series.publisher)}
                                             </Typography>
                                         </div>
-                                        <CoverTooltip issue={child.issue} us={props.us} number={child.number} />
+                                        <CoverTooltip issue={child.issue} us={props.us} number={child.number}>
+                                            <IconButton className="detailsIcon issueStoryIssueButton"
+                                                onMouseDown={(e) => props.navigate(e, generateUrl(child.issue, true), {expand: child.number, filter: null})}
+                                                aria-label="Details">
+                                                <SearchIcon fontSize="small"/>
+                                            </IconButton>
+                                        </CoverTooltip>
                                     </ListItem>
                                 );
                             })
@@ -215,7 +229,11 @@ function StoryDetails(props) {
                                             && child.parent.issue.series.title === props.issue.series.title
                                             && child.parent.issue.series.volume === props.issue.series.volume
                                                 ? null
-                                                : <CoverTooltip issue={child.parent.issue} us={props.us} number={child.parent.number} />
+                                                : <CoverTooltip issue={child.parent.issue} us={props.us} number={child.parent.number}>
+                                                    <Typography className="parentTitle" onMouseDown={(e) => props.navigate(e, generateUrl(child.parent.issue, true), {expand: child.parent.number, filter: null})}>Als
+                                                        <span className="asLink">{generateLabel(child.parent.issue.series) + " #" + child.parent.issue.number}</span>
+                                                    </Typography>
+                                                </CoverTooltip>
                                         }
 
                                         {addinfoText !== "" ? <Typography className="parentTitle">{addinfoText}</Typography> : null}
@@ -227,7 +245,13 @@ function StoryDetails(props) {
                                                                           alt="gesammelt"/> : null
                                         }
 
-                                        <CoverTooltip issue={child.issue} us={props.us} number={child.number} />
+                                        <CoverTooltip issue={child.issue} us={props.us} number={child.number}>
+                                            <IconButton className="detailsIcon issueStoryIssueButton"
+                                                onMouseDown={(e) => props.navigate(e, generateUrl(child.issue), {expand: child.number, filter: null})}
+                                                aria-label="Details">
+                                                <SearchIcon fontSize="small"/>
+                                            </IconButton>
+                                        </CoverTooltip>
                                     </div>
                                 </ListItem>
                             );

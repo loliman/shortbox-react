@@ -29,6 +29,8 @@ import EditButton from "../restricted/EditButton";
 import SnackbarContent from "@material-ui/core/SnackbarContent";
 import TitleLine from "../generic/TitleLine";
 import CoverTooltip from "../CoverTooltip";
+import IconButton from "@material-ui/core/IconButton";
+import SearchIcon from "@material-ui/icons/Search";
 
 class IssueDetails extends React.Component {
     render() {
@@ -409,7 +411,10 @@ export function ContainsTitleDetailed(props) {
                 </div>
 
                 {props.item.parent && props.item.parent.reprintOf
-                    ? <CoverTooltip issue={props.item.parent.reprintOf.issue} us={props.us} number={props.item.parent.reprintOf.number} />
+                    ? <CoverTooltip issue={props.item.parent.reprintOf.issue} us={props.us} number={props.item.parent.reprintOf.number} >
+                        <Typography className="parentTitle" onMouseDown={(e) => props.navigate(e, generateUrl(props.item.parent.reprintOf.issue, true), {expand: props.item.parent.reprintOf.number, filter: null})}>Original erschienen als
+                            <span className="asLink">{generateLabel(props.item.parent.reprintOf.issue)}</span></Typography>
+                    </CoverTooltip>
                     : null}
 
                 <Typography className="heading headingAddInfo">
@@ -479,7 +484,17 @@ export function ContainsTitleDetailed(props) {
                 }
 
                 { !exclusive ?
-                    <CoverTooltip issue={issue} us={props.us} /> : null}
+                    <CoverTooltip issue={issue} us={props.us}>
+                        <IconButton className="detailsIcon"
+                            onMouseDown={(e) => {
+                            e.stopPropagation();
+                            props.navigate(e, exclusive ? "" : generateUrl(issue, !props.us), {filter: null});
+                        }}
+                            aria-label="Details"
+                            disabled={exclusive}>
+                            <SearchIcon fontSize="small"/>
+                        </IconButton>
+                    </CoverTooltip>: null}
             </div>
         </div>
     )
@@ -675,7 +690,7 @@ function expanded(item, query) {
                 expanded = true;
         });
     }
-    
+
     if(currentFilter.publisher && compare.issue.series)
         expanded = compare.issue.series.publisher.name === currentFilter.series.publisher.name;
 

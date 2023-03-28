@@ -1,7 +1,4 @@
 import Tooltip from "@material-ui/core/es/Tooltip/Tooltip";
-import IconButton from "@material-ui/core/IconButton/IconButton";
-import {generateUrl} from "../util/hierarchy";
-import SearchIcon from "@material-ui/icons/Search";
 import React from "react";
 import {withContext} from "./generic";
 
@@ -30,12 +27,7 @@ function CoverTooltip(props) {
                                 style={{borderRadius: "3px"}}
                                 src={coverUrl} width="65px" alt="Zur Ausgabe"/>}
     >
-        <IconButton className="detailsIcon"
-                    style={{marginLeft: '5px'}}
-                    onMouseDown={(e) => props.navigate(e, generateUrl(props.issue, props.issue.series.publisher.us), {expand: props.number, filter: props.filter})}
-                    aria-label="Details">
-            <SearchIcon fontSize="small"/>
-        </IconButton>
+        {props.children}
     </Tooltip>
 }
 

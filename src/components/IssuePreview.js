@@ -10,8 +10,6 @@ import PriorityHighIcon from "@material-ui/icons/PriorityHigh";
 import CardMedia from "@material-ui/core/CardMedia/CardMedia";
 
 function IssuePreview(props) {
-    console.log(props);
-
     let date = props.issue.updatedAt.split(" ")[0];
     if(date === today()) date = "heute";
     else date = "am " + date;
