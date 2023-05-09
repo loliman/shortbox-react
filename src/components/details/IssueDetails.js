@@ -615,12 +615,6 @@ export function toChipList(items, props, type, role) {
         let filterType = item.__typename.toLocaleLowerCase() + "s";
         let filter = {};
 
-        filter.story = true;
-        if(filterType === 'individuals' && type === 'ARTIST') {
-            filter.cover = true;
-            filter.story = undefined;
-        }
-
         filter.us = props.us;
 
         filter[filterType] = [];
