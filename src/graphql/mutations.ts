@@ -2,8 +2,8 @@ import gql from "graphql-tag";
 import { HierarchyLevel } from "../util/hierarchy";
 
 const login = gql`
-  mutation Login($user: UserInput!) {
-    login(user: $user) {
+  mutation Login($credentials: LoginInput!) {
+    login(credentials: $credentials) {
       id
     }
   }

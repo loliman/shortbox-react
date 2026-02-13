@@ -150,8 +150,8 @@ query Me {
   }
 }
 
-mutation Login($user: UserInput!) {
-  login(user: $user) {
+mutation Login($credentials: LoginInput!) {
+  login(credentials: $credentials) {
     id
   }
 }

@@ -49,7 +49,7 @@ function Login(props) {
 
         await runLogin({
           variables: {
-            user: {
+            credentials: {
               name: values.name,
               password: values.password,
             },
