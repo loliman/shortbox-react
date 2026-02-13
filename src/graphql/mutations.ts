@@ -5,14 +5,13 @@ const login = gql`
   mutation Login($user: UserInput!) {
     login(user: $user) {
       id
-      sessionid
     }
   }
 `;
 
 const logout = gql`
-  mutation Logout($user: UserInput!) {
-    logout(user: $user)
+  mutation Logout {
+    logout
   }
 `;
 

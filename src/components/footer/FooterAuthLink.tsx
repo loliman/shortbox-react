@@ -68,13 +68,7 @@ function LogoutLink(props: Readonly<FooterAuthLinkProps>) {
           return;
         }
 
-        runLogout({
-          variables: {
-            user: {
-              name: "session",
-            },
-          },
-        });
+        runLogout();
       }}
     >
       Logout

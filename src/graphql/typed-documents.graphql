@@ -153,12 +153,11 @@ query Me {
 mutation Login($user: UserInput!) {
   login(user: $user) {
     id
-    sessionid
   }
 }
 
-mutation Logout($user: UserInput!) {
-  logout(user: $user)
+mutation Logout {
+  logout
 }
 
 query LastEdited(
