@@ -3,7 +3,6 @@ import { createRoot } from "react-dom/client";
 import { ApolloClient, HttpLink, InMemoryCache } from "@apollo/client";
 import App from "./components/App";
 import { ApolloProvider } from "@apollo/client/react";
-import { CookiesProvider } from "react-cookie";
 import { SnackbarProvider } from "notistack";
 import { BrowserRouter } from "react-router-dom";
 import Button from "@mui/material/Button";
@@ -51,11 +50,9 @@ if (rootElement) {
           </Button>,
         ]}
       >
-        <CookiesProvider>
-          <ApolloProvider client={client}>
-            <App />
-          </ApolloProvider>
-        </CookiesProvider>
+        <ApolloProvider client={client}>
+          <App />
+        </ApolloProvider>
       </SnackbarProvider>
     </BrowserRouter>
   );

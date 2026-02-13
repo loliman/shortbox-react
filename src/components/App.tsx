@@ -1,28 +1,23 @@
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
 import { Suspense, useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
 import { useApolloClient } from "@apollo/client";
 import AppContextProvider from "./generic/AppContext";
 import { AppRoutes } from "../app/AppRoutes";
 import { appTheme } from "../app/theme";
-import {
-  getSessionCookieOptions,
-  SESSION_COOKIE_NAME,
-  type SessionData,
-} from "../app/session";
+import { type SessionData } from "../app/session";
 import { isMockMode } from "../app/mockMode";
 import { me } from "../graphql/queriesTyped";
 
 export default function App() {
-  const [cookies, setCookie, removeCookie] = useCookies([SESSION_COOKIE_NAME]);
   const client = useApolloClient();
-  const session = cookies.session as SessionData | undefined;
+  const [session, setSession] = useState<SessionData | null>(null);
   const loggedIn = Boolean(session?.loggedIn);
   const [authReady, setAuthReady] = useState(false);
 
   useEffect(() => {
     if (isMockMode) {
+      setSession({ loggedIn: true });
       setAuthReady(true);
       return;
     }
@@ -38,31 +33,30 @@ export default function App() {
         if (!mounted) return;
 
         if (data?.me) {
-          if (!loggedIn) {
-            setCookie(SESSION_COOKIE_NAME, { loggedIn: true }, getSessionCookieOptions());
-          }
-        } else if (loggedIn) {
-          removeCookie(SESSION_COOKIE_NAME, { path: "/" });
+          if (!loggedIn) setSession({ loggedIn: true });
+        } else {
+          setSession(null);
         }
 
         setAuthReady(true);
       })
       .catch(() => {
         if (!mounted) return;
+        setSession(null);
         setAuthReady(true);
       });
 
     return () => {
       mounted = false;
     };
-  }, [client, loggedIn, removeCookie, setCookie]);
+  }, [client, loggedIn]);
 
   return (
     <ThemeProvider theme={appTheme}>
-      <AppContextProvider>
+      <AppContextProvider session={session} setSession={setSession}>
         <CssBaseline />
         <Suspense fallback={null}>
-          <AppRoutes session={session} authReady={authReady} />
+          <AppRoutes session={session || undefined} authReady={authReady} />
         </Suspense>
       </AppContextProvider>
     </ThemeProvider>

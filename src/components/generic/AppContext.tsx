@@ -1,6 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Cookies, withCookies } from "react-cookie";
-import { getSessionCookieOptions, SESSION_COOKIE_NAME } from "../../app/session";
 import type { SessionData } from "../../app/session";
 import { useResponsive } from "../../app/useResponsive";
 
@@ -12,8 +10,9 @@ interface AppContextState {
 }
 
 interface AppContextProps {
-  cookies?: Cookies;
   children?: React.ReactNode;
+  session?: SessionValue;
+  setSession?: (value: SessionValue) => void;
 }
 
 export interface AppContextValue {
@@ -58,7 +57,7 @@ const defaultContextValue: AppContextValue = {
 
 export const AppContext = React.createContext<AppContextValue>(defaultContextValue);
 
-function AppContextProvider({ cookies, children }: Readonly<AppContextProps>) {
+function AppContextProvider({ children, session, setSession }: Readonly<AppContextProps>) {
   const responsive = useResponsive();
   const [state, setState] = useState<AppContextState>(() => {
     return {
@@ -108,15 +107,12 @@ function AppContextProvider({ cookies, children }: Readonly<AppContextProps>) {
   );
 
   const handleLogin = useCallback((_user: SessionValue) => {
-    cookies?.set(SESSION_COOKIE_NAME, { loggedIn: true }, getSessionCookieOptions());
-  }, [cookies]);
+    setSession?.({ loggedIn: true });
+  }, [setSession]);
 
   const handleLogout = useCallback(() => {
-    cookies?.remove(SESSION_COOKIE_NAME, { path: "/" });
-    if (typeof window !== "undefined") {
-      window.location.reload();
-    }
-  }, [cookies]);
+    setSession?.(null);
+  }, [setSession]);
 
   const toggleDrawer = useCallback(() => {
     setState((prevState) => ({
@@ -124,8 +120,6 @@ function AppContextProvider({ cookies, children }: Readonly<AppContextProps>) {
       drawerOpen: !prevState.drawerOpen,
     }));
   }, []);
-
-  const session = cookies?.get(SESSION_COOKIE_NAME) as SessionValue;
 
   const value = useMemo<AppContextValue>(
     () => ({
@@ -173,4 +167,4 @@ function AppContextProvider({ cookies, children }: Readonly<AppContextProps>) {
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 
-export default withCookies(AppContextProvider);
+export default AppContextProvider;

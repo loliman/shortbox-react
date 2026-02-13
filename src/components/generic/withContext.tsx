@@ -2,7 +2,6 @@ import React, { ComponentType, useContext, useEffect, useRef } from "react";
 import { useSnackbar } from "notistack";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "./AppContext";
-import { withCookies } from "react-cookie";
 import {
   generateLabel,
   getHierarchyLevel,
@@ -93,7 +92,7 @@ function withContext<T>(WrappedComponent: ComponentType<T>): ComponentType<Unkno
 
   WithContext.displayName = `WithContext(${getDisplayName(WrappedComponent)})`;
 
-  return withEnqueueSnackbar(withCookies(WithContext));
+  return withEnqueueSnackbar(WithContext);
 }
 
 function withEnqueueSnackbar<T>(WrappedComponent: ComponentType<T>): ComponentType<UnknownRecord> {
