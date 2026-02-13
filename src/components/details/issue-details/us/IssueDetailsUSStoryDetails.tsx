@@ -7,7 +7,38 @@ import { StoryAppearanceSection } from "../sections/StoryAppearanceSection";
 import { StoryIssueListItem } from "../StoryIssueListItem";
 import { isSameIssue, toChildAddinfo, toIssueRowKey } from "../utils/storyIssueUtils";
 
-export function IssueDetailsUSStoryDetails(props) {
+interface IssueReference {
+  [key: string]: any;
+  issue?: Record<string, unknown> | null;
+  number?: string | number;
+  addinfo?: string;
+  parent?: {
+    issue?: Record<string, unknown> | null;
+    number?: string | number;
+  };
+}
+
+interface StoryLike extends IssueReference {
+  reprintOf?: IssueReference | null;
+  reprints?: IssueReference[];
+  children?: IssueReference[];
+}
+
+interface IssueDetailsUSStoryDetailsProps {
+  item?: {
+    parent?: StoryLike | null;
+    reprintOf?: IssueReference | null;
+    reprints?: IssueReference[];
+    children?: IssueReference[];
+  } & StoryLike;
+  issue?: Record<string, unknown>;
+  us?: boolean;
+  session?: unknown;
+  navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
+  [key: string]: any;
+}
+
+export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDetailsProps>) {
   const story = props.item.parent ? props.item.parent : props.item;
   const us = Boolean(props.us);
   const reprints = Array.isArray(story?.reprints) ? story.reprints : [];
@@ -18,13 +49,13 @@ export function IssueDetailsUSStoryDetails(props) {
     <div className="usStoryContainer">
       <div className="usStoryDetails">
         <StoryPeopleSection
-          item={props.item}
+          item={props.item as any}
           us={us}
           navigate={props.navigate}
           includeTranslator
           translatorOptional
         />
-        <StoryAppearanceSection item={props.item} us={us} navigate={props.navigate} />
+        <StoryAppearanceSection item={props.item as any} us={us} navigate={props.navigate} />
       </div>
 
       {!reprintOf?.issue ? null : (

@@ -1,4 +1,4 @@
-export function toShortboxDate(date) {
+export function toShortboxDate(date: string) {
   if (date.indexOf("01.01.") > -1) {
     return date.substring(6);
   } else if (date.indexOf("01.") === 0) {
@@ -29,7 +29,7 @@ export function toShortboxDate(date) {
 /*   Distributed by LGPL.                                    */
 /*      this script written by H.Tsujimura  20 Jan 2007      */
 
-export function toIsbn13(isbn) {
+export function toIsbn13(isbn: string) {
   let result = isbn;
   if (isbn.length < 13) {
     result = convISBN10toISBN13(isbn);
@@ -48,7 +48,7 @@ export function toIsbn13(isbn) {
   );
 }
 
-export function toIsbn10(isbn) {
+export function toIsbn10(isbn: string) {
   let result = isbn;
   if (isbn.length >= 13) {
     result = convISBN13toISBN10(isbn);
@@ -65,16 +65,16 @@ export function toIsbn10(isbn) {
   );
 }
 
-function convISBN13toISBN10(str) {
-  let s;
-  let c;
+function convISBN13toISBN10(str: string) {
+  let s = "";
+  let c = "";
   let checkDigit = 0;
   let result = "";
 
   s = str.substring(3, str.length);
   for (let i = 10; i > 1; i--) {
     c = s.charAt(10 - i);
-    checkDigit += (c - 0) * i;
+    checkDigit += Number(c) * i;
     result += c;
   }
   checkDigit = (11 - (checkDigit % 11)) % 11;
@@ -83,27 +83,27 @@ function convISBN13toISBN10(str) {
   return result;
 }
 
-function convISBN10toISBN13(str) {
-  let c;
+function convISBN10toISBN13(str: string) {
+  let c = "";
   let checkDigit = 0;
   let result = "";
 
   c = "9";
   result += c;
-  checkDigit += c - 0;
+  checkDigit += Number(c);
 
   c = "7";
   result += c;
-  checkDigit += (c - 0) * 3;
+  checkDigit += Number(c) * 3;
 
   c = "8";
   result += c;
-  checkDigit += c - 0;
+  checkDigit += Number(c);
 
   for (let i = 0; i < 9; i++) {
     c = str.charAt(i);
-    if (i % 2 === 0) checkDigit += (c - 0) * 3;
-    else checkDigit += c - 0;
+    if (i % 2 === 0) checkDigit += Number(c) * 3;
+    else checkDigit += Number(c);
     result += c;
   }
   checkDigit = (10 - (checkDigit % 10)) % 10;

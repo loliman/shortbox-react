@@ -22,8 +22,24 @@ import {
 import { DetailsPagePlaceholder } from "../placeholders/DetailsPagePlaceholder";
 import { DetailsAddInfo } from "./DetailsAddInfo";
 import { useDualLoadingRegistration } from "./useDualLoadingRegistration";
+import type { SelectedRoot } from "../../types/domain";
 
-function PublisherDetails(props) {
+interface PublisherDetailsProps {
+  selected: SelectedRoot & {
+    publisher: {
+      name: string;
+    };
+  };
+  us?: boolean;
+  query?: Record<string, unknown> | null;
+  session?: unknown;
+  appIsLoading?: boolean;
+  registerLoadingComponent?: (component: string) => void;
+  unregisterLoadingComponent?: (component: string) => void;
+  [key: string]: unknown;
+}
+
+function PublisherDetails(props: Readonly<PublisherDetailsProps>) {
   const selected = props.selected;
   const us = Boolean(props.us);
   const pageProps = props as Record<string, unknown>;

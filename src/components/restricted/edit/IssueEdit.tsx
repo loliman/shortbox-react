@@ -7,11 +7,16 @@ import { withContext } from "../../generic";
 import QueryResult from "../../generic/QueryResult";
 import IssueEditor from "../editor/IssueEditor";
 import { mapIssueToEditorDefaultValues } from "../editor/issue-editor/defaultValues";
+import type { SelectedRoot } from "../../../types/domain";
 
-function IssueEdit(props) {
+interface IssueEditProps {
+  selected: SelectedRoot;
+}
+
+function IssueEdit(props: Readonly<IssueEditProps>) {
   const { selected } = props;
   const variables = { ...selected, edit: true };
-  const { loading, error, data } = useQuery(issue, { variables });
+  const { loading, error, data } = useQuery(issue, { variables: variables as any });
 
   return (
     <Layout>

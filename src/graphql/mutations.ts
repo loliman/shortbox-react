@@ -458,7 +458,7 @@ const editPublisher = gql`
   }
 `;
 
-function getDeleteMutation(level) {
+function getDeleteMutation(level: string) {
   switch (level) {
     case HierarchyLevel.PUBLISHER:
       return deletePublisher;

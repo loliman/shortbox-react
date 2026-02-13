@@ -6,10 +6,15 @@ import { seriesd } from "../../../graphql/queriesTyped";
 import { withContext } from "../../generic";
 import QueryResult from "../../generic/QueryResult";
 import SeriesEditor from "../editor/SeriesEditor";
+import type { SelectedRoot } from "../../../types/domain";
 
-function SeriesEdit(props) {
+interface SeriesEditProps {
+  selected: SelectedRoot;
+}
+
+function SeriesEdit(props: Readonly<SeriesEditProps>) {
   const { selected } = props;
-  const { loading, error, data } = useQuery(seriesd, { variables: selected });
+  const { loading, error, data } = useQuery(seriesd, { variables: selected as any });
 
   return (
     <Layout>

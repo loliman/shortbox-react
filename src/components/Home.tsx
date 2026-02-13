@@ -134,8 +134,8 @@ class Home extends React.Component<HomeProps> {
 
                     <Box sx={{ mt: 2 }}>
                       {data.lastEdited
-                        ? data.lastEdited.map((i, idx) => (
-                            <IssuePreview {...this.props} key={buildIssueKey(i, idx)} issue={i} />
+                        ? data.lastEdited.map((i: Record<string, unknown>, idx: number) => (
+                            <IssuePreview {...this.props} key={buildIssueKey(i as any, idx)} issue={i as any} />
                           ))
                         : null}
 

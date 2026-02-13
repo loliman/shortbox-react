@@ -5,7 +5,20 @@ import { StoryArcChips } from "../StoryArcChips";
 import { StoryPeopleSection } from "../sections/StoryPeopleSection";
 import { StoryAppearanceSection } from "../sections/StoryAppearanceSection";
 
-export function IssueDetailsDEStoryDetails(props) {
+interface IssueDetailsDEStoryDetailsProps {
+  item?: {
+    parent?: {
+      issue?: {
+        arcs?: unknown[];
+      };
+    };
+  };
+  us?: boolean;
+  navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
+  [key: string]: any;
+}
+
+export function IssueDetailsDEStoryDetails(props: Readonly<IssueDetailsDEStoryDetailsProps>) {
   const storyArcs = Array.isArray(props.item?.parent?.issue?.arcs) ? props.item.parent.issue.arcs : [];
 
   return (

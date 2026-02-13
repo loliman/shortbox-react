@@ -1,4 +1,4 @@
-export const mockSeriesFixture = {
+export const mockSeriesFixture: any = {
   id: "112837",
   title: "Die Abenteuer von Red Sonja - Gesamtausgabe",
   volume: 1,

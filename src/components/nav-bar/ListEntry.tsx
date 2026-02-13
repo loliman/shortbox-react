@@ -6,8 +6,41 @@ import Tooltip from "@mui/material/Tooltip";
 import Box from "@mui/material/Box";
 import { generateLabel, generateUrl, HierarchyLevel } from "../../util/hierarchy";
 import CoverTooltip from "./CoverTooltip";
+import type { SelectedRoot } from "../../types/domain";
 
-export default function TypeListEntry(props) {
+type ListEntryItem = {
+  __typename?: "Issue" | "Series" | "Publisher";
+  number?: string;
+  title?: string;
+  format?: string;
+  variant?: string;
+  collected?: boolean;
+  variants?: Array<{ collected?: boolean }>;
+  name?: string;
+  series?: {
+    title?: string;
+    volume?: number | string;
+    publisher?: { name?: string };
+  };
+  publisher?: { name?: string };
+};
+
+interface TypeListEntryProps {
+  us?: boolean;
+  item: ListEntryItem;
+  level?: string;
+  idx?: number;
+  toggleDrawer?: () => void;
+  isPhonePortrait?: boolean;
+  isPhone?: boolean;
+  isPhoneLandscape?: boolean;
+  session?: unknown;
+  selected?: SelectedRoot;
+  query?: { filter?: string | null } | null;
+  navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
+}
+
+export default function TypeListEntry(props: Readonly<TypeListEntryProps>) {
   const { us, item, level, toggleDrawer } = props;
   const phonePortrait = props.isPhonePortrait ?? Boolean(props.isPhone && !props.isPhoneLandscape);
   const supportsCoverPreview = level === HierarchyLevel.ISSUE || level === HierarchyLevel.SERIES;
@@ -30,7 +63,7 @@ export default function TypeListEntry(props) {
           toggleDrawer?.();
         }
 
-        props.navigate?.(e, generateUrl(item, us), {
+        props.navigate?.(e, generateUrl(item as any, Boolean(us)), {
           expand: null,
           filter: props.query ? props.query.filter : null,
         });
@@ -53,7 +86,7 @@ export default function TypeListEntry(props) {
 
   if (supportsCoverPreview) {
     return (
-      <CoverTooltip issue={item}>
+      <CoverTooltip issue={item as any}>
         <Box data-item-index={props.idx}>{row}</Box>
       </CoverTooltip>
     );
@@ -62,14 +95,14 @@ export default function TypeListEntry(props) {
   return <Box data-item-index={props.idx}>{row}</Box>;
 }
 
-function createItemLabel(item, level, us) {
+function createItemLabel(item: ListEntryItem, level: string | undefined, us?: boolean) {
   if (level === HierarchyLevel.SERIES || level === HierarchyLevel.ISSUE) {
     if (level === HierarchyLevel.ISSUE && us) return "#" + item.number + " " + item.series.title;
     if (item.title && item.title !== "") return "#" + item.number + " " + item.title;
     return "#" + item.number + " " + item.series.title;
   }
 
-  return generateLabel(item);
+  return generateLabel(item as any);
 }
 
 function ListEntryPrimary(props: {

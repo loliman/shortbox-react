@@ -2,7 +2,16 @@ import React from "react";
 import Typography from "@mui/material/Typography";
 import { toChipList } from "../../IssueDetails";
 
-export function IssueDetailsDECoverDetails(props) {
+interface IssueDetailsDECoverDetailsProps {
+  item?: {
+    parent?: {
+      individuals?: Array<{ type?: string } & Record<string, unknown>>;
+    };
+  };
+  [key: string]: any;
+}
+
+export function IssueDetailsDECoverDetails(props: Readonly<IssueDetailsDECoverDetailsProps>) {
   const individuals = Array.isArray(props.item?.parent?.individuals)
     ? props.item.parent.individuals
     : [];
@@ -14,7 +23,7 @@ export function IssueDetailsDECoverDetails(props) {
         <Typography>
           <b>Artist</b>
         </Typography>
-        {toChipList(artists, props, "ARTIST")}
+        {toChipList(artists, props as any, "ARTIST")}
       </div>
     </div>
   );

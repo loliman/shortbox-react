@@ -3,7 +3,13 @@ import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 
-export function DetailsTable(props) {
+interface DetailsTableProps {
+  details: React.ReactElement;
+  issue: unknown;
+  [key: string]: unknown;
+}
+
+export function DetailsTable(props: Readonly<DetailsTableProps>) {
   return (
     <Paper className="detailsPaper">
       <Table className="table">

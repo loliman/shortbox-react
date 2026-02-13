@@ -4,7 +4,9 @@ import IssueDetails from "./IssueDetails";
 import { IssueDetailsDEBottom } from "./issue-details/de/IssueDetailsDEBottom";
 import { IssueDetailsDEDetails } from "./issue-details/de/IssueDetailsDEDetails";
 
-function IssueDetailsDE(props) {
+type IssueDetailsDEProps = Record<string, unknown>;
+
+function IssueDetailsDE(props: IssueDetailsDEProps) {
   return <IssueDetails bottom={<IssueDetailsDEBottom {...props} />} details={<IssueDetailsDEDetails />} subheader />;
 }
 

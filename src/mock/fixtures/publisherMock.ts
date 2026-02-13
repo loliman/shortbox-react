@@ -1,4 +1,4 @@
-export const mockPublisherFixture = {
+export const mockPublisherFixture: any = {
   id: "39200",
   name: "All Verlag",
   us: false,

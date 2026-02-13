@@ -1,6 +1,22 @@
 import { getListQuery } from "../../graphql/queriesTyped";
-import { HierarchyLevel } from "../../util/hierarchy";
+import { HierarchyLevel, type HierarchyLevelType } from "../../util/hierarchy";
 import type { Connection, QueryCollection } from "@shortbox/contract";
+import type { SelectedRoot } from "../../types/domain";
+
+type ListNode = Record<string, unknown> & {
+  number?: string;
+  title?: string;
+  volume?: string | number;
+  format?: string;
+  variant?: string;
+  name?: string;
+  series?: {
+    title?: string;
+    volume?: string | number;
+    publisher?: { name?: string };
+  };
+  publisher?: { name?: string };
+};
 
 export function parseFilter(filterValue?: string | null) {
   if (!filterValue) return undefined;
@@ -12,7 +28,7 @@ export function parseFilter(filterValue?: string | null) {
   }
 }
 
-export function normalizeListLevelAndSelected(level, selected) {
+export function normalizeListLevelAndSelected(level: HierarchyLevelType, selected: SelectedRoot) {
   if (level === HierarchyLevel.ISSUE) {
     return {
       level: HierarchyLevel.SERIES,
@@ -23,7 +39,12 @@ export function normalizeListLevelAndSelected(level, selected) {
   return { level, selected };
 }
 
-export function scrollToSelectedIssue(data, level, selected, listElement: HTMLUListElement | null) {
+export function scrollToSelectedIssue(
+  data: any,
+  level: HierarchyLevelType,
+  selected: SelectedRoot,
+  listElement: HTMLUListElement | null
+) {
   if (!level || !selected?.issue?.number || !listElement) return;
   if (level !== HierarchyLevel.SERIES && level !== HierarchyLevel.ISSUE) return;
 
@@ -44,17 +65,21 @@ export function scrollToSelectedIssue(data, level, selected, listElement: HTMLUL
   });
 }
 
-export function toNodeList(data, queryName) {
+export function toNodeList(
+  data: any,
+  queryName: string
+): ListNode[] | null {
   if (!data?.[queryName]) return null;
 
   const value = data[queryName];
-  if (Array.isArray(value)) return value;
-  if (isConnection(value)) return value.edges.map((edge) => edge.node).filter(Boolean);
+  if (Array.isArray(value)) return value as ListNode[];
+  if (isConnection(value))
+    return value.edges.map((edge) => edge.node).filter(Boolean) as ListNode[];
 
   return null;
 }
 
-export function getItemKey(item, fallbackIndex: number): string {
+export function getItemKey(item: ListNode, fallbackIndex: number): string {
   if (item?.number && item?.series?.title && item?.series?.volume && item?.series?.publisher?.name) {
     return [
       "issue",

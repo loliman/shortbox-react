@@ -1,4 +1,4 @@
-export function addToCache(cache, query, variables, item) {
+export function addToCache(cache: any, query: any, variables: any, item: any) {
   let queryName = query.definitions[0].name.value.toLowerCase();
   let data = cache.readQuery({
     query: query,
@@ -9,7 +9,7 @@ export function addToCache(cache, query, variables, item) {
 
   let list = getListRef(data, queryName);
   list.push(item);
-  list.sort((a, b) => {
+  list.sort((a: any, b: any) => {
     return compare(a, b);
   });
   setListRef(data, queryName, list);
@@ -21,7 +21,7 @@ export function addToCache(cache, query, variables, item) {
   });
 }
 
-export function removeFromCache(cache, query, variables, item) {
+export function removeFromCache(cache: any, query: any, variables: any, item: any) {
   let queryName = query.definitions[0].name.value.toLowerCase();
   let data = cache.readQuery({
     query: query,
@@ -30,7 +30,7 @@ export function removeFromCache(cache, query, variables, item) {
 
   if (!data || !data[queryName]) return;
 
-  let list = getListRef(data, queryName).filter((e) => compare(e, item) !== 0);
+  let list = getListRef(data, queryName).filter((e: any) => compare(e, item) !== 0);
   setListRef(data, queryName, list);
 
   cache.writeQuery({
@@ -40,7 +40,7 @@ export function removeFromCache(cache, query, variables, item) {
   });
 }
 
-export function updateInCache(cache, query, variables, update, item) {
+export function updateInCache(cache: any, query: any, variables: any, update: any, item: any) {
   let queryName = query.definitions[0].name.value.toLowerCase();
   let data = cache.readQuery({
     query: query,
@@ -52,12 +52,12 @@ export function updateInCache(cache, query, variables, update, item) {
   let list = getListRef(data, queryName);
 
   if (list.length) {
-    list.find((e, i) => {
+    list.find((e: any, i: any) => {
       let found = compare(e, update) === 0;
       if (found) list[i] = item;
       return found;
     });
-    list.sort((a, b) => {
+    list.sort((a: any, b: any) => {
       return compare(a, b);
     });
     setListRef(data, queryName, list);
@@ -72,7 +72,7 @@ export function updateInCache(cache, query, variables, update, item) {
   });
 }
 
-export function compare(a, b) {
+export function compare(a: any, b: any) {
   if (a.__typename !== b.__typename)
     return String(a.__typename || "").localeCompare(String(b.__typename || ""));
 
@@ -93,16 +93,16 @@ export function compare(a, b) {
   }
 }
 
-function getListRef(data, queryName) {
+function getListRef(data: any, queryName: string) {
   const value = data[queryName];
   if (Array.isArray(value)) return value;
 
-  if (value && Array.isArray(value.edges)) return value.edges.map((edge) => edge.node);
+  if (value && Array.isArray(value.edges)) return value.edges.map((edge: any) => edge.node);
 
   return [];
 }
 
-function setListRef(data, queryName, list) {
+function setListRef(data: any, queryName: string, list: any[]) {
   const value = data[queryName];
   if (Array.isArray(value)) {
     data[queryName] = list;
@@ -112,7 +112,7 @@ function setListRef(data, queryName, list) {
   if (value && Array.isArray(value.edges)) {
     data[queryName] = {
       ...value,
-      edges: list.map((node, idx) => ({
+      edges: list.map((node: any, idx: number) => ({
         cursor: (value.edges[idx] && value.edges[idx].cursor) || String(idx),
         node,
       })),

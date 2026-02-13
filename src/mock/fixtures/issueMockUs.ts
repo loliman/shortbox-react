@@ -1,4 +1,4 @@
-export const mockIssueUsFixture = {
+export const mockIssueUsFixture: any = {
   "id": "196173",
   "title": "",
   "isbn": null,

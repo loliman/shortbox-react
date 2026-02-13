@@ -83,9 +83,9 @@ function ContainsSection({ values, us, isDesktop, setFieldValue }: ContainsSecti
         multiple
         variables={{ pattern: getPattern(values.publishers, "name"), us: !us }}
         onChange={(option, live) =>
-          updateField(option, live, values.publishers, setFieldValue, "publishers", "name")
+          updateField(option as any, Boolean(live), values.publishers, setFieldValue, "publishers", "name")
         }
-        generateLabel={(entry) => entry.name}
+        generateLabel={(entry) => String(entry.name || "")}
       />
 
       <AutocompleteField
@@ -99,9 +99,9 @@ function ContainsSection({ values, us, isDesktop, setFieldValue }: ContainsSecti
           publisher: { name: "*", us: !us },
         }}
         onChange={(option, live) =>
-          updateField(option, live, values.series, setFieldValue, "series", "title")
+          updateField(option as any, Boolean(live), values.series, setFieldValue, "series", "title")
         }
-        generateLabel={generateLabel}
+        generateLabel={(entry) => generateLabel(entry as any)}
       />
 
       <Stack spacing={1.5}>

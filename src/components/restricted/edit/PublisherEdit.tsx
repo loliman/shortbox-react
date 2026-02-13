@@ -6,10 +6,15 @@ import { publisher } from "../../../graphql/queriesTyped";
 import { withContext } from "../../generic";
 import QueryResult from "../../generic/QueryResult";
 import PublisherEditor from "../editor/PublisherEditor";
+import type { SelectedRoot } from "../../../types/domain";
 
-function PublisherEdit(props) {
+interface PublisherEditProps {
+  selected: SelectedRoot;
+}
+
+function PublisherEdit(props: Readonly<PublisherEditProps>) {
   const { selected } = props;
-  const { loading, error, data } = useQuery(publisher, { variables: selected });
+  const { loading, error, data } = useQuery(publisher, { variables: selected as any });
 
   return (
     <Layout>

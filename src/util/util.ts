@@ -1,6 +1,13 @@
 import type { Issue, Publisher, SelectedRoot, Series } from "../types/domain";
 
 type TypedEntity = Publisher | Series | Issue;
+type MutableRecord = Record<string, unknown> & {
+  __resolveType?: unknown;
+  __typename?: unknown;
+  id?: unknown;
+  series?: MutableRecord & { publisher?: MutableRecord };
+  publisher?: MutableRecord;
+};
 
 export function wrapItem(item: TypedEntity): SelectedRoot {
   if (item.__typename === "Publisher") return { us: item.us ? item.us : false, publisher: item };
@@ -19,8 +26,8 @@ export function unwrapItem(item: SelectedRoot & { __typename?: string }) {
   return item.issue;
 }
 
-export function stripItem(item) {
-  let stripped = structuredClone(item);
+export function stripItem<T extends object>(item: T): T {
+  const stripped = structuredClone(item) as MutableRecord;
 
   stripped.__resolveType = undefined;
   stripped.__typename = undefined;
@@ -29,9 +36,11 @@ export function stripItem(item) {
     stripped.series.id = undefined;
     stripped.series.__resolveType = undefined;
     stripped.series.__typename = undefined;
-    stripped.series.publisher.id = undefined;
-    stripped.series.publisher.__resolveType = undefined;
-    stripped.series.publisher.__typename = undefined;
+    if (stripped.series.publisher) {
+      stripped.series.publisher.id = undefined;
+      stripped.series.publisher.__resolveType = undefined;
+      stripped.series.publisher.__typename = undefined;
+    }
   }
 
   if (stripped.publisher) {
@@ -40,21 +49,21 @@ export function stripItem(item) {
     stripped.publisher.__resolveType = undefined;
   }
 
-  return stripped;
+  return stripped as T;
 }
 
-export function capitalize(string) {
+export function capitalize(string: string): string {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-export function decapitalize(string) {
+export function decapitalize(string: string): string {
   return string.charAt(0).toLowerCase() + string.slice(1);
 }
 
-export function romanize(num) {
+export function romanize(num: string | number): string | number {
   if (Number.isNaN(num)) return Number.NaN;
 
-    let digits = String(+num).split(""),
+  const digits = String(+num).split(""),
     key = [
       "",
       "C",
@@ -87,8 +96,9 @@ export function romanize(num) {
       "VIII",
       "IX",
     ],
-    roman = "",
-    i = 3;
+    romanStart = "";
+  let roman = romanStart;
+  let i = 3;
 
   while (i--) roman = (key[+digits.pop() + i * 10] || "") + roman;
   return new Array(+digits.join("") + 1).join("M") + roman;

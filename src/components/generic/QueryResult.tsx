@@ -6,13 +6,24 @@ import { generateLabel } from "../../util/hierarchy";
 import CircularProgress from "@mui/material/CircularProgress";
 import withContext from "./withContext";
 import Box from "@mui/material/Box";
+import type { SelectedRoot } from "../../types/domain";
 
-function QueryResult(props) {
+interface QueryResultProps {
+  appIsLoading?: boolean;
+  loading?: boolean;
+  error?: unknown;
+  data?: Record<string, any> | null;
+  selected?: SelectedRoot | null;
+  placeholder?: React.ReactElement;
+  placeholderCount?: number;
+}
+
+function QueryResult(props: Readonly<QueryResultProps>) {
   let { appIsLoading, loading, error, data, selected } = props;
 
   if (appIsLoading || loading) {
     if (props.placeholder && props.placeholderCount) {
-      let placeholder = [];
+      const placeholder: React.ReactElement[] = [];
 
       for (let i = 0; i < props.placeholderCount; i++)
         placeholder.push(

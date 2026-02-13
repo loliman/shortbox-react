@@ -10,10 +10,16 @@ import type { DocumentNode } from "graphql";
 import type { SxProps, Theme } from "@mui/material/styles";
 
 type OptionLike = Record<string, unknown> & {
+  name?: string;
+  title?: string;
+  volume?: string | number;
   pattern?: boolean;
-  type?: unknown;
-  role?: unknown;
+  type?: string | string[];
+  role?: string | string[];
+  [key: string]: any;
 };
+
+type AutocompleteChangeValue = any;
 
 interface AutocompleteFieldProps {
   query?: DocumentNode;
@@ -22,7 +28,9 @@ interface AutocompleteFieldProps {
   name: string;
   nameField?: string;
   disabled?: boolean;
-  [key: string]: unknown;
+  onChange?: (value: any, live?: any) => void;
+  generateLabel?: (option: any) => string;
+  [key: string]: any;
 }
 
 function AutocompleteField(props: AutocompleteFieldProps) {
@@ -89,14 +97,14 @@ function normalizeOptions<T>(value: QueryCollection<T> | undefined): T[] {
 
 interface FieldBridge {
   name: string;
-  value: unknown;
+  value: any;
   onBlur: (e: React.FocusEvent<HTMLElement>) => void;
 }
 
 interface FormBridge {
-  touched: Record<string, unknown>;
-  errors: Record<string, unknown>;
-  setFieldValue: (field: string, value: unknown) => void;
+  touched: Record<string, any>;
+  errors: Record<string, any>;
+  setFieldValue: (field: string, value: any) => void;
 }
 
 interface FormikAutocompleteFieldProps {
@@ -124,7 +132,7 @@ interface FormikAutocompleteFieldProps {
   inputAriaLabel?: string;
   onFocus?: (e: React.FocusEvent<HTMLElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLElement>) => void;
-  onChange?: (value: unknown, live?: boolean) => void;
+  onChange?: (value: any, live?: any) => void;
 }
 
 function FormikAutocompleteField(props: FormikAutocompleteFieldProps) {

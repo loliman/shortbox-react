@@ -31,7 +31,7 @@ function DetailsSection({ values, isDesktop, setFieldValue, hasSession }: Detail
         label="Format"
         multiple
         onChange={(option) => setFieldValue("formats", option)}
-        generateLabel={(entry) => entry}
+        generateLabel={(entry) => String(entry)}
       />
 
       <FilterSwitch

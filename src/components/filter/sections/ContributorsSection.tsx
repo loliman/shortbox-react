@@ -30,9 +30,9 @@ function ContributorsSection({ values, us, setFieldValue }: ContributorsSectionP
             multiple
             variables={{ pattern: getPattern(values.individuals, "name") }}
             onChange={(option, live) =>
-              updateField(option, live, values.individuals, setFieldValue, "individuals", "name")
+              updateField(option as any, Boolean(live), values.individuals, setFieldValue, "individuals", "name")
             }
-            generateLabel={(entry) => entry.name}
+            generateLabel={(entry) => String(entry.name || "")}
           />
         ))}
       </Stack>
@@ -48,9 +48,9 @@ function ContributorsSection({ values, us, setFieldValue }: ContributorsSectionP
             multiple
             variables={{ pattern: getPattern(values.individuals, "name") }}
             onChange={(option, live) =>
-              updateField(option, live, values.individuals, setFieldValue, "individuals", "name")
+              updateField(option as any, Boolean(live), values.individuals, setFieldValue, "individuals", "name")
             }
-            generateLabel={(entry) => entry.name}
+            generateLabel={(entry) => String(entry.name || "")}
           />
         </Stack>
       ) : null}

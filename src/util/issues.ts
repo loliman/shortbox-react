@@ -1,7 +1,7 @@
 import { romanize } from "./util";
 import { generateLabel } from "./hierarchy";
 
-export function generateItemTitle(item, us) {
+export function generateItemTitle(item: any, us: boolean) {
   let titleFromStory = "";
   if (item.title) titleFromStory = " - " + item.title;
 
@@ -21,7 +21,7 @@ export function generateItemTitle(item, us) {
   }
 }
 
-export function generateIssueSubHeader(item) {
+export function generateIssueSubHeader(item: any) {
   let header = "";
 
   if (item.title) header += item.title;

@@ -1021,7 +1021,7 @@ const issue = gql`
   }
 `;
 
-function getListQuery(level) {
+function getListQuery(level: string) {
   switch (level) {
     case HierarchyLevel.ROOT:
       return publishers;

@@ -15,10 +15,26 @@ import {
   scrollToSelectedIssue,
   toNodeList,
 } from "./listUtils";
+import type { HierarchyLevelType } from "../../util/hierarchy";
+import type { SelectedRoot } from "../../types/domain";
 
 const LIST_PAGE_SIZE = 250;
 
-function List(props) {
+interface ListProps {
+  drawerOpen?: boolean;
+  toggleDrawer?: () => void;
+  compactLayout?: boolean;
+  isPhone?: boolean;
+  isTablet?: boolean;
+  isTabletLandscape?: boolean;
+  query?: { filter?: string | null } | null;
+  level: HierarchyLevelType;
+  selected: SelectedRoot;
+  appIsLoading?: boolean;
+  [key: string]: unknown;
+}
+
+function List(props: Readonly<ListProps>) {
   const { drawerOpen, toggleDrawer } = props;
   const temporaryDrawer =
     props.compactLayout ?? Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
@@ -31,12 +47,12 @@ function List(props) {
   const queryName = getQueryName(query).toLowerCase();
   const queryVariables = { ...normalized.selected, filter, first: LIST_PAGE_SIZE };
 
-  const { error, data, networkStatus } = useQuery(query, {
-    variables: queryVariables,
+  const { error, data, networkStatus } = useQuery(query as any, {
+    variables: queryVariables as any,
     fetchPolicy: "cache-and-network",
     nextFetchPolicy: "cache-first",
     notifyOnNetworkStatusChange: true,
-  });
+  } as any);
 
   React.useEffect(() => {
     scrollToSelectedIssue(data, normalized.level, props.selected, listRef.current);

@@ -1,9 +1,40 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
+import type { DocumentNode } from "graphql";
 import type { Connection, QueryCollection } from "../../types/graphql";
 
-function PaginatedQuery(props) {
-  const { query, onCompleted, variables: inputVariables = {} } = props;
+type QueryVariables = Record<string, unknown>;
+type QueryResultMap = Record<string, QueryCollection<unknown>>;
+
+interface PaginatedQueryRenderProps {
+  query: DocumentNode;
+  variables: QueryVariables;
+  loading: boolean;
+  error: unknown;
+  data: Record<string, any>;
+  fetching: boolean;
+  networkStatus: number;
+  hasMore: boolean;
+  fetchMore: (e: React.UIEvent<HTMLElement>) => void;
+}
+
+interface PaginatedQueryProps {
+  query: DocumentNode;
+  variables?: QueryVariables;
+  onCompleted?: () => void;
+  queryDeduplication?: boolean;
+  notifyOnNetworkStatusChange?: boolean;
+  children: (value: PaginatedQueryRenderProps) => React.ReactNode;
+}
+
+function PaginatedQuery(props: Readonly<PaginatedQueryProps>) {
+  const {
+    query,
+    onCompleted,
+    variables: inputVariables = {},
+    notifyOnNetworkStatusChange = true,
+    children,
+  } = props;
   const [fetching, setFetching] = React.useState(false);
   const [hasMore, setHasMore] = React.useState(true);
   const fetchMoreInFlightRef = React.useRef(false);
@@ -35,10 +66,13 @@ function PaginatedQuery(props) {
     setHasMore(true);
   }, [inputKey]);
 
-  const { loading, error, data, fetchMore, networkStatus } = useQuery(query, {
-    variables,
-    notifyOnNetworkStatusChange: true,
-  });
+  const { loading, error, data, fetchMore, networkStatus } = useQuery<QueryResultMap, QueryVariables>(
+    query,
+    {
+      variables,
+      notifyOnNetworkStatusChange,
+    }
+  );
 
   React.useEffect(() => {
     if ((data || error) && onCompletedRef.current) onCompletedRef.current();
@@ -85,15 +119,16 @@ function PaginatedQuery(props) {
     reload();
   };
 
-  return props.children({
-    ...props,
+  return children({
+    query,
+    variables,
     loading,
     error,
-    data: { ...(data || {}), [queryName]: normalized },
+    data: { ...(data || {}), [queryName]: normalized } as Record<string, any>,
     fetching,
     networkStatus,
     hasMore,
-    fetchMore: (e) =>
+    fetchMore: (e: React.UIEvent<HTMLElement>) =>
       fetchMoreOnScroll(e, () =>
         {
           fetchMoreInFlightRef.current = true;
@@ -101,22 +136,32 @@ function PaginatedQuery(props) {
 
           void fetchMore({
             variables: fetchMoreVars,
-            updateQuery: (prev, { fetchMoreResult }) => {
+            updateQuery: (
+              prev: QueryResultMap,
+              { fetchMoreResult }: { fetchMoreResult?: QueryResultMap | null }
+            ) => {
               if (!fetchMoreResult) return prev;
 
               if (offsetMode) {
-                if (!prev || prev[queryName].length !== fetchMoreVars.offset) return prev;
+                const previousList = Array.isArray(prev[queryName])
+                  ? prev[queryName].filter(Boolean)
+                  : [];
+                const nextList = Array.isArray(fetchMoreResult[queryName])
+                  ? fetchMoreResult[queryName].filter(Boolean)
+                  : [];
+                const expectedOffset = Number(fetchMoreVars.offset || 0);
 
-                if (fetchMoreResult[queryName].length === 0) setHasMore(false);
+                if (previousList.length !== expectedOffset) return prev;
+
+                if (nextList.length === 0) setHasMore(false);
 
                 return {
                   ...prev,
-                  [queryName]: [...prev[queryName], ...fetchMoreResult[queryName]],
+                  [queryName]: [...previousList, ...nextList],
                 };
               }
 
-              const previousConnection =
-                prev && prev[queryName] ? prev[queryName] : { edges: [], pageInfo: {} };
+              const previousConnection = prev && prev[queryName] ? prev[queryName] : null;
               const nextConnection = fetchMoreResult[queryName];
               if (!isConnection(previousConnection) || !isConnection(nextConnection)) return prev;
 
@@ -146,10 +191,9 @@ function PaginatedQuery(props) {
   });
 }
 
-function getQueryName(query: {
-  definitions?: ReadonlyArray<{ name?: { value?: string } }>;
-}): string {
-  return query.definitions?.[0]?.name?.value || "";
+function getQueryName(query: DocumentNode): string {
+  const firstDefinition = query.definitions?.[0] as { name?: { value?: string } } | undefined;
+  return firstDefinition?.name?.value || "";
 }
 
 function isConnection<T>(value: QueryCollection<T> | null | undefined): value is Connection<T> {

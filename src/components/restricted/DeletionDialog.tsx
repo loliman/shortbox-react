@@ -116,8 +116,11 @@ function DeletionDialog(props: Readonly<DeletionDialogProps>) {
     },
     onCompleted: (data) => {
       navigate?.(null, generateUrl(parentRef.current as never, Boolean(props.us)));
+      const mutationResult = mutationName
+        ? (data as Record<string, unknown>)[mutationName]
+        : undefined;
 
-      if (mutationName && data?.[mutationName]) {
+      if (mutationResult) {
         enqueueSnackbar?.(itemLabel + " erfolgreich gelöscht", { variant: "success" });
       } else {
         enqueueSnackbar?.(itemLabel + " konnte nicht gelöscht werden", {

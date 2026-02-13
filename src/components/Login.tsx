@@ -12,7 +12,17 @@ import { withContext } from "./generic";
 import { LoginSchema } from "../util/yupSchema";
 import { isMockMode } from "../app/mockMode";
 
-function Login(props) {
+interface LoginProps {
+  enqueueSnackbar: (
+    message: string,
+    options?: { variant?: "success" | "error" | "warning" | "info" }
+  ) => void;
+  handleLogin: (user: any) => void;
+  navigate: (event: unknown, url: string, query?: Record<string, unknown>) => void;
+  lastLocation?: { pathname?: string } | null;
+}
+
+function Login(props: Readonly<LoginProps>) {
   const client = useApolloClient();
   const [runLogin] = useMutation(login, {
     onCompleted: (data) => {

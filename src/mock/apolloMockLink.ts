@@ -101,7 +101,7 @@ const mockSeries = [
     __typename: "Series",
   },
 ];
-const mockIssues = [
+const mockIssues: any[] = [
   {
     title: "",
     number: "1",
@@ -143,15 +143,15 @@ const mockIssues = [
     __typename: "Issue",
   },
 ];
-const issues = createMockIssueList(5).map((issue, index) => ({
+const issues: any[] = createMockIssueList(5).map((issue, index) => ({
   ...issue,
   comicguideid: `cg-${index + 1}`,
   cover: { url: `https://img.shortbox.mock/amazing-spider-man-${index + 1}.jpg` },
-  covers: [],
+  covers: [] as any[],
   variants: index === 0 ? [{ collected: false, variant: "B" }] : [],
-  stories: [],
+  stories: [] as any[],
   individuals: [{ name: "Stan Lee", type: ["writer"] }],
-  features: [],
+  features: [] as any[],
   releasedate: `1963-0${Math.min(index + 3, 9)}-01`,
   createdAt: `2025-01-0${Math.min(index + 1, 9)}T12:00:00.000Z`,
   updatedAt: `2025-01-1${Math.min(index + 1, 9)}T12:00:00.000Z`,

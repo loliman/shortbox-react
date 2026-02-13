@@ -7,9 +7,21 @@ import { generateComicGuideUrl } from "../utils/externalLinks";
 import { IssueDetailsDEStoryDetails } from "./IssueDetailsDEStoryDetails";
 import { IssueDetailsDECoverDetails } from "./IssueDetailsDECoverDetails";
 
-export function IssueDetailsDEBottom(props) {
-  const stories = Array.isArray(props.issue?.stories) ? props.issue.stories : [];
-  const covers = Array.isArray(props.issue?.covers) ? props.issue.covers : [];
+interface IssueDetailsDEBottomProps {
+  issue?: {
+    stories?: unknown[];
+    covers?: unknown[];
+    comicguideid?: string | number | null;
+    series?: Record<string, unknown>;
+    number?: string | number;
+  };
+  [key: string]: any;
+}
+
+export function IssueDetailsDEBottom(props: Readonly<IssueDetailsDEBottomProps>) {
+  const issue = props.issue || {};
+  const stories = Array.isArray(issue.stories) ? issue.stories : [];
+  const covers = Array.isArray(issue.covers) ? issue.covers : [];
 
   return (
     <Box sx={{ mt: 3 }}>
@@ -18,7 +30,7 @@ export function IssueDetailsDEBottom(props) {
         header=""
         noEntriesHint="Dieser Ausgabe sind noch keine Geschichten zugeordnet"
         items={stories}
-        itemTitle={<ContainsTitleDetailed {...props} />}
+        itemTitle={<ContainsTitleDetailed {...(props as any)} />}
         itemDetails={<IssueDetailsDEStoryDetails />}
       />
 
@@ -29,18 +41,18 @@ export function IssueDetailsDEBottom(props) {
             header="Cover"
             noEntriesHint="Dieser Ausgabe sind noch keine Cover zugeordnet"
             items={covers}
-            itemTitle={<ContainsTitleDetailed isCover={true} {...props} />}
+            itemTitle={<ContainsTitleDetailed isCover={true} {...(props as any)} />}
             itemDetails={<IssueDetailsDECoverDetails />}
           />
         </Box>
       ) : null}
 
-      {props.issue.comicguideid ? (
+      {issue.comicguideid ? (
         <Box sx={{ mt: 3 }}>
           <Typography>
             Das Cover für&nbsp;
-            <a href={generateComicGuideUrl(props.issue)} rel="noopener noreferrer nofollow" target="_blank">
-              {generateLabel(props.issue.series) + " #" + props.issue.number}
+            <a href={generateComicGuideUrl(issue as any)} rel="noopener noreferrer nofollow" target="_blank">
+              {generateLabel(issue.series as any) + " #" + issue.number}
             </a>
             &nbsp;wird bereitgestellt vom&nbsp;
             <a href="https://www.comicguide.de" rel="noopener noreferrer nofollow" target="_blank">

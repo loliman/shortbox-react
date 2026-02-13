@@ -2,7 +2,12 @@ import React from "react";
 import TableRow from "@mui/material/TableRow";
 import TableCell from "@mui/material/TableCell";
 
-export function DetailsRow(props) {
+interface DetailsRowProps {
+  label: React.ReactNode;
+  value: React.ReactNode;
+}
+
+export function DetailsRow(props: Readonly<DetailsRowProps>) {
   return (
     <TableRow>
       <TableCell align="left">{props.label}</TableCell>

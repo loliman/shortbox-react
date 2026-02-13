@@ -22,8 +22,28 @@ import {
 import { DetailsPagePlaceholder } from "../placeholders/DetailsPagePlaceholder";
 import { DetailsAddInfo } from "./DetailsAddInfo";
 import { useDualLoadingRegistration } from "./useDualLoadingRegistration";
+import type { SelectedRoot } from "../../types/domain";
 
-function SeriesDetails(props) {
+interface SeriesDetailsProps {
+  selected: SelectedRoot & {
+    series: {
+      title: string;
+      volume: number;
+      publisher: {
+        name: string;
+      };
+    };
+  };
+  us?: boolean;
+  query?: Record<string, unknown> | null;
+  session?: unknown;
+  appIsLoading?: boolean;
+  registerLoadingComponent?: (component: string) => void;
+  unregisterLoadingComponent?: (component: string) => void;
+  [key: string]: unknown;
+}
+
+function SeriesDetails(props: Readonly<SeriesDetailsProps>) {
   const us = Boolean(props.us);
   const pageProps = props as Record<string, unknown>;
   const { markDetailsLoaded, markHistoryLoaded } = useDualLoadingRegistration({

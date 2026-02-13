@@ -1,6 +1,12 @@
 import React from "react";
 
-export default function TitleLine(props) {
+interface TitleLineProps {
+  title: string;
+  session?: unknown;
+  id?: string | number;
+}
+
+export default function TitleLine(props: Readonly<TitleLineProps>) {
   return (
     <div>
       <span>{props.title}</span>
