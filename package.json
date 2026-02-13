@@ -45,9 +45,10 @@
   "scripts": {
     "contract:codegen": "npm --prefix ../shortbox-contract run codegen",
     "contract:codegen:frontend": "npm --prefix ../shortbox-contract run codegen:frontend",
+    "check:artifacts": "sh -c \"if git ls-files | grep -E '(^|/)(dist|build|logs|listen)/|\\\\.log$|(^|/)\\\\.output\\\\.txt$|(^|/)output\\\\.txt$'; then echo 'Remove tracked build/runtime artifacts before commit.'; exit 1; fi\"",
     "start": "vite",
     "dev": "vite",
-    "prebuild": "npm run contract:codegen && npm run contract:codegen:frontend",
+    "prebuild": "npm run check:artifacts && npm run contract:codegen && npm run contract:codegen:frontend",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
@@ -56,7 +57,7 @@
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "qa": "npm run typecheck && npm run lint && npm run test:ci && npm run build",
+    "qa": "npm run check:artifacts && npm run typecheck && npm run lint && npm run test:ci && npm run build",
     "start:mock": "VITE_MOCK_MODE=true vite",
     "dev:mock": "VITE_MOCK_MODE=true vite"
   },
