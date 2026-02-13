@@ -61,7 +61,7 @@ function DeletionDialog(props: Readonly<DeletionDialogProps>) {
   const parent = toParent(item);
   parentRef.current = parent;
 
-  const deleteMutation = getDeleteMutation(level);
+  const deleteMutation = getDeleteMutation(level || "");
   const listQuery = getListQuery(getHierarchyLevel(parent as never));
   const mutationName = getMutationName(deleteMutation);
   const itemLabel = getItemLabel(item);

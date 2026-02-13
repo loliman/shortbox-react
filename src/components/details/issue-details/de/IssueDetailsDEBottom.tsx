@@ -6,6 +6,7 @@ import { Contains, ContainsTitleDetailed } from "../../IssueDetails";
 import { generateComicGuideUrl } from "../utils/externalLinks";
 import { IssueDetailsDEStoryDetails } from "./IssueDetailsDEStoryDetails";
 import { IssueDetailsDECoverDetails } from "./IssueDetailsDECoverDetails";
+import type { ItemLike } from "../contains/expanded";
 
 interface IssueDetailsDEBottomProps {
   issue?: {
@@ -20,8 +21,12 @@ interface IssueDetailsDEBottomProps {
 
 export function IssueDetailsDEBottom(props: Readonly<IssueDetailsDEBottomProps>) {
   const issue = props.issue || {};
-  const stories = Array.isArray(issue.stories) ? issue.stories : [];
-  const covers = Array.isArray(issue.covers) ? issue.covers : [];
+  const stories = Array.isArray(issue.stories)
+    ? issue.stories.filter((item): item is ItemLike => Boolean(item && typeof item === "object"))
+    : [];
+  const covers = Array.isArray(issue.covers)
+    ? issue.covers.filter((item): item is ItemLike => Boolean(item && typeof item === "object"))
+    : [];
 
   return (
     <Box sx={{ mt: 3 }}>

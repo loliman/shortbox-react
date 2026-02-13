@@ -71,8 +71,8 @@ export function updateField(
             value.type = payload.type;
             value.role = payload.role;
           } else {
-            value.type = [payload.type];
-            value.role = [payload.role];
+            value.type = payload.type ? [payload.type] : [];
+            value.role = payload.role ? [payload.role] : [];
           }
 
           selected.push(value);
@@ -108,8 +108,8 @@ export function updateField(
       case "create-option":
         selected.push({
           name: (values && values[values.length - 1]?.name) || "",
-          type: [payload.type],
-          role: [payload.role],
+          type: payload.type ? [payload.type] : [],
+          role: payload.role ? [payload.role] : [],
         });
         break;
 

@@ -4,14 +4,15 @@ import Typography from "@mui/material/Typography";
 import { getContainsItemKey } from "../utils/issueDetailsUtils";
 import { ContainsSimpleItem } from "./ContainsSimpleItem";
 import { ContainsItem } from "./ContainsItem";
+import type { ItemLike, QueryParams } from "./expanded";
 
 interface ContainsProps {
   header?: string;
   noEntriesHint?: string;
-  items?: unknown[];
+  items?: ItemLike[] | null;
   itemTitle: React.ReactElement;
   itemDetails?: React.ReactElement;
-  query?: { filter?: string; expand?: string } | null;
+  query?: QueryParams;
   navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
   us?: boolean;
   [key: string]: unknown;

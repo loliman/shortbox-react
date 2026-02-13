@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import type { SessionData } from "../../app/session";
 import { useResponsive } from "../../app/useResponsive";
 
-type SessionValue = SessionData | null | undefined;
+type SessionValue = SessionData | null;
 
 interface AppContextState {
   drawerOpen: boolean;
@@ -12,7 +12,7 @@ interface AppContextState {
 interface AppContextProps {
   children?: React.ReactNode;
   session?: SessionValue;
-  setSession?: (value: SessionValue) => void;
+  setSession?: React.Dispatch<React.SetStateAction<SessionValue>>;
 }
 
 export interface AppContextValue {
@@ -125,7 +125,7 @@ function AppContextProvider({ children, session, setSession }: Readonly<AppConte
     () => ({
       drawerOpen: state.drawerOpen,
       toggleDrawer,
-      session,
+      session: session ?? null,
       handleLogin,
       handleLogout,
       isPhone: responsive.isPhone,

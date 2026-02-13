@@ -15,7 +15,8 @@ export function wrapItem(item: TypedEntity): SelectedRoot {
   if (item.__typename === "Series")
     return { us: item.publisher?.us ? item.publisher.us : false, series: item };
 
-  return { us: item.series.publisher.us ? item.series.publisher.us : false, issue: item };
+  const issue = item as Issue;
+  return { us: issue.series?.publisher?.us ? issue.series.publisher.us : false, issue };
 }
 
 export function unwrapItem(item: SelectedRoot & { __typename?: string }) {
@@ -100,7 +101,10 @@ export function romanize(num: string | number): string | number {
   let roman = romanStart;
   let i = 3;
 
-  while (i--) roman = (key[+digits.pop() + i * 10] || "") + roman;
+  while (i--) {
+    const digit = digits.pop() ?? "0";
+    roman = (key[+digit + i * 10] || "") + roman;
+  }
   return new Array(+digits.join("") + 1).join("M") + roman;
 }
 

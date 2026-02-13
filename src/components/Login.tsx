@@ -24,12 +24,13 @@ interface LoginProps {
 
 function Login(props: Readonly<LoginProps>) {
   const client = useApolloClient();
+  const fallbackPath = props.lastLocation?.pathname || "/";
   const [runLogin] = useMutation(login, {
     onCompleted: (data) => {
       props.enqueueSnackbar("Willkommen!", { variant: "success" });
       props.handleLogin(data.login);
       client.resetStore();
-      props.navigate(null, props.lastLocation ? props.lastLocation.pathname : "/");
+      props.navigate(null, fallbackPath);
     },
     onError: (errors) => {
       let message =
@@ -52,7 +53,7 @@ function Login(props: Readonly<LoginProps>) {
           props.enqueueSnackbar("Willkommen!", { variant: "success" });
           props.handleLogin({ loggedIn: true });
           client.resetStore();
-          props.navigate(null, props.lastLocation ? props.lastLocation.pathname : "/");
+          props.navigate(null, fallbackPath);
           actions.setSubmitting(false);
           return;
         }
@@ -88,9 +89,7 @@ function Login(props: Readonly<LoginProps>) {
               <div id="loginButtons">
                 <Button
                   disabled={isSubmitting}
-                  onClick={(e) =>
-                    props.navigate(e, props.lastLocation ? props.lastLocation.pathname : "/")
-                  }
+                  onClick={(e) => props.navigate(e, fallbackPath)}
                   color="secondary"
                 >
                   Abbrechen

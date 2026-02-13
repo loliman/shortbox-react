@@ -5,6 +5,7 @@ import { generateLabel } from "../../../../util/hierarchy";
 import { Contains, ContainsTitleDetailed, ContainsTitleSimple } from "../../IssueDetails";
 import { generateMarvelDbUrl } from "../utils/externalLinks";
 import { IssueDetailsUSStoryDetails } from "./IssueDetailsUSStoryDetails";
+import type { ItemLike } from "../contains/expanded";
 
 interface IssueDetailsUSBottomProps {
   issue?: {
@@ -21,11 +22,15 @@ interface IssueDetailsUSBottomProps {
 
 export function IssueDetailsUSBottom(props: Readonly<IssueDetailsUSBottomProps>) {
   const issue = props.issue || {};
-  const stories = Array.isArray(issue.stories) ? issue.stories : [];
+  const stories = Array.isArray(issue.stories)
+    ? issue.stories.filter((item): item is ItemLike => Boolean(item && typeof item === "object"))
+    : [];
   const covers = Array.isArray(issue.covers) ? issue.covers : [];
   const coverChildren =
     covers.length > 0 && Array.isArray(covers[0]?.children)
-      ? covers[0].children.map((item) => item?.issue).filter(Boolean)
+      ? covers[0].children
+          .map((item) => item?.issue)
+          .filter((item): item is ItemLike => Boolean(item && typeof item === "object"))
       : [];
 
   return (

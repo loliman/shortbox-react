@@ -36,6 +36,7 @@ interface AutocompleteFieldProps {
 function AutocompleteField(props: AutocompleteFieldProps) {
   const { query, variables, values, name, disabled, ...rest } = props;
   const nameField = props.nameField || name.split(".").pop() || "name";
+  const resolvedQuery = query;
 
   if (values) {
     return (
@@ -53,9 +54,11 @@ function AutocompleteField(props: AutocompleteFieldProps) {
     );
   }
 
+  if (!resolvedQuery) return null;
+
   return (
     <PaginatedQuery
-      query={query}
+      query={resolvedQuery}
       variables={variables}
       queryDeduplication={true}
       notifyOnNetworkStatusChange
@@ -63,7 +66,7 @@ function AutocompleteField(props: AutocompleteFieldProps) {
       {({ error, data, fetchMore, loading, fetching }) => {
         let optionsFromQuery: OptionLike[] = [];
         if (data) {
-          const queryName = getQueryName(query).toLowerCase();
+          const queryName = getQueryName(resolvedQuery).toLowerCase();
           const raw = (data as Record<string, QueryCollection<OptionLike>>)[queryName];
           optionsFromQuery = normalizeOptions(raw);
         }
@@ -310,7 +313,7 @@ function FormikAutocompleteField(props: FormikAutocompleteFieldProps) {
         noOptionsText={loadingError ? "Fehler!" : "Keine Ergebnisse gefunden"}
         loadingText="Lade..."
         onInputChange={handleInputChange}
-        onChange={isMultiple ? handleMultiChange : handleSingleChange}
+        onChange={isMultiple ? (handleMultiChange as any) : handleSingleChange}
         onFocus={onFocus}
         onBlur={(e) => {
           if (onBlur) onBlur(e);
@@ -320,8 +323,8 @@ function FormikAutocompleteField(props: FormikAutocompleteFieldProps) {
           tagValue.map((option, index) => (
             <Chip
               {...getTagProps({ index })}
-              key={optionKey(option, nameField) + "_" + index}
-              label={optionLabel(option, nameField, generateLabel)}
+              key={optionKey(option as OptionLike | string, nameField) + "_" + index}
+              label={optionLabel(option as OptionLike | string, nameField, generateLabel)}
             />
           ))
         }

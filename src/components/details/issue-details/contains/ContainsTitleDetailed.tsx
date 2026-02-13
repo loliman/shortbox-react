@@ -88,7 +88,9 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
     <div className={props.simple ? "storyTitle storyTitleSimple" : "storyTitle"}>
       <div className="headingContainer">
         <div>
-          <Typography className="heading itemTitle">{generateItemTitle(item.issue ? item.issue : item, props.us)}</Typography>
+          <Typography className="heading itemTitle">
+            {generateItemTitle(item.issue ? item.issue : item, Boolean(props.us))}
+          </Typography>
           {parentTitle && !props.isPhonePortrait ? <Typography className="parentTitle">{parentTitle}</Typography> : null}
           {variant && !props.isPhonePortrait ? <Typography className="parentTitle">{variant} Variant</Typography> : null}
         </div>

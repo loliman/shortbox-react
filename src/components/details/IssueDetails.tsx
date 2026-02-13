@@ -91,11 +91,12 @@ function IssueDetails(props: IssueDetailsProps) {
 
   const arcs = collectIssueArcs(loadedIssue, us);
   const today = getTodayLocalDate();
+  const releaseDate = loadedIssue.releasedate ? new Date(loadedIssue.releasedate) : null;
 
   return (
     <Layout>
       <React.Fragment>
-        {!us && !loadedIssue.verified && today < new Date(loadedIssue.releasedate) ? (
+        {!us && !loadedIssue.verified && releaseDate && today < releaseDate ? (
           <SnackbarContent
             id="notVerifiedWarning"
             message="Diese Ausgabe ist noch nicht im Handel erhältlich und noch nicht vorab verifiziert worden.

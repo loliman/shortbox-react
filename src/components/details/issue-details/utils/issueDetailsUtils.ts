@@ -1,5 +1,10 @@
 import type { Issue } from "../../../../types/domain";
 
+type ArcLike = {
+  title?: string | null;
+  type?: string | null;
+};
+
 export function getTodayLocalDate(): Date {
   const now = new Date();
   return new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -8,7 +13,7 @@ export function getTodayLocalDate(): Date {
 export function collectIssueArcs(issueData: Issue, us: boolean) {
   if (us) {
     return (issueData.arcs || [])
-      .filter((arc) => Boolean(arc?.title))
+      .filter((arc): arc is ArcLike => Boolean(arc?.title))
       .map((arc) => ({
         title: arc.title || "",
         type: arc.type || "STORYARC",
@@ -18,9 +23,10 @@ export function collectIssueArcs(issueData: Issue, us: boolean) {
   const deduped = new Map<string, { title: string; type: string }>();
   for (const story of issueData.stories || []) {
     for (const arc of story?.parent?.issue?.arcs || []) {
-      const key = `${arc.type}|${arc.title}`;
+      if (!arc?.title) continue;
+      const key = `${arc.type || "STORYARC"}|${arc.title}`;
       if (!deduped.has(key)) {
-        deduped.set(key, { title: arc.title, type: arc.type });
+        deduped.set(key, { title: arc.title, type: arc.type || "STORYARC" });
       }
     }
   }
@@ -29,7 +35,7 @@ export function collectIssueArcs(issueData: Issue, us: boolean) {
 }
 
 export function getContainsItemKey(
-  item: { __typename?: string; number?: string | number },
+  item: { __typename?: string | null; number?: string | number | null },
   idx: number
 ): string {
   const type = item?.__typename || "item";
@@ -38,7 +44,7 @@ export function getContainsItemKey(
 }
 
 export function getVariantKey(
-  variant: { format?: string; variant?: string; number?: string | number },
+  variant: { format?: string | null; variant?: string | null; number?: string | number | null },
   idx: number
 ): string {
   return `${variant.format || ""}|${variant.variant || ""}|${variant.number || idx}`;

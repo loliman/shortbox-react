@@ -10,6 +10,11 @@ export const HierarchyLevel = Object.freeze({
 
 export type HierarchyLevelType = (typeof HierarchyLevel)[keyof typeof HierarchyLevel];
 
+function safeValue(value: unknown): string {
+  if (value === null || value === undefined) return "";
+  return String(value);
+}
+
 export function getHierarchyLevel(item: SelectedRoot): HierarchyLevelType {
   if (item.publisher) return HierarchyLevel.PUBLISHER;
   if (item.series) return HierarchyLevel.SERIES;
@@ -24,42 +29,53 @@ export function generateUrl(item: SelectedRoot, us: boolean): string {
 
   if (!item.publisher && !item.series && !item.issue) return url;
 
-  if (item.publisher) return url + encodeURIComponent(item.publisher.name);
+  if (item.publisher) return url + encodeURIComponent(safeValue(item.publisher.name).replace(/%/g, "%25"));
 
   if (item.series) {
+    const publisherName = safeValue(item.series.publisher?.name).replace(/%/g, "%25");
+    const seriesTitle = safeValue(item.series.title).replace(/%/g, "%25");
+    const volume = safeValue(item.series.volume);
     return (
       url +
-      encodeURIComponent(item.series.publisher.name.replace(/%/g, "%25")) +
+      encodeURIComponent(publisherName) +
       "/" +
-      encodeURIComponent(item.series.title.replace(/%/g, "%25") + "_Vol_" + item.series.volume)
+      encodeURIComponent(seriesTitle + "_Vol_" + volume)
     );
   }
 
   if (!item.issue?.variant || item.issue.variant === "") {
+    const publisherName = safeValue(item.issue?.series?.publisher?.name).replace(/%/g, "%25");
+    const seriesTitle = safeValue(item.issue?.series?.title).replace(/%/g, "%25");
+    const seriesVolume = safeValue(item.issue?.series?.volume);
+    const number = safeValue(item.issue?.number).replace(/%/g, "%25");
+    const format = safeValue(item.issue?.format);
     return (
       url +
-      encodeURIComponent(item.issue?.series.publisher.name.replace(/%/g, "%25") || "") +
+      encodeURIComponent(publisherName) +
       "/" +
-      encodeURIComponent(
-        (item.issue?.series.title || "").replace(/%/g, "%25") + "_Vol_" + item.issue?.series.volume
-      ) +
+      encodeURIComponent(seriesTitle + "_Vol_" + seriesVolume) +
       "/" +
-      encodeURIComponent((item.issue?.number || "").replace(/%/g, "%25")) +
-      (item.issue?.format ? "/" + encodeURIComponent(item.issue.format) : "")
+      encodeURIComponent(number) +
+      (format ? "/" + encodeURIComponent(format) : "")
     );
   }
 
+  const publisherName = safeValue(item.issue?.series?.publisher?.name).replace(/%/g, "%25");
+  const seriesTitle = safeValue(item.issue?.series?.title).replace(/%/g, "%25");
+  const seriesVolume = safeValue(item.issue?.series?.volume);
+  const number = safeValue(item.issue?.number).replace(/%/g, "%25");
+  const format = safeValue(item.issue?.format);
+  const variant = safeValue(item.issue?.variant);
+
   return (
     url +
-    encodeURIComponent(item.issue.series.publisher.name.replace(/%/g, "%25")) +
+    encodeURIComponent(publisherName) +
     "/" +
-    encodeURIComponent(
-      item.issue.series.title.replace(/%/g, "%25") + "_Vol_" + item.issue.series.volume
-    ) +
+    encodeURIComponent(seriesTitle + "_Vol_" + seriesVolume) +
     "/" +
-    encodeURIComponent(item.issue.number.replace(/%/g, "%25")) +
+    encodeURIComponent(number) +
     "/" +
-    encodeURIComponent((item.issue.format || "") + "_" + item.issue.variant)
+    encodeURIComponent(format + "_" + variant)
   );
 }
 
@@ -132,27 +148,33 @@ export function generateLabel(item?: SelectedRoot | null): string {
     return "Shortbox - Das deutsche Archiv für Marvel Comics";
   }
 
-  if (item.publisher) return item.publisher.name;
+  if (item.publisher) return safeValue(item.publisher.name);
 
   if (item.series) {
     let year = "";
     if (item.series.startyear) year = " (" + item.series.startyear + ")";
+    const title = safeValue(item.series.title);
+    const volume = item.series.volume;
+    const hasVolume = volume !== undefined && volume !== null;
     return (
-      item.series.title +
-      (item.series.publisher ? " (Vol. " + romanize(item.series.volume) + ")" + year : "")
+      title +
+      (item.series.publisher && hasVolume ? " (Vol. " + romanize(volume) + ")" + year : "")
     );
   }
 
   if (item.issue) {
     let year = "";
     if (item.issue.series.startyear) year = " (" + item.issue.series.startyear + ")";
+    const title = safeValue(item.issue.series.title);
+    const volume = item.issue.series.volume;
+    const hasVolume = volume !== undefined && volume !== null;
 
     return (
-      item.issue.series.title +
-      (item.issue.series.publisher ? " (Vol. " + romanize(item.issue.series.volume) + ")" : "") +
+      title +
+      (item.issue.series.publisher && hasVolume ? " (Vol. " + romanize(volume) + ")" : "") +
       (year || "") +
       " #" +
-      item.issue.number
+      safeValue(item.issue.number)
     );
   }
 

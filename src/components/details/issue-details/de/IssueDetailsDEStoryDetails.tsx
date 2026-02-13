@@ -9,7 +9,7 @@ interface IssueDetailsDEStoryDetailsProps {
   item?: {
     parent?: {
       issue?: {
-        arcs?: unknown[];
+        arcs?: Array<{ title?: string | null; type?: string | null } | null>;
       };
     };
   };
@@ -19,7 +19,13 @@ interface IssueDetailsDEStoryDetailsProps {
 }
 
 export function IssueDetailsDEStoryDetails(props: Readonly<IssueDetailsDEStoryDetailsProps>) {
-  const storyArcs = Array.isArray(props.item?.parent?.issue?.arcs) ? props.item.parent.issue.arcs : [];
+  const storyArcs = Array.isArray(props.item?.parent?.issue?.arcs)
+    ? props.item.parent.issue.arcs.filter(
+        (arc): arc is { title?: string | null; type?: string | null } =>
+          Boolean(arc && typeof arc === "object")
+      )
+    : [];
+  const item = (props.item || {}) as Record<string, unknown>;
 
   return (
     <div>
@@ -32,8 +38,8 @@ export function IssueDetailsDEStoryDetails(props: Readonly<IssueDetailsDEStoryDe
         </Box>
       ) : null}
 
-      <StoryPeopleSection item={props.item} us={props.us} navigate={props.navigate} />
-      <StoryAppearanceSection item={props.item} us={props.us} navigate={props.navigate} />
+      <StoryPeopleSection item={item} us={props.us} navigate={props.navigate} />
+      <StoryAppearanceSection item={item} us={props.us} navigate={props.navigate} />
     </div>
   );
 }

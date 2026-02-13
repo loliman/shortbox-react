@@ -35,7 +35,7 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
   return (
     <div className={props.simple ? "storyTitle storyTitleSimple" : "storyTitle"}>
       <div className="headingContainer">
-        <Typography className="heading">{generateItemTitle(item, props.us)}</Typography>
+        <Typography className="heading">{generateItemTitle(item, Boolean(props.us))}</Typography>
         <Typography className="heading headingAddInfo">{item.addinfo ? item.addinfo : null}</Typography>
       </div>
 

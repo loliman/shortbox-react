@@ -25,6 +25,9 @@ export function updateIssueEditorCache(
   defaultValues: IssueEditorFormValues
 ) {
   const res = structuredClone(data[mutationName]) as IssueCacheMutationResult;
+  if (!res.series.publisher) {
+    res.series.publisher = {};
+  }
 
   if (edit) {
     const defVariables: { issue: Record<string, unknown> } = { issue: {} };

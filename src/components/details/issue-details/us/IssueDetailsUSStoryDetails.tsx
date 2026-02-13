@@ -5,17 +5,18 @@ import Box from "@mui/material/Box";
 import { StoryPeopleSection } from "../sections/StoryPeopleSection";
 import { StoryAppearanceSection } from "../sections/StoryAppearanceSection";
 import { StoryIssueListItem } from "../StoryIssueListItem";
+import type { StoryIssue, StoryIssueRelation } from "../utils/storyIssueUtils";
 import { isSameIssue, toChildAddinfo, toIssueRowKey } from "../utils/storyIssueUtils";
 
-interface IssueReference {
+interface IssueReference extends Omit<StoryIssueRelation, "issue" | "parent"> {
   [key: string]: any;
-  issue?: Record<string, unknown> | null;
+  issue?: StoryIssue | null;
   number?: string | number;
   addinfo?: string;
   parent?: {
-    issue?: Record<string, unknown> | null;
+    issue?: StoryIssue | null;
     number?: string | number;
-  };
+  } | null;
 }
 
 interface StoryLike extends IssueReference {
@@ -31,31 +32,49 @@ interface IssueDetailsUSStoryDetailsProps {
     reprints?: IssueReference[];
     children?: IssueReference[];
   } & StoryLike;
-  issue?: Record<string, unknown>;
+  issue?: StoryIssue;
   us?: boolean;
   session?: unknown;
   navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
   [key: string]: any;
 }
 
+function toStoryIssueRelation(value: IssueReference): StoryIssueRelation {
+  return {
+    ...value,
+    issue: value.issue || undefined,
+    parent: value.parent
+      ? {
+          ...value.parent,
+          issue: value.parent.issue || undefined,
+        }
+      : undefined,
+  };
+}
+
 export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDetailsProps>) {
-  const story = props.item.parent ? props.item.parent : props.item;
+  const currentItem = props.item || {};
+  const story = currentItem.parent ? currentItem.parent : currentItem;
   const us = Boolean(props.us);
   const reprints = Array.isArray(story?.reprints) ? story.reprints : [];
-  const children = Array.isArray(props.item?.children) ? props.item.children : [];
-  const reprintOf = props.item?.reprintOf;
+  const children = Array.isArray(currentItem.children) ? currentItem.children : [];
+  const reprintOf = currentItem.reprintOf;
 
   return (
     <div className="usStoryContainer">
       <div className="usStoryDetails">
         <StoryPeopleSection
-          item={props.item as any}
+          item={(currentItem as Record<string, unknown>) || {}}
           us={us}
           navigate={props.navigate}
           includeTranslator
           translatorOptional
         />
-        <StoryAppearanceSection item={props.item as any} us={us} navigate={props.navigate} />
+        <StoryAppearanceSection
+          item={(currentItem as Record<string, unknown>) || {}}
+          us={us}
+          navigate={props.navigate}
+        />
       </div>
 
       {!reprintOf?.issue ? null : (
@@ -82,10 +101,11 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
           <List className="issueStoryIssueList">
             {reprints.map((child, idx) => {
               if (!child.issue) return null;
+              const relation = toStoryIssueRelation(child);
 
               return (
                 <StoryIssueListItem
-                  key={toIssueRowKey(child, idx)}
+                  key={toIssueRowKey(relation, idx)}
                   issue={child.issue}
                   number={child.number}
                   subtitle={child.addinfo ? child.addinfo : null}
@@ -107,7 +127,8 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
           <List className="issueStoryIssueList">
             {children.map((child, idx) => {
               if (!child.issue) return null;
-              const addinfoText = toChildAddinfo(child);
+              const relation = toStoryIssueRelation(child);
+              const addinfoText = toChildAddinfo(relation);
               const parentLink =
                 child.parent?.issue && !isSameIssue(child.parent.issue, props.issue)
                   ? {
@@ -121,7 +142,7 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
 
               return (
                 <StoryIssueListItem
-                  key={toIssueRowKey(child, idx)}
+                  key={toIssueRowKey(relation, idx)}
                   issue={child.issue}
                   number={child.number}
                   subtitle={addinfoText !== "" ? addinfoText : null}

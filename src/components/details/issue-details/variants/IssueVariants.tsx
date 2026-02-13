@@ -3,27 +3,21 @@ import Typography from "@mui/material/Typography";
 import ImageList from "@mui/material/ImageList";
 import { getVariantKey } from "../utils/issueDetailsUtils";
 import { IssueVariantTile } from "./IssueVariantTile";
+import type { VariantIssue } from "./types";
 
 type NavigateFn = (event: unknown, url: string, query?: Record<string, unknown>) => void;
 
-type VariantIssue = {
-  format?: string | null;
-  variant?: string | null;
-  collected?: boolean | null;
-  cover?: { url?: string | null } | null;
-  covers?: Array<{ parent?: { issue?: { cover?: { url?: string | null } | null } | null } | null }> | null;
-  stories?: unknown[] | null;
-};
-
 type IssueVariantsProps = {
-  issue: VariantIssue & { variants?: VariantIssue[] | null };
+  issue: VariantIssue;
   us?: boolean;
   session?: unknown;
   navigate?: NavigateFn;
 };
 
 export function IssueVariants(props: Readonly<IssueVariantsProps>) {
-  const variants = props.issue.variants || [];
+  const variants = (props.issue.variants || []).filter(
+    (variant): variant is VariantIssue => Boolean(variant)
+  );
   if (variants.length <= 1) return null;
 
   return (

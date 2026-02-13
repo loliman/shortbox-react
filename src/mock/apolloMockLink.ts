@@ -202,7 +202,7 @@ const buildResult = (key: string, variables: Record<string, unknown>) => {
             label: `${series.title} #${issues[0].number}`,
             url: `/us/${publisher.name}/${series.title}_Vol_${series.volume}/${issues[0].number}`,
           },
-        ].filter((node) => matches(node.label, variables.pattern as string)),
+        ].filter((node) => matches(String(node.label || ""), variables.pattern as string)),
       };
     case "export":
       return { export: "Mock export content" };

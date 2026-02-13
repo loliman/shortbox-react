@@ -1,26 +1,26 @@
 import type { CSSProperties } from "react";
 
 interface StoryParent {
-  children?: Array<unknown>;
-  collectedmultipletimes?: boolean;
+  children?: Array<unknown | null> | null;
+  collectedmultipletimes?: boolean | null;
 }
 
 interface StoryChild {
-  issue?: { collected?: boolean };
+  issue?: { collected?: boolean | null } | null;
 }
 
 interface StoryLike {
-  onlyapp?: boolean;
-  firstapp?: boolean;
-  otheronlytb?: boolean;
-  exclusive?: boolean;
-  onlyoneprint?: boolean;
-  onlytb?: boolean;
+  onlyapp?: boolean | null;
+  firstapp?: boolean | null;
+  otheronlytb?: boolean | null;
+  exclusive?: boolean | null;
+  onlyoneprint?: boolean | null;
+  onlytb?: boolean | null;
   reprintOf?: unknown;
-  reprints?: Array<unknown>;
-  parent?: StoryParent;
-  children?: Array<StoryChild>;
-  collectedmultipletimes?: boolean;
+  reprints?: Array<unknown | null> | null;
+  parent?: StoryParent | null;
+  children?: Array<StoryChild | null> | null;
+  collectedmultipletimes?: boolean | null;
 }
 
 interface CoverLike {
@@ -32,10 +32,10 @@ export type PreviewIssue = {
   number?: string | null;
   title?: string | null;
   verified?: boolean | null;
-  stories?: Array<StoryLike>;
-  covers?: Array<{ parent?: { issue?: { cover?: CoverLike | null } | null } | null }>;
+  stories?: Array<StoryLike | null> | null;
+  covers?: Array<{ parent?: { issue?: { cover?: CoverLike | null } | null } | null } | null> | null;
   cover?: CoverLike | null;
-  collected?: boolean;
+  collected?: boolean | null;
   format?: string | null;
   variant?: string | null;
   series?: {
@@ -93,7 +93,7 @@ export function getIssuePreviewBorderRadius(
 }
 
 export function getIssuePreviewFlags(issue: PreviewIssue, us: boolean, hasSession: boolean): IssuePreviewFlags {
-  const stories = issue.stories || [];
+  const stories = (issue.stories || []).filter((story): story is StoryLike => Boolean(story));
 
   const hasOnlyApp = stories.some((story) => Boolean(story.onlyapp));
   const hasFirstApp = stories.some((story) => Boolean(story.firstapp));
@@ -122,6 +122,7 @@ export function getIssuePreviewFlags(issue: PreviewIssue, us: boolean, hasSessio
       }
 
       for (const child of story.children || []) {
+        if (!child) continue;
         if (!collected && child.issue?.collected) {
           collected = true;
         }

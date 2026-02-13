@@ -42,10 +42,12 @@ interface PublisherDetailsProps {
 function PublisherDetails(props: Readonly<PublisherDetailsProps>) {
   const selected = props.selected;
   const us = Boolean(props.us);
+  const registerLoadingComponent = props.registerLoadingComponent || (() => {});
+  const unregisterLoadingComponent = props.unregisterLoadingComponent || (() => {});
   const pageProps = props as Record<string, unknown>;
   const { markDetailsLoaded, markHistoryLoaded } = useDualLoadingRegistration({
-    registerLoadingComponent: props.registerLoadingComponent,
-    unregisterLoadingComponent: props.unregisterLoadingComponent,
+    registerLoadingComponent,
+    unregisterLoadingComponent,
     detailsKey: "PublisherDetails_details",
     historyKey: "PublisherDetails_history",
   });
@@ -102,7 +104,13 @@ function PublisherDetails(props: Readonly<PublisherDetailsProps>) {
             ) : (
               <React.Fragment>
                 <CardHeader
-                  title={<TitleLine title={generateLabel(details)} id={details.id} session={props.session} />}
+                  title={
+                    <TitleLine
+                      title={generateLabel({ publisher: details as any, us })}
+                      id={details.id ?? undefined}
+                      session={props.session}
+                    />
+                  }
                   subheader={
                     details.startyear + " - " + (details.active ? "heute" : details.endyear)
                   }

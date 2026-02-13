@@ -45,10 +45,12 @@ interface SeriesDetailsProps {
 
 function SeriesDetails(props: Readonly<SeriesDetailsProps>) {
   const us = Boolean(props.us);
+  const registerLoadingComponent = props.registerLoadingComponent || (() => {});
+  const unregisterLoadingComponent = props.unregisterLoadingComponent || (() => {});
   const pageProps = props as Record<string, unknown>;
   const { markDetailsLoaded, markHistoryLoaded } = useDualLoadingRegistration({
-    registerLoadingComponent: props.registerLoadingComponent,
-    unregisterLoadingComponent: props.unregisterLoadingComponent,
+    registerLoadingComponent,
+    unregisterLoadingComponent,
     detailsKey: "SeriesDetails_details",
     historyKey: "SeriesDetails_history",
   });
@@ -112,7 +114,13 @@ function SeriesDetails(props: Readonly<SeriesDetailsProps>) {
             ) : (
               <React.Fragment>
                 <CardHeader
-                  title={<TitleLine title={generateLabel(details)} id={details.id} session={props.session} />}
+                  title={
+                    <TitleLine
+                      title={generateLabel({ series: details as any, us })}
+                      id={details.id ?? undefined}
+                      session={props.session}
+                    />
+                  }
                   subheader={
                     details.startyear + " - " + (details.active ? "heute" : details.endyear)
                   }

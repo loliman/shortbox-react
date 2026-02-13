@@ -97,9 +97,10 @@ export default function TypeListEntry(props: Readonly<TypeListEntryProps>) {
 
 function createItemLabel(item: ListEntryItem, level: string | undefined, us?: boolean) {
   if (level === HierarchyLevel.SERIES || level === HierarchyLevel.ISSUE) {
-    if (level === HierarchyLevel.ISSUE && us) return "#" + item.number + " " + item.series.title;
+    const seriesTitle = item.series?.title || "";
+    if (level === HierarchyLevel.ISSUE && us) return "#" + item.number + " " + seriesTitle;
     if (item.title && item.title !== "") return "#" + item.number + " " + item.title;
-    return "#" + item.number + " " + item.series.title;
+    return "#" + item.number + " " + seriesTitle;
   }
 
   return generateLabel(item as any);

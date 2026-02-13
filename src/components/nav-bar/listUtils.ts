@@ -47,13 +47,14 @@ export function scrollToSelectedIssue(
 ) {
   if (!level || !selected?.issue?.number || !listElement) return;
   if (level !== HierarchyLevel.SERIES && level !== HierarchyLevel.ISSUE) return;
+  const selectedIssueNumber = selected.issue.number;
 
   const query = getListQuery(level);
   const queryName = getQueryName(query).toLowerCase();
   const items = toNodeList(data, queryName);
   if (!items) return;
 
-  const idx = items.findIndex((entry) => entry?.number === selected.issue.number);
+  const idx = items.findIndex((entry) => entry?.number === selectedIssueNumber);
   if (idx < 0) return;
 
   const currentItem = listElement.querySelector(`[data-item-index="${idx}"]`) as HTMLElement | null;
@@ -74,7 +75,7 @@ export function toNodeList(
   const value = data[queryName];
   if (Array.isArray(value)) return value as ListNode[];
   if (isConnection(value))
-    return value.edges.map((edge) => edge.node).filter(Boolean) as ListNode[];
+    return value.edges.map((edge) => edge?.node).filter(Boolean) as ListNode[];
 
   return null;
 }

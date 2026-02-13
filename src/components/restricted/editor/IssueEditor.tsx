@@ -105,7 +105,7 @@ class IssueEditor extends React.Component<IssueEditorProps, IssueEditorState> {
                   onToggleUs={this.toggleUs}
                   onCancel={(event) => {
                     if (this.state.copy && selected) {
-                      navigate(event, generateUrl(selected, selected.us));
+                      navigate(event, generateUrl(selected, Boolean(selected.us)));
                       return;
                     }
 

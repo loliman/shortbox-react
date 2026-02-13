@@ -1,6 +1,6 @@
 import { compareIssueNumbers } from "../utils/issueDetailsUtils";
 
-type QueryParams = {
+export type QueryParams = {
   expand?: string;
   filter?: string;
 } | null;
@@ -20,7 +20,7 @@ type IssueLike = {
 type PersonLike = { name?: string; type?: string };
 type AppearanceLike = { name?: string };
 
-type ItemLike = {
+export type ItemLike = {
   __typename?: string;
   number?: string | number;
   onlyapp?: boolean;
@@ -53,7 +53,7 @@ type ExpandedFilter = {
   appearances?: string;
 };
 
-export function expanded(item: ItemLike, query: QueryParams): boolean {
+export function expanded(item: ItemLike, query?: QueryParams): boolean {
   if (query?.expand && String(query.expand) === String(item?.number ?? "")) {
     return true;
   }

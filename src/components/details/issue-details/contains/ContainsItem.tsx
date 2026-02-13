@@ -4,12 +4,13 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import { expanded } from "./expanded";
+import type { ItemLike, QueryParams } from "./expanded";
 
 interface ContainsItemProps {
   idx: number;
   isLast: boolean;
-  item: unknown;
-  query?: { filter?: string; expand?: string } | null;
+  item: ItemLike;
+  query?: QueryParams;
   itemTitle: React.ReactElement;
   itemDetails: React.ReactElement;
   navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;

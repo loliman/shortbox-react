@@ -2,17 +2,9 @@ import React from "react";
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
 import { getIssueUrl } from "../../../../util/issuePresentation";
+import type { VariantIssue } from "./types";
 
 type NavigateFn = (event: unknown, url: string, query?: Record<string, unknown>) => void;
-
-type VariantIssue = {
-  format?: string | null;
-  variant?: string | null;
-  collected?: boolean | null;
-  cover?: { url?: string | null } | null;
-  covers?: Array<{ parent?: { issue?: { cover?: { url?: string | null } | null } | null } | null }> | null;
-  stories?: unknown[] | null;
-};
 
 type IssueVariantTileProps = {
   issue: VariantIssue;

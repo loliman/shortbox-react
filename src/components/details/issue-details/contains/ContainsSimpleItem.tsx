@@ -2,10 +2,11 @@ import React from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import { expanded } from "./expanded";
+import type { ItemLike, QueryParams } from "./expanded";
 
 interface ContainsSimpleItemProps {
-  item: unknown;
-  query?: { filter?: string; expand?: string } | null;
+  item: ItemLike;
+  query?: QueryParams;
   itemTitle: React.ReactElement;
   navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
   us?: boolean;

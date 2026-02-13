@@ -17,6 +17,9 @@ interface IssueDetailsDEDetailsProps {
 export function IssueDetailsDEDetails(props: Readonly<IssueDetailsDEDetailsProps>) {
   const issue = props.issue || {};
   const priceValue = Number(issue.price);
+  const releaseDate = issue.releasedate
+    ? toShortboxDate(dateFormat(new Date(issue.releasedate), "dd.mm.yyyy"))
+    : "";
 
   return (
     <React.Fragment>
@@ -36,7 +39,7 @@ export function IssueDetailsDEDetails(props: Readonly<IssueDetailsDEDetailsProps
       <DetailsRow
         key="releasedate"
         label="Erscheinungsdatum"
-        value={toShortboxDate(dateFormat(new Date(issue.releasedate), "dd.mm.yyyy"))}
+        value={releaseDate}
       />
 
       {!Number.isNaN(priceValue) && priceValue > 0 ? (

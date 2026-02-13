@@ -2,6 +2,7 @@ import React, { ComponentType, useContext, useEffect, useRef } from "react";
 import { useSnackbar } from "notistack";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { AppContext } from "./AppContext";
+import type { SelectedRoot } from "../../types/domain";
 import {
   generateLabel,
   getHierarchyLevel,
@@ -22,11 +23,11 @@ interface RouterBridge {
   navigateRouter: ReturnType<typeof useNavigate>;
 }
 
-function getDisplayName(WrappedComponent: ComponentType<unknown>): string {
+function getDisplayName(WrappedComponent: ComponentType<any>): string {
   return WrappedComponent.displayName || WrappedComponent.name || "Component";
 }
 
-function withContext<T>(WrappedComponent: ComponentType<T>): ComponentType<UnknownRecord> {
+function withContext<T extends object>(WrappedComponent: ComponentType<T>): ComponentType<UnknownRecord> {
   const WithContext = (props: UnknownRecord) => {
     const context = useContext(AppContext);
     const location = useLocation();
@@ -95,7 +96,9 @@ function withContext<T>(WrappedComponent: ComponentType<T>): ComponentType<Unkno
   return withEnqueueSnackbar(WithContext);
 }
 
-function withEnqueueSnackbar<T>(WrappedComponent: ComponentType<T>): ComponentType<UnknownRecord> {
+function withEnqueueSnackbar<T extends object>(
+  WrappedComponent: ComponentType<T>
+): ComponentType<UnknownRecord> {
   const WithEnqueueSnackbar = (props: UnknownRecord) => {
     const { enqueueSnackbar, closeSnackbar } = useSnackbar();
     return (
@@ -139,7 +142,7 @@ function navigate(
 interface AppTitleParams {
   edit: boolean;
   create: boolean;
-  selected: unknown;
+  selected: SelectedRoot;
   us: boolean;
   level: string;
 }

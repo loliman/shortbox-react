@@ -30,7 +30,7 @@ function ExportDialog(props: Readonly<ExportDialogProps>) {
     <ApolloConsumer>
       {(client) => (
         <Dialog
-          open={props.open}
+          open={Boolean(props.open)}
           onClose={props.handleClose}
           aria-labelledby="form-delete-dialog-title"
         >
@@ -77,7 +77,7 @@ async function triggerExport(
     const parsed = props.query?.filter ? JSON.parse(props.query.filter) : {};
     filter = { us: Boolean(props.us), ...(parsed as Partial<Filter>) };
   } catch {
-    props.enqueueSnackbar("Ungültiger Filter, Export abgebrochen.", { variant: "error" });
+    props.enqueueSnackbar?.("Ungültiger Filter, Export abgebrochen.", { variant: "error" });
     props.handleClose();
     return;
   }
@@ -88,7 +88,7 @@ async function triggerExport(
   });
 
   if (error || !data?.export) {
-    props.enqueueSnackbar("Export fehlgeschlagen", { variant: "error" });
+    props.enqueueSnackbar?.("Export fehlgeschlagen", { variant: "error" });
   } else {
     let a = document.createElement("a");
     document.body.appendChild(a);
