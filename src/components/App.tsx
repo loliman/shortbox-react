@@ -7,6 +7,7 @@ import { AppRoutes } from "../app/AppRoutes";
 import { appTheme } from "../app/theme";
 import { type SessionData } from "../app/session";
 import { isMockMode } from "../app/mockMode";
+import { subscribeSessionInvalid } from "../app/authEvents";
 import { me } from "../graphql/queriesTyped";
 
 export default function App() {
@@ -50,6 +51,14 @@ export default function App() {
       mounted = false;
     };
   }, [client, loggedIn]);
+
+  useEffect(() => {
+    return subscribeSessionInvalid(() => {
+      setSession(null);
+      setAuthReady(true);
+      client.clearStore();
+    });
+  }, [client]);
 
   return (
     <ThemeProvider theme={appTheme}>

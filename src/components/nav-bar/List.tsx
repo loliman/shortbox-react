@@ -37,27 +37,10 @@ function List(props) {
     nextFetchPolicy: "cache-first",
     notifyOnNetworkStatusChange: true,
   });
-  const hasSession400Error = Boolean(error && error.message.includes("400") && props.session);
-  const handledSessionErrorRef = React.useRef(false);
 
   React.useEffect(() => {
     scrollToSelectedIssue(data, normalized.level, props.selected, listRef.current);
   }, [data, normalized.level, props.selected]);
-
-  React.useEffect(() => {
-    if (!hasSession400Error) {
-      handledSessionErrorRef.current = false;
-      return;
-    }
-
-    if (handledSessionErrorRef.current) return;
-    handledSessionErrorRef.current = true;
-
-    props.enqueueSnackbar?.("Deine Session ist abgelaufen oder ungültig, du wirst ausgeloggt.", {
-      variant: "warning",
-    });
-    props.handleLogout?.();
-  }, [hasSession400Error, props.enqueueSnackbar, props.handleLogout]);
 
   const items = toNodeList(data, queryName);
   let content: React.ReactNode;
