@@ -10,7 +10,6 @@ import CardContent from "@mui/material/CardContent";
 import Box from "@mui/material/Box";
 import { withContext } from "./generic";
 import { LoginSchema } from "../util/yupSchema";
-import { sha256Hex } from "../util/crypto";
 import { isMockMode } from "../app/mockMode";
 
 function Login(props) {
@@ -48,12 +47,11 @@ function Login(props) {
           return;
         }
 
-        let password = await sha256Hex(values.password);
         await runLogin({
           variables: {
             user: {
               name: values.name,
-              password: password,
+              password: values.password,
             },
           },
         });
