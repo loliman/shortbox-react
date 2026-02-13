@@ -5,7 +5,7 @@ import { DetailsRow, toIsbn10, toIsbn13, toShortboxDate } from "../../IssueDetai
 interface IssueDetailsDEDetailsProps {
   issue?: {
     format?: string;
-    limitation?: number;
+    limitation?: string | number;
     pages?: number;
     releasedate?: string;
     price?: number | string;
@@ -17,6 +17,7 @@ interface IssueDetailsDEDetailsProps {
 export function IssueDetailsDEDetails(props: Readonly<IssueDetailsDEDetailsProps>) {
   const issue = props.issue || {};
   const priceValue = Number(issue.price);
+  const limitation = formatLimitation(issue.limitation);
   const releaseDate = issue.releasedate
     ? toShortboxDate(dateFormat(new Date(issue.releasedate), "dd.mm.yyyy"))
     : "";
@@ -24,13 +25,7 @@ export function IssueDetailsDEDetails(props: Readonly<IssueDetailsDEDetailsProps
   return (
     <React.Fragment>
       <DetailsRow key="format" label="Format" value={issue.format} />
-      {issue.limitation && issue.limitation > 0 ? (
-        <DetailsRow
-          key="limitation"
-          label="Limitierung"
-          value={issue.limitation + " Exemplare"}
-        />
-      ) : null}
+      {limitation ? <DetailsRow key="limitation" label="Limitierung" value={limitation} /> : null}
 
       {issue.pages && issue.pages > 0 ? (
         <DetailsRow key="pages" label="Seiten" value={issue.pages} />
@@ -54,4 +49,19 @@ export function IssueDetailsDEDetails(props: Readonly<IssueDetailsDEDetailsProps
       ) : null}
     </React.Fragment>
   );
+}
+
+function formatLimitation(value: string | number | undefined): string {
+  if (value === undefined || value === null) return "";
+
+  const raw = String(value).trim();
+  if (!raw) return "";
+
+  const parsed = Number(raw);
+  if (!Number.isNaN(parsed)) {
+    if (parsed <= 0) return "";
+    return `${parsed} Exemplare`;
+  }
+
+  return raw;
 }

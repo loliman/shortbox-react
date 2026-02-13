@@ -29,7 +29,7 @@ export function createEmptyIssueValues(): IssueEditorFormValues {
     variant: "",
     cover: "",
     format: formats[0],
-    limitation: 0,
+    limitation: "",
     pages: 0,
     releasedate: "1900-01-01",
     price: "0",

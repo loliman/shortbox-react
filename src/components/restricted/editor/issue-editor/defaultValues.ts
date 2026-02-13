@@ -145,7 +145,7 @@ export function mapIssueToEditorDefaultValues(
     pages: Number(values.pages || 0),
     comicguideid: Number(values.comicguideid || 0),
     isbn: String(values.isbn || ""),
-    limitation: Number(values.limitation || 0),
+    limitation: String(values.limitation || ""),
     individuals: asArray(values.individuals as Array<Record<string, unknown>>).map((individual) => ({
       name: individual.name,
       type: individual.type,

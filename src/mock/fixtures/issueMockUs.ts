@@ -4,7 +4,7 @@ export const mockIssueUsFixture: any = {
   "isbn": null,
   "number": "1",
   "format": "Heft",
-  "limitation": 0,
+  "limitation": "0",
   "pages": 0,
   "comicguideid": 0,
   "releasedate": "2006-08-22",

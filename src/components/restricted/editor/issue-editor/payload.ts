@@ -130,7 +130,9 @@ export function buildIssueMutationVariables(
   }
 
   if (itemPayload.series) {
-    itemPayload.series = stripItem(itemPayload.series as any) as IssueEditorFormValues["series"];
+    itemPayload.series = stripItem(
+      itemPayload.series as Record<string, unknown>
+    ) as IssueEditorFormValues["series"];
   }
 
   if (usIssue) {

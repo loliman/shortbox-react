@@ -55,7 +55,7 @@ function IssueEditorMetadataFields({
             className={isDesktop ? "field field35" : "field field100"}
             name="limitation"
             label="Limitierung"
-            type="number"
+            type="text"
             component={TextField}
           />
 

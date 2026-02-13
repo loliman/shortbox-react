@@ -2,6 +2,7 @@ import { issue, issues } from "../../../../graphql/queriesTyped";
 import { stripItem, wrapItem } from "../../../../util/util";
 import { addToCache, removeFromCache, updateInCache } from "../Editor";
 import type { IssueEditorFormValues } from "./types";
+import type { ApolloCache } from "@apollo/client";
 
 interface IssueMutationData {
   [key: string]: Record<string, unknown>;
@@ -18,7 +19,7 @@ interface IssueCacheMutationResult extends Record<string, unknown> {
 }
 
 export function updateIssueEditorCache(
-  cache: unknown,
+  cache: ApolloCache<unknown>,
   data: IssueMutationData,
   mutationName: string,
   edit: boolean | undefined,

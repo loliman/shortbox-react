@@ -74,9 +74,12 @@ export const IssueSchema = Yup.object().shape({
     (val) => !val || val.length === 10 || val.length === 13
   ),
   variant: Yup.string().max(255, "Maximal 255 Zeichen"),
-  limitation: Yup.number()
-    .typeError("Bitte geben Sie eine Zahl ein")
-    .integer("Bitte geben Sie eine Zahl ein"),
+  limitation: Yup.string()
+    .max(255, "Maximal 255 Zeichen")
+    .test("limitation-number", "Bitte geben Sie eine Zahl ein", (value) => {
+      if (!value || value.trim() === "") return true;
+      return /^[0-9]+$/.test(value.trim());
+    }),
   pages: Yup.number()
     .typeError("Bitte geben Sie eine Zahl ein")
     .integer("Bitte geben Sie eine Zahl ein"),

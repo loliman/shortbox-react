@@ -1,121 +1,185 @@
-export function addToCache(cache: any, query: any, variables: any, item: any) {
-  let queryName = query.definitions[0].name.value.toLowerCase();
-  let data = cache.readQuery({
-    query: query,
-    variables: variables,
-  });
+import type { ApolloCache } from "@apollo/client";
+import type { DocumentNode, OperationDefinitionNode } from "graphql";
 
-  if (!data || !data[queryName]) return;
+type CacheItem = object;
 
-  let list = getListRef(data, queryName);
+type CacheVariables = object | undefined;
+type CacheQueryData = Record<string, unknown>;
+type CacheEdge = { cursor?: string; node?: CacheItem | null } | null;
+type CacheConnection = Record<string, unknown> & { edges?: CacheEdge[] | null };
+
+export function addToCache(
+  cache: ApolloCache<unknown>,
+  query: DocumentNode,
+  variables: CacheVariables,
+  item: CacheItem
+) {
+  const queryName = getQueryName(query);
+  if (!queryName) return;
+
+  const data = readCacheQuery(cache, query, variables);
+  if (!data || !Object.prototype.hasOwnProperty.call(data, queryName)) return;
+
+  const list = getListRef(data, queryName);
   list.push(item);
-  list.sort((a: any, b: any) => {
-    return compare(a, b);
-  });
+  list.sort(compare);
   setListRef(data, queryName, list);
 
   cache.writeQuery({
-    query: query,
-    variables: variables,
-    data: data,
+    query,
+    variables: variables as Record<string, unknown> | undefined,
+    data,
   });
 }
 
-export function removeFromCache(cache: any, query: any, variables: any, item: any) {
-  let queryName = query.definitions[0].name.value.toLowerCase();
-  let data = cache.readQuery({
-    query: query,
-    variables: variables,
-  });
+export function removeFromCache(
+  cache: ApolloCache<unknown>,
+  query: DocumentNode,
+  variables: CacheVariables,
+  item: CacheItem
+) {
+  const queryName = getQueryName(query);
+  if (!queryName) return;
 
-  if (!data || !data[queryName]) return;
+  const data = readCacheQuery(cache, query, variables);
+  if (!data || !Object.prototype.hasOwnProperty.call(data, queryName)) return;
 
-  let list = getListRef(data, queryName).filter((e: any) => compare(e, item) !== 0);
+  const list = getListRef(data, queryName).filter((entry) => compare(entry, item) !== 0);
   setListRef(data, queryName, list);
 
   cache.writeQuery({
-    query: query,
-    variables: variables,
-    data: data,
+    query,
+    variables: variables as Record<string, unknown> | undefined,
+    data,
   });
 }
 
-export function updateInCache(cache: any, query: any, variables: any, update: any, item: any) {
-  let queryName = query.definitions[0].name.value.toLowerCase();
-  let data = cache.readQuery({
-    query: query,
-    variables: variables,
-  });
+export function updateInCache(
+  cache: ApolloCache<unknown>,
+  query: DocumentNode,
+  variables: CacheVariables,
+  update: CacheItem,
+  item: CacheItem
+) {
+  const queryName = getQueryName(query);
+  if (!queryName) return;
 
-  if (!data || !data[queryName]) return;
+  const data = readCacheQuery(cache, query, variables);
+  if (!data || !Object.prototype.hasOwnProperty.call(data, queryName)) return;
 
-  let list = getListRef(data, queryName);
+  const list = getListRef(data, queryName);
 
   if (list.length) {
-    list.find((e: any, i: any) => {
-      let found = compare(e, update) === 0;
-      if (found) list[i] = item;
-      return found;
-    });
-    list.sort((a: any, b: any) => {
-      return compare(a, b);
-    });
+    const index = list.findIndex((entry) => compare(entry, update) === 0);
+    if (index >= 0) list[index] = item;
+    list.sort(compare);
     setListRef(data, queryName, list);
   } else {
     setListRef(data, queryName, [item]);
   }
 
   cache.writeQuery({
-    query: query,
-    variables: variables,
-    data: data,
+    query,
+    variables: variables as Record<string, unknown> | undefined,
+    data,
   });
 }
 
-export function compare(a: any, b: any) {
-  if (a.__typename !== b.__typename)
-    return String(a.__typename || "").localeCompare(String(b.__typename || ""));
+export function compare(a: CacheItem, b: CacheItem) {
+  const leftType = lower(getField(a, "__typename"));
+  const rightType = lower(getField(b, "__typename"));
+  if (leftType !== rightType) return leftType.localeCompare(rightType);
 
-  let type = a.__typename;
-  switch (type) {
-    case "Publisher":
-      return a.name.toLowerCase().localeCompare(b.name.toLowerCase());
-    case "Series":
-      return (a.title.toLowerCase() + a.volume).localeCompare(b.title.toLowerCase() + b.volume);
-    case "Issue":
-      return (
-        `${(a.number || "").toLowerCase()}|${(a.format || "").toLowerCase()}|${(a.variant || "").toLowerCase()}`
-      ).localeCompare(
-        `${(b.number || "").toLowerCase()}|${(b.format || "").toLowerCase()}|${(b.variant || "").toLowerCase()}`
+  switch (leftType) {
+    case "publisher":
+      return lower(getField(a, "name")).localeCompare(lower(getField(b, "name")));
+    case "series":
+      return `${lower(getField(a, "title"))}${lower(getField(a, "volume"))}`.localeCompare(
+        `${lower(getField(b, "title"))}${lower(getField(b, "volume"))}`
+      );
+    case "issue":
+      return `${lower(getField(a, "number"))}|${lower(getField(a, "format"))}|${lower(
+        getField(a, "variant")
+      )}`.localeCompare(
+        `${lower(getField(b, "number"))}|${lower(getField(b, "format"))}|${lower(
+          getField(b, "variant")
+        )}`
       );
     default:
       return 0;
   }
 }
 
-function getListRef(data: any, queryName: string) {
-  const value = data[queryName];
-  if (Array.isArray(value)) return value;
+function getQueryName(query: DocumentNode): string | null {
+  const operation = query.definitions.find(
+    (definition): definition is OperationDefinitionNode => definition.kind === "OperationDefinition"
+  );
+  return operation?.name?.value ? operation.name.value.toLowerCase() : null;
+}
 
-  if (value && Array.isArray(value.edges)) return value.edges.map((edge: any) => edge.node);
+function readCacheQuery(
+  cache: ApolloCache<unknown>,
+  query: DocumentNode,
+  variables: CacheVariables
+): CacheQueryData | null {
+  try {
+    const data = cache.readQuery<CacheQueryData>({
+      query,
+      variables: variables as Record<string, unknown> | undefined,
+    });
+    return data || null;
+  } catch {
+    return null;
+  }
+}
+
+function getListRef(data: CacheQueryData, queryName: string): CacheItem[] {
+  const value = data[queryName];
+  if (Array.isArray(value)) return value.filter(isCacheItem);
+
+  if (isCacheConnection(value) && Array.isArray(value.edges)) {
+    return value.edges.map((edge) => edge?.node).filter(isCacheItem);
+  }
 
   return [];
 }
 
-function setListRef(data: any, queryName: string, list: any[]) {
+function setListRef(data: CacheQueryData, queryName: string, list: CacheItem[]) {
   const value = data[queryName];
   if (Array.isArray(value)) {
     data[queryName] = list;
     return;
   }
 
-  if (value && Array.isArray(value.edges)) {
+  if (isCacheConnection(value) && Array.isArray(value.edges)) {
+    const existingEdges = value.edges;
     data[queryName] = {
       ...value,
-      edges: list.map((node: any, idx: number) => ({
-        cursor: (value.edges[idx] && value.edges[idx].cursor) || String(idx),
-        node,
-      })),
+      edges: list.map((node, idx) => {
+        const existingEdge = existingEdges[idx];
+        const cursor =
+          existingEdge && typeof existingEdge === "object" && "cursor" in existingEdge
+            ? String(existingEdge.cursor || idx)
+            : String(idx);
+
+        return { cursor, node };
+      }),
     };
   }
+}
+
+function isCacheConnection(value: unknown): value is CacheConnection {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function isCacheItem(value: unknown): value is CacheItem {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function lower(value: unknown): string {
+  return String(value || "").toLowerCase();
+}
+
+function getField(item: CacheItem, key: string): unknown {
+  return (item as Record<string, unknown>)[key];
 }

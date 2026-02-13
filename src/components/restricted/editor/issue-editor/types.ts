@@ -16,7 +16,7 @@ export interface IssueEditorFormValues {
   variant: string;
   cover: { __typename?: string; url?: string } | string | null | undefined;
   format?: string;
-  limitation?: number;
+  limitation?: string;
   pages?: number;
   releasedate: string;
   price?: string;
