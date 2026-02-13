@@ -33,6 +33,7 @@
     "@typescript-eslint/eslint-plugin": "^8.24.1",
     "@typescript-eslint/parser": "^8.24.1",
     "@vitejs/plugin-react": "^5.0.0",
+    "@vitest/coverage-v8": "3.2.4",
     "eslint": "^9.21.0",
     "globals": "^16.0.0",
     "jsdom": "^26.0.0",
@@ -42,8 +43,8 @@
     "vitest": "^3.2.4"
   },
   "scripts": {
-    "contract:codegen": "npm --prefix ../shortbox-contract run codegen",
-    "contract:codegen:frontend": "npm --prefix ../shortbox-contract run codegen:frontend",
+    "contract:codegen": "node scripts/contract-codegen.cjs codegen",
+    "contract:codegen:frontend": "node scripts/contract-codegen.cjs codegen:frontend",
     "check:artifacts": "sh -c \"if git ls-files | grep -E '(^|/)(dist|build|logs|listen)/|\\\\.log$|(^|/)\\\\.output\\\\.txt$|(^|/)output\\\\.txt$'; then echo 'Remove tracked build/runtime artifacts before commit.'; exit 1; fi\"",
     "start": "vite",
     "dev": "vite",
@@ -52,11 +53,12 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:ci": "vitest run --passWithNoTests",
+    "test:coverage": "vitest run --coverage --passWithNoTests",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "qa": "npm run check:artifacts && npm run typecheck && npm run lint && npm run test:ci && npm run build",
+    "qa": "npm run check:artifacts && npm run typecheck && npm run lint && npm run test:coverage && npm run build",
     "start:mock": "VITE_MOCK_MODE=true vite",
     "dev:mock": "VITE_MOCK_MODE=true vite"
   },

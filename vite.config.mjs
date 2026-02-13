@@ -78,5 +78,22 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     globals: true,
+    coverage: {
+      provider: "v8",
+      reportsDirectory: "./coverage",
+      reporter: ["text", "lcov", "json-summary"],
+      include: [
+        "src/util/hierarchy.ts",
+        "src/util/yupSchema.ts",
+        "src/components/restricted/editor/IssueEditorSections.tsx",
+        "src/test/mocks/domainMocks.ts",
+      ],
+      thresholds: {
+        lines: 80,
+        functions: 80,
+        branches: 80,
+        statements: 80,
+      },
+    },
   },
 });
