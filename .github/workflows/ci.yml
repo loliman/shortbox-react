@@ -1,0 +1,60 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Format Check
+        run: npm run format:check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm run test:ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Prepare Artifact
+        run: |
+          mkdir -p release
+          cp -r dist release/
+          cp package.json release/
+          cp package-lock.json release/
+          cp index.html release/
+          cp vite.config.mjs release/
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: shortbox-react-build
+          path: release/
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

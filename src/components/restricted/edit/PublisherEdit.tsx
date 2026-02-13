@@ -1,0 +1,43 @@
+import React from "react";
+import Layout from "../../Layout";
+import { useQuery } from "@apollo/client";
+import { editPublisher } from "../../../graphql/mutationsTyped";
+import { publisher } from "../../../graphql/queriesTyped";
+import { withContext } from "../../generic";
+import QueryResult from "../../generic/QueryResult";
+import PublisherEditor from "../editor/PublisherEditor";
+
+function PublisherEdit(props) {
+  const { selected } = props;
+  const { loading, error, data } = useQuery(publisher, { variables: selected });
+
+  return (
+    <Layout>
+      {(() => {
+        if (loading || error || !data || !data.publisher)
+          return (
+            <QueryResult error={error} data={data ? data.publisher : null} selected={selected} />
+          );
+
+        let defaultValues = JSON.parse(JSON.stringify(data.publisher));
+
+        defaultValues.seriesCount = undefined;
+        defaultValues.issueCount = undefined;
+        defaultValues.active = undefined;
+        defaultValues.firstIssue = undefined;
+        defaultValues.lastEdited = undefined;
+        defaultValues.lastIssue = undefined;
+
+        return (
+          <PublisherEditor
+            edit
+            id={data.publisher.id}
+            mutation={editPublisher}
+            defaultValues={defaultValues}
+          />
+        );
+      })()}
+    </Layout>
+  );
+}
+export default withContext(PublisherEdit);

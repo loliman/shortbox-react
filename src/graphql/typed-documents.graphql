@@ -1,0 +1,1269 @@
+query Nodes($pattern: String!, $us: Boolean!, $offset: Int) {
+  nodes(pattern: $pattern, us: $us, offset: $offset) {
+    type
+    label
+    url
+  }
+}
+
+query Export($filter: Filter!, $type: String!) {
+  export(filter: $filter, type: $type)
+}
+
+query Publishers($pattern: String, $us: Boolean!, $first: Int, $after: String, $filter: Filter) {
+  publishers(pattern: $pattern, us: $us, first: $first, after: $after, filter: $filter) {
+    edges {
+      node {
+        name
+        us
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+query Series(
+  $pattern: String
+  $publisher: PublisherInput!
+  $first: Int
+  $after: String
+  $filter: Filter
+) {
+  series(pattern: $pattern, publisher: $publisher, first: $first, after: $after, filter: $filter) {
+    edges {
+      node {
+        title
+        volume
+        startyear
+        endyear
+        publisher {
+          name
+          us
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+query Issues(
+  $pattern: String
+  $series: SeriesInput!
+  $first: Int
+  $after: String
+  $filter: Filter
+) {
+  issues(pattern: $pattern, series: $series, first: $first, after: $after, filter: $filter) {
+    edges {
+      node {
+        title
+        number
+        comicguideid
+        collected
+        cover {
+          url
+        }
+        covers {
+          parent {
+            issue {
+              cover {
+                url
+              }
+            }
+          }
+        }
+        series {
+          title
+          volume
+          publisher {
+            name
+            us
+          }
+        }
+        format
+        variants {
+          collected
+          variant
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+query Individuals($pattern: String, $first: Int, $after: String) {
+  individuals(pattern: $pattern, first: $first, after: $after) {
+    edges {
+      node {
+        name
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+query Apps($pattern: String, $type: String, $first: Int, $after: String) {
+  apps(pattern: $pattern, type: $type, first: $first, after: $after) {
+    edges {
+      node {
+        name
+        type
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+query Arcs($pattern: String, $type: String, $first: Int, $after: String) {
+  arcs(pattern: $pattern, type: $type, first: $first, after: $after) {
+    edges {
+      node {
+        title
+        type
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+query Me {
+  me {
+    id
+  }
+}
+
+mutation Login($user: UserInput!) {
+  login(user: $user) {
+    id
+    sessionid
+  }
+}
+
+mutation Logout($user: UserInput!) {
+  logout(user: $user)
+}
+
+query LastEdited(
+  $filter: Filter
+  $first: Int
+  $after: String
+  $order: String
+  $direction: String
+) {
+  lastEdited(
+    filter: $filter
+    first: $first
+    after: $after
+    order: $order
+    direction: $direction
+  ) {
+    edges {
+      node {
+        number
+        format
+        variant
+        verified
+        collected
+        title
+        createdAt
+        updatedAt
+        comicguideid
+        cover {
+          url
+        }
+        covers {
+          parent {
+            issue {
+              cover {
+                url
+              }
+            }
+          }
+        }
+        series {
+          title
+          volume
+          startyear
+          endyear
+          publisher {
+            name
+            us
+          }
+        }
+        covers {
+          parent {
+            issue {
+              cover {
+                url
+              }
+            }
+          }
+        }
+        stories {
+          onlyapp
+          firstapp
+          onlytb
+          exclusive
+          otheronlytb
+          onlyoneprint
+          collectedmultipletimes
+          collected
+          number
+          children {
+            issue {
+              collected
+            }
+            number
+          }
+          reprintOf {
+            number
+          }
+          reprints {
+            number
+          }
+          parent {
+            collectedmultipletimes
+            collected
+            children {
+              issue {
+                collected
+              }
+              number
+            }
+          }
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+query Publisher($publisher: PublisherInput!) {
+  publisher(publisher: $publisher) {
+    id
+    name
+    us
+    startyear
+    endyear
+    seriesCount
+    issueCount
+    firstIssue {
+      number
+      format
+      variant
+      createdAt
+      updatedAt
+      cover {
+        url
+      }
+      covers {
+        parent {
+          issue {
+            cover {
+              url
+            }
+          }
+        }
+      }
+      comicguideid
+      series {
+        title
+        volume
+        startyear
+        endyear
+        publisher {
+          name
+          us
+        }
+      }
+      releasedate
+      stories {
+        onlyapp
+        firstapp
+        onlytb
+        exclusive
+        otheronlytb
+        onlyoneprint
+        collectedmultipletimes
+        collected
+        number
+        children {
+          parent {
+            collectedmultipletimes
+            collected
+          }
+          issue {
+            collected
+          }
+          number
+        }
+        reprintOf {
+          number
+        }
+        reprints {
+          number
+        }
+        parent {
+          number
+          collectedmultipletimes
+          collected
+          children {
+            issue {
+              collected
+            }
+            number
+          }
+        }
+      }
+    }
+    lastIssue {
+      number
+      format
+      variant
+      createdAt
+      updatedAt
+      cover {
+        url
+      }
+      covers {
+        parent {
+          issue {
+            cover {
+              url
+            }
+          }
+        }
+      }
+      comicguideid
+      series {
+        title
+        volume
+        startyear
+        endyear
+        publisher {
+          name
+          us
+        }
+      }
+      releasedate
+      stories {
+        onlyapp
+        firstapp
+        onlytb
+        exclusive
+        otheronlytb
+        onlyoneprint
+        collectedmultipletimes
+        collected
+        number
+        children {
+          parent {
+            collectedmultipletimes
+            collected
+          }
+          issue {
+            collected
+          }
+          number
+        }
+        reprintOf {
+          number
+        }
+        reprints {
+          number
+        }
+        parent {
+          collectedmultipletimes
+          collected
+          number
+          children {
+            issue {
+              collected
+            }
+            number
+          }
+        }
+      }
+    }
+    active
+    addinfo
+  }
+}
+
+query Seriesd($series: SeriesInput!) {
+  seriesd(series: $series) {
+    id
+    title
+    volume
+    startyear
+    endyear
+    issueCount
+    firstIssue {
+      number
+      format
+      variant
+      createdAt
+      updatedAt
+      cover {
+        url
+      }
+      covers {
+        parent {
+          issue {
+            cover {
+              url
+            }
+          }
+        }
+      }
+      comicguideid
+      series {
+        title
+        volume
+        startyear
+        endyear
+        publisher {
+          name
+          us
+        }
+      }
+      releasedate
+      stories {
+        onlyapp
+        firstapp
+        onlytb
+        exclusive
+        otheronlytb
+        onlyoneprint
+        collectedmultipletimes
+        collected
+        number
+        children {
+          parent {
+            collectedmultipletimes
+            collected
+          }
+          issue {
+            collected
+          }
+          number
+        }
+        reprintOf {
+          number
+        }
+        reprints {
+          number
+        }
+        parent {
+          collectedmultipletimes
+          collected
+          number
+          children {
+            issue {
+              collected
+            }
+            number
+          }
+        }
+      }
+    }
+    lastIssue {
+      number
+      format
+      variant
+      createdAt
+      updatedAt
+      cover {
+        url
+      }
+      covers {
+        parent {
+          issue {
+            cover {
+              url
+            }
+          }
+        }
+      }
+      comicguideid
+      series {
+        title
+        volume
+        startyear
+        endyear
+        publisher {
+          name
+          us
+        }
+      }
+      releasedate
+      stories {
+        onlyapp
+        firstapp
+        onlytb
+        exclusive
+        otheronlytb
+        onlyoneprint
+        collectedmultipletimes
+        collected
+        number
+        children {
+          parent {
+            collectedmultipletimes
+            collected
+          }
+          issue {
+            collected
+          }
+          number
+        }
+        reprintOf {
+          number
+        }
+        reprints {
+          number
+        }
+        parent {
+          collectedmultipletimes
+          collected
+          number
+          children {
+            issue {
+              collected
+            }
+            number
+          }
+        }
+      }
+    }
+    active
+    addinfo
+    publisher {
+      name
+      us
+    }
+  }
+}
+
+query Issue($issue: IssueInput!, $edit: Boolean) {
+  issue(issue: $issue, edit: $edit) {
+    id
+    title
+    isbn
+    number
+    format
+    limitation
+    pages
+    comicguideid
+    releasedate
+    price
+    currency
+    individuals {
+      name
+      type
+    }
+    cover {
+      url
+      individuals {
+        name
+        type
+      }
+    }
+    covers {
+      parent {
+        issue {
+          cover {
+            url
+          }
+        }
+      }
+    }
+    series {
+      title
+      volume
+      publisher {
+        name
+        us
+      }
+    }
+    features {
+      title
+      addinfo
+      number
+      individuals {
+        name
+        type
+      }
+    }
+    stories {
+      title
+      addinfo
+      part
+      number
+      reprints {
+        number
+        addinfo
+        issue {
+          cover {
+            url
+          }
+          covers {
+            parent {
+              issue {
+                cover {
+                  url
+                }
+              }
+            }
+          }
+          number
+          series {
+            title
+            volume
+            startyear
+            endyear
+            publisher {
+              name
+              us
+            }
+          }
+          format
+          variant
+          collected
+        }
+      }
+      children {
+        issue {
+          collected
+        }
+        part
+        number
+        parent {
+          issue {
+            cover {
+              url
+            }
+            covers {
+              parent {
+                issue {
+                  cover {
+                    url
+                  }
+                }
+              }
+            }
+            number
+            series {
+              title
+              volume
+              startyear
+              endyear
+              publisher {
+                name
+                us
+              }
+            }
+            collected
+          }
+        }
+        number
+        addinfo
+        part
+        issue {
+          cover {
+            url
+          }
+          covers {
+            parent {
+              issue {
+                cover {
+                  url
+                }
+              }
+            }
+          }
+          number
+          title
+          series {
+            title
+            volume
+            startyear
+            endyear
+            publisher {
+              name
+              us
+            }
+          }
+          variant
+          collected
+        }
+      }
+      individuals {
+        name
+        type
+      }
+      appearances {
+        name
+        type
+        role
+      }
+      reprintOf {
+        title
+        number
+        issue {
+          cover {
+            url
+          }
+          covers {
+            parent {
+              issue {
+                cover {
+                  url
+                }
+              }
+            }
+          }
+          number
+          series {
+            title
+            volume
+            startyear
+            endyear
+            publisher {
+              name
+              us
+            }
+          }
+          format
+          variant
+          collected
+        }
+      }
+      parent {
+        title
+        number
+        issue {
+          number
+          cover {
+            url
+          }
+          covers {
+            parent {
+              issue {
+                cover {
+                  url
+                }
+              }
+            }
+          }
+          series {
+            title
+            volume
+            startyear
+            endyear
+            publisher {
+              name
+              us
+            }
+          }
+          format
+          variant
+          stories {
+            number
+          }
+          arcs {
+            title
+            type
+          }
+          collected
+        }
+        individuals {
+          name
+          type
+        }
+        appearances {
+          name
+          type
+          role
+        }
+      }
+      onlyapp
+      firstapp
+      otheronlytb
+      onlytb
+      onlyoneprint
+      exclusive
+    }
+    arcs {
+      title
+      type
+    }
+    variants {
+      format
+      variant
+      number
+      comicguideid
+      series {
+        title
+        volume
+        publisher {
+          name
+          us
+        }
+      }
+      cover {
+        url
+      }
+    }
+    variant
+    verified
+    collected
+    addinfo
+  }
+}
+
+mutation DeleteIssue($item: IssueInput!) {
+  deleteIssue(item: $item)
+}
+
+mutation DeleteSeries($item: SeriesInput!) {
+  deleteSeries(item: $item)
+}
+
+mutation DeletePublisher($item: PublisherInput!) {
+  deletePublisher(item: $item)
+}
+
+mutation CreatePublisher($item: PublisherInput!) {
+  createPublisher(item: $item) {
+    id
+    name
+    startyear
+    endyear
+    addinfo
+    us
+  }
+}
+
+mutation CreateSeries($item: SeriesInput!) {
+  createSeries(item: $item) {
+    id
+    title
+    startyear
+    endyear
+    volume
+    addinfo
+    publisher {
+      id
+      name
+      us
+    }
+  }
+}
+
+mutation CreateIssue($item: IssueInput!) {
+  createIssue(item: $item) {
+    title
+    number
+    format
+    isbn
+    limitation
+    pages
+    comicguideid
+    releasedate
+    price
+    currency
+    individuals {
+      name
+      type
+    }
+    cover {
+      url
+      individuals {
+        name
+        type
+      }
+    }
+    series {
+      title
+      volume
+      publisher {
+        name
+        us
+      }
+    }
+    features {
+      title
+      addinfo
+      number
+      individuals {
+        name
+        type
+      }
+    }
+    stories {
+      title
+      addinfo
+      number
+      children {
+        issue {
+          number
+          series {
+            title
+            volume
+            startyear
+            endyear
+            publisher {
+              name
+              us
+            }
+          }
+          format
+          variant
+        }
+      }
+      individuals {
+        name
+        type
+      }
+      parent {
+        number
+        issue {
+          number
+          series {
+            title
+            startyear
+            endyear
+            volume
+            publisher {
+              name
+              us
+            }
+          }
+          format
+          variant
+        }
+        individuals {
+          name
+          type
+        }
+      }
+      individuals {
+        name
+        type
+      }
+      onlyapp
+      firstapp
+      exclusive
+    }
+    covers {
+      url
+      addinfo
+      number
+      children {
+        issue {
+          number
+          format
+          variant
+          series {
+            title
+            volume
+            startyear
+            endyear
+            publisher {
+              name
+              us
+            }
+          }
+        }
+      }
+      parent {
+        issue {
+          variant
+          format
+          number
+          series {
+            title
+            startyear
+            endyear
+            volume
+            publisher {
+              name
+              us
+            }
+          }
+        }
+        individuals {
+          name
+          type
+        }
+      }
+      onlyapp
+      firstapp
+      exclusive
+      individuals {
+        name
+        type
+      }
+    }
+    variants {
+      format
+      variant
+      number
+      comicguideid
+      series {
+        title
+        volume
+        publisher {
+          name
+          us
+        }
+      }
+      cover {
+        url
+      }
+    }
+    variant
+    verified
+    collected
+    addinfo
+  }
+}
+
+mutation EditIssue($old: IssueInput!, $item: IssueInput!) {
+  editIssue(old: $old, item: $item) {
+    title
+    isbn
+    number
+    format
+    limitation
+    pages
+    comicguideid
+    releasedate
+    price
+    currency
+    individuals {
+      name
+      type
+    }
+    cover {
+      url
+      individuals {
+        name
+        type
+      }
+    }
+    series {
+      title
+      volume
+      publisher {
+        name
+        us
+      }
+    }
+    features {
+      title
+      addinfo
+      number
+      individuals {
+        name
+        type
+      }
+    }
+    stories {
+      title
+      addinfo
+      number
+      children {
+        addinfo
+        issue {
+          number
+          series {
+            title
+            volume
+            startyear
+            endyear
+            publisher {
+              name
+              us
+            }
+          }
+          format
+          variant
+        }
+      }
+      individuals {
+        name
+        type
+      }
+      appearances {
+        name
+        type
+        role
+      }
+      parent {
+        title
+        number
+        issue {
+          number
+          series {
+            title
+            startyear
+            endyear
+            volume
+            publisher {
+              name
+              us
+            }
+          }
+          format
+          variant
+          stories {
+            number
+          }
+          arcs {
+            title
+            type
+          }
+        }
+        individuals {
+          name
+          type
+        }
+        appearances {
+          name
+          type
+          role
+        }
+      }
+      onlyapp
+      firstapp
+      otheronlytb
+      onlytb
+      onlyoneprint
+      exclusive
+    }
+    covers {
+      url
+      addinfo
+      number
+      children {
+        addinfo
+        issue {
+          number
+          format
+          variant
+          series {
+            title
+            volume
+            startyear
+            endyear
+            publisher {
+              name
+              us
+            }
+          }
+        }
+      }
+      parent {
+        issue {
+          variant
+          format
+          number
+          series {
+            title
+            startyear
+            endyear
+            volume
+            publisher {
+              name
+              us
+            }
+          }
+        }
+        individuals {
+          name
+          type
+        }
+      }
+      onlyapp
+      firstapp
+      exclusive
+      individuals {
+        name
+        type
+      }
+    }
+    variants {
+      format
+      variant
+      number
+      comicguideid
+      series {
+        title
+        volume
+        publisher {
+          name
+          us
+        }
+      }
+      cover {
+        url
+      }
+    }
+    arcs {
+      title
+      type
+    }
+    variant
+    verified
+    collected
+    addinfo
+  }
+}
+
+mutation EditSeries($old: SeriesInput!, $item: SeriesInput!) {
+  editSeries(old: $old, item: $item) {
+    id
+    title
+    volume
+    startyear
+    endyear
+    addinfo
+    publisher {
+      id
+      name
+      us
+    }
+  }
+}
+
+mutation EditPublisher($old: PublisherInput!, $item: PublisherInput!) {
+  editPublisher(old: $old, item: $item) {
+    id
+    name
+    us
+    addinfo
+  }
+}

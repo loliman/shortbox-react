@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@shortbox/contract": ["../shortbox-contract/index.d.ts"]
+    },
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "allowJs": false,
+    "checkJs": false,
+    "strict": false,
+    "skipLibCheck": true,
+    "types": ["vite/client", "node", "vitest/globals"]
+  },
+  "include": ["src", "vite.config.mjs"]
+}
