@@ -15,6 +15,7 @@ import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Tooltip from "@mui/material/Tooltip";
 import TitleLine from "../../generic/TitleLine";
+import Stack from "@mui/material/Stack";
 import type { DocumentNode } from "graphql";
 
 interface PublisherFormValues {
@@ -31,7 +32,7 @@ interface PublisherEditorProps {
   mutation: DocumentNode;
   id?: string | number;
   session?: unknown;
-  desktop?: boolean;
+  isDesktop?: boolean;
   navigate: (event: unknown, url: string) => void;
   lastLocation?: { pathname: string } | null;
   enqueueSnackbar: (
@@ -74,10 +75,13 @@ class PublisherEditor extends React.Component<PublisherEditorProps, PublisherEdi
     };
   }
 
-  toogleUs = () => {
-    let newDefaultValues = this.state.defaultValues;
-    newDefaultValues.us = !newDefaultValues.us;
-    this.setState({ defaultValues: newDefaultValues });
+  toggleUs = () => {
+    this.setState((prevState) => ({
+      defaultValues: {
+        ...prevState.defaultValues,
+        us: !prevState.defaultValues.us,
+      },
+    }));
   };
 
   render() {
@@ -96,7 +100,7 @@ class PublisherEditor extends React.Component<PublisherEditorProps, PublisherEdi
           if (!edit) {
             try {
               addToCache(cache, publishers, { us: res.us }, res);
-            } catch (e) {
+            } catch {
               //ignore cache exception;
             }
           } else {
@@ -110,13 +114,13 @@ class PublisherEditor extends React.Component<PublisherEditorProps, PublisherEdi
               updateInCache(cache, publisher, { publisher: pub }, defaultValues, {
                 publisher: res,
               });
-            } catch (e) {
+            } catch {
               //ignore cache exception;
             }
 
             try {
               updateInCache(cache, publishers, { us: res.us }, defaultValues, res);
-            } catch (e) {
+            } catch {
               //ignore cache exception;
             }
           }
@@ -135,9 +139,10 @@ class PublisherEditor extends React.Component<PublisherEditorProps, PublisherEdi
           enqueueSnackbar(errorMessage + message, { variant: "error" });
         }}
       >
-        {(mutation, { error }) => (
+        {(mutation) => (
           <Formik
             initialValues={defaultValues}
+            enableReinitialize
             validationSchema={PublisherSchema}
             onSubmit={async (values, actions) => {
               actions.setSubmitting(true);
@@ -153,7 +158,7 @@ class PublisherEditor extends React.Component<PublisherEditorProps, PublisherEdi
               actions.setSubmitting(false);
             }}
           >
-            {({ values, resetForm, submitForm, isSubmitting, setFieldValue }) => (
+            {({ values, resetForm, submitForm, isSubmitting }) => (
               <Form>
                 <CardHeader
                   title={
@@ -166,9 +171,9 @@ class PublisherEditor extends React.Component<PublisherEditorProps, PublisherEdi
                         <Tooltip title={(values.us ? "Deutscher" : "US") + " Verlag"}>
                           <Switch
                             disabled={edit}
-                            checked={defaultValues.us}
+                            checked={values.us}
                             onChange={() => {
-                              this.toogleUs();
+                              this.toggleUs();
                               resetForm();
                             }}
                             color="secondary"
@@ -181,75 +186,68 @@ class PublisherEditor extends React.Component<PublisherEditorProps, PublisherEdi
                 />
 
                 <CardContent className="cardContent">
-                  <FastField
-                    className={this.props.desktop ? "field field35" : "field field100"}
-                    name="name"
-                    label="Name"
-                    component={TextField}
-                  />
+                  <Stack spacing={2.5}>
+                    <FastField
+                      className={this.props.isDesktop ? "field field35" : "field field100"}
+                      name="name"
+                      label="Name"
+                      component={TextField}
+                    />
 
-                  <br />
+                    <FastField
+                      className={this.props.isDesktop ? "field field35" : "field field100"}
+                      name="startyear"
+                      label="Startjahr"
+                      type="number"
+                      component={TextField}
+                    />
 
-                  <FastField
-                    className={this.props.desktop ? "field field35" : "field field100"}
-                    name="startyear"
-                    label="Startjahr"
-                    type="number"
-                    component={TextField}
-                  />
-                  <br />
-                  <FastField
-                    className={this.props.desktop ? "field field35" : "field field100"}
-                    name="endyear"
-                    label="Endjahr"
-                    type="number"
-                    component={TextField}
-                  />
-                  <br />
+                    <FastField
+                      className={this.props.isDesktop ? "field field35" : "field field100"}
+                      name="endyear"
+                      label="Endjahr"
+                      type="number"
+                      component={TextField}
+                    />
 
-                  <FastField
-                    className={this.props.desktop ? "field field35" : "field field100"}
-                    name="addinfo"
-                    label="Weitere Informationen"
-                    multiline
-                    rows={10}
-                    component={TextField}
-                  />
+                    <FastField
+                      className={this.props.isDesktop ? "field field35" : "field field100"}
+                      name="addinfo"
+                      label="Weitere Informationen"
+                      multiline
+                      rows={10}
+                      component={TextField}
+                    />
 
-                  <br />
-                  <br />
+                    <div className="formButtons">
+                      <Button
+                        disabled={isSubmitting}
+                        onClick={() => resetForm()}
+                        color="secondary"
+                      >
+                        Zurücksetzen
+                      </Button>
 
-                  <div className="formButtons">
-                    <Button
-                      disabled={isSubmitting}
-                      onMouseDown={(e) => {
-                        values = defaultValues;
-                        resetForm();
-                      }}
-                      color="secondary"
-                    >
-                      Zurücksetzen
-                    </Button>
+                      <Button
+                        disabled={isSubmitting}
+                        onClick={(e) =>
+                          this.props.navigate(e, lastLocation ? lastLocation.pathname : "/")
+                        }
+                        color="primary"
+                      >
+                        Abbrechen
+                      </Button>
 
-                    <Button
-                      disabled={isSubmitting}
-                      onMouseDown={(e) =>
-                        this.props.navigate(e, lastLocation ? lastLocation.pathname : "/")
-                      }
-                      color="primary"
-                    >
-                      Abbrechen
-                    </Button>
-
-                    <Button
-                      className="createButton"
-                      disabled={isSubmitting}
-                      onClick={submitForm}
-                      color="primary"
-                    >
-                      {submitLabel}
-                    </Button>
-                  </div>
+                      <Button
+                        className="createButton"
+                        disabled={isSubmitting}
+                        onClick={submitForm}
+                        color="primary"
+                      >
+                        {submitLabel}
+                      </Button>
+                    </div>
+                  </Stack>
                 </CardContent>
               </Form>
             )}

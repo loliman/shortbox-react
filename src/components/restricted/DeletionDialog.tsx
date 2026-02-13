@@ -19,38 +19,69 @@ import {
 } from "../../util/hierarchy";
 import { removeFromCache, updateInCache } from "./editor/Editor";
 
-function DeletionDialog(props) {
-  let { level } = props;
+type VariantLike = {
+  number?: string;
+  format?: string;
+  variant?: string;
+  series?: Record<string, unknown>;
+  [key: string]: unknown;
+};
+
+type DeletionDialogItem = {
+  __typename?: string;
+  us?: boolean;
+  number?: string;
+  format?: string;
+  variant?: string;
+  series?: Record<string, unknown> & { publisher?: { us?: boolean } };
+  publisher?: Record<string, unknown> & { us?: boolean };
+  variants?: VariantLike[];
+  [key: string]: unknown;
+};
+
+type DeletionDialogProps = {
+  level?: string;
+  item?: DeletionDialogItem | null;
+  open?: boolean;
+  us?: boolean;
+  handleClose?: () => void;
+  navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
+  enqueueSnackbar?: (
+    message: string,
+    options?: { variant?: "success" | "error" | "warning" | "info" }
+  ) => void;
+};
+
+function DeletionDialog(props: Readonly<DeletionDialogProps>) {
+  const level = props.level;
   const { item, open, handleClose, navigate, enqueueSnackbar } = props;
+  if (!item) return null;
 
-  let parent;
-  if (item.__typename === "Issue") {
-    parent = { series: structuredClone(item.series) };
-    parent.series.publisher.us = undefined;
-  } else if (item.__typename === "Series") {
-    parent = { publisher: structuredClone(item.publisher) };
-    parent.publisher.us = undefined;
-  } else parent = { us: item.us };
-  parent = stripItem(parent);
+  const parentRef = React.useRef(toParent(item));
+  const parent = toParent(item);
+  parentRef.current = parent;
 
-  let deleteMutation = getDeleteMutation(level);
-  let getQuery = getListQuery(getHierarchyLevel(parent));
+  const deleteMutation = getDeleteMutation(level);
+  const listQuery = getListQuery(getHierarchyLevel(parent as never));
+  const mutationName = getMutationName(deleteMutation);
+  const itemLabel = getItemLabel(item);
+
   const [runDeleteMutation] = useMutation(deleteMutation, {
     update: (cache) => {
-      if (level === HierarchyLevel.ISSUE && item.variants.length > 1) {
-        let variants = item.variants.filter((variant) => {
-          return (
-            (item.number + item.format + item.variant)
-              .toLowerCase()
-              .localeCompare((variant.number + variant.format + variant.variant).toLowerCase()) !==
-            0
-          );
-        });
+      if (level === HierarchyLevel.ISSUE && Array.isArray(item.variants) && item.variants.length > 1) {
+        const currentVariantKey = toVariantKey(item);
+        const variants = item.variants.filter((variant) => toVariantKey(variant) !== currentVariantKey);
 
         try {
           item.variants.forEach((variant) => {
             let oldVariant: { issue: Record<string, unknown> } = { issue: {} };
-            const oldSeries = stripItem(variant.series) as {
+            const variantSeries = structuredClone(
+              variant.series || { publisher: {} }
+            ) as Record<string, unknown> & { publisher?: { us?: boolean } };
+            if (!variantSeries.publisher) {
+              variantSeries.publisher = {};
+            }
+            const oldSeries = stripItem(variantSeries) as {
               publisher?: { us?: boolean };
             } & Record<string, unknown>;
             oldVariant.issue.series = oldSeries;
@@ -59,7 +90,7 @@ function DeletionDialog(props) {
             }
             oldVariant.issue.number = variant.number;
             oldVariant.issue.format = variant.format;
-            if (oldVariant.issue.variant !== "") oldVariant.issue.variant = variant.variant;
+            if (variant.variant !== "") oldVariant.issue.variant = variant.variant;
 
             let newVariant: { issue: Record<string, unknown> } = {
               issue: structuredClone(variant),
@@ -68,87 +99,64 @@ function DeletionDialog(props) {
 
             updateInCache(cache, issue, oldVariant, oldVariant, newVariant);
           });
-        } catch (e) {
+        } catch {
           //ignore cache exception;
         }
 
-        parent = { issue: stripItem(variants[0]) };
-      } else
+        if (variants[0]) {
+          parentRef.current = { issue: stripItem(variants[0]) };
+        }
+      } else {
         try {
-          removeFromCache(cache, getQuery, parent, item);
-        } catch (e) {
+          removeFromCache(cache, listQuery, parentRef.current, item);
+        } catch {
           //ignore cache exception;
         }
+      }
     },
     onCompleted: (data) => {
-      navigate(null, generateUrl(parent, props.us));
+      navigate?.(null, generateUrl(parentRef.current as never, Boolean(props.us)));
 
-      const mutationDefinition = deleteMutation.definitions[0] as { name?: { value?: string } };
-      let mutationName = mutationDefinition.name?.value ?? "";
-      mutationName = mutationName.substr(0, 1).toLocaleLowerCase() + mutationName.substr(1);
-
-      if (data[mutationName])
-        enqueueSnackbar(generateLabel(item) + " erfolgreich gelöscht", { variant: "success" });
-      else
-        enqueueSnackbar(generateLabel(item) + " konnte nicht gelöscht werden", {
+      if (mutationName && data?.[mutationName]) {
+        enqueueSnackbar?.(itemLabel + " erfolgreich gelöscht", { variant: "success" });
+      } else {
+        enqueueSnackbar?.(itemLabel + " konnte nicht gelöscht werden", {
           variant: "error",
         });
+      }
 
-      handleClose();
+      handleClose?.();
     },
     onError: (errors) => {
-      let message =
+      const message =
         errors.graphQLErrors && errors.graphQLErrors.length > 0
           ? " [" + errors.graphQLErrors[0].message + "]"
           : "";
-      enqueueSnackbar(generateLabel(item) + " konnte nicht gelöscht werden" + message, {
+      enqueueSnackbar?.(itemLabel + " konnte nicht gelöscht werden" + message, {
         variant: "error",
       });
-      handleClose();
+      handleClose?.();
     },
   });
 
   return (
-    <Dialog open={open} onClose={handleClose} aria-labelledby="form-delete-dialog-title">
+    <Dialog open={Boolean(open)} onClose={handleClose} aria-labelledby="form-delete-dialog-title">
       <DialogTitle id="form-delete-dialog-title">
         <WarningIcon className="deleteTitleIcon" />
         Löschen bestätigen
       </DialogTitle>
       <DialogContent>{getDeleteConfimText(level, item)}</DialogContent>
       <DialogActions>
-        <Button onMouseDown={(e) => handleClose()} color="primary">
+        <Button onClick={() => handleClose?.()} color="primary">
           Abbrechen
         </Button>
 
         <Button
           color="secondary"
-          onMouseDown={() => {
-            let toDelete: Record<string, unknown> = {};
-            if (level === HierarchyLevel.ISSUE) {
-              toDelete.number = item.number;
-              toDelete.series = item.series;
-              toDelete.format = item.format;
-              toDelete.variant = item.variant;
-            } else toDelete = item;
-
-            if (level === HierarchyLevel.SERIES) {
-              toDelete.issueCount = undefined;
-              toDelete.active = undefined;
-              toDelete.firstIssue = undefined;
-              toDelete.lastEdited = undefined;
-              toDelete.lastIssue = undefined;
-            } else if (level === HierarchyLevel.PUBLISHER) {
-              toDelete.seriesCount = undefined;
-              toDelete.issueCount = undefined;
-              toDelete.active = undefined;
-              toDelete.firstIssue = undefined;
-              toDelete.lastEdited = undefined;
-              toDelete.lastIssue = undefined;
-            }
-
+          onClick={() => {
             runDeleteMutation({
               variables: {
-                item: stripItem(toDelete),
+                item: stripItem(toDeletePayload(level, item)),
               },
             });
           }}
@@ -160,43 +168,113 @@ function DeletionDialog(props) {
   );
 }
 
-function getDeleteConfimText(l, item) {
+function toParent(item: DeletionDialogItem): Record<string, unknown> {
+  if (item.__typename === "Issue") {
+    const series = structuredClone(
+      item.series || { publisher: {} }
+    ) as Record<string, unknown> & { publisher?: { us?: boolean } };
+    if (!series.publisher) series.publisher = {};
+    series.publisher.us = undefined;
+    const parent = { series };
+    return stripItem(parent);
+  }
+
+  if (item.__typename === "Series") {
+    const publisher = structuredClone(item.publisher || {}) as Record<string, unknown> & {
+      us?: boolean;
+    };
+    publisher.us = undefined;
+    const parent = { publisher };
+    return stripItem(parent);
+  }
+
+  return stripItem({ us: Boolean(item.us) });
+}
+
+function getMutationName(mutation: unknown) {
+  const value =
+    (
+      mutation as {
+        definitions?: ReadonlyArray<{ name?: { value?: string } }>;
+      }
+    ).definitions?.[0]?.name?.value || "";
+  if (!value) return "";
+  return value.slice(0, 1).toLowerCase() + value.slice(1);
+}
+
+function toVariantKey(item: {
+  number?: string;
+  format?: string;
+  variant?: string;
+}): string {
+  return `${item.number || ""}|${item.format || ""}|${item.variant || ""}`.toLowerCase();
+}
+
+function toDeletePayload(level: string | undefined, item: DeletionDialogItem): Record<string, unknown> {
+  if (level === HierarchyLevel.ISSUE) {
+    return {
+      number: item.number,
+      series: item.series,
+      format: item.format,
+      variant: item.variant,
+    };
+  }
+
+  const payload = structuredClone(item) as Record<string, unknown>;
+
+  if (level === HierarchyLevel.SERIES) {
+    payload.issueCount = undefined;
+    payload.active = undefined;
+    payload.firstIssue = undefined;
+    payload.lastEdited = undefined;
+    payload.lastIssue = undefined;
+  } else if (level === HierarchyLevel.PUBLISHER) {
+    payload.seriesCount = undefined;
+    payload.issueCount = undefined;
+    payload.active = undefined;
+    payload.firstIssue = undefined;
+    payload.lastEdited = undefined;
+    payload.lastIssue = undefined;
+  }
+
+  return payload;
+}
+
+function getDeleteConfimText(l: string | undefined, item: DeletionDialogItem) {
   switch (l) {
     case HierarchyLevel.PUBLISHER:
       return (
-        <Typography>
-          Wollen Sie den <b>{generateLabel(item)}</b> Verlag wirklich löschen?
-          <br />
+        <Typography component="p">
+          Wollen Sie den <b>{getItemLabel(item)}</b> Verlag wirklich löschen?
           Alle zugeordneten Serien, deren Ausgaben, zugeordnete Geschichten und US Ausgaben werden
           damit gelöscht.
-          <br />
           US Ausgaben und Geschichten, die anderen deutschen Ausgaben zugeordnet sind werden nicht
           gelöscht.
         </Typography>
       );
     case HierarchyLevel.SERIES:
       return (
-        <Typography>
-          Wollen Sie die Serie <b>{generateLabel(item)}</b> wirklich löschen?
-          <br />
+        <Typography component="p">
+          Wollen Sie die Serie <b>{getItemLabel(item)}</b> wirklich löschen?
           Alle zugeordneten Ausgaben, zugeordnete Geschichten und US Ausgaben werden damit gelöscht.
-          <br />
           US Ausgaben und Geschichten, die anderen deutschen Ausgaben zugeordnet sind werden nicht
           gelöscht.
         </Typography>
       );
     default:
       return (
-        <Typography>
-          Wollen Sie die Ausgabe <b>{generateLabel(item)}</b> wirklich löschen?
-          <br />
+        <Typography component="p">
+          Wollen Sie die Ausgabe <b>{getItemLabel(item)}</b> wirklich löschen?
           Alle zugeordnete Geschichten und US Ausgaben werden damit gelöscht.
-          <br />
           US Ausgaben und Geschichten, die anderen deutschen Ausgaben zugeordnet sind werden nicht
           gelöscht.
         </Typography>
       );
   }
+}
+
+function getItemLabel(item: DeletionDialogItem): string {
+  return generateLabel(item as unknown as import("../../types/domain").SelectedRoot);
 }
 
 export default withContext(DeletionDialog);

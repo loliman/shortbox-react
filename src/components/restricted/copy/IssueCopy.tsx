@@ -6,10 +6,11 @@ import { issue } from "../../../graphql/queriesTyped";
 import { withContext } from "../../generic";
 import QueryResult from "../../generic/QueryResult";
 import IssueEditor from "../editor/IssueEditor";
+import { mapIssueToEditorDefaultValues } from "../editor/issue-editor/defaultValues";
 
 function IssueCopy(props) {
   const { selected } = props;
-  let variables = { ...selected, edit: true };
+  const variables = { ...selected, edit: true };
   const { loading, error, data } = useQuery(issue, { variables });
 
   return (
@@ -25,25 +26,7 @@ function IssueCopy(props) {
             />
           );
 
-        let defaultValues = JSON.parse(JSON.stringify(data.issue));
-
-        defaultValues.variants = undefined;
-        defaultValues.variant = "";
-        defaultValues.isbn = "";
-        defaultValues.verified = undefined;
-        defaultValues.collected = undefined;
-        defaultValues.createdAt = undefined;
-        defaultValues.updatedAt = undefined;
-        defaultValues.cover = defaultValues.cover ? defaultValues.cover : "";
-        defaultValues.pages = defaultValues.pages ? defaultValues.pages : 0;
-        defaultValues.comicguideid = defaultValues.comicguideid ? defaultValues.comicguideid : 0;
-        defaultValues.limitation = defaultValues.limitation ? defaultValues.limitation : 0;
-        defaultValues.stories = [];
-        defaultValues.individuals = [];
-        defaultValues.arcs = [];
-        defaultValues.covers = [];
-        defaultValues.cover = undefined;
-        defaultValues.features = [];
+        const defaultValues = mapIssueToEditorDefaultValues(data.issue, true);
 
         return <IssueEditor copy mutation={createIssue} defaultValues={defaultValues} />;
       })()}

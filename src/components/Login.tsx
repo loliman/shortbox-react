@@ -7,9 +7,11 @@ import { TextField } from "./generic/FormikTextField";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
+import Box from "@mui/material/Box";
 import { withContext } from "./generic";
 import { LoginSchema } from "../util/yupSchema";
 import { sha256Hex } from "../util/crypto";
+import { isMockMode } from "../app/mockMode";
 
 function Login(props) {
   const client = useApolloClient();
@@ -35,8 +37,17 @@ function Login(props) {
         name: "",
         password: "",
       }}
-      validationSchema={LoginSchema}
+      validationSchema={isMockMode ? undefined : LoginSchema}
       onSubmit={async (values, actions) => {
+        if (isMockMode) {
+          props.enqueueSnackbar("Willkommen!", { variant: "success" });
+          props.handleLogin({ loggedIn: true });
+          client.resetStore();
+          props.navigate(null, props.lastLocation ? props.lastLocation.pathname : "/");
+          actions.setSubmitting(false);
+          return;
+        }
+
         let password = await sha256Hex(values.password);
         await runLogin({
           variables: {
@@ -57,18 +68,19 @@ function Login(props) {
 
             <CardContent>
               <Field className="field field100" name="name" label="Name" component={TextField} />
-              <br />
-              <Field
-                className="field field100"
-                name="password"
-                type="password"
-                label="Passwort"
-                component={TextField}
-              />
+              <Box sx={{ mt: 2 }}>
+                <Field
+                  className="field field100"
+                  name="password"
+                  type="password"
+                  label="Passwort"
+                  component={TextField}
+                />
+              </Box>
               <div id="loginButtons">
                 <Button
                   disabled={isSubmitting}
-                  onMouseDown={(e) =>
+                  onClick={(e) =>
                     props.navigate(e, props.lastLocation ? props.lastLocation.pathname : "/")
                   }
                   color="secondary"

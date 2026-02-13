@@ -7,6 +7,7 @@ import TextField from "@mui/material/TextField";
 import PaginatedQuery from "./PaginatedQuery";
 import type { QueryCollection } from "../../types/graphql";
 import type { DocumentNode } from "graphql";
+import type { SxProps, Theme } from "@mui/material/styles";
 
 type OptionLike = Record<string, unknown> & {
   pattern?: boolean;
@@ -119,6 +120,8 @@ interface FormikAutocompleteFieldProps {
   dropdownIcon?: React.ReactNode;
   fetchMore?: (e: React.UIEvent<HTMLElement>) => void;
   hasQuery?: boolean;
+  textFieldSx?: SxProps<Theme>;
+  inputAriaLabel?: string;
   onFocus?: (e: React.FocusEvent<HTMLElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLElement>) => void;
   onChange?: (value: unknown, live?: boolean) => void;
@@ -146,6 +149,8 @@ function FormikAutocompleteField(props: FormikAutocompleteFieldProps) {
     dropdownIcon,
     fetchMore,
     hasQuery,
+    textFieldSx,
+    inputAriaLabel,
     onFocus,
     onBlur,
     onChange,
@@ -316,8 +321,13 @@ function FormikAutocompleteField(props: FormikAutocompleteFieldProps) {
           <TextField
             {...params}
             variant={variant}
+            sx={textFieldSx}
             label={label}
             placeholder={placeholder ? placeholder.trim() : "Bitte wählen..."}
+            inputProps={{
+              ...params.inputProps,
+              "aria-label": inputAriaLabel,
+            }}
             error={showError}
             helperText={showError ? error : null}
             InputLabelProps={{ shrink: true }}

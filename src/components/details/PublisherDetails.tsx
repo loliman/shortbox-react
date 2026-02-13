@@ -6,36 +6,40 @@ import { useQuery } from "@apollo/client";
 import QueryResult from "../generic/QueryResult";
 import { lastEdited, publisher } from "../../graphql/queriesTyped";
 import { generateLabel } from "../../util/hierarchy";
-import Typography from "@mui/material/Typography";
 import EditButton from "../restricted/EditButton";
 import withContext from "../generic/withContext";
-import IssuePreview, { IssuePreviewPlaceholder } from "../IssuePreview";
 import PaginatedQuery from "../generic/PaginatedQuery";
-import IssuePreviewSmall, { IssuePreviewPlaceholderSmall } from "../IssuePreviewSmall";
-import SortContainer from "../SortContainer";
 import TitleLine from "../generic/TitleLine";
-import LoadingDots from "../common/LoadingDots";
+import {
+  FirstLastIssueSections,
+  IssueHistoryList,
+} from "./DetailsListingSections";
+import {
+  getListingDirection,
+  getListingOrder,
+  parseListingFilter,
+} from "../../util/listingQuery";
+import { DetailsPagePlaceholder } from "../placeholders/DetailsPagePlaceholder";
+import { DetailsAddInfo } from "./DetailsAddInfo";
+import { useDualLoadingRegistration } from "./useDualLoadingRegistration";
 
 function PublisherDetails(props) {
-  let selected = props.selected;
-
-  let filter;
-  if (props.query && props.query.filter) {
-    try {
-      filter = JSON.parse(props.query.filter);
-      filter.us = props.us;
-      filter.publishers = [
-        {
-          name: props.selected.publisher.name,
-          us: props.us,
-        },
-      ];
-    } catch (e) {
-      //
-    }
-  } else {
-    filter = { us: props.us, publishers: [{ name: props.selected.publisher.name, us: props.us }] };
-  }
+  const selected = props.selected;
+  const us = Boolean(props.us);
+  const pageProps = props as Record<string, unknown>;
+  const { markDetailsLoaded, markHistoryLoaded } = useDualLoadingRegistration({
+    registerLoadingComponent: props.registerLoadingComponent,
+    unregisterLoadingComponent: props.unregisterLoadingComponent,
+    detailsKey: "PublisherDetails_details",
+    historyKey: "PublisherDetails_history",
+  });
+  const filter = React.useMemo(() => {
+    const parsed = parseListingFilter(props.query, us);
+    return {
+      ...parsed,
+      publishers: [{ name: props.selected.publisher.name, us }],
+    };
+  }, [props.query, props.selected.publisher.name, us]);
 
   const { error: detailsError, data: detailsData } = useQuery(publisher, {
     variables: selected,
@@ -44,232 +48,77 @@ function PublisherDetails(props) {
 
   React.useEffect(() => {
     if (detailsData || detailsError) {
-      props.unregisterLoadingComponent("PublisherDetails_details");
+      markDetailsLoaded();
     }
-  }, [detailsData, detailsError, props.unregisterLoadingComponent]);
-
-  React.useEffect(() => {
-    props.registerLoadingComponent("PublisherDetails_history");
-    props.registerLoadingComponent("PublisherDetails_details");
-  }, []);
+  }, [detailsData, detailsError, markDetailsLoaded]);
 
   return (
     <PaginatedQuery
       query={lastEdited}
       variables={{
-        filter: filter,
-        order: props.query && props.query.order ? props.query.order : "updatedAt",
-        direction: props.query && props.query.direction ? props.query.direction : "DESC",
+        filter,
+        order: getListingOrder(props.query),
+        direction: getListingDirection(props.query),
       }}
-      onCompleted={() => props.unregisterLoadingComponent("PublisherDetails_history")}
+      onCompleted={markHistoryLoaded}
     >
       {({ error, data, fetchMore, fetching, hasMore }) => {
-        let lastEdited = data ? data.lastEdited : [];
-        let lastEditedError = error;
-
-        const loading = hasMore && fetching ? <LoadingDots /> : null;
+        const issues = data ? data.lastEdited : [];
+        const details = detailsData?.publisher;
+        const combinedError = detailsError || error;
 
         return (
           <Layout handleScroll={fetchMore}>
-            {(() => {
-              if (
-                props.appIsLoading ||
-                detailsError ||
-                lastEditedError ||
-                !detailsData ||
-                !detailsData.publisher
-              )
-                return (
-                  <QueryResult
-                    error={detailsError || lastEditedError}
-                    data={detailsData ? detailsData.publisher : null}
-                    selected={selected}
-                    placeholder={<PublisherDetailsPlaceholder {...props} />}
-                    placeholderCount={1}
+            {props.appIsLoading || combinedError || !details ? (
+              <QueryResult
+                error={combinedError}
+                data={details || null}
+                selected={selected}
+                placeholder={
+                  <DetailsPagePlaceholder
+                    query={props.query}
+                    titleWidth="48%"
+                    subheaderWidth="26%"
                   />
-                );
+                }
+                placeholderCount={1}
+              />
+            ) : (
+              <React.Fragment>
+                <CardHeader
+                  title={<TitleLine title={generateLabel(details)} id={details.id} session={props.session} />}
+                  subheader={
+                    details.startyear + " - " + (details.active ? "heute" : details.endyear)
+                  }
+                  action={<EditButton item={details} />}
+                />
 
-              let first =
-                detailsData.publisher.issueCount === 1
-                  ? detailsData.publisher.active
-                    ? "Bisher einziges "
-                    : "Einziges "
-                  : "Erstes ";
-              return (
-                <React.Fragment>
-                  <CardHeader
-                    title={
-                      <TitleLine
-                        title={generateLabel(detailsData.publisher)}
-                        id={detailsData.publisher.id}
-                        session={props.session}
-                      />
-                    }
-                    subheader={
-                      detailsData.publisher.startyear +
-                      " - " +
-                      (detailsData.publisher.active ? "heute" : detailsData.publisher.endyear)
-                    }
-                    action={<EditButton item={detailsData.publisher} />}
+                <CardContent className="cardContent">
+                  <DetailsAddInfo addinfo={details.addinfo} />
+
+                  <FirstLastIssueSections
+                    query={props.query}
+                    us={us}
+                    issueCount={details.issueCount}
+                    active={details.active}
+                    firstIssue={details.firstIssue}
+                    lastIssue={details.lastIssue}
+                    previewProps={pageProps}
                   />
 
-                  <CardContent className="cardContent">
-                    {detailsData.publisher.addinfo ? (
-                      <React.Fragment>
-                        <br />
-
-                        <Typography
-                          dangerouslySetInnerHTML={{ __html: detailsData.publisher.addinfo }}
-                        />
-
-                        <br />
-                        <br />
-                      </React.Fragment>
-                    ) : null}
-
-                    {(!props.query || !props.query.filter) && detailsData.publisher.firstIssue ? (
-                      <React.Fragment>
-                        <CardHeader
-                          title={
-                            !props.us
-                              ? first + "veröffentlichtes Comic mit Marvel Material"
-                              : "Frühestes Comic mit auf deutsch veröffentlichtem Material"
-                          }
-                        />
-
-                        <CardContent>
-                          <IssuePreview {...props} issue={detailsData.publisher.firstIssue} />
-                        </CardContent>
-                      </React.Fragment>
-                    ) : null}
-
-                    {!props.query || !props.query.filter ? <br /> : null}
-
-                    {(!props.query || !props.query.filter) &&
-                    detailsData.publisher.lastIssue &&
-                    detailsData.publisher.issueCount > 1 ? (
-                      <React.Fragment>
-                        <CardHeader
-                          title={
-                            !props.us
-                              ? "Letztes veröffentlichtes Comic mit Marvel Material"
-                              : "Spätestes Comic mit auf deutsch veröffentlichtem Material"
-                          }
-                        />
-
-                        <CardContent>
-                          <IssuePreview {...props} issue={detailsData.publisher.lastIssue} />
-                        </CardContent>
-                      </React.Fragment>
-                    ) : null}
-
-                    {!props.query || !props.query.filter ? <br /> : null}
-
-                    <React.Fragment>
-                      <div>
-                        <SortContainer {...props} />
-                      </div>
-
-                      <br />
-
-                      <CardContent>
-                        {lastEdited
-                          ? lastEdited.map((i, idx) => (
-                              <IssuePreviewSmall
-                                {...props}
-                                isLast={idx === lastEdited.length - 1}
-                                idx={idx}
-                                key={idx}
-                                issue={i}
-                              />
-                            ))
-                          : null}
-                      </CardContent>
-                    </React.Fragment>
-                  </CardContent>
-
-                  {loading}
-                </React.Fragment>
-              );
-            })()}
+                  <IssueHistoryList
+                    query={props.query}
+                    issues={issues}
+                    loadingMore={Boolean(hasMore && fetching)}
+                    previewProps={pageProps}
+                  />
+                </CardContent>
+              </React.Fragment>
+            )}
           </Layout>
         );
       }}
     </PaginatedQuery>
-  );
-}
-
-function PublisherDetailsPlaceholder(props) {
-  return (
-    <React.Fragment>
-      <CardHeader
-        title={
-          <div className="ui placeholder cardHeaderPlaceholder">
-            <div className={"header"}>
-              <div className="medium line" />
-              <div className="short line" />
-            </div>
-          </div>
-        }
-      />
-
-      <CardContent className="cardContent">
-        {!props.query || !props.query.filter ? (
-          <React.Fragment>
-            <React.Fragment>
-              <CardHeader
-                title={
-                  <div className="ui placeholder cardHeaderPlaceholder">
-                    <div className={"header"}>
-                      <div className="short line" />
-                    </div>
-                  </div>
-                }
-              />
-              <CardContent>
-                <IssuePreviewPlaceholder />
-              </CardContent>
-            </React.Fragment>
-            <br />
-            <br />
-            <React.Fragment>
-              <CardHeader
-                title={
-                  <div className="ui placeholder cardHeaderPlaceholder">
-                    <div className={"header"}>
-                      <div className="medium line" />
-                    </div>
-                  </div>
-                }
-              />
-              <CardContent>
-                <IssuePreviewPlaceholder />
-              </CardContent>
-            </React.Fragment>
-            <br />{" "}
-          </React.Fragment>
-        ) : null}
-
-        <React.Fragment>
-          <CardHeader
-            title={
-              <div className="ui placeholder cardHeaderPlaceholder">
-                <div className={"header"}>
-                  <div className="very short line" />
-                </div>
-              </div>
-            }
-          />
-          <CardContent>
-            <IssuePreviewPlaceholderSmall idx={0} />
-            <IssuePreviewPlaceholderSmall />
-            <IssuePreviewPlaceholderSmall />
-            <IssuePreviewPlaceholderSmall />
-            <IssuePreviewPlaceholderSmall isLast={true} />
-          </CardContent>
-        </React.Fragment>
-      </CardContent>
-    </React.Fragment>
   );
 }
 

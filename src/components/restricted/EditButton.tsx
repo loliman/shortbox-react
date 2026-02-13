@@ -6,73 +6,55 @@ import Dropdown from "./Dropdown";
 
 interface EditDropdownState {
   anchorEl: HTMLElement | null;
-  item: unknown;
+  item: unknown | null;
 }
 
 interface EditButtonProps {
   session?: unknown;
-  anchorEl?: HTMLElement | null;
   item?: unknown;
-  [key: string]: unknown;
 }
 
-interface EditButtonState {
-  EditDropdown: EditDropdownState;
-}
+function EditButton(props: Readonly<EditButtonProps>) {
+  const [editDropdown, setEditDropdown] = React.useState<EditDropdownState>({
+    anchorEl: null,
+    item: null,
+  });
 
-class EditButton extends React.Component<EditButtonProps, EditButtonState> {
-  constructor(props: EditButtonProps) {
-    super(props);
-
-    this.state = {
-      EditDropdown: {
-        anchorEl: null,
-        item: null,
-      },
-    };
-  }
-
-  render() {
-    if (this.props.session)
-      return (
-        <div className="editButton">
-          <IconButton
-            className="itemMenuButton"
-            aria-label="More"
-            aria-owns={this.props.anchorEl ? "long-menu" : undefined}
-            aria-haspopup="true"
-            onClick={(e) => this.handleEditDropdownOpen(e, this.props.item)}
-          >
-            <MoreVertIcon />
-          </IconButton>
-          <Dropdown
-            EditDropdown={this.state.EditDropdown}
-            handleOpen={this.handleEditDropdownOpen}
-            handleClose={this.handleEditDropdownClose}
-          />
-        </div>
-      );
-
-    return null;
-  }
-
-  handleEditDropdownOpen = (e: React.MouseEvent<HTMLElement>, item: unknown) => {
-    this.setState({
-      EditDropdown: {
+  const handleEditDropdownOpen = React.useCallback(
+    (e: React.MouseEvent<HTMLElement>) => {
+      setEditDropdown({
         anchorEl: e.currentTarget,
-        item: item,
-      },
-    });
-  };
+        item: props.item ?? null,
+      });
+    },
+    [props.item]
+  );
 
-  handleEditDropdownClose = () => {
-    this.setState({
-      EditDropdown: {
-        anchorEl: null,
-        item: this.state.EditDropdown.item,
-      },
-    });
-  };
+  const handleEditDropdownClose = React.useCallback(() => {
+    setEditDropdown((current) => ({
+      anchorEl: null,
+      item: current.item,
+    }));
+  }, []);
+
+  if (!props.session) return null;
+
+  return (
+    <div className="editButton">
+      <IconButton
+        className="itemMenuButton"
+        aria-label="Mehr"
+        aria-controls={editDropdown.anchorEl ? "edit-item-menu" : undefined}
+        aria-expanded={editDropdown.anchorEl ? "true" : undefined}
+        aria-haspopup="menu"
+        onClick={handleEditDropdownOpen}
+      >
+        <MoreVertIcon />
+      </IconButton>
+
+      <Dropdown EditDropdown={editDropdown} handleClose={handleEditDropdownClose} />
+    </div>
+  );
 }
 
 export default withContext(EditButton);

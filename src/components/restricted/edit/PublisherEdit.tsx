@@ -16,16 +16,21 @@ function PublisherEdit(props) {
       {(() => {
         if (loading || error || !data || !data.publisher)
           return (
-            <QueryResult error={error} data={data ? data.publisher : null} selected={selected} />
+            <QueryResult
+              loading={loading}
+              error={error}
+              data={data ? data.publisher : null}
+              selected={selected}
+            />
           );
 
-        let defaultValues = JSON.parse(JSON.stringify(data.publisher));
+        let defaultValues = structuredClone(data.publisher) as Record<string, unknown>;
 
         defaultValues.seriesCount = undefined;
         defaultValues.issueCount = undefined;
         defaultValues.active = undefined;
         defaultValues.firstIssue = undefined;
-        defaultValues.lastEdited = undefined;
+        defaultValues["lastEdited"] = undefined;
         defaultValues.lastIssue = undefined;
 
         return (

@@ -16,6 +16,7 @@ import Tooltip from "@mui/material/Tooltip";
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import TitleLine from "../../generic/TitleLine";
+import Stack from "@mui/material/Stack";
 import type { DocumentNode } from "graphql";
 
 interface SeriesFormValues {
@@ -36,7 +37,7 @@ interface SeriesEditorProps {
   mutation: DocumentNode;
   id?: string | number;
   session?: unknown;
-  desktop?: boolean;
+  isDesktop?: boolean;
   navigate: (event: unknown, url: string) => void;
   lastLocation?: { pathname: string } | null;
   enqueueSnackbar: (
@@ -84,10 +85,16 @@ class SeriesEditor extends React.Component<SeriesEditorProps, SeriesEditorState>
     };
   }
 
-  toogleUs = () => {
-    let newDefaultValues = this.state.defaultValues;
-    newDefaultValues.publisher.us = !newDefaultValues.publisher.us;
-    this.setState({ defaultValues: newDefaultValues });
+  toggleUs = () => {
+    this.setState((prevState) => ({
+      defaultValues: {
+        ...prevState.defaultValues,
+        publisher: {
+          ...prevState.defaultValues.publisher,
+          us: !prevState.defaultValues.publisher.us,
+        },
+      },
+    }));
   };
 
   render() {
@@ -103,14 +110,13 @@ class SeriesEditor extends React.Component<SeriesEditorProps, SeriesEditorState>
         update={(cache, result) => {
           let res = result.data[mutationName];
 
-          let newSeries = JSON.parse(JSON.stringify(res));
-          newSeries.publisher.us = this.props.us;
+          let newSeries = structuredClone(res);
 
           try {
-            let publisher = JSON.parse(JSON.stringify(res.publisher));
+            let publisher = structuredClone(res.publisher);
             publisher.us = undefined;
             addToCache(cache, series, stripItem(wrapItem(publisher)), newSeries);
-          } catch (e) {
+          } catch {
             //ignore cache exception;
           }
 
@@ -129,13 +135,13 @@ class SeriesEditor extends React.Component<SeriesEditorProps, SeriesEditorState>
               updateInCache(cache, seriesd, { series: series }, defaultValues, {
                 seriesd: newSeries,
               });
-            } catch (e) {
+            } catch {
               //ignore cache exception;
             }
 
             try {
               removeFromCache(cache, series, { publisher: publisher }, defaultValues);
-            } catch (e) {
+            } catch {
               //ignore cache exception;
             }
           }
@@ -154,9 +160,10 @@ class SeriesEditor extends React.Component<SeriesEditorProps, SeriesEditorState>
           enqueueSnackbar(errorMessage + message, { variant: "error" });
         }}
       >
-        {(mutation, { error }) => (
+        {(mutation) => (
           <Formik
             initialValues={defaultValues}
+            enableReinitialize
             validationSchema={SeriesSchema}
             onSubmit={async (values, actions) => {
               actions.setSubmitting(true);
@@ -184,13 +191,13 @@ class SeriesEditor extends React.Component<SeriesEditorProps, SeriesEditorState>
                         className="switchEditor"
                         control={
                           <Tooltip
-                            title={(defaultValues.publisher.us ? "Deutscher" : "US") + " Serie"}
+                            title={(values.publisher.us ? "Deutscher" : "US") + " Serie"}
                           >
                             <Switch
                               disabled={edit}
-                              checked={defaultValues.publisher.us}
+                              checked={values.publisher.us}
                               onChange={() => {
-                                this.toogleUs();
+                                this.toggleUs();
                                 resetForm();
                               }}
                               color="secondary"
@@ -203,107 +210,101 @@ class SeriesEditor extends React.Component<SeriesEditorProps, SeriesEditorState>
                   />
 
                   <CardContent className="cardContent">
-                    <FastField
-                      className={this.props.desktop ? "field field35" : "field field100"}
-                      name="title"
-                      label="Titel"
-                      component={TextField}
-                    />
-                    <br />
+                    <Stack spacing={2.5}>
+                      <FastField
+                        className={this.props.isDesktop ? "field field35" : "field field100"}
+                        name="title"
+                        label="Titel"
+                        component={TextField}
+                      />
 
-                    <AutocompleteField
-                      query={publishers}
-                      name="publisher.name"
-                      label="Verlag"
-                      variables={{
-                        pattern: values.publisher.name,
-                        us: defaultValues.publisher.us ? defaultValues.publisher.us : false,
-                      }}
-                      onChange={(option, live) => {
-                        if (typeof option !== "string" || option.trim() !== "") {
-                          if (live) {
-                            setFieldValue("publisher.name", option);
-                          } else {
-                            setFieldValue("publisher", {
-                              name: "",
-                              us: defaultValues.publisher.us,
-                            });
-
-                            if (option) setFieldValue("publisher", option);
-                          }
-                        }
-                      }}
-                      generateLabel={generateLabel}
-                    />
-
-                    <br />
-                    <FastField
-                      className={this.props.desktop ? "field field35" : "field field100"}
-                      name="volume"
-                      label="Volume"
-                      type="number"
-                      component={TextField}
-                    />
-                    <br />
-                    <FastField
-                      className={this.props.desktop ? "field field35" : "field field100"}
-                      name="startyear"
-                      label="Startjahr"
-                      type="number"
-                      component={TextField}
-                    />
-                    <br />
-                    <FastField
-                      className={this.props.desktop ? "field field35" : "field field100"}
-                      name="endyear"
-                      label="Endjahr"
-                      type="number"
-                      component={TextField}
-                    />
-                    <br />
-                    <FastField
-                      className={this.props.desktop ? "field field35" : "field field100"}
-                      name="addinfo"
-                      label="Weitere Informationen"
-                      multiline
-                      rows={10}
-                      component={TextField}
-                    />
-
-                    <br />
-                    <br />
-
-                    <div className="formButtons">
-                      <Button
-                        disabled={isSubmitting}
-                        onMouseDown={(e) => {
-                          values = defaultValues;
-                          resetForm();
+                      <AutocompleteField
+                        query={publishers}
+                        name="publisher.name"
+                        label="Verlag"
+                        variables={{
+                          pattern: values.publisher.name,
+                          us: defaultValues.publisher.us ? defaultValues.publisher.us : false,
                         }}
-                        color="secondary"
-                      >
-                        Zurücksetzen
-                      </Button>
+                        onChange={(option, live) => {
+                          if (typeof option !== "string" || option.trim() !== "") {
+                            if (live) {
+                              setFieldValue("publisher.name", option);
+                            } else {
+                              setFieldValue("publisher", {
+                                name: "",
+                                us: defaultValues.publisher.us,
+                              });
 
-                      <Button
-                        disabled={isSubmitting}
-                        onMouseDown={(e) =>
-                          this.props.navigate(e, lastLocation ? lastLocation.pathname : "/")
-                        }
-                        color="primary"
-                      >
-                        Abbrechen
-                      </Button>
+                              if (option) setFieldValue("publisher", option);
+                            }
+                          }
+                        }}
+                        generateLabel={generateLabel}
+                      />
 
-                      <Button
-                        className="createButton"
-                        disabled={isSubmitting}
-                        onClick={submitForm}
-                        color="primary"
-                      >
-                        {submitLabel}
-                      </Button>
-                    </div>
+                      <FastField
+                        className={this.props.isDesktop ? "field field35" : "field field100"}
+                        name="volume"
+                        label="Volume"
+                        type="number"
+                        component={TextField}
+                      />
+
+                      <FastField
+                        className={this.props.isDesktop ? "field field35" : "field field100"}
+                        name="startyear"
+                        label="Startjahr"
+                        type="number"
+                        component={TextField}
+                      />
+
+                      <FastField
+                        className={this.props.isDesktop ? "field field35" : "field field100"}
+                        name="endyear"
+                        label="Endjahr"
+                        type="number"
+                        component={TextField}
+                      />
+
+                      <FastField
+                        className={this.props.isDesktop ? "field field35" : "field field100"}
+                        name="addinfo"
+                        label="Weitere Informationen"
+                        multiline
+                        rows={10}
+                        component={TextField}
+                      />
+
+                      <div className="formButtons">
+                        <Button
+                          disabled={isSubmitting}
+                          onClick={() => resetForm()}
+                          color="secondary"
+                        >
+                          Zurücksetzen
+                        </Button>
+
+                        <Button
+                          disabled={isSubmitting}
+                          onClick={(e) =>
+                            this.props.navigate(e, lastLocation ? lastLocation.pathname : "/")
+                          }
+                          color="primary"
+                        >
+                          Abbrechen
+                        </Button>
+
+                        <Button
+                          className="createButton"
+                          disabled={isSubmitting}
+                          onClick={submitForm}
+                          color="primary"
+                        >
+                          {submitLabel}
+                        </Button>
+                      </div>
+                    </Stack>
                   </CardContent>
                 </Form>
               );

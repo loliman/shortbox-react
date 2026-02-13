@@ -1,0 +1,134 @@
+import React from "react";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import MenuItem from "@mui/material/MenuItem";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import AddIcon from "@mui/icons-material/Add";
+import { FastField } from "formik";
+import AutocompleteField from "../../generic/AutocompleteField";
+import { TextField } from "../../generic/FormikTextField";
+import FilterSwitch from "../FilterSwitch";
+import { COMPARE_OPTIONS, FORMAT_OPTIONS } from "../constants";
+import { FilterValues } from "../types";
+
+interface DetailsSectionProps {
+  values: FilterValues;
+  isDesktop: boolean;
+  setFieldValue: (field: string, value: unknown) => void;
+  hasSession: boolean;
+}
+
+function DetailsSection({ values, isDesktop, setFieldValue, hasSession }: DetailsSectionProps) {
+  return (
+    <Stack spacing={2}>
+      <Typography variant="h6">Details</Typography>
+
+      <AutocompleteField
+        values={FORMAT_OPTIONS}
+        nameField="name"
+        name={"formats"}
+        label="Format"
+        multiple
+        onChange={(option) => setFieldValue("formats", option)}
+        generateLabel={(entry) => entry}
+      />
+
+      <FilterSwitch
+        className="switchEditor withVariants"
+        checked={values.withVariants}
+        label="Mit Varianten"
+        onToggle={() => setFieldValue("withVariants", !values.withVariants)}
+      />
+
+      <Stack spacing={1.5}>
+        {values.releasedates.map((entry, index) => {
+          const key = `${entry.date}-${entry.compare}-${index}`;
+          return (
+            <Box key={key}>
+              <FastField
+                className={isDesktop ? "field field352" : "field field90"}
+                name={`releasedates[${index}].date`}
+                label="Erscheinungsdatum"
+                type="date"
+                InputLabelProps={{ shrink: true }}
+                component={TextField}
+              />
+
+              <FastField
+                type="text"
+                name={`releasedates[${index}].compare`}
+                label="ist"
+                select
+                component={TextField}
+                className={"field field5"}
+                InputLabelProps={{ shrink: true }}
+              >
+                {COMPARE_OPTIONS.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </FastField>
+
+              {index === values.releasedates.length - 1 ? (
+                <IconButton
+                  className="addBtnFilter"
+                  aria-label="Hinzufügen"
+                  onClick={() =>
+                    setFieldValue("releasedates", [
+                      ...values.releasedates,
+                      { date: "1900-01-01", compare: ">" },
+                    ])
+                  }
+                >
+                  <AddIcon />
+                </IconButton>
+              ) : null}
+            </Box>
+          );
+        })}
+      </Stack>
+
+      <FilterSwitch
+        checked={values.and}
+        label="Alle Kriterien müssen erfüllt sein"
+        onToggle={() => setFieldValue("and", !values.and)}
+      />
+
+      <FilterSwitch
+        checked={values.noCover}
+        label="Ohne Cover"
+        onToggle={() => setFieldValue("noCover", !values.noCover)}
+      />
+
+      <FilterSwitch
+        checked={values.noContent}
+        label="Ohne Inhalt"
+        onToggle={() => setFieldValue("noContent", !values.noContent)}
+      />
+
+      {hasSession ? (
+        <Stack spacing={2}>
+          <FilterSwitch
+            checked={values.onlyCollected}
+            label="Nur in Sammlung"
+            onToggle={() => setFieldValue("onlyCollected", !values.onlyCollected)}
+          />
+          <FilterSwitch
+            checked={values.onlyNotCollected}
+            label="Nur nicht in Sammlung"
+            onToggle={() => setFieldValue("onlyNotCollected", !values.onlyNotCollected)}
+          />
+          <FilterSwitch
+            checked={values.sellable}
+            label="Verkaufbar"
+            onToggle={() => setFieldValue("sellable", !values.sellable)}
+          />
+        </Stack>
+      ) : null}
+    </Stack>
+  );
+}
+
+export default DetailsSection;

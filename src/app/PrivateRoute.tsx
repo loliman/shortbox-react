@@ -1,9 +1,9 @@
 import type { PropsWithChildren } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import type { SessionCookie } from "./session";
+import type { SessionData } from "./session";
 
 type PrivateRouteProps = PropsWithChildren<{
-  session?: SessionCookie;
+  session?: SessionData;
   authReady?: boolean;
 }>;
 

@@ -15,10 +15,14 @@ interface DropdownStory {
 }
 
 interface DropdownItem {
-  series?: { publisher?: { us?: boolean } };
-  publisher?: { us?: boolean };
-  us?: boolean;
+  series?: { publisher?: { us?: boolean; name?: string }; title?: string; volume?: number };
+  publisher?: { us?: boolean; name?: string };
+  number?: string;
+  format?: string;
+  variant?: string;
+  us?: boolean | null;
   stories?: DropdownStory[];
+  __typename?: string;
   [key: string]: unknown;
 }
 
@@ -32,7 +36,6 @@ interface DropdownProps {
     item?: DropdownItem | null;
   };
   us?: boolean;
-  [key: string]: unknown;
 }
 
 interface DropdownState {
@@ -49,24 +52,18 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
   }
 
   render() {
-    if (!this.props.EditDropdown?.item || !this.props.session) return null;
+    const selectedItem = this.props.EditDropdown?.item;
+    if (!selectedItem || !this.props.session) return null;
 
-    let canDelete = true;
-
-    if (
-      this.props.level === HierarchyLevel.ISSUE &&
-      this.props.EditDropdown.item.series?.publisher?.us
-    ) {
-      this.props.EditDropdown.item.stories?.forEach((story) => {
-        if (canDelete) canDelete = (story.children?.length || 0) === 0;
-      });
-    }
+    const isUsIssue =
+      this.props.level === HierarchyLevel.ISSUE && Boolean(selectedItem.series?.publisher?.us);
+    const canDelete = !isUsIssue || (selectedItem.stories || []).every((story) => (story.children?.length || 0) === 0);
 
     return (
       <ClickAwayListener onClickAway={() => this.props.handleClose?.()}>
         <div>
           <Menu
-            id="long-menu"
+            id="edit-item-menu"
             anchorEl={this.props.EditDropdown.anchorEl}
             open={this.props.EditDropdown.anchorEl !== null}
             onClose={() => this.props.handleClose?.()}
@@ -80,26 +77,11 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
             <MenuItem
               key="edit"
               onClick={() => {
-                let us = false;
-                switch (this.props.level) {
-                  case HierarchyLevel.ISSUE:
-                    us = this.props.EditDropdown.item.series.publisher.us;
-                    break;
-                  case HierarchyLevel.SERIES:
-                    us = this.props.EditDropdown.item.publisher.us;
-                    break;
-                  default:
-                    us = this.props.EditDropdown.item.us;
-                }
+                const us = resolveItemUs(selectedItem, this.props.level, Boolean(this.props.us));
 
                 this.props.navigate?.(
                   null,
-                  "/edit" +
-                    generateUrl(
-                      this.props.EditDropdown
-                        .item as unknown as import("../../types/domain").SelectedRoot,
-                      us
-                    )
+                  "/edit" + generateUrl(selectedItem as unknown as import("../../types/domain").SelectedRoot, us)
                 );
                 this.props.handleClose?.();
               }}
@@ -125,7 +107,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
           <DeletionDialog
             handleClose={this.handleDeletionClose}
             open={this.state.deletionOpen}
-            item={this.props.EditDropdown.item}
+            item={selectedItem}
           />
         </div>
       </ClickAwayListener>
@@ -145,6 +127,17 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
       deletionOpen: false,
     });
   };
+}
+
+function resolveItemUs(item: DropdownItem, level: string | undefined, fallbackUs: boolean): boolean {
+  switch (level) {
+    case HierarchyLevel.ISSUE:
+      return Boolean(item.series?.publisher?.us);
+    case HierarchyLevel.SERIES:
+      return Boolean(item.publisher?.us);
+    default:
+      return item.us === null || item.us === undefined ? fallbackUs : Boolean(item.us);
+  }
 }
 
 export default withContext(Dropdown);

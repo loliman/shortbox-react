@@ -6,17 +6,27 @@ import { useApolloClient } from "@apollo/client";
 import AppContextProvider from "./generic/AppContext";
 import { AppRoutes } from "../app/AppRoutes";
 import { appTheme } from "../app/theme";
-import { getSessionCookieOptions, SESSION_COOKIE_NAME, type SessionCookie } from "../app/session";
+import {
+  getSessionCookieOptions,
+  SESSION_COOKIE_NAME,
+  type SessionData,
+} from "../app/session";
+import { isMockMode } from "../app/mockMode";
 import { me } from "../graphql/queriesTyped";
 
 export default function App() {
   const [cookies, setCookie, removeCookie] = useCookies([SESSION_COOKIE_NAME]);
   const client = useApolloClient();
-  const session = cookies.session as SessionCookie | undefined;
+  const session = cookies.session as SessionData | undefined;
   const loggedIn = Boolean(session?.loggedIn);
   const [authReady, setAuthReady] = useState(false);
 
   useEffect(() => {
+    if (isMockMode) {
+      setAuthReady(true);
+      return;
+    }
+
     let mounted = true;
 
     client
@@ -26,15 +36,15 @@ export default function App() {
       })
       .then(({ data }) => {
         if (!mounted) return;
+
         if (data?.me) {
           if (!loggedIn) {
             setCookie(SESSION_COOKIE_NAME, { loggedIn: true }, getSessionCookieOptions());
           }
-          return;
-        }
-        if (loggedIn) {
+        } else if (loggedIn) {
           removeCookie(SESSION_COOKIE_NAME, { path: "/" });
         }
+
         setAuthReady(true);
       })
       .catch(() => {

@@ -2,18 +2,18 @@ import { lazy } from "react";
 import type { ReactElement } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { PrivateRoute } from "./PrivateRoute";
-import type { SessionCookie } from "./session";
+import type { SessionData } from "./session";
 
-const Home = lazy(() => import("../components/Home/Home"));
+const Home = lazy(() => import("../components/Home"));
 const PublisherDetails = lazy(() => import("../components/details/PublisherDetails"));
 const SeriesDetails = lazy(() => import("../components/details/SeriesDetails"));
 const IssueDetailsDE = lazy(() => import("../components/details/IssueDetailsDE"));
 const IssueDetailsUS = lazy(() => import("../components/details/IssueDetailsUS"));
-const Filter = lazy(() => import("../components/Filter"));
+const Filter = lazy(() => import("../components/filter/Filter"));
 const Login = lazy(() => import("../components/Login"));
-const Contact = lazy(() => import("../components/Contact"));
-const Impress = lazy(() => import("../components/Impress"));
-const Privacy = lazy(() => import("../components/Privacy"));
+const Contact = lazy(() => import("../components/footer/Contact"));
+const Impress = lazy(() => import("../components/footer/Impress"));
+const Privacy = lazy(() => import("../components/footer/Privacy"));
 const PublisherCreate = lazy(() => import("../components/restricted/create/PublisherCreate"));
 const SeriesCreate = lazy(() => import("../components/restricted/create/SeriesCreate"));
 const IssueCreate = lazy(() => import("../components/restricted/create/IssueCreate"));
@@ -23,11 +23,11 @@ const SeriesEdit = lazy(() => import("../components/restricted/edit/SeriesEdit")
 const IssueEdit = lazy(() => import("../components/restricted/edit/IssueEdit"));
 
 type AppRoutesProps = {
-  session?: SessionCookie;
+  session?: SessionData;
   authReady?: boolean;
 };
 
-function guard(session: SessionCookie | undefined, authReady: boolean, element: ReactElement) {
+function guard(session: SessionData | undefined, authReady: boolean, element: ReactElement) {
   return (
     <PrivateRoute session={session} authReady={authReady}>
       {element}

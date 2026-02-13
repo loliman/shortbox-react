@@ -8,7 +8,7 @@ export const HierarchyLevel = Object.freeze({
   ISSUE: "ISSUE",
 });
 
-type HierarchyLevelType = (typeof HierarchyLevel)[keyof typeof HierarchyLevel];
+export type HierarchyLevelType = (typeof HierarchyLevel)[keyof typeof HierarchyLevel];
 
 export function getHierarchyLevel(item: SelectedRoot): HierarchyLevelType {
   if (item.publisher) return HierarchyLevel.PUBLISHER;
@@ -72,11 +72,22 @@ export function getSelected(params: RouteParams, us: boolean): SelectedRoot {
 
   if (params.series) {
     const seriesValue = decodeURIComponent(params.series);
-    const title = seriesValue.substring(0, seriesValue.indexOf("_"));
-    const volume = Number.parseInt(
-      seriesValue.substring(seriesValue.lastIndexOf("_") + 1, seriesValue.length),
-      10
-    );
+    const volumeSeparator = "_Vol_";
+    const separatorIndex = seriesValue.lastIndexOf(volumeSeparator);
+    const hasSeparator = separatorIndex > -1;
+    const legacySeparatorIndex = seriesValue.lastIndexOf("_");
+    const hasLegacySeparator = !hasSeparator && legacySeparatorIndex > -1;
+    const title = hasSeparator
+      ? seriesValue.substring(0, separatorIndex)
+      : hasLegacySeparator
+        ? seriesValue.substring(0, legacySeparatorIndex)
+        : seriesValue;
+    const volumeText = hasSeparator
+      ? seriesValue.substring(separatorIndex + volumeSeparator.length)
+      : hasLegacySeparator
+        ? seriesValue.substring(legacySeparatorIndex + 1)
+        : "1";
+    const volume = Number.parseInt(volumeText, 10);
 
     selected.series = {
       title,
@@ -100,9 +111,10 @@ export function getSelected(params: RouteParams, us: boolean): SelectedRoot {
 
   if (params.variant && selected.issue) {
     const variant = decodeURIComponent(params.variant);
-    if (variant.includes("_")) {
-      selected.issue.format = variant.substring(0, variant.indexOf("_"));
-      selected.issue.variant = variant.substring(variant.lastIndexOf("_") + 1, variant.length);
+    const separatorIndex = variant.indexOf("_");
+    if (separatorIndex > -1) {
+      selected.issue.format = variant.substring(0, separatorIndex);
+      selected.issue.variant = variant.substring(separatorIndex + 1);
     } else {
       selected.issue.format = variant;
     }

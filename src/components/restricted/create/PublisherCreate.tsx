@@ -4,7 +4,7 @@ import { createPublisher } from "../../../graphql/mutationsTyped";
 import { withContext } from "../../generic";
 import PublisherEditor from "../editor/PublisherEditor";
 
-function PublisherCreate(props) {
+function PublisherCreate() {
   return (
     <Layout>
       <PublisherEditor mutation={createPublisher} />

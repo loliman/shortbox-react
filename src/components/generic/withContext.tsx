@@ -1,7 +1,7 @@
-import React, { ComponentType, useEffect, useRef } from "react";
+import React, { ComponentType, useContext, useEffect, useRef } from "react";
 import { useSnackbar } from "notistack";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
-import { AppContext, AppContextValue } from "./AppContext";
+import { AppContext } from "./AppContext";
 import { withCookies } from "react-cookie";
 import {
   generateLabel,
@@ -20,9 +20,7 @@ type NavigationEvent = {
 };
 
 interface RouterBridge {
-  location: ReturnType<typeof useLocation>;
   navigateRouter: ReturnType<typeof useNavigate>;
-  us: boolean;
 }
 
 function getDisplayName(WrappedComponent: ComponentType<unknown>): string {
@@ -31,6 +29,7 @@ function getDisplayName(WrappedComponent: ComponentType<unknown>): string {
 
 function withContext<T>(WrappedComponent: ComponentType<T>): ComponentType<UnknownRecord> {
   const WithContext = (props: UnknownRecord) => {
+    const context = useContext(AppContext);
     const location = useLocation();
     const navigateRouter = useNavigate();
     const params = useParams();
@@ -48,50 +47,47 @@ function withContext<T>(WrappedComponent: ComponentType<T>): ComponentType<Unkno
       };
     }, [location.pathname, location.search, location.hash, location.state, location.key]);
 
+    const us =
+      location.pathname.indexOf("/us") === 0 ||
+      location.pathname.indexOf("/edit/us") === 0 ||
+      location.pathname.indexOf("/filter/us") === 0;
+    const selected = getSelected(params, us);
+    const currentQuery = location.search ? (queryString.parse(location.search) as UnknownRecord) : null;
+    const locationState = location.state as { from?: ReturnType<typeof useLocation> } | null;
+    const lastLocation = locationState?.from ? locationState.from : previousLocationRef.current;
+
+    const contextParams = {
+      edit: location.pathname.indexOf("/edit") === 0,
+      create: location.pathname.indexOf("/create") === 0,
+      us,
+      selected,
+      query: currentQuery,
+      level: getHierarchyLevel(selected),
+      lastLocation,
+      navigate: (e: NavigationEvent | null, url: string, query?: UnknownRecord) => {
+        const newTab = Boolean(
+          e &&
+          (e.metaKey || e.ctrlKey || e.keyCode === 91 || e.keyCode === 224 || e.button === 1)
+        );
+
+        if (e && e.button !== 1 && e.button !== 0) return;
+
+        context.resetLoadingComponents();
+        navigate({ navigateRouter }, url, query, currentQuery, newTab);
+      },
+    };
+
+    const appTitle = createAppTitle(contextParams, location.pathname);
+    useEffect(() => {
+      document.title = appTitle;
+    }, [appTitle]);
+
     return (
-      <AppContext.Consumer>
-        {(context: AppContextValue) => {
-          const us =
-            location.pathname.indexOf("/us") === 0 ||
-            location.pathname.indexOf("/edit/us") === 0 ||
-            location.pathname.indexOf("/filter/us") === 0;
-          const selected = getSelected(params, us);
-          const currentQuery = location.search ? queryString.parse(location.search) : null;
-          const locationState = location.state as { from?: ReturnType<typeof useLocation> } | null;
-          const lastLocation = locationState?.from ? locationState.from : previousLocationRef.current;
-
-          const contextParams = {
-            edit: location.pathname.indexOf("/edit") === 0,
-            create: location.pathname.indexOf("/create") === 0,
-            us,
-            selected,
-            query: currentQuery,
-            level: getHierarchyLevel(selected),
-            lastLocation,
-            navigate: (e: NavigationEvent | null, url: string, query?: UnknownRecord) => {
-              const newTab = Boolean(
-                e &&
-                (e.metaKey || e.ctrlKey || e.keyCode === 91 || e.keyCode === 224 || e.button === 1)
-              );
-
-              if (e && e.button !== 1 && e.button !== 0) return;
-
-              context.resetLoadingComponents();
-              navigate({ location, navigateRouter, us }, url, query, currentQuery, newTab);
-            },
-          };
-
-          document.title = createAppTitle(contextParams, location.pathname);
-
-          return (
-            <WrappedComponent
-              {...(contextParams as unknown as T)}
-              {...(context as unknown as T)}
-              {...(props as unknown as T)}
-            />
-          );
-        }}
-      </AppContext.Consumer>
+      <WrappedComponent
+        {...(contextParams as unknown as T)}
+        {...(context as unknown as T)}
+        {...(props as unknown as T)}
+      />
     );
   };
 
@@ -123,7 +119,6 @@ function navigate(
   currentQuery?: UnknownRecord | null,
   newTab?: boolean
 ) {
-  const lastUrl = router.location ? router.location.pathname : null;
   const q: UnknownRecord = currentQuery ? { ...currentQuery } : {};
   q.expand = undefined;
 
@@ -135,10 +130,8 @@ function navigate(
     }
   }
 
-  const targetUrl =
-    (lastUrl === url && query === currentQuery ? (router.us ? "/us" : "/de") : url) +
-    "?" +
-    queryString.stringify(q);
+  const mergedQuery = queryString.stringify(q);
+  const targetUrl = mergedQuery ? `${url}?${mergedQuery}` : url;
 
   if (newTab) globalThis.open(targetUrl, "_blank", "noreferrer");
   else router.navigateRouter(targetUrl);

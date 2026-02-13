@@ -73,7 +73,8 @@ export function updateInCache(cache, query, variables, update, item) {
 }
 
 export function compare(a, b) {
-  if (a.__typename !== b.__typename) return false;
+  if (a.__typename !== b.__typename)
+    return String(a.__typename || "").localeCompare(String(b.__typename || ""));
 
   let type = a.__typename;
   switch (type) {
@@ -82,9 +83,13 @@ export function compare(a, b) {
     case "Series":
       return (a.title.toLowerCase() + a.volume).localeCompare(b.title.toLowerCase() + b.volume);
     case "Issue":
-      return a.number.toLowerCase().localeCompare(b.number.toLowerCase());
+      return (
+        `${(a.number || "").toLowerCase()}|${(a.format || "").toLowerCase()}|${(a.variant || "").toLowerCase()}`
+      ).localeCompare(
+        `${(b.number || "").toLowerCase()}|${(b.format || "").toLowerCase()}|${(b.variant || "").toLowerCase()}`
+      );
     default:
-      return false;
+      return 0;
   }
 }
 

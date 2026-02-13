@@ -14,6 +14,8 @@
     "allowJs": false,
     "checkJs": false,
     "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
     "types": ["vite/client", "node", "vitest/globals"]
   },

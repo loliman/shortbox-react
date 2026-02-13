@@ -1,5 +1,5 @@
 import { ApolloLink, Observable } from "@apollo/client";
-import type { DocumentNode, FieldNode, OperationDefinitionNode } from "graphql";
+import type { DocumentNode, OperationDefinitionNode } from "graphql";
 import {
   createMockIssueList,
   createMockPublisher,

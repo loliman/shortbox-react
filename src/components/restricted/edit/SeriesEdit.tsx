@@ -24,12 +24,12 @@ function SeriesEdit(props) {
             />
           );
 
-        let defaultValues = JSON.parse(JSON.stringify(data.seriesd));
+        let defaultValues = structuredClone(data.seriesd) as Record<string, unknown>;
 
         defaultValues.issueCount = undefined;
         defaultValues.active = undefined;
         defaultValues.firstIssue = undefined;
-        defaultValues.lastEdited = undefined;
+        defaultValues["lastEdited"] = undefined;
         defaultValues.lastIssue = undefined;
 
         return (

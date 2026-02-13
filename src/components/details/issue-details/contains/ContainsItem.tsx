@@ -1,0 +1,51 @@
+import React from "react";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import { expanded } from "./expanded";
+
+interface ContainsItemProps {
+  idx: number;
+  isLast: boolean;
+  item: unknown;
+  query?: { filter?: string; expand?: string } | null;
+  itemTitle: React.ReactElement;
+  itemDetails: React.ReactElement;
+  navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
+  us?: boolean;
+}
+
+export function ContainsItem(props: Readonly<ContainsItemProps>) {
+  let style;
+  if (props.idx === 0) {
+    if (props.isLast) {
+      style = { borderRadius: "8px 8px 8px 8px" };
+    } else {
+      style = { borderRadius: "8px 8px 0 0" };
+    }
+  } else if (props.isLast) {
+    style = { borderRadius: "0 0 8px 8px" };
+  } else {
+    style = { borderRadius: "0 0 0 0" };
+  }
+
+  return (
+    <Accordion style={style} className="story" defaultExpanded={expanded(props.item, props.query)}>
+      <AccordionSummary className="summary" expandIcon={<ExpandMoreIcon />}>
+        {React.cloneElement(props.itemTitle, {
+          navigate: props.navigate,
+          item: props.item,
+          us: props.us,
+        })}
+      </AccordionSummary>
+      <AccordionDetails>
+        {React.cloneElement(props.itemDetails, {
+          us: props.us,
+          navigate: props.navigate,
+          item: props.item,
+        })}
+      </AccordionDetails>
+    </Accordion>
+  );
+}

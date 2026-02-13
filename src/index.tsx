@@ -8,6 +8,7 @@ import { SnackbarProvider } from "notistack";
 import { BrowserRouter } from "react-router-dom";
 import Button from "@mui/material/Button";
 import { createApolloMockLink } from "./mock/apolloMockLink";
+import { isMockMode } from "./app/mockMode";
 
 const apiUri =
   import.meta.env.VITE_API_URL || import.meta.env.REACT_APP_API_URL || "https://api.shortbox.de";
@@ -25,11 +26,10 @@ const httpLink = new HttpLink({
   credentials: resolveCredentials(),
 });
 
-const mockModeEnabled = String(import.meta.env.VITE_MOCK_MODE || "").toLowerCase() === "true";
 const mockDelayMs = Number(import.meta.env.VITE_MOCK_DELAY_MS || 120);
 
 const client = new ApolloClient({
-  link: mockModeEnabled ? createApolloMockLink(mockDelayMs) : httpLink,
+  link: isMockMode ? createApolloMockLink(mockDelayMs) : httpLink,
   cache: new InMemoryCache(),
 });
 

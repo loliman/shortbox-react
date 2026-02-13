@@ -1,4 +1,4 @@
-export type SessionCookie = {
+export type SessionData = {
   loggedIn: boolean;
 };
 
