@@ -286,7 +286,7 @@ const buildResult = (key: string, variables: Record<string, unknown>) => {
       return { issue: requestedUs ? mockIssueUsFixture : mockIssueDeFixture };
     }
     case "login":
-      return { login: { id: 1, sessionid: "mock-session" } };
+      return { login: { id: 1 } };
     case "logout":
       return { logout: true };
     case "deleteIssue":
