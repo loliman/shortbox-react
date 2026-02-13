@@ -14,7 +14,7 @@ export interface IssueEditorFormValues {
   };
   number: string;
   variant: string;
-  cover: File | { __typename?: string; url?: string } | string | null | undefined;
+  cover: { __typename?: string; url?: string } | string | null | undefined;
   format?: string;
   limitation?: number;
   pages?: number;

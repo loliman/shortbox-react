@@ -4,7 +4,7 @@ import Dialog from "@mui/material/Dialog";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-type CoverInput = File | { __typename?: string; url?: string } | string | null | undefined;
+type CoverInput = { __typename?: string; url?: string } | string | null | undefined;
 
 interface CoverProps {
   isDesktop?: boolean;
@@ -17,20 +17,9 @@ interface CoverState {
 }
 
 class Cover extends React.Component<CoverProps, CoverState> {
-  private objectUrl?: string;
-  private objectUrlSource?: Blob;
-
   constructor(props: CoverProps) {
     super(props);
     this.state = { isCoverOpen: false };
-  }
-
-  componentDidUpdate(prevProps: CoverProps) {
-    if (prevProps.cover !== this.props.cover) this.releaseObjectUrl();
-  }
-
-  componentWillUnmount() {
-    this.releaseObjectUrl();
   }
 
   shouldComponentUpdate(nextProps: CoverProps, nextState: CoverState) {
@@ -80,23 +69,7 @@ class Cover extends React.Component<CoverProps, CoverState> {
 
     if (typeof file === "string") return file;
 
-    if (typeof Blob !== "undefined" && file instanceof Blob) {
-      if (this.objectUrlSource !== file) {
-        this.releaseObjectUrl();
-        this.objectUrlSource = file;
-        this.objectUrl = URL.createObjectURL(file);
-      }
-
-      return this.objectUrl || "/nocover.jpg";
-    }
-
     return "/nocover.jpg";
-  }
-
-  private releaseObjectUrl() {
-    if (this.objectUrl) URL.revokeObjectURL(this.objectUrl);
-    this.objectUrl = undefined;
-    this.objectUrlSource = undefined;
   }
 }
 
