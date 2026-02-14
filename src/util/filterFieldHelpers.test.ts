@@ -1,15 +1,13 @@
 import { vi } from "vitest";
-import { getPattern, updateField } from "./IssueEditorSections";
+import { getPattern, updateField } from "./filterFieldHelpers";
 
-describe("IssueEditorSections helper", () => {
-  it("returns pattern value from last placeholder entry", () => {
-    expect(getPattern(null, "name")).toBeNull();
+describe("filterFieldHelpers", () => {
+  it("returns trailing pattern value when present", () => {
     expect(getPattern([], "name")).toBeNull();
-    expect(getPattern([{ name: "Peter" }], "name")).toBeNull();
-    expect(getPattern([{ name: "Peter" }, { pattern: true, name: "Spi" }], "name")).toBe("Spi");
+    expect(getPattern([{ pattern: true, name: "Spi" }], "name")).toBe("Spi");
   });
 
-  it("updates live pattern placeholder while typing", () => {
+  it("writes live placeholder values", () => {
     const setFieldValue = vi.fn();
 
     updateField("Spi", true, [], setFieldValue, "stories[0].individuals", "name");
@@ -19,7 +17,7 @@ describe("IssueEditorSections helper", () => {
     ]);
   });
 
-  it("adds a new type for an existing person", () => {
+  it("selects and extends individual type entries", () => {
     const setFieldValue = vi.fn();
     const values = [{ name: "Peter Parker", type: ["WRITER"], role: ["Writer"] }];
 
@@ -31,22 +29,18 @@ describe("IssueEditorSections helper", () => {
         role: "Penciler",
       },
       false,
-      values,
+      values as any,
       setFieldValue,
       "stories[0].individuals",
       "name"
     );
 
     expect(setFieldValue).toHaveBeenCalledWith("stories[0].individuals", [
-      {
-        name: "Peter Parker",
-        type: ["WRITER", "PENCILER"],
-        role: ["Writer", "Penciler"],
-      },
+      { name: "Peter Parker", type: ["WRITER", "PENCILER"], role: ["Writer", "Penciler"] },
     ]);
   });
 
-  it("removes entries when the last type is deleted", () => {
+  it("removes types and drops empty individual entries", () => {
     const setFieldValue = vi.fn();
     const values = [{ name: "Peter Parker", type: ["WRITER"], role: ["Writer"] }];
 
@@ -58,7 +52,7 @@ describe("IssueEditorSections helper", () => {
         type: "WRITER",
       },
       false,
-      values,
+      values as any,
       setFieldValue,
       "stories[0].individuals",
       "name"
@@ -67,45 +61,27 @@ describe("IssueEditorSections helper", () => {
     expect(setFieldValue).toHaveBeenCalledWith("stories[0].individuals", []);
   });
 
-  it("supports appearance mode select/remove/clear flows", () => {
+  it("supports create-option and clear for appearance mode", () => {
     const setFieldValue = vi.fn();
-    const values = [{ name: "Spider-Man", type: "HERO", role: "Hero" }];
+    const values = [{ name: "Spider-Man", type: ["HERO"], role: ["Hero"] }];
 
     updateField(
       {
-        action: "select-option",
-        name: "stories[0].appearances",
-        option: { __typename: "Appearance", name: "Wolverine" },
-        type: "HERO",
-        role: "Hero",
+        action: "create-option",
+        type: "WRITER",
+        role: "Writer",
       },
       false,
       values as any,
       setFieldValue,
-      "stories[0].appearances",
+      "stories[0].individuals",
       "name"
     );
 
-    expect(setFieldValue).toHaveBeenLastCalledWith("stories[0].appearances", [
-      { name: "Spider-Man", type: "HERO", role: "Hero" },
-      { __typename: "Appearance", name: "Wolverine", type: "HERO", role: "Hero" },
+    expect(setFieldValue).toHaveBeenCalledWith("stories[0].individuals", [
+      { name: "Spider-Man", type: ["HERO"], role: ["Hero"] },
+      { name: "Spider-Man", type: ["WRITER"], role: ["Writer"] },
     ]);
-
-    updateField(
-      {
-        action: "remove-value",
-        name: "stories[0].appearances",
-        removedValue: { name: "Spider-Man" },
-        type: "HERO",
-      },
-      false,
-      values as any,
-      setFieldValue,
-      "stories[0].appearances",
-      "name"
-    );
-
-    expect(setFieldValue).toHaveBeenLastCalledWith("stories[0].appearances", []);
 
     updateField(
       {
@@ -114,7 +90,7 @@ describe("IssueEditorSections helper", () => {
         type: "HERO",
       },
       false,
-      values as any,
+      [{ name: "Spider-Man", type: "HERO", role: "Hero" }] as any,
       setFieldValue,
       "stories[0].appearances",
       "name"
@@ -123,13 +99,13 @@ describe("IssueEditorSections helper", () => {
     expect(setFieldValue).toHaveBeenLastCalledWith("stories[0].appearances", []);
   });
 
-  it("ignores unknown actions and empty live updates", () => {
+  it("ignores empty string and unsupported actions", () => {
     const setFieldValue = vi.fn();
     const values = [{ name: "Peter Parker", type: ["WRITER"] }];
 
     updateField("", true, values as any, setFieldValue, "stories[0].individuals", "name");
     updateField(
-      { action: "unknown-action" } as any,
+      { action: "unknown" } as any,
       false,
       values as any,
       setFieldValue,

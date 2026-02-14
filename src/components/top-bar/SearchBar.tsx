@@ -26,7 +26,7 @@ interface SearchBarProps {
   ) => void;
 }
 
-function SearchBar(props: Readonly<SearchBarProps>) {
+export function SearchBar(props: Readonly<SearchBarProps>) {
   const [pattern, setPattern] = useState("");
   const [debouncedPattern, setDebouncedPattern] = useState("");
   const isFocused = Boolean(props.focus);
@@ -156,7 +156,7 @@ function SearchBar(props: Readonly<SearchBarProps>) {
   );
 }
 
-function getNodeType(type?: string | null) {
+export function getNodeType(type?: string | null) {
   switch (type) {
     case "publisher":
       return "Verlag";

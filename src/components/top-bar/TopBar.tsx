@@ -29,7 +29,7 @@ interface TopBarProps {
   navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
 }
 
-function TopBar(props: TopBarProps) {
+export function TopBar(props: TopBarProps) {
   const { toggleDrawer, navigate } = props;
   const us = Boolean(props.us);
   const selected = props.selected || { us };
