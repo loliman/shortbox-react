@@ -54,11 +54,7 @@ describe("FooterAuthLink", () => {
     const handleLogout = vi.fn();
 
     render(
-      <FooterAuthLink
-        loggedIn
-        enqueueSnackbar={enqueueSnackbar}
-        handleLogout={handleLogout}
-      />
+      <FooterAuthLink loggedIn enqueueSnackbar={enqueueSnackbar} handleLogout={handleLogout} />
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Logout" }));
@@ -77,11 +73,7 @@ describe("FooterAuthLink", () => {
     });
 
     const { rerender } = render(
-      <FooterAuthLink
-        loggedIn
-        enqueueSnackbar={enqueueSnackbar}
-        handleLogout={handleLogout}
-      />
+      <FooterAuthLink loggedIn enqueueSnackbar={enqueueSnackbar} handleLogout={handleLogout} />
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Logout" }));
@@ -91,7 +83,9 @@ describe("FooterAuthLink", () => {
     mocks.runLogoutMock.mockImplementation(() => {
       mocks.mutationOptions?.onCompleted?.({ logout: false });
     });
-    rerender(<FooterAuthLink loggedIn enqueueSnackbar={enqueueSnackbar} handleLogout={handleLogout} />);
+    rerender(
+      <FooterAuthLink loggedIn enqueueSnackbar={enqueueSnackbar} handleLogout={handleLogout} />
+    );
     fireEvent.click(screen.getByRole("button", { name: "Logout" }));
     expect(enqueueSnackbar).toHaveBeenCalledWith("Logout fehlgeschlagen", { variant: "error" });
   });
