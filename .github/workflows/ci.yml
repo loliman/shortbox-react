@@ -5,6 +5,10 @@ on:
   pull_request:
     branches: [main, master]
 
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   build-and-test:
     name: Build and Test
@@ -21,13 +25,12 @@ jobs:
           node-version: "20"
           cache: "npm"
           cache-dependency-path: package-lock.json
-
-      - name: Configure git for HTTPS dependencies
-        run: |
-          git config --global url."https://github.com/".insteadOf ssh://git@github.com/
-          git config --global url."https://github.com/".insteadOf git@github.com:
+          registry-url: https://npm.pkg.github.com
+          scope: "@shortbox"
 
       - name: Install dependencies
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm ci
 
       - name: Typecheck
