@@ -84,7 +84,10 @@ describe("IssueEditor", () => {
     });
 
     const mutationElement = instance.render();
-    mutationElement.props.update({}, { data: { editIssue: { number: "1", series: { publisher: {} } } } });
+    mutationElement.props.update(
+      {},
+      { data: { editIssue: { number: "1", series: { publisher: {} } } } }
+    );
     expect(mocks.updateIssueEditorCacheMock).toHaveBeenCalledTimes(1);
 
     mutationElement.props.onCompleted({
