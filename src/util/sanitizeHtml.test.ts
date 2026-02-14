@@ -26,7 +26,7 @@ describe("sanitizeHtml", () => {
 
   it("escapes HTML in non-browser context", () => {
     vi.stubGlobal("window", undefined);
-    const escaped = sanitizeHtml('<b>"x"&\'y\'</b>');
+    const escaped = sanitizeHtml("<b>\"x\"&'y'</b>");
     vi.unstubAllGlobals();
 
     expect(escaped).toBe("&lt;b&gt;&quot;x&quot;&amp;&#39;y&#39;&lt;/b&gt;");

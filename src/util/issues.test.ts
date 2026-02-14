@@ -47,7 +47,9 @@ describe("issues util", () => {
   });
 
   it("returns plain title when only story title exists", () => {
-    expect(generateItemTitle({ title: "Standalone Story" } as never, false)).toBe("Standalone Story");
+    expect(generateItemTitle({ title: "Standalone Story" } as never, false)).toBe(
+      "Standalone Story"
+    );
   });
 
   it("builds issue subheaders with optional format and variant", () => {

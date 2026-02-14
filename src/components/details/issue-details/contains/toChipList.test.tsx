@@ -58,7 +58,9 @@ describe("toChipList", () => {
       { us: true, navigate },
       "WRITER"
     ) as React.ReactElement<{ children: React.ReactNode }>;
-    const individualChip = React.Children.toArray(individualElement.props.children)[0] as React.ReactElement;
+    const individualChip = React.Children.toArray(
+      individualElement.props.children
+    )[0] as React.ReactElement;
     individualChip.props.onClick?.({ type: "click" });
 
     expect(navigate.mock.calls[0][2]).toEqual({

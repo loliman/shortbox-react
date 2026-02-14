@@ -1,13 +1,5 @@
 import { vi } from "vitest";
-import {
-  capitalize,
-  decapitalize,
-  romanize,
-  stripItem,
-  today,
-  unwrapItem,
-  wrapItem,
-} from "./util";
+import { capitalize, decapitalize, romanize, stripItem, today, unwrapItem, wrapItem } from "./util";
 
 describe("util helpers", () => {
   it("wraps publisher, series and issue entities into SelectedRoot", () => {

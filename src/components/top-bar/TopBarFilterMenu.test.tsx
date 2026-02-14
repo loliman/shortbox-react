@@ -15,7 +15,12 @@ describe("TopBarFilterMenu", () => {
     const navigate = vi.fn();
 
     render(
-      <TopBarFilterMenu us={false} selected={{ us: false }} isFilterActive={false} navigate={navigate} />
+      <TopBarFilterMenu
+        us={false}
+        selected={{ us: false }}
+        isFilterActive={false}
+        navigate={navigate}
+      />
     );
 
     await user.click(screen.getByRole("button", { name: "Filter öffnen" }));
@@ -33,7 +38,12 @@ describe("TopBarFilterMenu", () => {
     };
 
     render(
-      <TopBarFilterMenu us={true} selected={selected as never} isFilterActive={true} navigate={navigate} />
+      <TopBarFilterMenu
+        us={true}
+        selected={selected as never}
+        isFilterActive={true}
+        navigate={navigate}
+      />
     );
 
     await user.click(screen.getByRole("button", { name: "Filteroptionen" }));

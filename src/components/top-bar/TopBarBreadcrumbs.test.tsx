@@ -1,11 +1,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import {
-  BreadcrumbCompact,
-  BreadcrumbExpanded,
-  buildBreadcrumbTokens,
-} from "./TopBarBreadcrumbs";
+import { BreadcrumbCompact, BreadcrumbExpanded, buildBreadcrumbTokens } from "./TopBarBreadcrumbs";
 import { HierarchyLevel } from "../../util/hierarchy";
 
 const issueSelection = {
@@ -22,11 +18,17 @@ const issueSelection = {
 
 describe("TopBarBreadcrumbs", () => {
   it("builds no tokens on root level", () => {
-    expect(buildBreadcrumbTokens({ level: HierarchyLevel.ROOT, us: false, selected: { us: false } }, "compact")).toEqual(
-      []
-    );
     expect(
-      buildBreadcrumbTokens({ level: HierarchyLevel.ROOT, us: false, selected: { us: false } }, "expanded")
+      buildBreadcrumbTokens(
+        { level: HierarchyLevel.ROOT, us: false, selected: { us: false } },
+        "compact"
+      )
+    ).toEqual([]);
+    expect(
+      buildBreadcrumbTokens(
+        { level: HierarchyLevel.ROOT, us: false, selected: { us: false } },
+        "expanded"
+      )
     ).toEqual([]);
   });
 

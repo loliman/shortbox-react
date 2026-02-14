@@ -11,12 +11,7 @@ describe("FormActions", () => {
     const onSubmit = vi.fn();
 
     render(
-      <FormActions
-        isSubmitting={false}
-        onReset={onReset}
-        onCancel={onCancel}
-        onSubmit={onSubmit}
-      />
+      <FormActions isSubmitting={false} onReset={onReset} onCancel={onCancel} onSubmit={onSubmit} />
     );
 
     await user.click(screen.getByRole("button", { name: "Zurücksetzen" }));
@@ -34,17 +29,12 @@ describe("FormActions", () => {
     const onSubmit = vi.fn();
 
     render(
-      <FormActions
-        isSubmitting={true}
-        onReset={onReset}
-        onCancel={onCancel}
-        onSubmit={onSubmit}
-      />
+      <FormActions isSubmitting={true} onReset={onReset} onCancel={onCancel} onSubmit={onSubmit} />
     );
 
-    expect((screen.getByRole("button", { name: "Zurücksetzen" }) as HTMLButtonElement).disabled).toBe(
-      true
-    );
+    expect(
+      (screen.getByRole("button", { name: "Zurücksetzen" }) as HTMLButtonElement).disabled
+    ).toBe(true);
     expect((screen.getByRole("button", { name: "Abbrechen" }) as HTMLButtonElement).disabled).toBe(
       true
     );
