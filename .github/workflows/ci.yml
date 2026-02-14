@@ -28,12 +28,6 @@ jobs:
           registry-url: https://npm.pkg.github.com
           scope: "@loliman"
 
-      - name: Configure git for HTTPS dependencies
-        run: |
-          git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf https://github.com/
-          git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf ssh://git@github.com/
-          git config --global url."https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf git@github.com:
-
       - name: Install dependencies
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
