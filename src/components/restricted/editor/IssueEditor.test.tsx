@@ -1,41 +1,43 @@
 import { describe, expect, it, vi } from "vitest";
 
-const createEmptyIssueValuesMock = vi.fn(() => ({
-  title: "",
-  series: { title: "", volume: 1, publisher: { name: "", us: false } },
-  number: "",
-  variant: "",
-  cover: "",
-  format: "",
-  releasedate: "",
-  individuals: [],
-  addinfo: "",
-  stories: [],
-  features: [],
-  covers: [],
+const mocks = vi.hoisted(() => ({
+  createEmptyIssueValuesMock: vi.fn(() => ({
+    title: "",
+    series: { title: "", volume: 1, publisher: { name: "", us: false } },
+    number: "",
+    variant: "",
+    cover: "",
+    format: "",
+    releasedate: "",
+    individuals: [],
+    addinfo: "",
+    stories: [],
+    features: [],
+    covers: [],
+  })),
+  buildIssueEditorStateMock: vi.fn((props: any, defaultValues: any) => ({
+    defaultValues,
+    header: props.edit ? "Ausgabe bearbeiten" : "Ausgabe erstellen",
+    submitLabel: "Speichern",
+    submitAndCopyLabel: "Speichern und kopieren",
+    successMessage: " erfolgreich gespeichert",
+    errorMessage: "Fehler",
+    copy: false,
+  })),
+  buildIssueMutationVariablesMock: vi.fn(() => ({ item: { title: "Issue" } })),
+  updateIssueEditorCacheMock: vi.fn(),
+  formContentSpy: vi.fn(),
+  generateLabelMock: vi.fn(() => "Issue #1"),
+  generateUrlMock: vi.fn(() => "/de/marvel/spider-man/1"),
 }));
-const buildIssueEditorStateMock = vi.fn((props: any, defaultValues: any) => ({
-  defaultValues,
-  header: props.edit ? "Ausgabe bearbeiten" : "Ausgabe erstellen",
-  submitLabel: "Speichern",
-  submitAndCopyLabel: "Speichern und kopieren",
-  successMessage: " erfolgreich gespeichert",
-  errorMessage: "Fehler",
-  copy: false,
-}));
-const buildIssueMutationVariablesMock = vi.fn(() => ({ item: { title: "Issue" } }));
-const updateIssueEditorCacheMock = vi.fn();
-const formContentSpy = vi.fn();
-const generateLabelMock = vi.fn(() => "Issue #1");
-const generateUrlMock = vi.fn(() => "/de/marvel/spider-man/1");
 
 vi.mock("../../generic/withContext", () => ({
   default: (Component: unknown) => Component,
 }));
 
 vi.mock("../../../util/hierarchy", () => ({
-  generateLabel: (...args: unknown[]) => generateLabelMock(...args),
-  generateUrl: (...args: unknown[]) => generateUrlMock(...args),
+  generateLabel: mocks.generateLabelMock,
+  generateUrl: mocks.generateUrlMock,
 }));
 
 vi.mock("../../../util/util", () => ({
@@ -43,26 +45,26 @@ vi.mock("../../../util/util", () => ({
 }));
 
 vi.mock("./issue-editor/constants", () => ({
-  createEmptyIssueValues: (...args: unknown[]) => createEmptyIssueValuesMock(...args),
+  createEmptyIssueValues: mocks.createEmptyIssueValuesMock,
   currencies: [],
   formats: [],
 }));
 
 vi.mock("./issue-editor/state", () => ({
-  buildIssueEditorState: (...args: unknown[]) => buildIssueEditorStateMock(...args),
+  buildIssueEditorState: mocks.buildIssueEditorStateMock,
 }));
 
 vi.mock("./issue-editor/payload", () => ({
-  buildIssueMutationVariables: (...args: unknown[]) => buildIssueMutationVariablesMock(...args),
+  buildIssueMutationVariables: mocks.buildIssueMutationVariablesMock,
 }));
 
 vi.mock("./issue-editor/cache", () => ({
-  updateIssueEditorCache: (...args: unknown[]) => updateIssueEditorCacheMock(...args),
+  updateIssueEditorCache: mocks.updateIssueEditorCacheMock,
 }));
 
 vi.mock("./issue-editor/IssueEditorFormContent", () => ({
   default: (props: unknown) => {
-    formContentSpy(props);
+    mocks.formContentSpy(props);
     return <div>IssueEditorFormContent</div>;
   },
 }));
@@ -83,7 +85,7 @@ describe("IssueEditor", () => {
 
     const mutationElement = instance.render();
     mutationElement.props.update({}, { data: { editIssue: { number: "1", series: { publisher: {} } } } });
-    expect(updateIssueEditorCacheMock).toHaveBeenCalledTimes(1);
+    expect(mocks.updateIssueEditorCacheMock).toHaveBeenCalledTimes(1);
 
     mutationElement.props.onCompleted({
       editIssue: { number: "1", series: { publisher: { us: false } } },
@@ -100,7 +102,7 @@ describe("IssueEditor", () => {
     const formikElement = mutationElement.props.children(runMutation);
     const actions = { setSubmitting: vi.fn() };
     await formikElement.props.onSubmit({ title: "Issue" }, actions);
-    expect(buildIssueMutationVariablesMock).toHaveBeenCalled();
+    expect(mocks.buildIssueMutationVariablesMock).toHaveBeenCalled();
     expect(runMutation).toHaveBeenCalledWith({ variables: { item: { title: "Issue" } } });
     expect(actions.setSubmitting).toHaveBeenCalledTimes(2);
   });

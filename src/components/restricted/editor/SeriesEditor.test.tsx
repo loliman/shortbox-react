@@ -1,18 +1,20 @@
 import { describe, expect, it, vi } from "vitest";
 
-const addToCacheMock = vi.fn();
-const removeFromCacheMock = vi.fn();
-const updateInCacheMock = vi.fn();
-const generateLabelMock = vi.fn(() => "Spider-Man");
-const generateUrlMock = vi.fn(() => "/de/marvel/spider-man");
+const mocks = vi.hoisted(() => ({
+  addToCacheMock: vi.fn(),
+  removeFromCacheMock: vi.fn(),
+  updateInCacheMock: vi.fn(),
+  generateLabelMock: vi.fn(() => "Spider-Man"),
+  generateUrlMock: vi.fn(() => "/de/marvel/spider-man"),
+}));
 
 vi.mock("../../generic/withContext", () => ({
   default: (Component: unknown) => Component,
 }));
 
 vi.mock("../../../util/hierarchy", () => ({
-  generateLabel: (...args: unknown[]) => generateLabelMock(...args),
-  generateUrl: (...args: unknown[]) => generateUrlMock(...args),
+  generateLabel: mocks.generateLabelMock,
+  generateUrl: mocks.generateUrlMock,
 }));
 
 vi.mock("../../../util/util", () => ({
@@ -22,9 +24,9 @@ vi.mock("../../../util/util", () => ({
 }));
 
 vi.mock("./Editor", () => ({
-  addToCache: (...args: unknown[]) => addToCacheMock(...args),
-  removeFromCache: (...args: unknown[]) => removeFromCacheMock(...args),
-  updateInCache: (...args: unknown[]) => updateInCacheMock(...args),
+  addToCache: (...args: unknown[]) => mocks.addToCacheMock(...args),
+  removeFromCache: (...args: unknown[]) => mocks.removeFromCacheMock(...args),
+  updateInCache: (...args: unknown[]) => mocks.updateInCacheMock(...args),
 }));
 
 vi.mock("../../../graphql/queriesTyped", () => ({
@@ -52,7 +54,7 @@ describe("SeriesEditor", () => {
       {},
       { data: { createSeries: { title: "Spider-Man", publisher: { us: false } } } }
     );
-    expect(addToCacheMock).toHaveBeenCalledTimes(1);
+    expect(mocks.addToCacheMock).toHaveBeenCalledTimes(1);
 
     mutationElement.props.onCompleted({
       createSeries: { title: "Spider-Man", publisher: { us: false } },
@@ -73,9 +75,9 @@ describe("SeriesEditor", () => {
   });
 
   it("handles edit flow updates and error callbacks", () => {
-    addToCacheMock.mockReset();
-    removeFromCacheMock.mockReset();
-    updateInCacheMock.mockReset();
+    mocks.addToCacheMock.mockReset();
+    mocks.removeFromCacheMock.mockReset();
+    mocks.updateInCacheMock.mockReset();
 
     const enqueueSnackbar = vi.fn();
     const defaultValues = {
@@ -101,8 +103,8 @@ describe("SeriesEditor", () => {
       { data: { editSeries: { title: "Spider-Man", publisher: { us: true } } } }
     );
 
-    expect(updateInCacheMock).toHaveBeenCalledTimes(1);
-    expect(removeFromCacheMock).toHaveBeenCalledTimes(1);
+    expect(mocks.updateInCacheMock).toHaveBeenCalledTimes(1);
+    expect(mocks.removeFromCacheMock).toHaveBeenCalledTimes(1);
 
     mutationElement.props.onError({ graphQLErrors: [{ message: "nope" }] });
     expect(enqueueSnackbar).toHaveBeenCalledWith(

@@ -1,10 +1,12 @@
 import { act, render, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const useQueryMock = vi.fn();
+const { useQueryMock } = vi.hoisted(() => ({
+  useQueryMock: vi.fn(),
+}));
 
 vi.mock("@apollo/client", () => ({
-  useQuery: (...args: unknown[]) => useQueryMock(...args),
+  useQuery: useQueryMock,
 }));
 
 import PaginatedQuery from "./PaginatedQuery";
@@ -56,7 +58,9 @@ describe("PaginatedQuery", () => {
     });
 
     expect(fetchMoreMock).toHaveBeenCalledTimes(1);
-    const fetchMoreArg = fetchMoreMock.mock.calls[0][0];
+    const fetchMoreCalls = (fetchMoreMock as any).mock.calls as any[];
+    const fetchMoreArg = fetchMoreCalls[0]?.[0];
+    expect(fetchMoreArg).toBeTruthy();
     expect(fetchMoreArg.variables).toEqual({ offset: 1, pattern: "" });
 
     const merged = fetchMoreArg.updateQuery(
@@ -113,7 +117,9 @@ describe("PaginatedQuery", () => {
       } as any);
     });
 
-    const fetchMoreArg = fetchMoreMock.mock.calls[0][0];
+    const fetchMoreCalls = (fetchMoreMock as any).mock.calls as any[];
+    const fetchMoreArg = fetchMoreCalls[0]?.[0];
+    expect(fetchMoreArg).toBeTruthy();
     expect(fetchMoreArg.variables).toEqual({ first: 25, after: "cursor-1" });
 
     const merged = fetchMoreArg.updateQuery(

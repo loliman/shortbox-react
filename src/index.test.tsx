@@ -1,14 +1,19 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const createRootRenderMock = vi.fn();
-const createRootMock = vi.fn(() => ({
-  render: createRootRenderMock,
+const mocks = vi.hoisted(() => ({
+  createRootRenderMock: vi.fn(),
+  createRootMock: vi.fn(() => ({
+    render: vi.fn(),
+  })),
+  apolloLinkFromMock: vi.fn(() => ({ kind: "composed-link" })),
+  createApolloMockLinkMock: vi.fn(() => ({ kind: "mock-link" })),
 }));
-const apolloLinkFromMock = vi.fn(() => ({ kind: "composed-link" }));
-const createApolloMockLinkMock = vi.fn(() => ({ kind: "mock-link" }));
+mocks.createRootMock.mockImplementation(() => ({
+  render: mocks.createRootRenderMock,
+}));
 
 vi.mock("react-dom/client", () => ({
-  createRoot: (...args: unknown[]) => createRootMock(...args),
+  createRoot: mocks.createRootMock,
 }));
 
 vi.mock("@apollo/client", () => ({
@@ -16,7 +21,7 @@ vi.mock("@apollo/client", () => ({
     constructor(_: unknown) {}
   },
   ApolloLink: {
-    from: (...args: unknown[]) => apolloLinkFromMock(...args),
+    from: mocks.apolloLinkFromMock,
   },
   HttpLink: class {
     constructor(_: unknown) {}
@@ -49,7 +54,7 @@ vi.mock("./components/App", () => ({
 }));
 
 vi.mock("./mock/apolloMockLink", () => ({
-  createApolloMockLink: (...args: unknown[]) => createApolloMockLinkMock(...args),
+  createApolloMockLink: mocks.createApolloMockLinkMock,
 }));
 
 vi.mock("./app/mockMode", () => ({
@@ -63,10 +68,13 @@ vi.mock("./app/authEvents", () => ({
 describe("index bootstrap", () => {
   beforeEach(() => {
     vi.resetModules();
-    createRootRenderMock.mockReset();
-    createRootMock.mockReset();
-    apolloLinkFromMock.mockReset();
-    createApolloMockLinkMock.mockReset();
+    mocks.createRootRenderMock.mockReset();
+    mocks.createRootMock.mockReset();
+    mocks.createRootMock.mockImplementation(() => ({
+      render: mocks.createRootRenderMock,
+    }));
+    mocks.apolloLinkFromMock.mockReset();
+    mocks.createApolloMockLinkMock.mockReset();
     document.body.innerHTML = "";
   });
 
@@ -75,9 +83,9 @@ describe("index bootstrap", () => {
 
     await import("./index");
 
-    expect(createRootMock).toHaveBeenCalledTimes(1);
-    expect(createRootRenderMock).toHaveBeenCalledTimes(1);
-    expect(apolloLinkFromMock).toHaveBeenCalledTimes(1);
+    expect(mocks.createRootMock).toHaveBeenCalledTimes(1);
+    expect(mocks.createRootRenderMock).toHaveBeenCalledTimes(1);
+    expect(mocks.apolloLinkFromMock).toHaveBeenCalledTimes(1);
   });
 
   it("does nothing when root element is missing", async () => {
@@ -85,6 +93,6 @@ describe("index bootstrap", () => {
 
     await import("./index");
 
-    expect(createRootMock).not.toHaveBeenCalled();
+    expect(mocks.createRootMock).not.toHaveBeenCalled();
   });
 });
