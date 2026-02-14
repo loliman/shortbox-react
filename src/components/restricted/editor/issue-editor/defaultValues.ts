@@ -11,7 +11,7 @@ function deepClone<T>(value: T): T {
   return structuredClone(value);
 }
 
-function normalizeSeries(series: Record<string, unknown> | undefined) {
+function normalizeSeries(series: Record<string, unknown> | undefined, fallbackUs = false) {
   if (!series) return createEmptyIssueValues().series;
 
   const publisher = (series.publisher || {}) as { name?: string; us?: boolean };
@@ -20,7 +20,7 @@ function normalizeSeries(series: Record<string, unknown> | undefined) {
     volume: (series.volume as number | string) || 0,
     publisher: {
       name: String(publisher.name || ""),
-      us: Boolean(publisher.us),
+      us: typeof publisher.us === "boolean" ? publisher.us : fallbackUs,
     },
   };
 }
@@ -115,17 +115,24 @@ export function buildIssueCreateDefaultValues(
   const defaults = createEmptyIssueValues();
 
   if (!selected) return defaults;
+  const selectedUs = Boolean((selected as { us?: boolean }).us);
+  defaults.series.publisher.us = selectedUs;
 
   if (level === HierarchyLevel.PUBLISHER) {
+    const selectedPublisher = (selected.publisher || {}) as { name?: string; us?: boolean };
     defaults.series.publisher = {
-      name: String((selected.publisher as { name?: string })?.name || ""),
-      us: Boolean((selected.publisher as { us?: boolean })?.us),
+      name: String(selectedPublisher.name || ""),
+      us: typeof selectedPublisher.us === "boolean" ? selectedPublisher.us : selectedUs,
     };
   } else if (level === HierarchyLevel.SERIES) {
-    defaults.series = normalizeSeries(selected.series as Record<string, unknown> | undefined);
+    defaults.series = normalizeSeries(
+      selected.series as Record<string, unknown> | undefined,
+      selectedUs
+    );
   } else if (level === HierarchyLevel.ISSUE) {
     defaults.series = normalizeSeries(
-      ((selected.issue as { series?: Record<string, unknown> }) || {}).series
+      ((selected.issue as { series?: Record<string, unknown> }) || {}).series,
+      selectedUs
     );
   }
 
