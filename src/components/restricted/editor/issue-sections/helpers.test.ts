@@ -302,6 +302,88 @@ describe("issue-sections/helpers", () => {
     ]);
   });
 
+  it("handles non-array and empty type/role normalization via clear/remove paths", () => {
+    const setFieldValue = vi.fn();
+
+    updateField(
+      {
+        action: "clear",
+        name: "stories[0].individuals",
+        type: "WRITER",
+      },
+      false,
+      [{ name: "No Type Yet" }] as any,
+      setFieldValue,
+      "stories[0].individuals",
+      "name"
+    );
+    expect(setFieldValue).toHaveBeenCalledWith("stories[0].individuals", []);
+
+    setFieldValue.mockReset();
+    updateField(
+      {
+        action: "remove-value",
+        name: "stories[0].individuals",
+        removedValue: { name: "Peter Parker" },
+        type: "PENCILER",
+      },
+      false,
+      [{ name: "Peter Parker", type: "WRITER", role: "Writer" }] as any,
+      setFieldValue,
+      "stories[0].individuals",
+      "name"
+    );
+    expect(setFieldValue).toHaveBeenCalledWith("stories[0].individuals", [
+      { name: "Peter Parker", type: ["WRITER"], role: ["Writer"] },
+    ]);
+  });
+
+  it("keeps existing individual entry when payload type is missing", () => {
+    const setFieldValue = vi.fn();
+
+    updateField(
+      {
+        action: "select-option",
+        option: { name: "Peter Parker" },
+        name: "stories[0].individuals",
+      },
+      false,
+      [{ name: "Peter Parker", type: ["WRITER"], role: ["Writer"] }] as any,
+      setFieldValue,
+      "stories[0].individuals",
+      "name"
+    );
+
+    expect(setFieldValue).toHaveBeenCalledWith("stories[0].individuals", [
+      { name: "Peter Parker", type: ["WRITER"], role: ["Writer"] },
+    ]);
+  });
+
+  it("filters placeholders and invalid appearance entries during strip", () => {
+    const setFieldValue = vi.fn();
+
+    updateField(
+      {
+        action: "clear",
+        name: "stories[0].appearances",
+        type: "NONE",
+      },
+      false,
+      [
+        { pattern: true, name: "placeholder", type: "HERO" },
+        { name: "Invalid", type: ["HERO"], role: ["Hero"] },
+        { name: "Valid", type: "HERO", role: "Hero" },
+      ] as any,
+      setFieldValue,
+      "stories[0].appearances",
+      "name"
+    );
+
+    expect(setFieldValue).toHaveBeenCalledWith("stories[0].appearances", [
+      { name: "Valid", type: "HERO", role: "Hero" },
+    ]);
+  });
+
   it("returns early for unknown actions", () => {
     const setFieldValue = vi.fn();
 
