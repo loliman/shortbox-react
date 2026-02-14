@@ -55,31 +55,31 @@ type DeletionDialogProps = {
 function DeletionDialog(props: Readonly<DeletionDialogProps>) {
   const level = props.level;
   const { item, open, handleClose, navigate, enqueueSnackbar } = props;
-  if (!item) return null;
+  const itemOrFallback: DeletionDialogItem = item ?? { us: Boolean(props.us) };
 
-  const parentRef = React.useRef(toParent(item));
-  const parent = toParent(item);
+  const parentRef = React.useRef(toParent(itemOrFallback));
+  const parent = toParent(itemOrFallback);
   parentRef.current = parent;
 
   const deleteMutation = getDeleteMutation(level || "");
   const listQuery = getListQuery(getHierarchyLevel(parent as never));
   const mutationName = getMutationName(deleteMutation);
-  const itemLabel = getItemLabel(item);
+  const itemLabel = getItemLabel(itemOrFallback);
 
   const [runDeleteMutation] = useMutation(deleteMutation, {
     update: (cache) => {
       if (
         level === HierarchyLevel.ISSUE &&
-        Array.isArray(item.variants) &&
-        item.variants.length > 1
+        Array.isArray(itemOrFallback.variants) &&
+        itemOrFallback.variants.length > 1
       ) {
-        const currentVariantKey = toVariantKey(item);
-        const variants = item.variants.filter(
+        const currentVariantKey = toVariantKey(itemOrFallback);
+        const variants = itemOrFallback.variants.filter(
           (variant) => toVariantKey(variant) !== currentVariantKey
         );
 
         try {
-          item.variants.forEach((variant) => {
+          itemOrFallback.variants?.forEach((variant) => {
             let oldVariant: { issue: Record<string, unknown> } = { issue: {} };
             const variantSeries = structuredClone(variant.series || { publisher: {} }) as Record<
               string,
@@ -115,7 +115,7 @@ function DeletionDialog(props: Readonly<DeletionDialogProps>) {
         }
       } else {
         try {
-          removeFromCache(cache, listQuery, parentRef.current, item);
+          removeFromCache(cache, listQuery, parentRef.current, itemOrFallback);
         } catch {
           //ignore cache exception;
         }
@@ -148,6 +148,8 @@ function DeletionDialog(props: Readonly<DeletionDialogProps>) {
       handleClose?.();
     },
   });
+
+  if (!item) return null;
 
   return (
     <Dialog open={Boolean(open)} onClose={handleClose} aria-labelledby="form-delete-dialog-title">

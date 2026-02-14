@@ -91,7 +91,7 @@ class Home extends React.Component<HomeProps> {
                     <Typography paragraph>
                       Inspiriert durch{" "}
                       <a
-                        href="http://www.maxithecat.de/UHBMCC/INDEX.HTM"
+                        href="https://www.maxithecat.de/UHBMCC/INDEX.HTM"
                         rel="noopener noreferrer nofollow"
                         target="_blank"
                       >

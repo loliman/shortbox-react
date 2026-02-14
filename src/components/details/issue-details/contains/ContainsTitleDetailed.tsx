@@ -198,11 +198,7 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
         ) : null}
 
         {!item.parent?.collectedmultipletimes && item.parent?.collected && props.session ? (
-          !smallChip ? (
-            <Chip className="chip" label="Gesammelt" />
-          ) : (
-            <Chip className="chip" label="Gesammelt" />
-          )
+          <Chip className="chip" label="Gesammelt" />
         ) : null}
 
         {!exclusive && issue && issueSelection ? (
