@@ -34,7 +34,7 @@ jobs:
         run: npm ci
 
       - name: Auto format and push changes
-        if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'github-actions[bot]' }}
+        if: ${{ github.actor != 'github-actions[bot]' && github.ref_name != 'main' && github.ref_name != 'master' && (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)) }}
         run: |
           npm run format
 
@@ -43,7 +43,7 @@ jobs:
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add -A
             git commit -m "style: auto-format"
-            git push origin "HEAD:${{ github.head_ref }}"
+            git push origin "HEAD:${{ github.head_ref || github.ref_name }}"
           else
             echo "No formatting changes detected."
           fi
