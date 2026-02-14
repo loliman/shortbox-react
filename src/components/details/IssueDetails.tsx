@@ -18,8 +18,10 @@ import { sanitizeHtml } from "../../util/sanitizeHtml";
 import { StoryArcChips } from "./issue-details/StoryArcChips";
 import { IssueCover } from "./issue-details/IssueCover";
 import { IssueVariants } from "./issue-details/variants/IssueVariants";
+import type { VariantIssue } from "./issue-details/variants/types";
 import { IssueDetailsPreview } from "./issue-details/preview/IssueDetailsPreview";
 import { DetailsTable } from "./issue-details/DetailsTable";
+import type { PreviewIssue } from "../issue-preview/utils/issuePreviewUtils";
 import {
   collectIssueArcs,
   getTodayLocalDate,
@@ -105,7 +107,13 @@ function IssueDetails(props: IssueDetailsProps) {
         ) : null}
 
         <CardHeader
-          title={<TitleLine title={generateLabel(loadedIssue)} id={loadedIssue.id} session={props.session} />}
+          title={
+            <TitleLine
+              title={generateLabel(loadedIssue)}
+              id={loadedIssue.id ?? undefined}
+              session={props.session}
+            />
+          }
           subheader={props.subheader ? generateIssueSubHeader(loadedIssue) : ""}
           action={
             <div>
@@ -121,7 +129,12 @@ function IssueDetails(props: IssueDetailsProps) {
         />
 
         <CardContent className="cardContent">
-          <IssueVariants us={us} issue={loadedIssue} session={props.session} navigate={props.navigate} />
+          <IssueVariants
+            us={us}
+            issue={loadedIssue as unknown as VariantIssue}
+            session={props.session}
+            navigate={props.navigate}
+          />
 
           <div
             className={"detailsWrapper"}
@@ -136,7 +149,7 @@ function IssueDetails(props: IssueDetailsProps) {
               <DetailsTable issue={loadedIssue} details={details} navigate={props.navigate} us={us} />
             </div>
             <div style={{ width: "220px", maxWidth: "100%", flex: "0 0 220px" }}>
-              <IssueCover us={us} issue={loadedIssue} />
+              <IssueCover us={us} issue={loadedIssue as unknown as PreviewIssue} />
             </div>
 
             {loadedIssue.addinfo && loadedIssue.addinfo !== "" ? (

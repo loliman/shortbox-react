@@ -95,7 +95,9 @@ function normalizeOptions<T>(value: QueryCollection<T> | undefined): T[] {
 
   if (Array.isArray(value)) return value.filter(Boolean) as T[];
 
-  return value.edges.map((edge) => edge && edge.node).filter(Boolean) as T[];
+  return value.edges
+    .map((edge: { node?: T | null } | null) => edge && edge.node)
+    .filter(Boolean) as T[];
 }
 
 interface FieldBridge {

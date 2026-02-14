@@ -6,9 +6,6 @@
     "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "baseUrl": ".",
-    "paths": {
-      "@shortbox/contract": ["../shortbox-contract/index.d.ts"]
-    },
     "jsx": "react-jsx",
     "noEmit": true,
     "allowJs": false,

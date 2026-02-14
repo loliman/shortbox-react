@@ -1,6 +1,6 @@
 import { getListQuery } from "../../graphql/queriesTyped";
 import { HierarchyLevel, type HierarchyLevelType } from "../../util/hierarchy";
-import type { Connection, QueryCollection } from "@shortbox/contract";
+import type { Connection, QueryCollection } from "../../types/graphql";
 import type { SelectedRoot } from "../../types/domain";
 
 type ListNode = Record<string, unknown> & {
@@ -74,8 +74,10 @@ export function toNodeList(
 
   const value = data[queryName];
   if (Array.isArray(value)) return value as ListNode[];
-  if (isConnection(value))
-    return value.edges.map((edge) => edge?.node).filter(Boolean) as ListNode[];
+  if (isConnection(value)) {
+    const connection = value as Connection<ListNode>;
+    return connection.edges.map((edge) => edge?.node).filter(Boolean) as ListNode[];
+  }
 
   return null;
 }

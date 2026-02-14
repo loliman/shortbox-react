@@ -1,5 +1,5 @@
-import type { Filter as GraphqlFilter } from "@shortbox/contract";
 import type { Issue, Publisher, SelectedRoot, Series } from "../../types/domain";
+import type { Filter as GraphqlFilter } from "../../types/graphql";
 
 type DeepPartial<T> = {
   [K in keyof T]?: T[K] extends Array<infer U>

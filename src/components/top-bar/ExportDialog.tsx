@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 import { exportQuery } from "../../graphql/queriesTyped";
 import { ApolloConsumer } from "@apollo/client/react";
 import type { ApolloClient } from "@apollo/client";
-import type { Filter } from "@shortbox/contract";
+import type { Filter } from "../../graphql/typed-documents.generated";
 
 type ExportType = "txt" | "csv";
 
