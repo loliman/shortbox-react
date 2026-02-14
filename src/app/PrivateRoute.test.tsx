@@ -47,4 +47,3 @@ describe("PrivateRoute", () => {
     expect(screen.getByText("login-page")).toBeTruthy();
   });
 });
-

@@ -133,4 +133,3 @@ describe("Editor cache helpers", () => {
     expect(compare({ __typename: "Unknown" }, { __typename: "Unknown" })).toBe(0);
   });
 });
-

@@ -60,4 +60,3 @@ describe("useResponsive", () => {
     expect(result.current.isCompact).toBe(false);
   });
 });
-

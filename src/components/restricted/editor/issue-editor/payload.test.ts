@@ -78,13 +78,17 @@ describe("buildIssueMutationVariables", () => {
     const result = buildIssueMutationVariables(values, values, true);
 
     expect(result.item.cover).toBeUndefined();
-    expect(result.item.individuals).toEqual([{ name: "Peter Parker", type: ["WRITER", "PENCILER"] }]);
+    expect(result.item.individuals).toEqual([
+      { name: "Peter Parker", type: ["WRITER", "PENCILER"] },
+    ]);
     expect(result.item.arcs).toEqual([{ title: "Civil War", type: "EVENT" }]);
 
     const firstStory = result.item.stories[0] as any;
     expect(firstStory.appearances[0].type).toBe("CHARACTER");
     expect(firstStory.appearances[1].type).toBe("CHARACTER");
-    expect(firstStory.individuals).toEqual([{ name: "Peter Parker", type: ["WRITER", "PENCILER"] }]);
+    expect(firstStory.individuals).toEqual([
+      { name: "Peter Parker", type: ["WRITER", "PENCILER"] },
+    ]);
     expect(firstStory.parent.issue.series.__typename).toBeUndefined();
 
     const firstCover = result.item.covers[0] as any;
