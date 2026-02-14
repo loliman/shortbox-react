@@ -1,3 +1,4 @@
+import React from "react";
 import { describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
@@ -22,8 +23,8 @@ vi.mock("../../../util/util", () => ({
 }));
 
 vi.mock("./Editor", () => ({
-  addToCache: (...args: unknown[]) => mocks.addToCacheMock(...args),
-  updateInCache: (...args: unknown[]) => mocks.updateInCacheMock(...args),
+  addToCache: mocks.addToCacheMock,
+  updateInCache: mocks.updateInCacheMock,
 }));
 
 vi.mock("../../../graphql/queriesTyped", () => ({
@@ -32,6 +33,21 @@ vi.mock("../../../graphql/queriesTyped", () => ({
 }));
 
 import PublisherEditor from "./PublisherEditor";
+
+function walkElements(node: unknown, visitor: (element: any) => void) {
+  if (!node) return;
+  if (Array.isArray(node)) {
+    node.forEach((entry) => walkElements(entry, visitor));
+    return;
+  }
+  if (!React.isValidElement(node)) return;
+
+  const element = node as React.ReactElement<any>;
+  visitor(element);
+  React.Children.forEach(element.props?.children, (child) => {
+    walkElements(child, visitor);
+  });
+}
 
 describe("PublisherEditor", () => {
   it("handles create flow mutation callbacks", async () => {
@@ -44,6 +60,10 @@ describe("PublisherEditor", () => {
       navigate,
       enqueueSnackbar,
     });
+    instance.setState = (updater: any) => {
+      const next = typeof updater === "function" ? updater(instance.state) : updater;
+      instance.state = { ...instance.state, ...next };
+    };
 
     const mutationElement = instance.render();
     mutationElement.props.update({}, { data: { createPublisher: { name: "Marvel", us: true } } });
@@ -64,6 +84,35 @@ describe("PublisherEditor", () => {
       variables: { item: { name: "Marvel", us: true } },
     });
     expect(actions.setSubmitting).toHaveBeenCalledTimes(2);
+
+    const resetForm = vi.fn();
+    const submitForm = vi.fn();
+    const formTree = formikElement.props.children({
+      values: {
+        name: "Marvel",
+        startyear: 1961,
+        endyear: 2026,
+        addinfo: "",
+        us: true,
+      },
+      resetForm,
+      submitForm,
+      isSubmitting: false,
+    });
+
+    const clickHandlers: Array<(event?: unknown) => void> = [];
+    const changeHandlers: Array<(event?: unknown) => void> = [];
+    walkElements(formTree, (element) => {
+      if (typeof element.props?.onClick === "function") clickHandlers.push(element.props.onClick);
+      if (typeof element.props?.onChange === "function")
+        changeHandlers.push(element.props.onChange);
+    });
+    clickHandlers.forEach((handler) => handler({ button: 0 }));
+    changeHandlers.forEach((handler) => handler({}));
+
+    expect(resetForm).toHaveBeenCalled();
+    expect(submitForm).toHaveBeenCalled();
+    expect(navigate).toHaveBeenCalled();
   });
 
   it("handles edit flow cache updates and error messaging", () => {

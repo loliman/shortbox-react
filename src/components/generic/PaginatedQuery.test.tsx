@@ -11,13 +11,18 @@ vi.mock("@apollo/client", () => ({
 
 import PaginatedQuery from "./PaginatedQuery";
 
+type FetchMoreArg = {
+  variables: Record<string, unknown>;
+  updateQuery: (previousResult: any, options: { fetchMoreResult: any }) => any;
+};
+
 describe("PaginatedQuery", () => {
   beforeEach(() => {
     useQueryMock.mockReset();
   });
 
   it("handles offset pagination for nodes queries", async () => {
-    const fetchMoreMock = vi.fn(() => Promise.resolve({}));
+    const fetchMoreMock = vi.fn((_arg: FetchMoreArg) => Promise.resolve({}));
     useQueryMock.mockReturnValue({
       loading: false,
       error: null,
@@ -58,9 +63,9 @@ describe("PaginatedQuery", () => {
     });
 
     expect(fetchMoreMock).toHaveBeenCalledTimes(1);
-    const fetchMoreCalls = (fetchMoreMock as any).mock.calls as any[];
-    const fetchMoreArg = fetchMoreCalls[0]?.[0];
-    expect(fetchMoreArg).toBeTruthy();
+    const fetchMoreArg = fetchMoreMock.mock.calls[0]?.[0];
+    expect(fetchMoreArg).toBeDefined();
+    if (!fetchMoreArg) throw new Error("missing fetchMore call");
     expect(fetchMoreArg.variables).toEqual({ offset: 1, pattern: "" });
 
     const merged = fetchMoreArg.updateQuery(
@@ -77,7 +82,7 @@ describe("PaginatedQuery", () => {
   });
 
   it("handles connection pagination and merged edges", async () => {
-    const fetchMoreMock = vi.fn(() => Promise.resolve({}));
+    const fetchMoreMock = vi.fn((_arg: FetchMoreArg) => Promise.resolve({}));
     const onCompleted = vi.fn();
     useQueryMock.mockReturnValue({
       loading: false,
@@ -117,9 +122,9 @@ describe("PaginatedQuery", () => {
       } as any);
     });
 
-    const fetchMoreCalls = (fetchMoreMock as any).mock.calls as any[];
-    const fetchMoreArg = fetchMoreCalls[0]?.[0];
-    expect(fetchMoreArg).toBeTruthy();
+    const fetchMoreArg = fetchMoreMock.mock.calls[0]?.[0];
+    expect(fetchMoreArg).toBeDefined();
+    if (!fetchMoreArg) throw new Error("missing fetchMore call");
     expect(fetchMoreArg.variables).toEqual({ first: 25, after: "cursor-1" });
 
     const merged = fetchMoreArg.updateQuery(

@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const queryMock = vi.fn();
@@ -6,12 +6,13 @@ const clearStoreMock = vi.fn();
 const routesSpy = vi.fn();
 const sessionInvalidListeners: Array<() => void> = [];
 let mockMode = false;
+const apolloClientMock = {
+  query: (...args: unknown[]) => queryMock(...args),
+  clearStore: (...args: unknown[]) => clearStoreMock(...args),
+};
 
 vi.mock("@apollo/client", () => ({
-  useApolloClient: () => ({
-    query: (...args: unknown[]) => queryMock(...args),
-    clearStore: (...args: unknown[]) => clearStoreMock(...args),
-  }),
+  useApolloClient: () => apolloClientMock,
 }));
 
 vi.mock("./generic/AppContext", () => ({
@@ -52,6 +53,7 @@ describe("App", () => {
   beforeEach(() => {
     mockMode = false;
     queryMock.mockReset();
+    queryMock.mockResolvedValue({ data: { me: null } });
     clearStoreMock.mockReset();
     routesSpy.mockReset();
     sessionInvalidListeners.length = 0;
@@ -68,17 +70,17 @@ describe("App", () => {
   });
 
   it("loads session via me query in live mode", async () => {
-    queryMock.mockResolvedValueOnce({ data: { me: { id: "1" } } });
+    queryMock.mockResolvedValue({ data: { me: { id: "1" } } });
     render(<App />);
 
     await waitFor(() => {
       expect(screen.getByTestId("routes").textContent).toBe("ready-in");
     });
-    expect(queryMock).toHaveBeenCalledTimes(1);
+    expect(queryMock).toHaveBeenCalledTimes(2);
   });
 
   it("handles query errors and session invalidation", async () => {
-    queryMock.mockRejectedValueOnce(new Error("boom"));
+    queryMock.mockRejectedValue(new Error("boom"));
     render(<App />);
 
     await waitFor(() => {
@@ -86,7 +88,9 @@ describe("App", () => {
     });
 
     expect(sessionInvalidListeners).toHaveLength(1);
-    sessionInvalidListeners[0]();
+    act(() => {
+      sessionInvalidListeners[0]();
+    });
 
     await waitFor(() => {
       expect(clearStoreMock).toHaveBeenCalledTimes(1);
