@@ -66,10 +66,7 @@ export function scrollToSelectedIssue(
   });
 }
 
-export function toNodeList(
-  data: any,
-  queryName: string
-): ListNode[] | null {
+export function toNodeList(data: any, queryName: string): ListNode[] | null {
   if (!data?.[queryName]) return null;
 
   const value = data[queryName];
@@ -83,7 +80,12 @@ export function toNodeList(
 }
 
 export function getItemKey(item: ListNode, fallbackIndex: number): string {
-  if (item?.number && item?.series?.title && item?.series?.volume && item?.series?.publisher?.name) {
+  if (
+    item?.number &&
+    item?.series?.title &&
+    item?.series?.volume &&
+    item?.series?.publisher?.name
+  ) {
     return [
       "issue",
       item.series.publisher.name,

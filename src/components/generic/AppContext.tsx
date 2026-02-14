@@ -106,9 +106,12 @@ function AppContextProvider({ children, session, setSession }: Readonly<AppConte
     [state.loadingComponents]
   );
 
-  const handleLogin = useCallback((_user: SessionValue) => {
-    setSession?.({ loggedIn: true });
-  }, [setSession]);
+  const handleLogin = useCallback(
+    (_user: SessionValue) => {
+      setSession?.({ loggedIn: true });
+    },
+    [setSession]
+  );
 
   const handleLogout = useCallback(() => {
     setSession?.(null);

@@ -29,7 +29,9 @@ const httpLink = new HttpLink({
 });
 
 const CSRF_COOKIE_NAME = String(import.meta.env.VITE_CSRF_COOKIE_NAME || "sb_csrf");
-const CSRF_HEADER_NAME = String(import.meta.env.VITE_CSRF_HEADER_NAME || "x-csrf-token").toLowerCase();
+const CSRF_HEADER_NAME = String(
+  import.meta.env.VITE_CSRF_HEADER_NAME || "x-csrf-token"
+).toLowerCase();
 const CSRF_ENABLED = String(import.meta.env.VITE_CSRF_ENABLED || "true").toLowerCase() !== "false";
 
 const getCookie = (name: string): string | null => {
@@ -47,7 +49,9 @@ const getCookie = (name: string): string | null => {
   }
 };
 
-const isMutationOperation = (query: { definitions?: ReadonlyArray<{ kind?: string; operation?: string }> }): boolean => {
+const isMutationOperation = (query: {
+  definitions?: ReadonlyArray<{ kind?: string; operation?: string }>;
+}): boolean => {
   const operationDefinition = query.definitions?.find(
     (definition) => definition.kind === "OperationDefinition"
   );

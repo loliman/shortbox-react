@@ -220,11 +220,7 @@ class PublisherEditor extends React.Component<PublisherEditorProps, PublisherEdi
                     />
 
                     <div className="formButtons">
-                      <Button
-                        disabled={isSubmitting}
-                        onClick={() => resetForm()}
-                        color="secondary"
-                      >
+                      <Button disabled={isSubmitting} onClick={() => resetForm()} color="secondary">
                         Zurücksetzen
                       </Button>
 

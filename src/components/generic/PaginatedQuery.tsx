@@ -66,13 +66,13 @@ function PaginatedQuery(props: Readonly<PaginatedQueryProps>) {
     setHasMore(true);
   }, [inputKey]);
 
-  const { loading, error, data, fetchMore, networkStatus } = useQuery<QueryResultMap, QueryVariables>(
-    query,
-    {
-      variables,
-      notifyOnNetworkStatusChange,
-    }
-  );
+  const { loading, error, data, fetchMore, networkStatus } = useQuery<
+    QueryResultMap,
+    QueryVariables
+  >(query, {
+    variables,
+    notifyOnNetworkStatusChange,
+  });
 
   React.useEffect(() => {
     if ((data || error) && onCompletedRef.current) onCompletedRef.current();
@@ -104,10 +104,7 @@ function PaginatedQuery(props: Readonly<PaginatedQueryProps>) {
     return next;
   }, [parsedInputVariables, offset, offsetMode, endCursor]);
 
-  const fetchMoreOnScroll = (
-    e: React.UIEvent<HTMLElement>,
-    reload: () => void
-  ) => {
+  const fetchMoreOnScroll = (e: React.UIEvent<HTMLElement>, reload: () => void) => {
     const element = e.target as HTMLElement | null;
     if (!element) return;
     if (!hasMore || loading || fetching || fetchMoreInFlightRef.current) return;
@@ -129,65 +126,63 @@ function PaginatedQuery(props: Readonly<PaginatedQueryProps>) {
     networkStatus,
     hasMore,
     fetchMore: (e: React.UIEvent<HTMLElement>) =>
-      fetchMoreOnScroll(e, () =>
-        {
-          fetchMoreInFlightRef.current = true;
-          setFetching(true);
+      fetchMoreOnScroll(e, () => {
+        fetchMoreInFlightRef.current = true;
+        setFetching(true);
 
-          void fetchMore({
-            variables: fetchMoreVars,
-            updateQuery: (
-              prev: QueryResultMap,
-              { fetchMoreResult }: { fetchMoreResult?: QueryResultMap | null }
-            ) => {
-              if (!fetchMoreResult) return prev;
+        void fetchMore({
+          variables: fetchMoreVars,
+          updateQuery: (
+            prev: QueryResultMap,
+            { fetchMoreResult }: { fetchMoreResult?: QueryResultMap | null }
+          ) => {
+            if (!fetchMoreResult) return prev;
 
-              if (offsetMode) {
-                const previousList = Array.isArray(prev[queryName])
-                  ? prev[queryName].filter(Boolean)
-                  : [];
-                const nextList = Array.isArray(fetchMoreResult[queryName])
-                  ? fetchMoreResult[queryName].filter(Boolean)
-                  : [];
-                const expectedOffset = Number(fetchMoreVars.offset || 0);
+            if (offsetMode) {
+              const previousList = Array.isArray(prev[queryName])
+                ? prev[queryName].filter(Boolean)
+                : [];
+              const nextList = Array.isArray(fetchMoreResult[queryName])
+                ? fetchMoreResult[queryName].filter(Boolean)
+                : [];
+              const expectedOffset = Number(fetchMoreVars.offset || 0);
 
-                if (previousList.length !== expectedOffset) return prev;
+              if (previousList.length !== expectedOffset) return prev;
 
-                if (nextList.length === 0) setHasMore(false);
-
-                return {
-                  ...prev,
-                  [queryName]: [...previousList, ...nextList],
-                };
-              }
-
-              const previousConnection = prev && prev[queryName] ? prev[queryName] : null;
-              const nextConnection = fetchMoreResult[queryName];
-              if (!isConnection(previousConnection) || !isConnection(nextConnection)) return prev;
-
-              const nextEdges = nextConnection.edges || [];
-              const mergedEdges = [...(previousConnection.edges || []), ...nextEdges];
-              const nextPageInfo = nextConnection.pageInfo
-                ? nextConnection.pageInfo
-                : previousConnection.pageInfo;
-
-              setHasMore(Boolean(nextPageInfo && nextPageInfo.hasNextPage));
+              if (nextList.length === 0) setHasMore(false);
 
               return {
                 ...prev,
-                [queryName]: {
-                  ...previousConnection,
-                  edges: mergedEdges,
-                  pageInfo: nextPageInfo,
-                },
+                [queryName]: [...previousList, ...nextList],
               };
-            },
-          }).finally(() => {
-            fetchMoreInFlightRef.current = false;
-            setFetching(false);
-          });
-        }
-      ),
+            }
+
+            const previousConnection = prev && prev[queryName] ? prev[queryName] : null;
+            const nextConnection = fetchMoreResult[queryName];
+            if (!isConnection(previousConnection) || !isConnection(nextConnection)) return prev;
+
+            const nextEdges = nextConnection.edges || [];
+            const mergedEdges = [...(previousConnection.edges || []), ...nextEdges];
+            const nextPageInfo = nextConnection.pageInfo
+              ? nextConnection.pageInfo
+              : previousConnection.pageInfo;
+
+            setHasMore(Boolean(nextPageInfo && nextPageInfo.hasNextPage));
+
+            return {
+              ...prev,
+              [queryName]: {
+                ...previousConnection,
+                edges: mergedEdges,
+                pageInfo: nextPageInfo,
+              },
+            };
+          },
+        }).finally(() => {
+          fetchMoreInFlightRef.current = false;
+          setFetching(false);
+        });
+      }),
   });
 }
 

@@ -190,9 +190,7 @@ class SeriesEditor extends React.Component<SeriesEditorProps, SeriesEditorState>
                       <FormControlLabel
                         className="switchEditor"
                         control={
-                          <Tooltip
-                            title={(values.publisher.us ? "Deutscher" : "US") + " Serie"}
-                          >
+                          <Tooltip title={(values.publisher.us ? "Deutscher" : "US") + " Serie"}>
                             <Switch
                               disabled={edit}
                               checked={values.publisher.us}

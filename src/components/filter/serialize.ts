@@ -5,7 +5,10 @@ function hasPayload(payload: FilterSubmitValues): boolean {
   return Object.keys(payload).length > 0;
 }
 
-export function serializeFilterValues(values: FilterValues, us: boolean): FilterSubmitValues | null {
+export function serializeFilterValues(
+  values: FilterValues,
+  us: boolean
+): FilterSubmitValues | null {
   const payload: FilterSubmitValues = {};
 
   if (values.formats.length > 0) {

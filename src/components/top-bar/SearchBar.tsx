@@ -57,8 +57,8 @@ function SearchBar(props: Readonly<SearchBarProps>) {
       queryPattern.length < MIN_QUERY_LENGTH
         ? []
         : (data?.nodes || [])
-        .filter((node): node is SearchNode => Boolean(node?.label && node?.url))
-        .slice(0, 50),
+            .filter((node): node is SearchNode => Boolean(node?.label && node?.url))
+            .slice(0, 50),
     [data?.nodes, queryPattern.length]
   );
 

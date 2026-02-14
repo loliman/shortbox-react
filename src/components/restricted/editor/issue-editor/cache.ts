@@ -45,7 +45,13 @@ export function updateIssueEditorCache(
     res.series.publisher.us = false;
 
     try {
-      updateInCache(cache, issue, defVariables, defVariables, wrapItem(res as Record<string, unknown>));
+      updateInCache(
+        cache,
+        issue,
+        defVariables,
+        defVariables,
+        wrapItem(res as Record<string, unknown>)
+      );
     } catch {
       // ignore cache exception
     }
@@ -80,12 +86,7 @@ export function updateIssueEditorCache(
     const itemSeries = item.series as { publisher?: { us?: boolean } };
     if (itemSeries.publisher) itemSeries.publisher.us = undefined;
 
-    addToCache(
-      cache,
-      issues,
-      stripItem(wrapItem(res.series as Record<string, unknown>)),
-      item
-    );
+    addToCache(cache, issues, stripItem(wrapItem(res.series as Record<string, unknown>)), item);
   } catch {
     // ignore cache exception
   }

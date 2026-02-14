@@ -63,7 +63,9 @@ function FilterPage(props: FilterPageProps) {
                   isSubmitting={isSubmitting}
                   onReset={() => resetForm({ values: createDefaultFilterValues() })}
                   onCancel={() => {
-                    const url = lastLocation?.pathname ? lastLocation.pathname : `/${us ? "us" : "de"}`;
+                    const url = lastLocation?.pathname
+                      ? lastLocation.pathname
+                      : `/${us ? "us" : "de"}`;
                     navigate(null, url);
                   }}
                   onSubmit={() => submitForm()}

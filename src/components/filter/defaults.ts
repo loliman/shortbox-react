@@ -36,7 +36,9 @@ function normalizeSeries(rawSeries: unknown): Array<Record<string, unknown>> {
   }
 
   return rawSeries
-    .filter((entry): entry is Record<string, unknown> => Boolean(entry && typeof entry === "object"))
+    .filter((entry): entry is Record<string, unknown> =>
+      Boolean(entry && typeof entry === "object")
+    )
     .map((entry) => ({ ...entry, __typename: "Series" }));
 }
 
@@ -82,17 +84,20 @@ export function parseFilterValues(queryFilter?: string): FilterValues {
       ...defaults,
       ...parsed,
       formats: normalizeFormats(parsed.formats),
-      releasedates: Array.isArray(parsed.releasedates) && parsed.releasedates.length > 0
-        ? parsed.releasedates
-        : defaults.releasedates,
+      releasedates:
+        Array.isArray(parsed.releasedates) && parsed.releasedates.length > 0
+          ? parsed.releasedates
+          : defaults.releasedates,
       publishers: Array.isArray(parsed.publishers) ? parsed.publishers : defaults.publishers,
       series: normalizeSeries(parsed.series),
-      numbers: Array.isArray(parsed.numbers) && parsed.numbers.length > 0
-        ? parsed.numbers
-        : defaults.numbers,
+      numbers:
+        Array.isArray(parsed.numbers) && parsed.numbers.length > 0
+          ? parsed.numbers
+          : defaults.numbers,
       individuals: Array.isArray(parsed.individuals) ? parsed.individuals : defaults.individuals,
       arcs: typeof parsed.arcs === "string" ? parsed.arcs : defaults.arcs,
-      appearances: typeof parsed.appearances === "string" ? parsed.appearances : defaults.appearances,
+      appearances:
+        typeof parsed.appearances === "string" ? parsed.appearances : defaults.appearances,
       withVariants: Boolean(parsed.withVariants),
       firstPrint: Boolean(parsed.firstPrint),
       onlyPrint: Boolean(parsed.onlyPrint),

@@ -83,7 +83,14 @@ function ContainsSection({ values, us, isDesktop, setFieldValue }: ContainsSecti
         multiple
         variables={{ pattern: getPattern(values.publishers, "name"), us: !us }}
         onChange={(option, live) =>
-          updateField(option as any, Boolean(live), values.publishers, setFieldValue, "publishers", "name")
+          updateField(
+            option as any,
+            Boolean(live),
+            values.publishers,
+            setFieldValue,
+            "publishers",
+            "name"
+          )
         }
         generateLabel={(entry) => String(entry.name || "")}
       />

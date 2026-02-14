@@ -56,7 +56,11 @@ export function IssueDetailsDEBottom(props: Readonly<IssueDetailsDEBottomProps>)
         <Box sx={{ mt: 3 }}>
           <Typography>
             Das Cover für&nbsp;
-            <a href={generateComicGuideUrl(issue as any)} rel="noopener noreferrer nofollow" target="_blank">
+            <a
+              href={generateComicGuideUrl(issue as any)}
+              rel="noopener noreferrer nofollow"
+              target="_blank"
+            >
               {generateLabel(issue.series as any) + " #" + issue.number}
             </a>
             &nbsp;wird bereitgestellt vom&nbsp;

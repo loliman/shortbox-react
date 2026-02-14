@@ -1,8 +1,11 @@
-export type ListingQuery = {
-  filter?: string | null;
-  order?: string | null;
-  direction?: string | null;
-} | null | undefined;
+export type ListingQuery =
+  | {
+      filter?: string | null;
+      order?: string | null;
+      direction?: string | null;
+    }
+  | null
+  | undefined;
 
 export const DEFAULT_ORDER = "updatedAt";
 export const DEFAULT_DIRECTION = "DESC";

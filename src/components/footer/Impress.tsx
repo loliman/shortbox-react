@@ -27,8 +27,7 @@ function Impress() {
           <Stack spacing={1}>
             <Typography variant="h6">Kontakt</Typography>
             <Typography>
-              E-Mail:{" "}
-              <Link href="mailto:christian.riese@gmail.com">christian.riese@gmail.com</Link>
+              E-Mail: <Link href="mailto:christian.riese@gmail.com">christian.riese@gmail.com</Link>
             </Typography>
           </Stack>
 
@@ -51,8 +50,8 @@ function Impress() {
               target="_blank"
             >
               Impressum Generator
-            </Link>
-            {" "}der{" "}
+            </Link>{" "}
+            der{" "}
             <Link
               href="https://www.kanzlei-hasselbach.de/"
               rel="noopener noreferrer nofollow"

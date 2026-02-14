@@ -44,7 +44,9 @@ function normalizeStory(story: Record<string, unknown>, usIssue: boolean) {
     individuals:
       !exclusive && !story.individuals
         ? undefined
-        : asArray(story.individuals as Array<Record<string, unknown>>).map((entry) => stripItem(entry)),
+        : asArray(story.individuals as Array<Record<string, unknown>>).map((entry) =>
+            stripItem(entry)
+          ),
     appearances:
       !exclusive && !story.individuals
         ? undefined
@@ -86,7 +88,9 @@ function normalizeCover(cover: Record<string, unknown>, usIssue: boolean) {
     exclusive,
     individuals: !exclusive
       ? undefined
-      : asArray(cover.individuals as Array<Record<string, unknown>>).map((entry) => stripItem(entry)),
+      : asArray(cover.individuals as Array<Record<string, unknown>>).map((entry) =>
+          stripItem(entry)
+        ),
     parent: exclusive
       ? undefined
       : {
@@ -146,10 +150,12 @@ export function mapIssueToEditorDefaultValues(
     comicguideid: Number(values.comicguideid || 0),
     isbn: String(values.isbn || ""),
     limitation: String(values.limitation || ""),
-    individuals: asArray(values.individuals as Array<Record<string, unknown>>).map((individual) => ({
-      name: individual.name,
-      type: individual.type,
-    })),
+    individuals: asArray(values.individuals as Array<Record<string, unknown>>).map(
+      (individual) => ({
+        name: individual.name,
+        type: individual.type,
+      })
+    ),
     arcs: asArray(values.arcs as Array<Record<string, unknown>>).map((arc) => ({
       title: arc.title,
       type: arc.type,

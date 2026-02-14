@@ -33,7 +33,8 @@ interface LayoutProps {
 
 function Layout(props: Readonly<LayoutProps>) {
   const { us, children, session, drawerOpen } = props;
-  const temporaryDrawer = props.compactLayout ?? Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
+  const temporaryDrawer =
+    props.compactLayout ?? Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
   const drawerWidth = temporaryDrawer ? 320 : 360;
   const contentOffset = !temporaryDrawer && drawerOpen ? `${drawerWidth}px` : 0;
 
@@ -41,7 +42,9 @@ function Layout(props: Readonly<LayoutProps>) {
     if (!props.handleScroll) return;
 
     const onWindowScroll = () => {
-      props.handleScroll?.({ target: document.documentElement } as unknown as React.UIEvent<HTMLDivElement>);
+      props.handleScroll?.({
+        target: document.documentElement,
+      } as unknown as React.UIEvent<HTMLDivElement>);
     };
 
     window.addEventListener("scroll", onWindowScroll, { passive: true });

@@ -31,11 +31,7 @@ export function IssueDetailsDEDetails(props: Readonly<IssueDetailsDEDetailsProps
         <DetailsRow key="pages" label="Seiten" value={issue.pages} />
       ) : null}
 
-      <DetailsRow
-        key="releasedate"
-        label="Erscheinungsdatum"
-        value={releaseDate}
-      />
+      <DetailsRow key="releasedate" label="Erscheinungsdatum" value={releaseDate} />
 
       {!Number.isNaN(priceValue) && priceValue > 0 ? (
         <DetailsRow key="price" label="Preis" value={String(issue.price) + " " + issue.currency} />

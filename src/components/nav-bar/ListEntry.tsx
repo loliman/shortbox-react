@@ -51,8 +51,8 @@ export default function TypeListEntry(props: Readonly<TypeListEntryProps>) {
     Boolean(item.collected || item.variants?.some((v) => v.collected)) && Boolean(props.session);
   const isActiveIssue = Boolean(
     level === HierarchyLevel.ISSUE &&
-      props.selected?.issue?.number &&
-      props.selected.issue.number === item.number
+    props.selected?.issue?.number &&
+    props.selected.issue.number === item.number
   );
 
   const row = (
@@ -122,9 +122,7 @@ function ListEntryPrimary(props: {
           {props.showVariants ? (
             <Tooltip
               title={
-                "+" +
-                props.variantCount +
-                (props.variantCount === 1 ? " Variante" : " Varianten")
+                "+" + props.variantCount + (props.variantCount === 1 ? " Variante" : " Varianten")
               }
             >
               <Typography
@@ -138,7 +136,12 @@ function ListEntryPrimary(props: {
           ) : null}
 
           {props.showCollected ? (
-            <Box component="img" src="/collected_badge.png" alt="gesammelt" sx={{ height: 21, m: 0 }} />
+            <Box
+              component="img"
+              src="/collected_badge.png"
+              alt="gesammelt"
+              sx={{ height: 21, m: 0 }}
+            />
           ) : null}
         </Box>
       </Box>

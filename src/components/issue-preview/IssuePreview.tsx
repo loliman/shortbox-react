@@ -29,13 +29,17 @@ interface IssuePreviewProps {
 function IssuePreview(props: Readonly<IssuePreviewProps>) {
   const us = Boolean(props.us);
   const hasSession = Boolean(props.session);
-  const smallChip = Boolean(props.isPhone) || (Boolean(props.isTablet) && Boolean(props.drawerOpen));
+  const smallChip =
+    Boolean(props.isPhone) || (Boolean(props.isTablet) && Boolean(props.drawerOpen));
   const variant = getIssueVariantLabel(props.issue);
   const { coverUrl, blurCover } = getIssuePreviewCover(props.issue, us);
   const flags = getIssuePreviewFlags(props.issue, us, hasSession);
   const issueStories = props.issue.stories || [];
   const isSellable = Boolean(
-    props.issue.collected && flags.sellable > 0 && flags.sellable === issueStories.length && hasSession
+    props.issue.collected &&
+    flags.sellable > 0 &&
+    flags.sellable === issueStories.length &&
+    hasSession
   );
   const url = getIssueUrl(props.issue, us);
   const issueLabel = getIssueLabel(props.issue);
@@ -63,16 +67,20 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
           <CardContent sx={{ pb: "20px" }}>
             <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1 }}>
               <Box>
-                <Typography variant="subtitle1">
-                  {issueLabel}
-                </Typography>
+                <Typography variant="subtitle1">{issueLabel}</Typography>
 
-                {props.issue.title ? <Typography variant="subtitle2">{props.issue.title}</Typography> : null}
+                {props.issue.title ? (
+                  <Typography variant="subtitle2">{props.issue.title}</Typography>
+                ) : null}
               </Box>
 
               <Box>
-                {props.issue.verified ? <img src="/verified_badge.png" alt="verifiziert" height="25" /> : null}
-                {flags.collected ? <img src="/collected_badge.png" alt="gesammelt" height="25" /> : null}
+                {props.issue.verified ? (
+                  <img src="/verified_badge.png" alt="verifiziert" height="25" />
+                ) : null}
+                {flags.collected ? (
+                  <img src="/collected_badge.png" alt="gesammelt" height="25" />
+                ) : null}
               </Box>
             </Box>
 
@@ -80,51 +88,93 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
 
             <Box sx={{ mt: 2, display: "flex", flexWrap: "wrap", gap: 0.75 }}>
               {!us && flags.hasOnlyApp ? (
-                <Chip className="chip" label={!smallChip ? "Einzige Veröffentlichung" : mobileAlertLabel} color="secondary" />
+                <Chip
+                  className="chip"
+                  label={!smallChip ? "Einzige Veröffentlichung" : mobileAlertLabel}
+                  color="secondary"
+                />
               ) : null}
 
               {!us && flags.hasFirstApp ? (
-                <Chip className="chip" label={!smallChip ? "Erstveröffentlichung" : "1."} color="primary" />
+                <Chip
+                  className="chip"
+                  label={!smallChip ? "Erstveröffentlichung" : "1."}
+                  color="primary"
+                />
               ) : null}
 
               {!us && flags.hasOtherOnlyTb ? (
-                <Chip className="tbchip chip" label={!smallChip ? "Sonst nur in Taschenbuch" : "TB"} color="default" />
+                <Chip
+                  className="tbchip chip"
+                  label={!smallChip ? "Sonst nur in Taschenbuch" : "TB"}
+                  color="default"
+                />
               ) : null}
 
               {!us && flags.hasExclusive ? (
-                <Chip className="chip" label={!smallChip ? "Exklusiver Inhalt" : mobileAlertLabel} color="secondary" />
+                <Chip
+                  className="chip"
+                  label={!smallChip ? "Exklusiver Inhalt" : mobileAlertLabel}
+                  color="secondary"
+                />
               ) : null}
 
               {!us && flags.isPureReprintDe ? (
-                <Chip className="chip" label={!smallChip ? "Reiner Nachdruck" : "ND"} color="default" />
+                <Chip
+                  className="chip"
+                  label={!smallChip ? "Reiner Nachdruck" : "ND"}
+                  color="default"
+                />
               ) : null}
 
               {flags.collectedMultipleTimes ? (
                 <Chip
                   className="chip"
-                  label={!smallChip ? "Mehrfach " + (us ? "auf deutsch " : "") + "gesammelt" : "Mehrfach"}
+                  label={
+                    !smallChip ? "Mehrfach " + (us ? "auf deutsch " : "") + "gesammelt" : "Mehrfach"
+                  }
                   sx={{ bgcolor: "#4eaf51", color: "common.white" }}
                 />
               ) : null}
 
               {isSellable ? (
-                <Chip className="chip" label="Verkaufbar" sx={{ bgcolor: "#4eaf51", color: "common.white" }} />
+                <Chip
+                  className="chip"
+                  label="Verkaufbar"
+                  sx={{ bgcolor: "#4eaf51", color: "common.white" }}
+                />
               ) : null}
 
               {!us && flags.hasNoStoriesDe ? (
-                <Chip className="chip" label={!smallChip ? "Keine Geschichten zugeordnet" : "n/a"} color="default" />
+                <Chip
+                  className="chip"
+                  label={!smallChip ? "Keine Geschichten zugeordnet" : "n/a"}
+                  color="default"
+                />
               ) : null}
 
               {us && flags.hasOnlyOnePrintUs ? (
-                <Chip className="chip" label={!smallChip ? "Nur einfach auf deutsch veröffentlicht" : mobileAlertLabel} color="secondary" />
+                <Chip
+                  className="chip"
+                  label={!smallChip ? "Nur einfach auf deutsch veröffentlicht" : mobileAlertLabel}
+                  color="secondary"
+                />
               ) : null}
 
               {us && flags.hasOnlyTbUs ? (
-                <Chip className="chip" label={!smallChip ? "Nur in Taschenbuch" : "TB"} color="primary" />
+                <Chip
+                  className="chip"
+                  label={!smallChip ? "Nur in Taschenbuch" : "TB"}
+                  color="primary"
+                />
               ) : null}
 
               {us && flags.notPublishedInDe ? (
-                <Chip className="chip" label={!smallChip ? "Nicht auf deutsch erschienen" : "n/a"} color="default" />
+                <Chip
+                  className="chip"
+                  label={!smallChip ? "Nicht auf deutsch erschienen" : "n/a"}
+                  color="default"
+                />
               ) : null}
 
               {us && flags.hasReprintOfUs ? (

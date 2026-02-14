@@ -22,17 +22,17 @@ function Contact() {
           </Typography>
 
           <Typography>
-            Solltet ihr einen Fehler finden oder Vorschläge zur Verbesserung haben, meldet euch bitte
-            per Mail bei mir. Schreibt dazu bitte eine Mail mit dem Betreff <b>[Shortbox]</b> und
-            einer kurzen Beschreibung des Fehlers/des Vorschlags an{" "}
+            Solltet ihr einen Fehler finden oder Vorschläge zur Verbesserung haben, meldet euch
+            bitte per Mail bei mir. Schreibt dazu bitte eine Mail mit dem Betreff <b>[Shortbox]</b>{" "}
+            und einer kurzen Beschreibung des Fehlers/des Vorschlags an{" "}
             <Link href="mailto:christian.riese@gmail.com">christian.riese@gmail.com</Link>.
           </Typography>
 
           <Typography variant="h6">Unterstützen</Typography>
           <Typography>
             Shortbox.de ist und bleibt eine kostenlose Datenbank, die von jedem jederzeit kostenlos
-            genutzt werden kann. Dennoch verursacht Shortbox.de laufend Kosten, die ich privat trage.
-            Wenn ihr das Projekt unterstützen wollt, so bin ich für jede kleine finanzielle
+            genutzt werden kann. Dennoch verursacht Shortbox.de laufend Kosten, die ich privat
+            trage. Wenn ihr das Projekt unterstützen wollt, so bin ich für jede kleine finanzielle
             Unterstützung über{" "}
             <Link
               href="https://paypal.me/ChristianRiese"

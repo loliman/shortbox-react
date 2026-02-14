@@ -148,7 +148,8 @@ export function updateField(
       case "remove-value":
         if (appearanceMode) {
           selected = selected.filter(
-            (entry) => `${entry.name}${entry.type}` !== `${payload.removedValue?.name}${payload.type}`
+            (entry) =>
+              `${entry.name}${entry.type}` !== `${payload.removedValue?.name}${payload.type}`
           );
         } else {
           const previous = selected.find((entry) => entry.name === payload.removedValue?.name);

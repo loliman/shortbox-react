@@ -22,10 +22,7 @@ import type { VariantIssue } from "./issue-details/variants/types";
 import { IssueDetailsPreview } from "./issue-details/preview/IssueDetailsPreview";
 import { DetailsTable } from "./issue-details/DetailsTable";
 import type { PreviewIssue } from "../issue-preview/utils/issuePreviewUtils";
-import {
-  collectIssueArcs,
-  getTodayLocalDate,
-} from "./issue-details/utils/issueDetailsUtils";
+import { collectIssueArcs, getTodayLocalDate } from "./issue-details/utils/issueDetailsUtils";
 
 export {
   AppearanceList,
@@ -118,10 +115,20 @@ function IssueDetails(props: IssueDetailsProps) {
           action={
             <div>
               {loadedIssue.verified ? (
-                <img className="verifiedBadge" src="/verified_badge.png" alt="verifiziert" height="35" />
+                <img
+                  className="verifiedBadge"
+                  src="/verified_badge.png"
+                  alt="verifiziert"
+                  height="35"
+                />
               ) : null}
               {loadedIssue.collected && props.session ? (
-                <img className="verifiedBadge" src="/collected_badge.png" alt="gesammelt" height="35" />
+                <img
+                  className="verifiedBadge"
+                  src="/collected_badge.png"
+                  alt="gesammelt"
+                  height="35"
+                />
               ) : null}
               <EditButton item={loadedIssue} />
             </div>
@@ -146,20 +153,25 @@ function IssueDetails(props: IssueDetailsProps) {
             }}
           >
             <div className="details" style={{ flex: "1 1 420px", minWidth: 0 }}>
-              <DetailsTable issue={loadedIssue} details={details} navigate={props.navigate} us={us} />
+              <DetailsTable
+                issue={loadedIssue}
+                details={details}
+                navigate={props.navigate}
+                us={us}
+              />
             </div>
             <div style={{ width: "220px", maxWidth: "100%", flex: "0 0 220px" }}>
               <IssueCover us={us} issue={loadedIssue as unknown as PreviewIssue} />
             </div>
 
             {loadedIssue.addinfo && loadedIssue.addinfo !== "" ? (
-                <Paper className="addinfo">
-                  <Typography
-                      dangerouslySetInnerHTML={{
-                        __html: sanitizeHtml(loadedIssue.addinfo),
-                      }}
-                  />
-                </Paper>
+              <Paper className="addinfo">
+                <Typography
+                  dangerouslySetInnerHTML={{
+                    __html: sanitizeHtml(loadedIssue.addinfo),
+                  }}
+                />
+              </Paper>
             ) : null}
           </div>
           <StoryArcChips arcs={arcs} us={us} navigate={props.navigate} />

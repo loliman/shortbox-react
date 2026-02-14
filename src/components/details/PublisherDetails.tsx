@@ -10,15 +10,8 @@ import EditButton from "../restricted/EditButton";
 import withContext from "../generic/withContext";
 import PaginatedQuery from "../generic/PaginatedQuery";
 import TitleLine from "../generic/TitleLine";
-import {
-  FirstLastIssueSections,
-  IssueHistoryList,
-} from "./DetailsListingSections";
-import {
-  getListingDirection,
-  getListingOrder,
-  parseListingFilter,
-} from "../../util/listingQuery";
+import { FirstLastIssueSections, IssueHistoryList } from "./DetailsListingSections";
+import { getListingDirection, getListingOrder, parseListingFilter } from "../../util/listingQuery";
 import { DetailsPagePlaceholder } from "../placeholders/DetailsPagePlaceholder";
 import { DetailsAddInfo } from "./DetailsAddInfo";
 import { useDualLoadingRegistration } from "./useDualLoadingRegistration";

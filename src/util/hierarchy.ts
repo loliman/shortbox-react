@@ -29,7 +29,8 @@ export function generateUrl(item: SelectedRoot, us: boolean): string {
 
   if (!item.publisher && !item.series && !item.issue) return url;
 
-  if (item.publisher) return url + encodeURIComponent(safeValue(item.publisher.name).replace(/%/g, "%25"));
+  if (item.publisher)
+    return url + encodeURIComponent(safeValue(item.publisher.name).replace(/%/g, "%25"));
 
   if (item.series) {
     const publisherName = safeValue(item.series.publisher?.name).replace(/%/g, "%25");
@@ -157,8 +158,7 @@ export function generateLabel(item?: SelectedRoot | null): string {
     const volume = item.series.volume;
     const hasVolume = volume !== undefined && volume !== null;
     return (
-      title +
-      (item.series.publisher && hasVolume ? " (Vol. " + romanize(volume) + ")" + year : "")
+      title + (item.series.publisher && hasVolume ? " (Vol. " + romanize(volume) + ")" + year : "")
     );
   }
 

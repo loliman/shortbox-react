@@ -15,8 +15,8 @@ type IssueVariantsProps = {
 };
 
 export function IssueVariants(props: Readonly<IssueVariantsProps>) {
-  const variants = (props.issue.variants || []).filter(
-    (variant): variant is VariantIssue => Boolean(variant)
+  const variants = (props.issue.variants || []).filter((variant): variant is VariantIssue =>
+    Boolean(variant)
   );
   if (variants.length <= 1) return null;
 

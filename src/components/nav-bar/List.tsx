@@ -47,12 +47,15 @@ function List(props: Readonly<ListProps>) {
   const queryName = getQueryName(query).toLowerCase();
   const queryVariables = { ...normalized.selected, filter, first: LIST_PAGE_SIZE };
 
-  const { error, data, networkStatus } = useQuery(query as any, {
-    variables: queryVariables as any,
-    fetchPolicy: "cache-and-network",
-    nextFetchPolicy: "cache-first",
-    notifyOnNetworkStatusChange: true,
-  } as any);
+  const { error, data, networkStatus } = useQuery(
+    query as any,
+    {
+      variables: queryVariables as any,
+      fetchPolicy: "cache-and-network",
+      nextFetchPolicy: "cache-first",
+      notifyOnNetworkStatusChange: true,
+    } as any
+  );
 
   React.useEffect(() => {
     scrollToSelectedIssue(data, normalized.level, props.selected, listRef.current);

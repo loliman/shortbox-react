@@ -21,7 +21,9 @@ class ContainsItem extends React.Component<ContainsItemProps> {
   }
 
   render() {
-    const childCount = Array.isArray(this.props.item.children) ? this.props.item.children.length : 0;
+    const childCount = Array.isArray(this.props.item.children)
+      ? this.props.item.children.length
+      : 0;
     const isDisabled = childCount > 0;
 
     return (

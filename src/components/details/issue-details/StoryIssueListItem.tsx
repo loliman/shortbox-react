@@ -81,7 +81,9 @@ export function StoryIssueListItem(props: Readonly<StoryIssueListItemProps>) {
           </CoverTooltip>
         ) : null}
 
-        <Typography className="issueStoryIssue issueStoryIssuePublisher">{publisherTitle}</Typography>
+        <Typography className="issueStoryIssue issueStoryIssuePublisher">
+          {publisherTitle}
+        </Typography>
       </div>
 
       <div>

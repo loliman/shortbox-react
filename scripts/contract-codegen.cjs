@@ -7,9 +7,7 @@ const projectRoot = path.resolve(__dirname, "..");
 
 function loadContractDependencyPath() {
   try {
-    const packageJson = JSON.parse(
-      fs.readFileSync(path.join(projectRoot, "package.json"), "utf8")
-    );
+    const packageJson = JSON.parse(fs.readFileSync(path.join(projectRoot, "package.json"), "utf8"));
     const dependency = packageJson.dependencies?.["@loliman/shortbox-contract"];
     if (typeof dependency === "string" && dependency.startsWith("file:")) {
       return dependency.slice("file:".length);

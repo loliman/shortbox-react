@@ -75,7 +75,8 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
   const issue = resolveIssueForDetails(item);
   const issueSelection = issue ? toIssueSelection(issue) : null;
 
-  const smallChip = Boolean(props.isPhone) || (Boolean(props.isTablet) && Boolean(props.drawerOpen));
+  const smallChip =
+    Boolean(props.isPhone) || (Boolean(props.isTablet) && Boolean(props.drawerOpen));
   const exclusive = Boolean(item.exclusive && !props.us);
   const variant = !props.us && issue?.variant ? " " + issue.variant : "";
   const parentTitle = !item.title && item.parent?.title ? item.parent.title : undefined;
@@ -91,12 +92,20 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
           <Typography className="heading itemTitle">
             {generateItemTitle(item.issue ? item.issue : item, Boolean(props.us))}
           </Typography>
-          {parentTitle && !props.isPhonePortrait ? <Typography className="parentTitle">{parentTitle}</Typography> : null}
-          {variant && !props.isPhonePortrait ? <Typography className="parentTitle">{variant} Variant</Typography> : null}
+          {parentTitle && !props.isPhonePortrait ? (
+            <Typography className="parentTitle">{parentTitle}</Typography>
+          ) : null}
+          {variant && !props.isPhonePortrait ? (
+            <Typography className="parentTitle">{variant} Variant</Typography>
+          ) : null}
         </div>
 
         {item.parent?.reprintOf?.issue ? (
-          <CoverTooltip issue={item.parent.reprintOf.issue} us={props.us} number={item.parent.reprintOf.number}>
+          <CoverTooltip
+            issue={item.parent.reprintOf.issue}
+            us={props.us}
+            number={item.parent.reprintOf.number}
+          >
             <Typography
               className="parentTitle"
               component="button"
@@ -119,28 +128,82 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
               }}
             >
               Original erschienen als{" "}
-              <span className="asLink">{reprintSelection ? generateLabel(reprintSelection) : ""}</span>
+              <span className="asLink">
+                {reprintSelection ? generateLabel(reprintSelection) : ""}
+              </span>
             </Typography>
           </CoverTooltip>
         ) : null}
 
-        <Typography className="heading headingAddInfo">{addinfoText !== "" ? addinfoText : null}</Typography>
+        <Typography className="heading headingAddInfo">
+          {addinfoText !== "" ? addinfoText : null}
+        </Typography>
       </div>
 
       <div className="chips">
-        {!props.isCover && item.url && item.number === 0 ? (!smallChip ? <Chip className="chip" label="Cover" color="default" /> : <Chip className="chip" label="C" color="default" />) : null}
+        {!props.isCover && item.url && item.number === 0 ? (
+          !smallChip ? (
+            <Chip className="chip" label="Cover" color="default" />
+          ) : (
+            <Chip className="chip" label="C" color="default" />
+          )
+        ) : null}
 
-        {!props.isCover && item.onlyapp && item.parent ? (!smallChip ? <Chip className="chip" label="Einzige Veröffentlichung" color="secondary" /> : <Chip className="chip" label={<PriorityHighIcon className="mobileChip" />} color="secondary" />) : null}
+        {!props.isCover && item.onlyapp && item.parent ? (
+          !smallChip ? (
+            <Chip className="chip" label="Einzige Veröffentlichung" color="secondary" />
+          ) : (
+            <Chip
+              className="chip"
+              label={<PriorityHighIcon className="mobileChip" />}
+              color="secondary"
+            />
+          )
+        ) : null}
 
-        {!props.isCover && !item.onlyapp && item.firstapp && item.parent ? <Chip className="chip" label={!smallChip ? "Erstveröffentlichung" : "1."} color="primary" /> : null}
+        {!props.isCover && !item.onlyapp && item.firstapp && item.parent ? (
+          <Chip
+            className="chip"
+            label={!smallChip ? "Erstveröffentlichung" : "1."}
+            color="primary"
+          />
+        ) : null}
 
-        {!props.isCover && item.otheronlytb && item.parent ? <Chip className="tbchip chip" label={!smallChip ? "Sonst nur in Taschenbuch" : "TB"} color="default" /> : null}
+        {!props.isCover && item.otheronlytb && item.parent ? (
+          <Chip
+            className="tbchip chip"
+            label={!smallChip ? "Sonst nur in Taschenbuch" : "TB"}
+            color="default"
+          />
+        ) : null}
 
-        {exclusive ? (!smallChip ? <Chip className="chip" label="Exklusiv" color="secondary" /> : <Chip className="chip" label={<PriorityHighIcon className="mobileChip" />} color="secondary" />) : null}
+        {exclusive ? (
+          !smallChip ? (
+            <Chip className="chip" label="Exklusiv" color="secondary" />
+          ) : (
+            <Chip
+              className="chip"
+              label={<PriorityHighIcon className="mobileChip" />}
+              color="secondary"
+            />
+          )
+        ) : null}
 
-        {item.parent?.collectedmultipletimes && props.session ? (!smallChip ? <Chip className="chip" label="Mehrfach gesammelt" /> : <Chip className="chip" label="Mehrfach" />) : null}
+        {item.parent?.collectedmultipletimes && props.session ? (
+          !smallChip ? (
+            <Chip className="chip" label="Mehrfach gesammelt" />
+          ) : (
+            <Chip className="chip" label="Mehrfach" />
+          )
+        ) : null}
 
-        {!item.parent?.collectedmultipletimes && item.parent?.collected && props.session ? (!smallChip ? <Chip className="chip" label="Gesammelt" /> : <Chip className="chip" label="Gesammelt" />) : null}
+        {!item.parent?.collectedmultipletimes && item.parent?.collected && props.session ? (
+          !smallChip ? (
+            <Chip className="chip" label="Gesammelt" />
+          ) : (
+            <Chip className="chip" label="Gesammelt" />
+          )
+        ) : null}
 
         {!exclusive && issue && issueSelection ? (
           <CoverTooltip issue={issue} us={props.us}>

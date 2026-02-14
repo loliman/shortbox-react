@@ -34,8 +34,7 @@ export function getIssueLabel(issue?: IssueLike | null): string {
   if (!issue) return "";
 
   const seriesLabel = getSeriesLabel(issue.series);
-  const number =
-    issue.number !== undefined && issue.number !== null ? String(issue.number) : "";
+  const number = issue.number !== undefined && issue.number !== null ? String(issue.number) : "";
 
   if (!seriesLabel) return number ? `#${number}` : "";
   return number ? `${seriesLabel} #${number}` : seriesLabel;
@@ -43,7 +42,12 @@ export function getIssueLabel(issue?: IssueLike | null): string {
 
 export function getIssueUrl(issue: IssueLike | undefined, us: boolean): string {
   const base = us ? "/us/" : "/de/";
-  if (!issue?.series?.title || !issue?.series?.publisher?.name || issue.number === undefined || issue.number === null) {
+  if (
+    !issue?.series?.title ||
+    !issue?.series?.publisher?.name ||
+    issue.number === undefined ||
+    issue.number === null
+  ) {
     return us ? "/us" : "/de";
   }
 

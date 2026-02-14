@@ -103,9 +103,7 @@ export function expanded(item: ItemLike, query?: QueryParams): boolean {
 
     const filterPublishers = toArray<{ name?: string }>(currentFilter.publishers);
     if (
-      filterPublishers.some(
-        (publisher) => compareIssue.series?.publisher?.name === publisher?.name
-      )
+      filterPublishers.some((publisher) => compareIssue.series?.publisher?.name === publisher?.name)
     ) {
       isExpanded = true;
     }
@@ -123,10 +121,7 @@ export function expanded(item: ItemLike, query?: QueryParams): boolean {
     for (const number of filterNumbers) {
       if (!number || number.number === undefined || !number.compare) continue;
 
-      const comparison = compareIssueNumbers(
-        String(compareIssue.number),
-        String(number.number)
-      );
+      const comparison = compareIssueNumbers(String(compareIssue.number), String(number.number));
 
       if (
         (number.compare === "=" && comparison === 0) ||
@@ -141,10 +136,7 @@ export function expanded(item: ItemLike, query?: QueryParams): boolean {
   }
 
   if (item?.__typename === "Story") {
-    if (
-      currentFilter.arcs &&
-      compareArcs.some((arc) => currentFilter?.arcs === arc?.title)
-    ) {
+    if (currentFilter.arcs && compareArcs.some((arc) => currentFilter?.arcs === arc?.title)) {
       isExpanded = true;
     }
 

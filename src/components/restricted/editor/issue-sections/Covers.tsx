@@ -12,7 +12,12 @@ function Covers(props: ContainsProps) {
     <Stack spacing={2}>
       <div>
         <CardHeader className="left" title="Covergalerie" />
-        <AddContainsButton disabled={props.us} type="covers" defaultItem={coverDefault} {...props} />
+        <AddContainsButton
+          disabled={props.us}
+          type="covers"
+          defaultItem={coverDefault}
+          {...props}
+        />
       </div>
 
       <Contains {...props} type="covers" fields={<CoverFields />} />

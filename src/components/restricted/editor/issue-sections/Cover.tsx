@@ -38,12 +38,20 @@ class Cover extends React.Component<CoverProps, CoverState> {
           onClick={() => this.toggleCoverIsOpen()}
         />
 
-        <Dialog open={this.state.isCoverOpen} onClose={() => this.toggleCoverIsOpen()} maxWidth="md">
+        <Dialog
+          open={this.state.isCoverOpen}
+          onClose={() => this.toggleCoverIsOpen()}
+          maxWidth="md"
+        >
           <img src={previewSrc} alt="Cover Vorschau" />
         </Dialog>
 
         {this.props.onDelete ? (
-          <IconButton className="removeBtnCover" aria-label="Entfernen" onClick={this.props.onDelete}>
+          <IconButton
+            className="removeBtnCover"
+            aria-label="Entfernen"
+            onClick={this.props.onDelete}
+          >
             <DeleteIcon />
           </IconButton>
         ) : null}

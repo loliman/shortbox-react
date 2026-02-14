@@ -62,7 +62,10 @@ class IssueEditor extends React.Component<IssueEditorProps, IssueEditorState> {
           const copiedSelection = structuredClone(data[mutationName]);
           copiedSelection.format = undefined;
           copiedSelection.variant = undefined;
-          navigate(null, "/copy/issue" + generateUrl(copiedSelection, copiedSelection.series.publisher.us));
+          navigate(
+            null,
+            "/copy/issue" + generateUrl(copiedSelection, copiedSelection.series.publisher.us)
+          );
         }}
         onError={(errors) => {
           const message =

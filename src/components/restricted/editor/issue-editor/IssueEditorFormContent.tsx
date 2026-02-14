@@ -46,7 +46,11 @@ function IssueEditorFormContent(props: IssueEditorFormContentProps) {
         <Stack spacing={2.5}>
           {isDesktop ? <Cover isDesktop={isDesktop} cover={values.cover} /> : null}
 
-          <IssueEditorSeriesFields values={values} isDesktop={isDesktop} setFieldValue={setFieldValue} />
+          <IssueEditorSeriesFields
+            values={values}
+            isDesktop={isDesktop}
+            setFieldValue={setFieldValue}
+          />
 
           {!isDesktop ? <Cover isDesktop={isDesktop} cover={values.cover} /> : null}
 
@@ -58,7 +62,11 @@ function IssueEditorFormContent(props: IssueEditorFormContentProps) {
 
           <IssueEditorIdentifiersFields values={values} isDesktop={isDesktop} />
 
-          <IssueEditorRelations values={values} isDesktop={isDesktop} setFieldValue={setFieldValue} />
+          <IssueEditorRelations
+            values={values}
+            isDesktop={isDesktop}
+            setFieldValue={setFieldValue}
+          />
 
           <IssueEditorActions
             isSubmitting={isSubmitting}

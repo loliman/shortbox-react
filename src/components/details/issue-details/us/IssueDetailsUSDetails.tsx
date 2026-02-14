@@ -25,21 +25,13 @@ export function IssueDetailsUSDetails(props: Readonly<IssueDetailsUSDetailsProps
 
   return (
     <React.Fragment>
-      <DetailsRow
-        key="releasedate"
-        label="Erscheinungsdatum"
-        value={releaseDate}
-      />
+      <DetailsRow key="releasedate" label="Erscheinungsdatum" value={releaseDate} />
       <DetailsRow
         key="coverartists"
         label="Cover Artists"
         value={toChipList(coverArtists, props as any, "ARTIST")}
       />
-      <DetailsRow
-        key="editor"
-        label="Editor"
-        value={toChipList(editors, props as any, "EDITOR")}
-      />
+      <DetailsRow key="editor" label="Editor" value={toChipList(editors, props as any, "EDITOR")} />
     </React.Fragment>
   );
 }

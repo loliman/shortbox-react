@@ -13,7 +13,11 @@ interface IssueEditorSeriesFieldsProps {
   setFieldValue: (field: string, value: unknown, shouldValidate?: boolean) => void;
 }
 
-function IssueEditorSeriesFields({ values, isDesktop, setFieldValue }: IssueEditorSeriesFieldsProps) {
+function IssueEditorSeriesFields({
+  values,
+  isDesktop,
+  setFieldValue,
+}: IssueEditorSeriesFieldsProps) {
   return (
     <Stack spacing={2}>
       <FastField

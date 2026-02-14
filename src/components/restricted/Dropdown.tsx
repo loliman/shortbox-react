@@ -57,7 +57,9 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
 
     const isUsIssue =
       this.props.level === HierarchyLevel.ISSUE && Boolean(selectedItem.series?.publisher?.us);
-    const canDelete = !isUsIssue || (selectedItem.stories || []).every((story) => (story.children?.length || 0) === 0);
+    const canDelete =
+      !isUsIssue ||
+      (selectedItem.stories || []).every((story) => (story.children?.length || 0) === 0);
 
     return (
       <ClickAwayListener onClickAway={() => this.props.handleClose?.()}>
@@ -81,7 +83,11 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
 
                 this.props.navigate?.(
                   null,
-                  "/edit" + generateUrl(selectedItem as unknown as import("../../types/domain").SelectedRoot, us)
+                  "/edit" +
+                    generateUrl(
+                      selectedItem as unknown as import("../../types/domain").SelectedRoot,
+                      us
+                    )
                 );
                 this.props.handleClose?.();
               }}
@@ -129,7 +135,11 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
   };
 }
 
-function resolveItemUs(item: DropdownItem, level: string | undefined, fallbackUs: boolean): boolean {
+function resolveItemUs(
+  item: DropdownItem,
+  level: string | undefined,
+  fallbackUs: boolean
+): boolean {
   switch (level) {
     case HierarchyLevel.ISSUE:
       return Boolean(item.series?.publisher?.us);

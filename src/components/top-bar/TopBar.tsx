@@ -33,7 +33,8 @@ function TopBar(props: TopBarProps) {
   const { toggleDrawer, navigate } = props;
   const us = Boolean(props.us);
   const selected = props.selected || { us };
-  const compactLayout = props.compactLayout ?? Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
+  const compactLayout =
+    props.compactLayout ?? Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
   const phonePortrait = props.isPhonePortrait ?? Boolean(props.isPhone && !props.isPhoneLandscape);
   const [searchbarFocus, setSearchbarFocus] = useState(false);
   const isFilter = props.query?.filter;
@@ -46,7 +47,11 @@ function TopBar(props: TopBarProps) {
   return (
     <AppBar position="sticky" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
       <Toolbar sx={{ gap: 1 }}>
-        <IconButton color="inherit" aria-label="Navigation umschalten" onClick={() => toggleDrawer?.()}>
+        <IconButton
+          color="inherit"
+          aria-label="Navigation umschalten"
+          onClick={() => toggleDrawer?.()}
+        >
           <MenuIcon />
         </IconButton>
 
@@ -92,7 +97,14 @@ function TopBar(props: TopBarProps) {
         </Box>
 
         <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, flexShrink: 0 }}>
-          <Box sx={{ width: compactLayout ? 56 : 320, minWidth: 56, display: "flex", justifyContent: "flex-end" }}>
+          <Box
+            sx={{
+              width: compactLayout ? 56 : 320,
+              minWidth: 56,
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+          >
             <SearchBar focus={searchbarFocus} onFocus={onFocus} />
           </Box>
 

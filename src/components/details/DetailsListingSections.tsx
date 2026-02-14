@@ -3,7 +3,9 @@ import Box from "@mui/material/Box";
 import CardHeader from "@mui/material/CardHeader";
 import Skeleton from "@mui/material/Skeleton";
 import IssuePreview, { IssuePreviewPlaceholder } from "../issue-preview/IssuePreview";
-import IssuePreviewSmall, { IssuePreviewPlaceholderSmall } from "../issue-preview/IssuePreviewSmall";
+import IssuePreviewSmall, {
+  IssuePreviewPlaceholderSmall,
+} from "../issue-preview/IssuePreviewSmall";
 import SortContainer from "../SortContainer";
 import LoadingDots from "../generic/LoadingDots";
 import type { PreviewIssue } from "../issue-preview/utils/issuePreviewUtils";
@@ -31,11 +33,7 @@ export function FirstLastIssueSections(props: Readonly<FirstLastIssueSectionsPro
 
   const issueCount = props.issueCount || 0;
   const firstTitle =
-    issueCount === 1
-      ? props.active
-        ? "Bisher einziges "
-        : "Einziges "
-      : "Erstes ";
+    issueCount === 1 ? (props.active ? "Bisher einziges " : "Einziges ") : "Erstes ";
 
   return (
     <React.Fragment>

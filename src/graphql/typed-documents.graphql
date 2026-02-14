@@ -160,20 +160,8 @@ mutation Logout {
   logout
 }
 
-query LastEdited(
-  $filter: Filter
-  $first: Int
-  $after: String
-  $order: String
-  $direction: String
-) {
-  lastEdited(
-    filter: $filter
-    first: $first
-    after: $after
-    order: $order
-    direction: $direction
-  ) {
+query LastEdited($filter: Filter, $first: Int, $after: String, $order: String, $direction: String) {
+  lastEdited(filter: $filter, first: $first, after: $after, order: $order, direction: $direction) {
     edges {
       node {
         number

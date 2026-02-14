@@ -72,7 +72,10 @@ export function AppRoutes({ session, authReady = false }: Readonly<AppRoutesProp
         path="/create/issue/de/:publisher/:series"
         element={guard(session, authReady, <IssueCreate />)}
       />
-      <Route path="/create/issue/us/:publisher" element={guard(session, authReady, <IssueCreate />)} />
+      <Route
+        path="/create/issue/us/:publisher"
+        element={guard(session, authReady, <IssueCreate />)}
+      />
       <Route
         path="/create/issue/us/:publisher/:series"
         element={guard(session, authReady, <IssueCreate />)}
@@ -88,7 +91,10 @@ export function AppRoutes({ session, authReady = false }: Readonly<AppRoutesProp
       />
 
       <Route path="/edit/de/:publisher" element={guard(session, authReady, <PublisherEdit />)} />
-      <Route path="/edit/de/:publisher/:series" element={guard(session, authReady, <SeriesEdit />)} />
+      <Route
+        path="/edit/de/:publisher/:series"
+        element={guard(session, authReady, <SeriesEdit />)}
+      />
       <Route
         path="/edit/de/:publisher/:series/:issue"
         element={guard(session, authReady, <IssueEdit />)}
@@ -99,7 +105,10 @@ export function AppRoutes({ session, authReady = false }: Readonly<AppRoutesProp
       />
 
       <Route path="/edit/us/:publisher" element={guard(session, authReady, <PublisherEdit />)} />
-      <Route path="/edit/us/:publisher/:series" element={guard(session, authReady, <SeriesEdit />)} />
+      <Route
+        path="/edit/us/:publisher/:series"
+        element={guard(session, authReady, <SeriesEdit />)}
+      />
       <Route
         path="/edit/us/:publisher/:series/:issue"
         element={guard(session, authReady, <IssueEdit />)}

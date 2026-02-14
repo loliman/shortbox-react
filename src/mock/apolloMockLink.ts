@@ -220,7 +220,9 @@ const buildResult = (key: string, variables: Record<string, unknown>) => {
       };
     case "issues":
       return {
-        issues: createConnection(mockIssues.filter((i) => matches(i.title || i.number, variables.pattern as string))),
+        issues: createConnection(
+          mockIssues.filter((i) => matches(i.title || i.number, variables.pattern as string))
+        ),
       };
     case "individuals":
       return { individuals: createConnection(individuals) };
@@ -232,48 +234,47 @@ const buildResult = (key: string, variables: Record<string, unknown>) => {
       return { me: { id: 1 } };
     case "lastEdited":
       return { lastEdited: createConnection(mockLastEditedIssues) };
-    case "publisher":
-      {
-        const selectedPublisher = (variables.publisher as { us?: boolean } | undefined) ?? {};
-        const publisherUs =
-          typeof selectedPublisher.us === "boolean" ? selectedPublisher.us : mockPublisherFixture.us;
+    case "publisher": {
+      const selectedPublisher = (variables.publisher as { us?: boolean } | undefined) ?? {};
+      const publisherUs =
+        typeof selectedPublisher.us === "boolean" ? selectedPublisher.us : mockPublisherFixture.us;
 
-        return {
-          publisher: {
-            ...mockPublisherFixture,
-            us: publisherUs,
-          },
-        };
-      }
-    case "seriesd":
-      {
-        const selectedSeries = (variables.series as { publisher?: { us?: boolean } } | undefined) ?? {};
-        const publisherUs =
-          typeof selectedSeries.publisher?.us === "boolean"
-            ? selectedSeries.publisher.us
-            : mockSeriesFixture.publisher.us;
+      return {
+        publisher: {
+          ...mockPublisherFixture,
+          us: publisherUs,
+        },
+      };
+    }
+    case "seriesd": {
+      const selectedSeries =
+        (variables.series as { publisher?: { us?: boolean } } | undefined) ?? {};
+      const publisherUs =
+        typeof selectedSeries.publisher?.us === "boolean"
+          ? selectedSeries.publisher.us
+          : mockSeriesFixture.publisher.us;
 
-        return {
-          seriesd: {
-            ...mockSeriesFixture,
-            publisher: { ...mockSeriesFixture.publisher, us: publisherUs },
-            firstIssue: {
-              ...mockSeriesFixture.firstIssue,
-              series: {
-                ...mockSeriesFixture.firstIssue.series,
-                publisher: { ...mockSeriesFixture.firstIssue.series.publisher, us: publisherUs },
-              },
-            },
-            lastIssue: {
-              ...mockSeriesFixture.lastIssue,
-              series: {
-                ...mockSeriesFixture.lastIssue.series,
-                publisher: { ...mockSeriesFixture.lastIssue.series.publisher, us: publisherUs },
-              },
+      return {
+        seriesd: {
+          ...mockSeriesFixture,
+          publisher: { ...mockSeriesFixture.publisher, us: publisherUs },
+          firstIssue: {
+            ...mockSeriesFixture.firstIssue,
+            series: {
+              ...mockSeriesFixture.firstIssue.series,
+              publisher: { ...mockSeriesFixture.firstIssue.series.publisher, us: publisherUs },
             },
           },
-        };
-      }
+          lastIssue: {
+            ...mockSeriesFixture.lastIssue,
+            series: {
+              ...mockSeriesFixture.lastIssue.series,
+              publisher: { ...mockSeriesFixture.lastIssue.series.publisher, us: publisherUs },
+            },
+          },
+        },
+      };
+    }
     case "issue": {
       const issueVar = variables.issue as
         | {

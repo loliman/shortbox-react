@@ -73,7 +73,10 @@ export function getIssueVariantLabel(issue: PreviewIssue): string {
   return variant;
 }
 
-export function getIssuePreviewCover(issue: PreviewIssue, us: boolean): { coverUrl: string; blurCover: boolean } {
+export function getIssuePreviewCover(
+  issue: PreviewIssue,
+  us: boolean
+): { coverUrl: string; blurCover: boolean } {
   const directCover = issue.cover?.url?.trim();
   if (directCover) return { coverUrl: directCover, blurCover: false };
 
@@ -92,7 +95,11 @@ export function getIssuePreviewBorderRadius(
   return 0;
 }
 
-export function getIssuePreviewFlags(issue: PreviewIssue, us: boolean, hasSession: boolean): IssuePreviewFlags {
+export function getIssuePreviewFlags(
+  issue: PreviewIssue,
+  us: boolean,
+  hasSession: boolean
+): IssuePreviewFlags {
   const stories = (issue.stories || []).filter((story): story is StoryLike => Boolean(story));
 
   const hasOnlyApp = stories.some((story) => Boolean(story.onlyapp));

@@ -10,15 +10,8 @@ import EditButton from "../restricted/EditButton";
 import withContext from "../generic/withContext";
 import PaginatedQuery from "../generic/PaginatedQuery";
 import TitleLine from "../generic/TitleLine";
-import {
-  FirstLastIssueSections,
-  IssueHistoryList,
-} from "./DetailsListingSections";
-import {
-  getListingDirection,
-  getListingOrder,
-  parseListingFilter,
-} from "../../util/listingQuery";
+import { FirstLastIssueSections, IssueHistoryList } from "./DetailsListingSections";
+import { getListingDirection, getListingOrder, parseListingFilter } from "../../util/listingQuery";
 import { DetailsPagePlaceholder } from "../placeholders/DetailsPagePlaceholder";
 import { DetailsAddInfo } from "./DetailsAddInfo";
 import { useDualLoadingRegistration } from "./useDualLoadingRegistration";
@@ -67,7 +60,13 @@ function SeriesDetails(props: Readonly<SeriesDetailsProps>) {
       ],
       publishers: [{ name: props.selected.series.publisher.name, us }],
     };
-  }, [props.query, props.selected.series.publisher.name, props.selected.series.title, props.selected.series.volume, us]);
+  }, [
+    props.query,
+    props.selected.series.publisher.name,
+    props.selected.series.title,
+    props.selected.series.volume,
+    us,
+  ]);
 
   const { error: detailsError, data: detailsData } = useQuery(seriesd, {
     variables: props.selected,

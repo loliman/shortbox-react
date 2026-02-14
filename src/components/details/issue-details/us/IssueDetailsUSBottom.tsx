@@ -59,7 +59,11 @@ export function IssueDetailsUSBottom(props: Readonly<IssueDetailsUSBottomProps>)
       <Box sx={{ mt: 3 }}>
         <Typography>
           Informationen über&nbsp;
-          <a href={generateMarvelDbUrl(issue as any)} rel="noopener noreferrer nofollow" target="_blank">
+          <a
+            href={generateMarvelDbUrl(issue as any)}
+            rel="noopener noreferrer nofollow"
+            target="_blank"
+          >
             {generateLabel(issue.series as any) + " #" + issue.number}
           </a>
           &nbsp;werden bezogen aus der&nbsp;
@@ -67,7 +71,11 @@ export function IssueDetailsUSBottom(props: Readonly<IssueDetailsUSBottomProps>)
             Marvel Database
           </a>
           &nbsp;und stehen unter der&nbsp;
-          <a href="https://creativecommons.org/licenses/by/3.0/de/" rel="noopener noreferrer nofollow" target="_blank">
+          <a
+            href="https://creativecommons.org/licenses/by/3.0/de/"
+            rel="noopener noreferrer nofollow"
+            target="_blank"
+          >
             Creative Commons License 3.0
           </a>
           &nbsp;. Die Informationen wurden aufbereitet und unter Umständen ergänzt.&nbsp;

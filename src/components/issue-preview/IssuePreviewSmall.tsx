@@ -53,11 +53,11 @@ function IssuePreviewSmall(props: Readonly<IssuePreviewSmallProps>) {
       >
         <Box sx={{ width: "100%" }}>
           <Box>
-            <Typography variant="subtitle1">
-              {issueLabel}
-            </Typography>
+            <Typography variant="subtitle1">{issueLabel}</Typography>
 
-            {props.issue.title ? <Typography variant="subtitle2">{props.issue.title}</Typography> : null}
+            {props.issue.title ? (
+              <Typography variant="subtitle2">{props.issue.title}</Typography>
+            ) : null}
           </Box>
 
           {variant ? (

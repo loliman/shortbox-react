@@ -27,7 +27,9 @@ function getDisplayName(WrappedComponent: ComponentType<any>): string {
   return WrappedComponent.displayName || WrappedComponent.name || "Component";
 }
 
-function withContext<T extends object>(WrappedComponent: ComponentType<T>): ComponentType<UnknownRecord> {
+function withContext<T extends object>(
+  WrappedComponent: ComponentType<T>
+): ComponentType<UnknownRecord> {
   const WithContext = (props: UnknownRecord) => {
     const context = useContext(AppContext);
     const location = useLocation();
@@ -52,7 +54,9 @@ function withContext<T extends object>(WrappedComponent: ComponentType<T>): Comp
       location.pathname.indexOf("/edit/us") === 0 ||
       location.pathname.indexOf("/filter/us") === 0;
     const selected = getSelected(params, us);
-    const currentQuery = location.search ? (queryString.parse(location.search) as UnknownRecord) : null;
+    const currentQuery = location.search
+      ? (queryString.parse(location.search) as UnknownRecord)
+      : null;
     const locationState = location.state as { from?: ReturnType<typeof useLocation> } | null;
     const lastLocation = locationState?.from ? locationState.from : previousLocationRef.current;
 
@@ -66,8 +70,7 @@ function withContext<T extends object>(WrappedComponent: ComponentType<T>): Comp
       lastLocation,
       navigate: (e: NavigationEvent | null, url: string, query?: UnknownRecord) => {
         const newTab = Boolean(
-          e &&
-          (e.metaKey || e.ctrlKey || e.keyCode === 91 || e.keyCode === 224 || e.button === 1)
+          e && (e.metaKey || e.ctrlKey || e.keyCode === 91 || e.keyCode === 224 || e.button === 1)
         );
 
         if (e && e.button !== 1 && e.button !== 0) return;

@@ -68,16 +68,23 @@ function DeletionDialog(props: Readonly<DeletionDialogProps>) {
 
   const [runDeleteMutation] = useMutation(deleteMutation, {
     update: (cache) => {
-      if (level === HierarchyLevel.ISSUE && Array.isArray(item.variants) && item.variants.length > 1) {
+      if (
+        level === HierarchyLevel.ISSUE &&
+        Array.isArray(item.variants) &&
+        item.variants.length > 1
+      ) {
         const currentVariantKey = toVariantKey(item);
-        const variants = item.variants.filter((variant) => toVariantKey(variant) !== currentVariantKey);
+        const variants = item.variants.filter(
+          (variant) => toVariantKey(variant) !== currentVariantKey
+        );
 
         try {
           item.variants.forEach((variant) => {
             let oldVariant: { issue: Record<string, unknown> } = { issue: {} };
-            const variantSeries = structuredClone(
-              variant.series || { publisher: {} }
-            ) as Record<string, unknown> & { publisher?: { us?: boolean } };
+            const variantSeries = structuredClone(variant.series || { publisher: {} }) as Record<
+              string,
+              unknown
+            > & { publisher?: { us?: boolean } };
             if (!variantSeries.publisher) {
               variantSeries.publisher = {};
             }
@@ -173,9 +180,9 @@ function DeletionDialog(props: Readonly<DeletionDialogProps>) {
 
 function toParent(item: DeletionDialogItem): Record<string, unknown> {
   if (item.__typename === "Issue") {
-    const series = structuredClone(
-      item.series || { publisher: {} }
-    ) as Record<string, unknown> & { publisher?: { us?: boolean } };
+    const series = structuredClone(item.series || { publisher: {} }) as Record<string, unknown> & {
+      publisher?: { us?: boolean };
+    };
     if (!series.publisher) series.publisher = {};
     series.publisher.us = undefined;
     const parent = { series };
@@ -205,15 +212,14 @@ function getMutationName(mutation: unknown) {
   return value.slice(0, 1).toLowerCase() + value.slice(1);
 }
 
-function toVariantKey(item: {
-  number?: string;
-  format?: string;
-  variant?: string;
-}): string {
+function toVariantKey(item: { number?: string; format?: string; variant?: string }): string {
   return `${item.number || ""}|${item.format || ""}|${item.variant || ""}`.toLowerCase();
 }
 
-function toDeletePayload(level: string | undefined, item: DeletionDialogItem): Record<string, unknown> {
+function toDeletePayload(
+  level: string | undefined,
+  item: DeletionDialogItem
+): Record<string, unknown> {
   if (level === HierarchyLevel.ISSUE) {
     return {
       number: item.number,
@@ -248,29 +254,26 @@ function getDeleteConfimText(l: string | undefined, item: DeletionDialogItem) {
     case HierarchyLevel.PUBLISHER:
       return (
         <Typography component="p">
-          Wollen Sie den <b>{getItemLabel(item)}</b> Verlag wirklich löschen?
-          Alle zugeordneten Serien, deren Ausgaben, zugeordnete Geschichten und US Ausgaben werden
-          damit gelöscht.
-          US Ausgaben und Geschichten, die anderen deutschen Ausgaben zugeordnet sind werden nicht
+          Wollen Sie den <b>{getItemLabel(item)}</b> Verlag wirklich löschen? Alle zugeordneten
+          Serien, deren Ausgaben, zugeordnete Geschichten und US Ausgaben werden damit gelöscht. US
+          Ausgaben und Geschichten, die anderen deutschen Ausgaben zugeordnet sind werden nicht
           gelöscht.
         </Typography>
       );
     case HierarchyLevel.SERIES:
       return (
         <Typography component="p">
-          Wollen Sie die Serie <b>{getItemLabel(item)}</b> wirklich löschen?
-          Alle zugeordneten Ausgaben, zugeordnete Geschichten und US Ausgaben werden damit gelöscht.
-          US Ausgaben und Geschichten, die anderen deutschen Ausgaben zugeordnet sind werden nicht
-          gelöscht.
+          Wollen Sie die Serie <b>{getItemLabel(item)}</b> wirklich löschen? Alle zugeordneten
+          Ausgaben, zugeordnete Geschichten und US Ausgaben werden damit gelöscht. US Ausgaben und
+          Geschichten, die anderen deutschen Ausgaben zugeordnet sind werden nicht gelöscht.
         </Typography>
       );
     default:
       return (
         <Typography component="p">
-          Wollen Sie die Ausgabe <b>{getItemLabel(item)}</b> wirklich löschen?
-          Alle zugeordnete Geschichten und US Ausgaben werden damit gelöscht.
-          US Ausgaben und Geschichten, die anderen deutschen Ausgaben zugeordnet sind werden nicht
-          gelöscht.
+          Wollen Sie die Ausgabe <b>{getItemLabel(item)}</b> wirklich löschen? Alle zugeordnete
+          Geschichten und US Ausgaben werden damit gelöscht. US Ausgaben und Geschichten, die
+          anderen deutschen Ausgaben zugeordnet sind werden nicht gelöscht.
         </Typography>
       );
   }

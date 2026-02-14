@@ -1,4 +1,10 @@
-import { generateLabel, generateUrl, getHierarchyLevel, getSelected, HierarchyLevel } from "./hierarchy";
+import {
+  generateLabel,
+  generateUrl,
+  getHierarchyLevel,
+  getSelected,
+  HierarchyLevel,
+} from "./hierarchy";
 
 describe("hierarchy util", () => {
   it("detects hierarchy levels", () => {

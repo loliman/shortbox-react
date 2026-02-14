@@ -38,7 +38,10 @@ export function IssueCover(props: Readonly<IssueCoverProps>) {
   );
 }
 
-function getIssueCoverSource(issue: PreviewIssue, us: boolean): { coverUrl: string; blurCover: boolean } {
+function getIssueCoverSource(
+  issue: PreviewIssue,
+  us: boolean
+): { coverUrl: string; blurCover: boolean } {
   const directCover = issue.cover?.url?.trim();
   if (directCover) return { coverUrl: directCover, blurCover: false };
 

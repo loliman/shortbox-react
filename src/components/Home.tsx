@@ -11,11 +11,7 @@ import IssuePreview from "./issue-preview/IssuePreview";
 import PaginatedQuery from "./generic/PaginatedQuery";
 import SortContainer from "./SortContainer";
 import LoadingDots from "./generic/LoadingDots";
-import {
-  getListingDirection,
-  getListingOrder,
-  parseListingFilter,
-} from "../util/listingQuery";
+import { getListingDirection, getListingOrder, parseListingFilter } from "../util/listingQuery";
 import { HomeListingPlaceholder } from "./placeholders/HomeListingPlaceholder";
 
 interface HomeProps {
@@ -135,7 +131,11 @@ class Home extends React.Component<HomeProps> {
                     <Box sx={{ mt: 2 }}>
                       {data.lastEdited
                         ? data.lastEdited.map((i: Record<string, unknown>, idx: number) => (
-                            <IssuePreview {...this.props} key={buildIssueKey(i as any, idx)} issue={i as any} />
+                            <IssuePreview
+                              {...this.props}
+                              key={buildIssueKey(i as any, idx)}
+                              issue={i as any}
+                            />
                           ))
                         : null}
 

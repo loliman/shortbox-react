@@ -41,7 +41,12 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
                 ")"}
             </div>
             {props.variant.collected && props.session ? (
-              <img className="verifiedBadge" src="/collected_badge.png" alt="gesammelt" height="25" />
+              <img
+                className="verifiedBadge"
+                src="/collected_badge.png"
+                alt="gesammelt"
+                height="25"
+              />
             ) : null}
           </div>
         }

@@ -20,7 +20,8 @@ function Privacy() {
           Funktionen und Inhalte sowie externen Onlinepräsenzen, wie z.B. unser Social Media Profile
           auf (nachfolgend gemeinsam bezeichnet als „Onlineangebot“). Im Hinblick auf die
           verwendeten Begrifflichkeiten, wie z.B. „Verarbeitung“ oder „Verantwortlicher“ verweisen
-          wir auf die Definitionen im Art. 4 der Datenschutzgrundverordnung (DSGVO). <Box component="span" sx={{ display: "block" }} />
+          wir auf die Definitionen im Art. 4 der Datenschutzgrundverordnung (DSGVO).{" "}
+          <Box component="span" sx={{ display: "block" }} />
         </Typography>
 
         <Box component="span" sx={{ display: "block" }} />
@@ -36,8 +37,7 @@ function Privacy() {
           <Box component="span" sx={{ display: "block" }} />
           34117 Kassel, Deutschland
           <Box component="span" sx={{ display: "block" }} />
-          E-Mail:{" "}
-          <Link href="mailto:christian.riese@gmail.com">christian.riese@gmail.com</Link>
+          E-Mail: <Link href="mailto:christian.riese@gmail.com">christian.riese@gmail.com</Link>
           <Box component="span" sx={{ display: "block" }} />
           Link zum Impressum:{" "}
           <Link component={RouterLink} to="/impress" underline="hover">
@@ -59,7 +59,8 @@ function Privacy() {
           - Inhaltsdaten (z.B., Texteingaben, Fotografien, Videos).
           <Box component="span" sx={{ display: "block" }} />
           - Nutzungsdaten (z.B., besuchte Webseiten, Interesse an Inhalten, Zugriffszeiten).
-          <Box component="span" sx={{ display: "block" }} />- Meta-/Kommunikationsdaten (z.B., Geräte-Informationen, IP-Adressen).
+          <Box component="span" sx={{ display: "block" }} />- Meta-/Kommunikationsdaten (z.B.,
+          Geräte-Informationen, IP-Adressen).
         </Typography>
 
         <Box component="span" sx={{ display: "block" }} />
@@ -102,10 +103,10 @@ function Privacy() {
           identifizierbare natürliche Person (im Folgenden „betroffene Person“) beziehen; als
           identifizierbar wird eine natürliche Person angesehen, die direkt oder indirekt,
           insbesondere mittels Zuordnung zu einer Kennung wie einem Namen, zu einer Kennnummer, zu
-          Standortdaten, zu einer Online-Kennung oder zu einem oder mehreren
-          besonderen Merkmalen identifiziert werden kann, die Ausdruck der physischen,
-          physiologischen, genetischen, psychischen, wirtschaftlichen, kulturellen oder sozialen
-          Identität dieser natürlichen Person sind.
+          Standortdaten, zu einer Online-Kennung oder zu einem oder mehreren besonderen Merkmalen
+          identifiziert werden kann, die Ausdruck der physischen, physiologischen, genetischen,
+          psychischen, wirtschaftlichen, kulturellen oder sozialen Identität dieser natürlichen
+          Person sind.
           <Box component="span" sx={{ display: "block" }} />
           <Box component="span" sx={{ display: "block" }} />
           „Verarbeitung“ ist jeder mit oder ohne Hilfe automatisierter Verfahren ausgeführte Vorgang
@@ -149,7 +150,8 @@ function Privacy() {
           Nach Maßgabe des Art. 13 DSGVO teilen wir Ihnen die Rechtsgrundlagen unserer
           Datenverarbeitungen mit. Für Nutzer aus dem Geltungsbereich der Datenschutzgrundverordnung
           (DSGVO), d.h. der EU und des EWG gilt, sofern die Rechtsgrundlage in der
-          Datenschutzerklärung nicht genannt wird, Folgendes: <Box component="span" sx={{ display: "block" }} />
+          Datenschutzerklärung nicht genannt wird, Folgendes:{" "}
+          <Box component="span" sx={{ display: "block" }} />
           Die Rechtsgrundlage für die Einholung von Einwilligungen ist Art. 6 Abs. 1 lit. a und Art.
           7 DSGVO;
           <Box component="span" sx={{ display: "block" }} />
@@ -165,13 +167,16 @@ function Privacy() {
           <Box component="span" sx={{ display: "block" }} />
           Die Rechtsgrundlage für die erforderliche Verarbeitung zur Wahrnehmung einer Aufgabe, die
           im öffentlichen Interesse liegt oder in Ausübung öffentlicher Gewalt erfolgt, die dem
-          Verantwortlichen übertragen wurde ist Art. 6 Abs. 1 lit. e DSGVO. <Box component="span" sx={{ display: "block" }} />
+          Verantwortlichen übertragen wurde ist Art. 6 Abs. 1 lit. e DSGVO.{" "}
+          <Box component="span" sx={{ display: "block" }} />
           Die Rechtsgrundlage für die Verarbeitung zur Wahrung unserer berechtigten Interessen ist
           Art. 6 Abs. 1 lit. f DSGVO. <Box component="span" sx={{ display: "block" }} />
           Die Verarbeitung von Daten zu anderen Zwecken als denen, zu denen sie erhoben wurden,
-          bestimmt sich nach den Vorgaben des Art 6 Abs. 4 DSGVO. <Box component="span" sx={{ display: "block" }} />
+          bestimmt sich nach den Vorgaben des Art 6 Abs. 4 DSGVO.{" "}
+          <Box component="span" sx={{ display: "block" }} />
           Die Verarbeitung von besonderen Kategorien von Daten (entsprechend Art. 9 Abs. 1 DSGVO)
-          bestimmt sich nach den Vorgaben des Art. 9 Abs. 2 DSGVO. <Box component="span" sx={{ display: "block" }} />
+          bestimmt sich nach den Vorgaben des Art. 9 Abs. 2 DSGVO.{" "}
+          <Box component="span" sx={{ display: "block" }} />
         </Typography>
 
         <Box component="span" sx={{ display: "block" }} />
@@ -215,7 +220,8 @@ function Privacy() {
           Grundlage einer gesetzlichen Erlaubnis (z.B. wenn eine Übermittlung der Daten an Dritte,
           wie an Zahlungsdienstleister, zur Vertragserfüllung erforderlich ist), Nutzer eingewilligt
           haben, eine rechtliche Verpflichtung dies vorsieht oder auf Grundlage unserer berechtigten
-          Interessen (z.B. beim Einsatz von Beauftragten, Webhostern, etc.). <Box component="span" sx={{ display: "block" }} />
+          Interessen (z.B. beim Einsatz von Beauftragten, Webhostern, etc.).{" "}
+          <Box component="span" sx={{ display: "block" }} />
           <Box component="span" sx={{ display: "block" }} />
           Sofern wir Daten anderen Unternehmen unserer Unternehmensgruppe offenbaren, übermitteln
           oder ihnen sonst den Zugriff gewähren, erfolgt dies insbesondere zu administrativen
@@ -277,7 +283,8 @@ function Privacy() {
           <Box component="span" sx={{ display: "block" }} />
           Sie haben das Recht zu verlangen, dass die Sie betreffenden Daten, die Sie uns
           bereitgestellt haben nach Maßgabe der gesetzlichen Vorgaben zu erhalten und deren
-          Übermittlung an andere Verantwortliche zu fordern. <Box component="span" sx={{ display: "block" }} />
+          Übermittlung an andere Verantwortliche zu fordern.{" "}
+          <Box component="span" sx={{ display: "block" }} />
           <Box component="span" sx={{ display: "block" }} />
           Sie haben ferner nach Maßgabe der gesetzlichen Vorgaben das Recht, eine Beschwerde bei der
           zuständigen Aufsichtsbehörde einzureichen.
@@ -319,7 +326,8 @@ function Privacy() {
           oder in ihrer Verarbeitung eingeschränkt. Sofern nicht im Rahmen dieser
           Datenschutzerklärung ausdrücklich angegeben, werden die bei uns gespeicherten Daten
           gelöscht, sobald sie für ihre Zweckbestimmung nicht mehr erforderlich sind und der
-          Löschung keine gesetzlichen Aufbewahrungspflichten entgegenstehen. <Box component="span" sx={{ display: "block" }} />
+          Löschung keine gesetzlichen Aufbewahrungspflichten entgegenstehen.{" "}
+          <Box component="span" sx={{ display: "block" }} />
           <Box component="span" sx={{ display: "block" }} />
           Sofern die Daten nicht gelöscht werden, weil sie für andere und gesetzlich zulässige
           Zwecke erforderlich sind, wird deren Verarbeitung eingeschränkt. D.h. die Daten werden
