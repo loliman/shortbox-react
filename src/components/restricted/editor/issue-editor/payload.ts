@@ -14,9 +14,7 @@ interface MutationVariables {
 function toOptionalFloat(value: unknown): number | undefined {
   if (value === null || value === undefined || value === "") return undefined;
   const parsed =
-    typeof value === "number"
-      ? value
-      : Number.parseFloat(String(value).replace(",", ".").trim());
+    typeof value === "number" ? value : Number.parseFloat(String(value).replace(",", ".").trim());
   return Number.isFinite(parsed) ? parsed : undefined;
 }
 
