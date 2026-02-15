@@ -73,27 +73,35 @@ function baseValues(us = false): IssueEditorFormValues {
 }
 
 describe("buildIssueMutationVariables", () => {
-  it("normalizes nested editor payloads for non-US issues", () => {
+  it("keeps only IssueInput fields for non-US issues", () => {
     const values = baseValues(false);
     const result = buildIssueMutationVariables(values, values, true);
+    const item = result.item as any;
 
-    expect(result.item.cover).toBeUndefined();
-    expect(result.item.individuals).toEqual([
-      { name: "Peter Parker", type: ["WRITER", "PENCILER"] },
-    ]);
-    expect(result.item.arcs).toEqual([{ title: "Civil War", type: "EVENT" }]);
-
-    const firstStory = result.item.stories[0] as any;
-    expect(firstStory.appearances[0].type).toBe("CHARACTER");
-    expect(firstStory.appearances[1].type).toBe("CHARACTER");
-    expect(firstStory.individuals).toEqual([
-      { name: "Peter Parker", type: ["WRITER", "PENCILER"] },
-    ]);
-    expect(firstStory.parent.issue.series.__typename).toBeUndefined();
-
-    const firstCover = result.item.covers[0] as any;
-    expect(firstCover.individuals).toEqual([{ name: "John Romita", type: ["ARTIST"] }]);
-    expect(firstCover.parent.issue.series.__typename).toBeUndefined();
+    expect(item.title).toBe("Issue 1");
+    expect(item.number).toBe("1");
+    expect(item.format).toBe("Heft");
+    expect(item.variant).toBe("A");
+    expect(item.releasedate).toBe("2026-01-01");
+    expect(item.pages).toBe(44);
+    expect(item.price).toBe(4.99);
+    expect(item.currency).toBe("EUR");
+    expect(item.isbn).toBe("isbn");
+    expect(item.limitation).toBe("1000");
+    expect(item.addinfo).toBe("note");
+    expect(item.series).toEqual({
+      title: "Spider-Man",
+      volume: 1,
+      publisher: { name: "Marvel", us: false },
+    });
+    expect(item.stories).toBeUndefined();
+    expect(item.covers).toBeUndefined();
+    expect(item.features).toBeUndefined();
+    expect(item.individuals).toBeUndefined();
+    expect(item.arcs).toBeUndefined();
+    expect(item.comicguideid).toBeUndefined();
+    expect(item.verified).toBeUndefined();
+    expect(item.collected).toBeUndefined();
 
     expect(result.old).toEqual({
       series: { title: "Spider-Man", volume: 1, publisher: { name: "Marvel", us: false } },
@@ -118,12 +126,12 @@ describe("buildIssueMutationVariables", () => {
     expect(item.isbn).toBeUndefined();
     expect(item.price).toBeUndefined();
     expect(item.currency).toBeUndefined();
-    expect(item.stories[0].parent).toBeUndefined();
-    expect(item.covers[0].parent).toBeUndefined();
+    expect(item.stories).toBeUndefined();
+    expect(item.covers).toBeUndefined();
     expect(result.old).toBeUndefined();
   });
 
-  it("preserves non-standard appearance type and strips top-level publisher metadata", () => {
+  it("ignores non-IssueInput relation payload and keeps sanitized series", () => {
     const values = baseValues(false) as any;
     values.publisher = { name: "Marvel", us: false, __typename: "Publisher" };
     values.stories = [
@@ -140,9 +148,14 @@ describe("buildIssueMutationVariables", () => {
     ];
 
     const result = buildIssueMutationVariables(values, values, false);
-    const firstStory = result.item.stories[0] as any;
+    const item = result.item as any;
 
-    expect((result.item as any).publisher).toEqual({ name: "Marvel", us: false });
-    expect(firstStory.appearances[0]).toEqual({ name: "Watcher", type: "CAMEO" });
+    expect(item.publisher).toBeUndefined();
+    expect(item.stories).toBeUndefined();
+    expect(item.series).toEqual({
+      title: "Spider-Man",
+      volume: 1,
+      publisher: { name: "Marvel", us: false },
+    });
   });
 });

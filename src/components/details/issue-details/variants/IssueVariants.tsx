@@ -1,6 +1,7 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
 import ImageList from "@mui/material/ImageList";
+import Box from "@mui/material/Box";
 import { getVariantKey } from "../utils/issueDetailsUtils";
 import { IssueVariantTile } from "./IssueVariantTile";
 import type { VariantIssue } from "./types";
@@ -26,8 +27,28 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
         Erhältlich in {variants.length} Varianten
       </Typography>
 
-      <div className="coverGallery">
-        <ImageList className="gridList" cols={3}>
+      <Box
+        className="coverGallery"
+        sx={{
+          overflowX: "auto",
+          overflowY: "hidden",
+          WebkitOverflowScrolling: "touch",
+          pb: 1,
+        }}
+      >
+        <ImageList
+          className="gridList"
+          sx={{
+            m: 0,
+            gridAutoFlow: "column",
+            gridTemplateRows: "1fr",
+            gridTemplateColumns: "none !important",
+            gridAutoColumns: { xs: "150px", sm: "170px", md: "190px" },
+            width: "max-content",
+            overflow: "visible",
+            gap: 8,
+          }}
+        >
           {variants.map((variant, idx) => (
             <IssueVariantTile
               issue={props.issue}
@@ -39,7 +60,7 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
             />
           ))}
         </ImageList>
-      </div>
+      </Box>
     </React.Fragment>
   );
 }
