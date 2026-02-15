@@ -1,0 +1,111 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+  pull_request:
+    branches: [main, master]
+
+permissions:
+  contents: write
+  packages: read
+
+jobs:
+  build-and-test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: package-lock.json
+          registry-url: https://npm.pkg.github.com
+          scope: "@loliman"
+
+      - name: Install dependencies
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npm ci
+
+      - name: Auto format and push changes
+        if: ${{ github.actor != 'github-actions[bot]' && github.ref_name != 'main' && github.ref_name != 'master' && (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)) }}
+        run: |
+          npm run format
+
+          if [ -n "$(git status --porcelain)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -A
+            git commit -m "style: auto-format"
+
+            BRANCH="${{ github.head_ref || github.ref_name }}"
+            git fetch origin "$BRANCH"
+            git pull --rebase origin "$BRANCH" || true
+            git push origin "HEAD:$BRANCH" || {
+              echo "Auto-format push skipped due to concurrent branch updates."
+              exit 0
+            }
+          else
+            echo "No formatting changes detected."
+          fi
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Format Check
+        run: npm run format:check
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Unit Tests with Coverage Gate (>=80%)
+        run: npm run test:coverage
+
+      - name: Build
+        run: npm run build
+
+      - name: Prepare Artifact
+        run: |
+          mkdir -p release
+          cp -r dist release/
+          cp package.json release/
+          cp package-lock.json release/
+          cp index.html release/
+          cp vite.config.mjs release/
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: shortbox-react-build
+          path: release/
+
+      - name: Upload Coverage Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: shortbox-react-coverage
+          path: coverage/
+
+      - name: Validate Sonar token
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          if [ -z "$SONAR_TOKEN" ]; then
+            echo "SONAR_TOKEN secret is not configured."
+            exit 1
+          fi
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@2f77a1ec69fb1d595b06f35ab27e97605bdef703
+        with:
+          args: >
+            -Dsonar.qualitygate.wait=true
+            -Dsonar.qualitygate.timeout=300
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

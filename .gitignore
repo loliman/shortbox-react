@@ -24,3 +24,10 @@ yarn-error.log*
 
 .idea/
 /public/covers/*
+
+# build artifacts
+/dist
+/.vite
+
+# logs
+*.log

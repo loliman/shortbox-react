@@ -1,0 +1,52 @@
+import React from "react";
+import Chip from "@mui/material/Chip";
+import Box from "@mui/material/Box";
+
+type ArcLike = {
+  title?: string | null;
+  type?: string | null;
+};
+
+type StoryArcChipsProps = {
+  arcs?: ArcLike[];
+  us?: boolean;
+  navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
+};
+
+export function StoryArcChips(props: Readonly<StoryArcChipsProps>) {
+  const arcs = (props.arcs || []).filter((arc) => Boolean(arc?.title));
+  if (arcs.length === 0) return null;
+
+  return (
+    <Box sx={{ mt: 1, display: "flex", flexWrap: "wrap", gap: 1 }}>
+      {arcs.map((arc) => {
+        const arcTitle = arc.title || "";
+        const { color, type } = toArcMeta(arc.type || "");
+        return (
+          <Chip
+            key={`${arc.type || "ARC"}|${arcTitle}`}
+            className="chip partOfChip"
+            label={arcTitle + " (" + type + ")"}
+            color={color}
+            onClick={(e) =>
+              props.navigate?.(e, props.us ? "/us" : "/de", {
+                filter: JSON.stringify({ arcs: arcTitle, us: props.us }),
+              })
+            }
+          />
+        );
+      })}
+    </Box>
+  );
+}
+
+function toArcMeta(type: string) {
+  switch (type) {
+    case "EVENT":
+      return { color: "primary" as const, type: "Event" };
+    case "STORYLINE":
+      return { color: "secondary" as const, type: "Story Line" };
+    default:
+      return { color: "default" as const, type: "Story Arc" };
+  }
+}
