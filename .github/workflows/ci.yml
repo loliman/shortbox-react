@@ -80,13 +80,13 @@ jobs:
           cp vite.config.mjs release/
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: shortbox-react-build
           path: release/
 
       - name: Upload Coverage Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: shortbox-react-coverage
           path: coverage/
