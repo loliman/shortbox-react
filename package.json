@@ -45,12 +45,10 @@
     "vitest": "^3.2.4"
   },
   "scripts": {
-    "contract:codegen": "node scripts/contract-codegen.cjs codegen",
-    "contract:codegen:frontend": "node scripts/contract-codegen.cjs codegen:frontend",
     "check:artifacts": "sh -c \"if git ls-files | grep -E '(^|/)(dist|build|logs|listen)/|\\\\.log$|(^|/)\\\\.output\\\\.txt$|(^|/)output\\\\.txt$'; then echo 'Remove tracked build/runtime artifacts before commit.'; exit 1; fi\"",
     "start": "vite",
     "dev": "vite",
-    "prebuild": "npm run check:artifacts && npm run contract:codegen && npm run contract:codegen:frontend",
+    "prebuild": "npm run check:artifacts",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest",
