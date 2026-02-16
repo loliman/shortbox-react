@@ -9,7 +9,7 @@ import {
   getSelected,
   HierarchyLevel,
 } from "../../util/hierarchy";
-import * as queryString from "query-string";
+import queryString from "query-string";
 
 type UnknownRecord = Record<string, unknown>;
 type NavigationEvent = {
