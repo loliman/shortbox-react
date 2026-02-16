@@ -12,8 +12,8 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@loliman/shortbox-contract": "^0.5.0",
-    "@mui/icons-material": "^6.4.6",
-    "@mui/material": "^6.4.6",
+    "@mui/icons-material": "^7.3.8",
+    "@mui/material": "7.3.8",
     "dateformat": "^3.0.3",
     "dompurify": "^3.3.1",
     "formik": "^2.4.6",
@@ -35,14 +35,14 @@
     "@typescript-eslint/eslint-plugin": "^8.24.1",
     "@typescript-eslint/parser": "^8.24.1",
     "@vitejs/plugin-react": "^5.0.0",
-    "@vitest/coverage-v8": "3.2.4",
+    "@vitest/coverage-v8": "^4.0.18",
     "eslint": "^9.21.0",
-    "globals": "^16.0.0",
+    "globals": "^17.3.0",
     "jsdom": "^26.0.0",
     "prettier": "^3.6.2",
     "typescript": "^5.8.2",
     "vite": "^7.1.0",
-    "vitest": "^3.2.4"
+    "vitest": "^4.0.18"
   },
   "scripts": {
     "check:artifacts": "sh -c \"if git ls-files | grep -E '(^|/)(dist|build|logs|listen)/|\\\\.log$|(^|/)\\\\.output\\\\.txt$|(^|/)output\\\\.txt$'; then echo 'Remove tracked build/runtime artifacts before commit.'; exit 1; fi\"",
