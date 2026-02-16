@@ -95,3 +95,12 @@ Pipeline-Schritte:
 - Coverage-Tests
 - Build
 - SonarCloud Scan
+
+Das Build-Bundle wird als `shortbox-react-<version>.tar.gz` erzeugt.
+
+## Releases
+
+- Auto-Version-Bump nach Merge auf `main`: `.github/workflows/auto-release.yml`
+- Label-gesteuert: `major`, `minor`, `patch` (Default ohne Label: `minor`)
+- Tag-Release baut ein statisches Deploy-Bundle und haengt es als Asset an das GitHub Release:
+  `.github/workflows/release.yml`

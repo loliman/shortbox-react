@@ -1,21 +1,22 @@
-name: CI/CD Pipeline
+name: CI Pipeline
 
 on:
   push:
   pull_request:
-    branches: [main, master]
+    branches: [main]
 
 permissions:
   contents: write
   packages: read
 
 jobs:
-  build-and-test:
-    name: Build and Test
+  quality-and-build:
+    name: Quality and Build
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v6
+      - name: Checkout
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -33,8 +34,8 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npm ci
 
-      - name: Auto format and push changes
-        if: ${{ github.actor != 'github-actions[bot]' && github.ref_name != 'main' && github.ref_name != 'master' && (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)) }}
+      - name: Auto-format and push changes
+        if: ${{ github.actor != 'github-actions[bot]' && github.ref_name != 'main' && (github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)) }}
         run: |
           npm run format
 
@@ -55,35 +56,32 @@ jobs:
             echo "No formatting changes detected."
           fi
 
-      - name: Typecheck
-        run: npm run typecheck
-
       - name: Format Check
         run: npm run format:check
 
       - name: Lint
         run: npm run lint
 
-      - name: Unit Tests with Coverage Gate (>=80%)
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests with coverage gate (>=80%)
         run: npm run test:coverage
 
       - name: Build
         run: npm run build
 
-      - name: Prepare Artifact
+      - name: Package release artifact
         run: |
+          VERSION=$(node -p "require('./package.json').version")
           mkdir -p release
-          cp -r dist release/
-          cp package.json release/
-          cp package-lock.json release/
-          cp index.html release/
-          cp vite.config.mjs release/
+          tar -czf "release/shortbox-react-${VERSION}.tar.gz" dist
 
-      - name: Upload Artifact
+      - name: Upload build artifact
         uses: actions/upload-artifact@v6
         with:
           name: shortbox-react-build
-          path: release/
+          path: release/*.tar.gz
 
       - name: Upload Coverage Artifact
         uses: actions/upload-artifact@v6
