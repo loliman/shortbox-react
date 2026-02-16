@@ -37,7 +37,7 @@ describe("TopBar", () => {
 
     render(<TopBar us={true} selected={{ us: true }} navigate={navigate} />);
 
-    await user.click(screen.getByRole("checkbox", { name: "Zu Deutsch wechseln" }));
+    await user.click(screen.getByRole("switch", { name: /wechseln zu deutsch/i }));
 
     expect(navigate).toHaveBeenCalledTimes(1);
     expect(navigate.mock.calls[0][1]).toBe("/de");
