@@ -70,7 +70,7 @@ Weitere relevante Variablen:
 - `VITE_MOCK_MODE` (`true` aktiviert Mock-Backend)
 - `VITE_MOCK_DELAY_MS` (default `120`)
 
-## CI und Releases
+## CI und Release
 
 CI-Workflow:
 
@@ -78,17 +78,14 @@ CI-Workflow:
 - Trigger: Push + Pull Request auf `main`
 - Ergebnis: Build-Artifact `shortbox-react-<version>.tar.gz` + Coverage-Artifact
 
-Auto-Release:
-
-- Datei: `.github/workflows/auto-release.yml`
-- Trigger: Merge/Push auf `main`
-- Verhalten: Label-basiertes Version-Bump (`major`, `minor`, `patch`, Default `minor`) + Tag
-
 Release:
 
 - Datei: `.github/workflows/release.yml`
-- Trigger: Tag `v*.*.*`
-- Verhalten: Build + Release-Bundle als Asset im GitHub Release
+- Trigger: Push auf `main` (inkl. Merge und Direkt-Push) oder manuell (`workflow_dispatch`)
+- Verhalten:
+  - Version-Bump aus PR-Labels (`major`, `minor`, `patch`, Default `minor`)
+  - Commit + Tag `vX.Y.Z`
+  - Build + Release-Bundle als Asset im GitHub Release
 
 ## Hinweise
 
