@@ -1,38 +1,18 @@
 # shortbox-react
 
-React-Frontend fuer Shortbox (Vite + TypeScript + Apollo Client + MUI).
+React-Frontend fuer Shortbox (Vite, TypeScript, Apollo Client, MUI).
 
-## Tech Stack
+## Ueberblick
 
-- React 18
-- Vite 7
-- TypeScript 5
-- Apollo Client
-- MUI
-- Vitest + Testing Library
-
-## Architektur (kurz)
-
-- `src/index.tsx`: App-Bootstrap, Apollo-Client, Auth-/CSRF-Linking
-- `src/app/`: Routing, Session-Helfer, Theme, App-spezifische Hooks
-- `src/components/`: UI, Detailseiten, Filter, Restricted-Flows (create/edit/copy)
-- `src/graphql/`: getypte Dokumente und Query-/Mutation-Exports
-- `src/mock/`: Mock-Daten und Apollo-Mock-Link
-- `src/util/`: Utility-Funktionen
-
-## Contract
-
-Der GraphQL-Contract liegt extern in:
-
-- `@loliman/shortbox-contract`
-
-In diesem Repo gibt es kein lokales Contract-Codegen-Script mehr.
+- Rolle: Browser-Frontend fuer Shortbox
+- Stack: React 18, Vite 7, TypeScript 5, Apollo Client, MUI
+- Contract-Quelle: `@loliman/shortbox-contract`
 
 ## Voraussetzungen
 
 - Node.js `>=20 <26`
 - npm `>=10 <12`
-- Zugriff auf GitHub Packages fuer `@loliman` (siehe `.npmrc`)
+- npm-Auth fuer GitHub Packages (`@loliman`)
 
 ## Installation
 
@@ -46,26 +26,34 @@ npm ci
 npm run dev
 ```
 
-Standard-URL: [http://localhost:5173](http://localhost:5173)
+Standard-URL: `http://localhost:5173`
 
 ## Wichtige Skripte
 
 - `npm run dev`: Entwicklungsserver
-- `npm run start`: Alias fuer Vite dev
-- `npm run typecheck`: TypeScript-Pruefung
-- `npm run lint`: ESLint
-- `npm run format`: Prettier schreiben
+- `npm run start`: Alias fuer `dev`
+- `npm run typecheck`: TypeScript-Pruefung ohne Emit
+- `npm run format`: Prettier write
 - `npm run format:check`: Prettier check
-- `npm run test`: Vitest watch mode
+- `npm run lint`: ESLint auf `src/`
 - `npm run test:ci`: Vitest einmalig
 - `npm run test:coverage`: Vitest mit Coverage
 - `npm run build`: Produktionsbuild
-- `npm run preview`: Build lokal preview
-- `npm run qa`: Check-Artefakte + Typecheck + Lint + Tests + Build
+- `npm run preview`: lokales Preview des Builds
+- `npm run qa`: Artifact-Check + Typecheck + Lint + Tests + Build
+
+## Projektstruktur
+
+- `src/index.tsx`: App-Bootstrap, Apollo-Setup, Auth-/CSRF-Linking
+- `src/app/`: Routing, Theme, Session- und App-Utilities
+- `src/components/`: UI-Komponenten und Feature-Screens
+- `src/graphql/`: getypte Dokumente und Query-/Mutation-Exporte
+- `src/mock/`: Mock-Daten und Mock-Link
+- `src/util/`: Utility-Funktionen
 
 ## Umgebungsvariablen
 
-Typische lokale Werte (`.env`):
+Typische lokale Werte in `.env`:
 
 ```env
 PUBLIC_URL=https://shortbox.de
@@ -73,7 +61,7 @@ REACT_APP_API_URL=http://localhost:4000
 VITE_API_URL=http://localhost:4000
 ```
 
-Weitere relevante Frontend-Variablen:
+Weitere relevante Variablen:
 
 - `VITE_API_CREDENTIALS` (`include|omit|same-origin`, default `include`)
 - `VITE_CSRF_COOKIE_NAME` (default `sb_csrf`)
@@ -82,25 +70,27 @@ Weitere relevante Frontend-Variablen:
 - `VITE_MOCK_MODE` (`true` aktiviert Mock-Backend)
 - `VITE_MOCK_DELAY_MS` (default `120`)
 
-## CI
+## CI und Releases
 
-Workflow: `.github/workflows/ci.yml`
+CI-Workflow:
 
-Pipeline-Schritte:
+- Datei: `.github/workflows/ci.yml`
+- Trigger: Push + Pull Request auf `main`
+- Ergebnis: Build-Artifact `shortbox-react-<version>.tar.gz` + Coverage-Artifact
 
-- Install
-- Typecheck
-- Format-Check
-- Lint
-- Coverage-Tests
-- Build
-- SonarCloud Scan
+Auto-Release:
 
-Das Build-Bundle wird als `shortbox-react-<version>.tar.gz` erzeugt.
+- Datei: `.github/workflows/auto-release.yml`
+- Trigger: Merge/Push auf `main`
+- Verhalten: Label-basiertes Version-Bump (`major`, `minor`, `patch`, Default `minor`) + Tag
 
-## Releases
+Release:
 
-- Auto-Version-Bump nach Merge auf `main`: `.github/workflows/auto-release.yml`
-- Label-gesteuert: `major`, `minor`, `patch` (Default ohne Label: `minor`)
-- Tag-Release baut ein statisches Deploy-Bundle und haengt es als Asset an das GitHub Release:
-  `.github/workflows/release.yml`
+- Datei: `.github/workflows/release.yml`
+- Trigger: Tag `v*.*.*`
+- Verhalten: Build + Release-Bundle als Asset im GitHub Release
+
+## Hinweise
+
+- Der Contract liegt extern; es gibt hier kein lokales Contract-Codegen-Script.
+- Build-Artefakte (`dist/`, `release/`) sind nicht fuer Source-Control gedacht.
