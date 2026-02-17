@@ -170,14 +170,6 @@ export function mapIssueToEditorDefaultValues(
     stories: asArray(values.stories as Array<Record<string, unknown>>).map((story) =>
       normalizeStory(story, usIssue)
     ),
-    features: asArray(values.features as Array<Record<string, unknown>>).map((feature) => ({
-      title: feature.title,
-      number: feature.number,
-      addinfo: feature.addinfo,
-      individuals: asArray(feature.individuals as Array<Record<string, unknown>>).map((entry) =>
-        stripItem(entry)
-      ),
-    })),
     covers: asArray(values.covers as Array<Record<string, unknown>>).map((cover) =>
       normalizeCover(cover, usIssue)
     ),
@@ -194,6 +186,5 @@ export function mapIssueToEditorDefaultValues(
     arcs: [],
     covers: [],
     cover: undefined,
-    features: [],
   };
 }

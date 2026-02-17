@@ -154,10 +154,6 @@ export function expanded(item: ItemLike, query?: QueryParams): boolean {
     if (hasMatchingIndividual(filterIndividuals, itemIndividuals)) {
       isExpanded = true;
     }
-  } else if (item?.__typename === "Feature") {
-    if (hasMatchingIndividual(filterIndividuals, compareIndividuals)) {
-      isExpanded = true;
-    }
   }
 
   return isExpanded;

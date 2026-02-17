@@ -140,19 +140,6 @@ export const IssueSchema = Yup.object().shape({
       exclusive: Yup.boolean(),
     })
   ),
-  features: Yup.array().of(
-    Yup.object().shape({
-      number: Yup.number()
-        .typeError("Bitte geben Sie eine Zahl ein")
-        .required("Pflichtfeld")
-        .integer("Bitte geben Sie eine Zahl ein"),
-      writers: Yup.array().of(
-        Yup.object().shape({ name: Yup.string().max(255, "Maximal 255 Zeichen") })
-      ),
-      title: Yup.string().max(255, "Maximal 255 Zeichen"),
-      addinfo: Yup.string().max(2500, "Maximal 2500 Zeichen"),
-    })
-  ),
   covers: Yup.array().of(
     Yup.object().shape({
       number: Yup.number()

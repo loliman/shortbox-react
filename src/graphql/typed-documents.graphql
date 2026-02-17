@@ -594,15 +594,6 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
         us
       }
     }
-    features {
-      title
-      addinfo
-      number
-      individuals {
-        name
-        type
-      }
-    }
     stories {
       title
       addinfo
@@ -900,15 +891,6 @@ mutation CreateIssue($item: IssueInput!) {
         us
       }
     }
-    features {
-      title
-      addinfo
-      number
-      individuals {
-        name
-        type
-      }
-    }
     stories {
       title
       addinfo
@@ -1067,15 +1049,6 @@ mutation EditIssue($old: IssueInput!, $item: IssueInput!) {
       publisher {
         name
         us
-      }
-    }
-    features {
-      title
-      addinfo
-      number
-      individuals {
-        name
-        type
       }
     }
     stories {
