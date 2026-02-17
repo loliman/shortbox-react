@@ -153,8 +153,8 @@ const issues: any[] = createMockIssueList(5).map((issue, index) => ({
   individuals: [{ name: "Stan Lee", type: ["writer"] }],
   features: [] as any[],
   releasedate: `1963-0${Math.min(index + 3, 9)}-01`,
-  createdAt: `2025-01-0${Math.min(index + 1, 9)}T12:00:00.000Z`,
-  updatedAt: `2025-01-1${Math.min(index + 1, 9)}T12:00:00.000Z`,
+  createdat: `2025-01-0${Math.min(index + 1, 9)}T12:00:00.000Z`,
+  updatedat: `2025-01-1${Math.min(index + 1, 9)}T12:00:00.000Z`,
 }));
 
 const individuals = [{ name: "Stan Lee" }, { name: "Steve Ditko" }];
@@ -206,21 +206,21 @@ const buildResult = (key: string, variables: Record<string, unknown>) => {
       };
     case "export":
       return { export: "Mock export content" };
-    case "publishers":
+    case "publisherList":
       return {
-        publishers: createConnection(
+        publisherList: createConnection(
           mockPublishers.filter((p) => matches(p.name, variables.pattern as string))
         ),
       };
-    case "series":
+    case "seriesList":
       return {
-        series: createConnection(
+        seriesList: createConnection(
           mockSeries.filter((s) => matches(s.title, variables.pattern as string))
         ),
       };
-    case "issues":
+    case "issueList":
       return {
-        issues: createConnection(
+        issueList: createConnection(
           mockIssues.filter((i) => matches(i.title || i.number, variables.pattern as string))
         ),
       };
@@ -234,19 +234,19 @@ const buildResult = (key: string, variables: Record<string, unknown>) => {
       return { me: { id: 1 } };
     case "lastEdited":
       return { lastEdited: createConnection(mockLastEditedIssues) };
-    case "publisher": {
+    case "publisherDetails": {
       const selectedPublisher = (variables.publisher as { us?: boolean } | undefined) ?? {};
       const publisherUs =
         typeof selectedPublisher.us === "boolean" ? selectedPublisher.us : mockPublisherFixture.us;
 
       return {
-        publisher: {
+        publisherDetails: {
           ...mockPublisherFixture,
           us: publisherUs,
         },
       };
     }
-    case "seriesd": {
+    case "seriesDetails": {
       const selectedSeries =
         (variables.series as { publisher?: { us?: boolean } } | undefined) ?? {};
       const publisherUs =
@@ -255,7 +255,7 @@ const buildResult = (key: string, variables: Record<string, unknown>) => {
           : mockSeriesFixture.publisher.us;
 
       return {
-        seriesd: {
+        seriesDetails: {
           ...mockSeriesFixture,
           publisher: { ...mockSeriesFixture.publisher, us: publisherUs },
           firstIssue: {
@@ -275,7 +275,7 @@ const buildResult = (key: string, variables: Record<string, unknown>) => {
         },
       };
     }
-    case "issue": {
+    case "issueDetails": {
       const issueVar = variables.issue as
         | {
             series?: { publisher?: { us?: boolean } };
@@ -284,7 +284,7 @@ const buildResult = (key: string, variables: Record<string, unknown>) => {
       const requestedUs = Boolean(
         (variables.us as boolean | undefined) ?? issueVar?.series?.publisher?.us
       );
-      return { issue: requestedUs ? mockIssueUsFixture : mockIssueDeFixture };
+      return { issueDetails: requestedUs ? mockIssueUsFixture : mockIssueDeFixture };
     }
     case "login":
       return { login: { id: 1 } };

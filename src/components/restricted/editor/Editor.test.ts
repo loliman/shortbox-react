@@ -8,7 +8,11 @@ const issuesQuery = {
     {
       kind: "OperationDefinition",
       operation: "query",
-      name: { value: "Issues" },
+      name: { kind: "Name", value: "Issues" },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [{ kind: "Field", name: { kind: "Name", value: "issueList" } }],
+      },
     },
   ],
 } as unknown as DocumentNode;
@@ -29,7 +33,7 @@ function createCache(readValue: unknown): ApolloCache<unknown> & {
 describe("Editor cache helpers", () => {
   it("adds, removes and updates plain list cache entries", () => {
     const cache = createCache({
-      issues: [
+      issueList: [
         { __typename: "Issue", number: "2", format: "Heft", variant: "" },
         { __typename: "Issue", number: "1", format: "Heft", variant: "B" },
       ],
@@ -42,7 +46,7 @@ describe("Editor cache helpers", () => {
       { __typename: "Issue", number: "1", format: "Heft", variant: "A" }
     );
 
-    const writtenAfterAdd = cache.writeQuery.mock.calls[0][0].data.issues;
+    const writtenAfterAdd = cache.writeQuery.mock.calls[0][0].data.issueList;
     expect(writtenAfterAdd.map((item: any) => item.variant)).toEqual(["A", "B", ""]);
 
     removeFromCache(
@@ -52,7 +56,7 @@ describe("Editor cache helpers", () => {
       { __typename: "Issue", number: "1", format: "Heft", variant: "B" }
     );
 
-    const writtenAfterRemove = cache.writeQuery.mock.calls[1][0].data.issues;
+    const writtenAfterRemove = cache.writeQuery.mock.calls[1][0].data.issueList;
     expect(writtenAfterRemove.map((item: any) => item.variant)).toEqual(["A", ""]);
 
     updateInCache(
@@ -63,13 +67,13 @@ describe("Editor cache helpers", () => {
       { __typename: "Issue", number: "1", format: "Heft", variant: "AA" }
     );
 
-    const writtenAfterUpdate = cache.writeQuery.mock.calls[2][0].data.issues;
+    const writtenAfterUpdate = cache.writeQuery.mock.calls[2][0].data.issueList;
     expect(writtenAfterUpdate.map((item: any) => item.variant)).toEqual(["AA", ""]);
   });
 
   it("handles connection-shaped cache entries", () => {
     const cache = createCache({
-      issues: {
+      issueList: {
         edges: [
           { cursor: "0", node: { __typename: "Issue", number: "2", format: "Heft", variant: "" } },
         ],
@@ -84,7 +88,7 @@ describe("Editor cache helpers", () => {
       { __typename: "Issue", number: "1", format: "Heft", variant: "" }
     );
 
-    const writtenEdges = cache.writeQuery.mock.calls[0][0].data.issues.edges;
+    const writtenEdges = cache.writeQuery.mock.calls[0][0].data.issueList.edges;
     expect(writtenEdges).toHaveLength(2);
     expect(writtenEdges[0].node.number).toBe("1");
     expect(writtenEdges[1].node.number).toBe("2");

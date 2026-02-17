@@ -19,17 +19,17 @@ function SeriesEdit(props: Readonly<SeriesEditProps>) {
   return (
     <Layout>
       {(() => {
-        if (loading || error || !data || !data.seriesd)
+        if (loading || error || !data || !data.seriesDetails)
           return (
             <QueryResult
               loading={loading}
               error={error}
-              data={data ? data.seriesd : null}
+              data={data ? data.seriesDetails : null}
               selected={selected}
             />
           );
 
-        let defaultValues = structuredClone(data.seriesd) as Record<string, unknown>;
+        let defaultValues = structuredClone(data.seriesDetails) as Record<string, unknown>;
 
         defaultValues.issueCount = undefined;
         defaultValues.active = undefined;
@@ -40,7 +40,7 @@ function SeriesEdit(props: Readonly<SeriesEditProps>) {
         return (
           <SeriesEditor
             edit
-            id={data.seriesd.id}
+            id={data.seriesDetails.id}
             mutation={editSeries}
             defaultValues={defaultValues}
           />

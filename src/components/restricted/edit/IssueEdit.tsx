@@ -21,20 +21,25 @@ function IssueEdit(props: Readonly<IssueEditProps>) {
   return (
     <Layout>
       {(() => {
-        if (loading || error || !data || !data.issue)
+        if (loading || error || !data || !data.issueDetails)
           return (
             <QueryResult
               loading={loading}
               error={error}
-              data={data ? data.issue : null}
+              data={data ? data.issueDetails : null}
               selected={selected}
             />
           );
 
-        const defaultValues = mapIssueToEditorDefaultValues(data.issue, false);
+        const defaultValues = mapIssueToEditorDefaultValues(data.issueDetails, false);
 
         return (
-          <IssueEditor id={data.issue.id} edit mutation={editIssue} defaultValues={defaultValues} />
+          <IssueEditor
+            id={data.issueDetails.id}
+            edit
+            mutation={editIssue}
+            defaultValues={defaultValues}
+          />
         );
       })()}
     </Layout>

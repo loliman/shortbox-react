@@ -91,7 +91,7 @@ function SeriesDetails(props: Readonly<SeriesDetailsProps>) {
     >
       {({ error, data, fetchMore, hasMore, fetching }) => {
         const issues = data ? data.lastEdited : [];
-        const details = detailsData?.seriesd;
+        const details = detailsData?.seriesDetails;
         const combinedError = detailsError || error;
 
         return (

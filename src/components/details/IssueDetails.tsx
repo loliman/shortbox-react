@@ -71,12 +71,12 @@ function IssueDetails(props: IssueDetailsProps) {
     notifyOnNetworkStatusChange: true,
   });
 
-  if (props.appIsLoading || error || !data?.issue || networkStatus < 7) {
+  if (props.appIsLoading || error || !data?.issueDetails || networkStatus < 7) {
     return (
       <Layout>
         <QueryResult
           error={error}
-          data={data ? data.issue : null}
+          data={data ? data.issueDetails : null}
           loading={networkStatus < 7}
           selected={selected}
           placeholder={<IssueDetailsPreview />}
@@ -86,7 +86,7 @@ function IssueDetails(props: IssueDetailsProps) {
     );
   }
 
-  const loadedIssue = data.issue as unknown as Issue;
+  const loadedIssue = data.issueDetails as unknown as Issue;
 
   const arcs = collectIssueArcs(loadedIssue, us);
   const today = getTodayLocalDate();

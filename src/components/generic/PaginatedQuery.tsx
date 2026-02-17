@@ -1,6 +1,6 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
-import type { DocumentNode } from "graphql";
+import type { DocumentNode, OperationDefinitionNode } from "graphql";
 import type { Connection, QueryCollection } from "../../types/graphql";
 
 type QueryVariables = Record<string, unknown>;
@@ -38,8 +38,7 @@ function PaginatedQuery(props: Readonly<PaginatedQueryProps>) {
   const [fetching, setFetching] = React.useState(false);
   const [hasMore, setHasMore] = React.useState(true);
   const fetchMoreInFlightRef = React.useRef(false);
-  const queryNameRaw = getQueryName(query);
-  const queryName = queryNameRaw ? queryNameRaw[0].toLowerCase() + queryNameRaw.slice(1) : "";
+  const queryName = getQueryName(query);
   const offsetMode = queryName === "nodes";
   const onCompletedRef = React.useRef(onCompleted);
 
@@ -187,8 +186,19 @@ function PaginatedQuery(props: Readonly<PaginatedQueryProps>) {
 }
 
 function getQueryName(query: DocumentNode): string {
-  const firstDefinition = query.definitions?.[0] as { name?: { value?: string } } | undefined;
-  return firstDefinition?.name?.value || "";
+  const operation = query.definitions.find(
+    (definition): definition is OperationDefinitionNode =>
+      Boolean(definition) && definition.kind === "OperationDefinition"
+  );
+  if (!operation) return "";
+
+  const firstSelection = operation.selectionSet?.selections?.[0];
+  if (firstSelection && firstSelection.kind === "Field") {
+    if (firstSelection.alias?.value) return firstSelection.alias.value;
+    return firstSelection.name.value;
+  }
+
+  return "";
 }
 
 function isConnection<T>(value: QueryCollection<T> | null | undefined): value is Connection<T> {

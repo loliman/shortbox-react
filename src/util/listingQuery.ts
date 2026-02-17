@@ -7,7 +7,7 @@ export type ListingQuery =
   | null
   | undefined;
 
-export const DEFAULT_ORDER = "updatedAt";
+export const DEFAULT_ORDER = "updatedat";
 export const DEFAULT_DIRECTION = "DESC";
 
 export function parseListingFilter(query: ListingQuery, us: boolean): Record<string, unknown> {

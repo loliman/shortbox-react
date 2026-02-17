@@ -44,7 +44,7 @@ function List(props: Readonly<ListProps>) {
   const filter = parseFilter(props.query?.filter);
   const normalized = normalizeListLevelAndSelected(props.level, props.selected);
   const query = getListQuery(normalized.level);
-  const queryName = getQueryName(query).toLowerCase();
+  const queryName = getQueryName(query);
   const queryVariables = { ...normalized.selected, filter, first: LIST_PAGE_SIZE };
 
   const { error, data, networkStatus } = useQuery(

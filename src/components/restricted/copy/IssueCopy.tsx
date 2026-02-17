@@ -21,17 +21,17 @@ function IssueCopy(props: Readonly<IssueCopyProps>) {
   return (
     <Layout>
       {(() => {
-        if (loading || error || !data || !data.issue)
+        if (loading || error || !data || !data.issueDetails)
           return (
             <QueryResult
               loading={loading}
               error={error}
-              data={data ? data.issue : null}
+              data={data ? data.issueDetails : null}
               selected={selected}
             />
           );
 
-        const defaultValues = mapIssueToEditorDefaultValues(data.issue, true);
+        const defaultValues = mapIssueToEditorDefaultValues(data.issueDetails, true);
 
         return <IssueEditor copy mutation={createIssue} defaultValues={defaultValues} />;
       })()}

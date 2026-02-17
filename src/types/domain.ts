@@ -82,8 +82,8 @@ export interface Issue {
   arcs?: Array<Arc | null> | null;
   stories?: Array<Story | null> | null;
   variants?: Array<Issue | null> | null;
-  createdAt?: string | null;
-  updatedAt?: string | null;
+  createdat?: string | null;
+  updatedat?: string | null;
   series: Series;
   __typename?: "Issue";
   [key: string]: unknown;

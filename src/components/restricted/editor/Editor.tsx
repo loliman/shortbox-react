@@ -112,9 +112,18 @@ export function compare(a: CacheItem, b: CacheItem) {
 
 function getQueryName(query: DocumentNode): string | null {
   const operation = query.definitions.find(
-    (definition): definition is OperationDefinitionNode => definition.kind === "OperationDefinition"
+    (definition): definition is OperationDefinitionNode =>
+      Boolean(definition) && definition.kind === "OperationDefinition"
   );
-  return operation?.name?.value ? operation.name.value.toLowerCase() : null;
+  if (!operation) return null;
+
+  const firstSelection = operation.selectionSet?.selections?.[0];
+  if (firstSelection && firstSelection.kind === "Field") {
+    if (firstSelection.alias?.value) return firstSelection.alias.value;
+    return firstSelection.name.value;
+  }
+
+  return null;
 }
 
 function readCacheQuery(

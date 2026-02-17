@@ -16,7 +16,7 @@ import {
   type ListingQuery,
 } from "../util/listingQuery";
 
-const SORT_OPTIONS = ["updatedAt", "createdAt", "releasedate", "series", "publisher"] as const;
+const SORT_OPTIONS = ["updatedat", "createdat", "releasedate", "series", "publisher"] as const;
 type SortOption = (typeof SORT_OPTIONS)[number];
 const SORT_LABEL_ID = "sort-container-label";
 const SORT_SELECT_ID = "sort-container-select";
@@ -62,8 +62,8 @@ function SortContainer(props: Readonly<SortContainerProps>) {
               )
             }
           >
-            <MenuItem value={"updatedAt"}>Änderungsdatum</MenuItem>
-            <MenuItem value={"createdAt"}>Erfassungsdatum</MenuItem>
+            <MenuItem value={"updatedat"}>Änderungsdatum</MenuItem>
+            <MenuItem value={"createdat"}>Erfassungsdatum</MenuItem>
             <MenuItem value={"releasedate"}>Erscheinungsdatum</MenuItem>
             <MenuItem value={"series"}>Serie</MenuItem>
             <MenuItem value={"publisher"}>Verlag</MenuItem>
@@ -97,5 +97,5 @@ function toValidSortOption(value: string): SortOption {
   if ((SORT_OPTIONS as readonly string[]).includes(value)) {
     return value as SortOption;
   }
-  return "updatedAt";
+  return "updatedat";
 }

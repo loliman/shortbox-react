@@ -6,7 +6,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import TextField from "@mui/material/TextField";
 import PaginatedQuery from "./PaginatedQuery";
 import type { QueryCollection } from "../../types/graphql";
-import type { DocumentNode } from "graphql";
+import type { DocumentNode, OperationDefinitionNode } from "graphql";
 import type { SxProps, Theme } from "@mui/material/styles";
 
 type OptionLike = Record<string, unknown> & {
@@ -66,7 +66,7 @@ function AutocompleteField(props: AutocompleteFieldProps) {
       {({ error, data, fetchMore, loading, fetching }) => {
         let optionsFromQuery: OptionLike[] = [];
         if (data) {
-          const queryName = getQueryName(resolvedQuery).toLowerCase();
+          const queryName = getQueryName(resolvedQuery);
           const raw = (data as Record<string, QueryCollection<OptionLike>>)[queryName];
           optionsFromQuery = normalizeOptions(raw);
         }
@@ -384,9 +384,21 @@ function optionLabel(
 }
 
 function getQueryName(query?: DocumentNode): string {
-  return query?.definitions?.[0] && "name" in query.definitions[0] && query.definitions[0].name
-    ? query.definitions[0].name.value
-    : "";
+  if (!query) return "";
+
+  const operation = query.definitions.find(
+    (definition): definition is OperationDefinitionNode =>
+      Boolean(definition) && definition.kind === "OperationDefinition"
+  );
+  if (!operation) return "";
+
+  const firstSelection = operation.selectionSet?.selections?.[0];
+  if (firstSelection && firstSelection.kind === "Field") {
+    if (firstSelection.alias?.value) return firstSelection.alias.value;
+    return firstSelection.name.value;
+  }
+
+  return "";
 }
 
 export default AutocompleteField;

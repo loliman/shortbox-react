@@ -39,7 +39,7 @@ describe("listingQuery util", () => {
   it("builds sort navigation query by patching only provided keys", () => {
     const query = {
       filter: '{"foo":"bar"}',
-      order: "updatedAt",
+      order: "updatedat",
       direction: "DESC",
     };
 
@@ -51,7 +51,7 @@ describe("listingQuery util", () => {
 
     expect(buildSortNavigationQuery(query, { direction: "ASC" })).toEqual({
       filter: '{"foo":"bar"}',
-      order: "updatedAt",
+      order: "updatedat",
       direction: "ASC",
     });
   });

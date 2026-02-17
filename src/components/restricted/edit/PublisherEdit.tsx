@@ -19,17 +19,17 @@ function PublisherEdit(props: Readonly<PublisherEditProps>) {
   return (
     <Layout>
       {(() => {
-        if (loading || error || !data || !data.publisher)
+        if (loading || error || !data || !data.publisherDetails)
           return (
             <QueryResult
               loading={loading}
               error={error}
-              data={data ? data.publisher : null}
+              data={data ? data.publisherDetails : null}
               selected={selected}
             />
           );
 
-        let defaultValues = structuredClone(data.publisher) as Record<string, unknown>;
+        let defaultValues = structuredClone(data.publisherDetails) as Record<string, unknown>;
 
         defaultValues.seriesCount = undefined;
         defaultValues.issueCount = undefined;
@@ -41,7 +41,7 @@ function PublisherEdit(props: Readonly<PublisherEditProps>) {
         return (
           <PublisherEditor
             edit
-            id={data.publisher.id}
+            id={data.publisherDetails.id}
             mutation={editPublisher}
             defaultValues={defaultValues}
           />

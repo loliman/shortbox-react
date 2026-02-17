@@ -75,7 +75,7 @@ function PublisherDetails(props: Readonly<PublisherDetailsProps>) {
     >
       {({ error, data, fetchMore, fetching, hasMore }) => {
         const issues = data ? data.lastEdited : [];
-        const details = detailsData?.publisher;
+        const details = detailsData?.publisherDetails;
         const combinedError = detailsError || error;
 
         return (

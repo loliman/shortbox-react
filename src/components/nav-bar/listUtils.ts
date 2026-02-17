@@ -1,4 +1,5 @@
 import { getListQuery } from "../../graphql/queriesTyped";
+import type { DocumentNode, OperationDefinitionNode } from "graphql";
 import { HierarchyLevel, type HierarchyLevelType } from "../../util/hierarchy";
 import type { Connection, QueryCollection } from "../../types/graphql";
 import type { SelectedRoot } from "../../types/domain";
@@ -50,7 +51,7 @@ export function scrollToSelectedIssue(
   const selectedIssueNumber = selected.issue.number;
 
   const query = getListQuery(level);
-  const queryName = getQueryName(query).toLowerCase();
+  const queryName = getQueryName(query);
   const items = toNodeList(data, queryName);
   if (!items) return;
 
@@ -112,10 +113,18 @@ function isConnection(value: QueryCollection<unknown>): value is Connection<unkn
   return !!value && !Array.isArray(value) && "edges" in value && "pageInfo" in value;
 }
 
-export function getQueryName(query: { definitions?: ReadonlyArray<unknown> }): string {
-  const firstDefinition = query.definitions?.[0];
-  if (!firstDefinition || typeof firstDefinition !== "object") return "";
+export function getQueryName(query: Pick<DocumentNode, "definitions">): string {
+  const operation = query.definitions.find(
+    (definition): definition is OperationDefinitionNode =>
+      Boolean(definition) && definition.kind === "OperationDefinition"
+  );
+  if (!operation) return "";
 
-  const withName = firstDefinition as { name?: { value?: string } };
-  return withName.name?.value || "";
+  const firstSelection = operation.selectionSet?.selections?.[0];
+  if (firstSelection && firstSelection.kind === "Field") {
+    if (firstSelection.alias?.value) return firstSelection.alias.value;
+    return firstSelection.name.value;
+  }
+
+  return "";
 }

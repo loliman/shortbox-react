@@ -32,7 +32,17 @@ describe("PaginatedQuery", () => {
     });
 
     const query = {
-      definitions: [{ name: { value: "Nodes" } }],
+      definitions: [
+        {
+          kind: "OperationDefinition",
+          operation: "query",
+          name: { kind: "Name", value: "Nodes" },
+          selectionSet: {
+            kind: "SelectionSet",
+            selections: [{ kind: "Field", name: { kind: "Name", value: "nodes" } }],
+          },
+        },
+      ],
     } as any;
 
     let renderProps: any;
@@ -88,7 +98,7 @@ describe("PaginatedQuery", () => {
       loading: false,
       error: null,
       data: {
-        issues: {
+        issueList: {
           edges: [{ node: { number: "1" } }],
           pageInfo: { hasNextPage: true, endCursor: "cursor-1" },
         },
@@ -98,7 +108,17 @@ describe("PaginatedQuery", () => {
     });
 
     const query = {
-      definitions: [{ name: { value: "Issues" } }],
+      definitions: [
+        {
+          kind: "OperationDefinition",
+          operation: "query",
+          name: { kind: "Name", value: "Issues" },
+          selectionSet: {
+            kind: "SelectionSet",
+            selections: [{ kind: "Field", name: { kind: "Name", value: "issueList" } }],
+          },
+        },
+      ],
     } as any;
 
     let renderProps: any;
@@ -129,14 +149,14 @@ describe("PaginatedQuery", () => {
 
     const merged = fetchMoreArg.updateQuery(
       {
-        issues: {
+        issueList: {
           edges: [{ node: { number: "1" } }],
           pageInfo: { hasNextPage: true, endCursor: "cursor-1" },
         },
       },
       {
         fetchMoreResult: {
-          issues: {
+          issueList: {
             edges: [{ node: { number: "2" } }],
             pageInfo: { hasNextPage: false, endCursor: "cursor-2" },
           },
@@ -144,7 +164,7 @@ describe("PaginatedQuery", () => {
       }
     );
 
-    expect(merged.issues.edges).toHaveLength(2);
-    expect(merged.issues.pageInfo).toEqual({ hasNextPage: false, endCursor: "cursor-2" });
+    expect(merged.issueList.edges).toHaveLength(2);
+    expect(merged.issueList.pageInfo).toEqual({ hasNextPage: false, endCursor: "cursor-2" });
   });
 });

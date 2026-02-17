@@ -2,7 +2,17 @@ import { describe, expect, it, vi } from "vitest";
 
 vi.mock("../../graphql/queriesTyped", () => ({
   getListQuery: vi.fn(() => ({
-    definitions: [{ name: { value: "Issues" } }],
+    definitions: [
+      {
+        kind: "OperationDefinition",
+        operation: "query",
+        name: { kind: "Name", value: "Issues" },
+        selectionSet: {
+          kind: "SelectionSet",
+          selections: [{ kind: "Field", name: { kind: "Name", value: "issueList" } }],
+        },
+      },
+    ],
   })),
 }));
 
@@ -88,7 +98,23 @@ describe("listUtils", () => {
   });
 
   it("extracts query name from document definition", () => {
-    expect(getQueryName({ definitions: [{ name: { value: "Issues" } }] } as any)).toBe("Issues");
+    expect(
+      getQueryName(
+        {
+          definitions: [
+            {
+              kind: "OperationDefinition",
+              operation: "query",
+              name: { kind: "Name", value: "Issues" },
+              selectionSet: {
+                kind: "SelectionSet",
+                selections: [{ kind: "Field", name: { kind: "Name", value: "issueList" } }],
+              },
+            },
+          ],
+        } as any
+      )
+    ).toBe("issueList");
     expect(getQueryName({ definitions: [null] } as any)).toBe("");
   });
 
@@ -101,7 +127,7 @@ describe("listUtils", () => {
     listElement.appendChild(item);
 
     scrollToSelectedIssue(
-      { issues: [{ number: "100" }, { number: "101" }] },
+      { issueList: [{ number: "100" }, { number: "101" }] },
       HierarchyLevel.SERIES,
       { issue: { number: "101" } } as any,
       listElement
