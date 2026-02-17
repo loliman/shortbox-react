@@ -32,7 +32,13 @@ query Series(
   $after: String
   $filter: Filter
 ) {
-  seriesList(pattern: $pattern, publisher: $publisher, first: $first, after: $after, filter: $filter) {
+  seriesList(
+    pattern: $pattern
+    publisher: $publisher
+    first: $first
+    after: $after
+    filter: $filter
+  ) {
     edges {
       node {
         title
