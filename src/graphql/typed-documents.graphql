@@ -32,7 +32,13 @@ query Series(
   $after: String
   $filter: Filter
 ) {
-  seriesList(pattern: $pattern, publisher: $publisher, first: $first, after: $after, filter: $filter) {
+  seriesList(
+    pattern: $pattern
+    publisher: $publisher
+    first: $first
+    after: $after
+    filter: $filter
+  ) {
     edges {
       node {
         title
@@ -594,15 +600,6 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
         us
       }
     }
-    features {
-      title
-      addinfo
-      number
-      individuals {
-        name
-        type
-      }
-    }
     stories {
       title
       addinfo
@@ -900,15 +897,6 @@ mutation CreateIssue($item: IssueInput!) {
         us
       }
     }
-    features {
-      title
-      addinfo
-      number
-      individuals {
-        name
-        type
-      }
-    }
     stories {
       title
       addinfo
@@ -1067,15 +1055,6 @@ mutation EditIssue($old: IssueInput!, $item: IssueInput!) {
       publisher {
         name
         us
-      }
-    }
-    features {
-      title
-      addinfo
-      number
-      individuals {
-        name
-        type
       }
     }
     stories {

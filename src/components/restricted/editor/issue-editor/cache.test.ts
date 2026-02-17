@@ -47,7 +47,6 @@ describe("updateIssueEditorCache", () => {
         individuals: [],
         addinfo: "",
         stories: [],
-        features: [],
         covers: [],
       } as any
     );
@@ -93,7 +92,6 @@ describe("updateIssueEditorCache", () => {
           individuals: [],
           addinfo: "",
           stories: [],
-          features: [],
           covers: [],
         } as any
       )
@@ -136,7 +134,6 @@ describe("updateIssueEditorCache", () => {
           individuals: [],
           addinfo: "",
           stories: [],
-          features: [],
           covers: [],
         } as any
       )

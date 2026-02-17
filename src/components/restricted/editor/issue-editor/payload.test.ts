@@ -46,15 +46,6 @@ function baseValues(us = false): IssueEditorFormValues {
         ],
       },
     ],
-    features: [
-      {
-        title: "Backup",
-        individuals: [
-          { name: "A", type: "WRITER" },
-          { name: "A", type: "WRITER" },
-        ],
-      },
-    ],
     covers: [
       {
         exclusive: false,
@@ -96,7 +87,6 @@ describe("buildIssueMutationVariables", () => {
     });
     expect(item.stories).toBeUndefined();
     expect(item.covers).toBeUndefined();
-    expect(item.features).toBeUndefined();
     expect(item.individuals).toBeUndefined();
     expect(item.arcs).toBeUndefined();
     expect(item.comicguideid).toBeUndefined();

@@ -74,7 +74,6 @@ describe("issue-editor default values", () => {
             },
           },
         ],
-        features: [{ title: "Backup", number: 1, individuals: [{ name: "C", type: "ARTIST" }] }],
         covers: [
           {
             number: 1,
@@ -107,7 +106,6 @@ describe("issue-editor default values", () => {
         individuals: [{ name: "X", type: "WRITER" }],
         arcs: [{ title: "Y" }],
         covers: [{ number: 1 }],
-        features: [{ title: "Feature", number: 1 }],
       },
       true
     );
@@ -118,7 +116,6 @@ describe("issue-editor default values", () => {
     expect(copied.individuals).toEqual([]);
     expect(copied.arcs).toEqual([]);
     expect(copied.covers).toEqual([]);
-    expect(copied.features).toEqual([]);
     expect(copied.cover).toBeUndefined();
   });
 

@@ -99,21 +99,19 @@ describe("listUtils", () => {
 
   it("extracts query name from document definition", () => {
     expect(
-      getQueryName(
-        {
-          definitions: [
-            {
-              kind: "OperationDefinition",
-              operation: "query",
-              name: { kind: "Name", value: "Issues" },
-              selectionSet: {
-                kind: "SelectionSet",
-                selections: [{ kind: "Field", name: { kind: "Name", value: "issueList" } }],
-              },
+      getQueryName({
+        definitions: [
+          {
+            kind: "OperationDefinition",
+            operation: "query",
+            name: { kind: "Name", value: "Issues" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [{ kind: "Field", name: { kind: "Name", value: "issueList" } }],
             },
-          ],
-        } as any
-      )
+          },
+        ],
+      } as any)
     ).toBe("issueList");
     expect(getQueryName({ definitions: [null] } as any)).toBe("");
   });

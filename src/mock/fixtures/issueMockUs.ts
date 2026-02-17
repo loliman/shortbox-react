@@ -58,7 +58,6 @@ export const mockIssueUsFixture: any = {
     },
     __typename: "Series",
   },
-  features: [],
   stories: [
     {
       title: "Green Pieces",

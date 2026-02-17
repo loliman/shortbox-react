@@ -46,7 +46,7 @@ Standard-URL: `http://localhost:5173`
 
 - `src/index.tsx`: App-Bootstrap, Apollo-Setup, Auth-/CSRF-Linking
 - `src/app/`: Routing, Theme, Session- und App-Utilities
-- `src/components/`: UI-Komponenten und Feature-Screens
+- `src/components/`: UI-Komponenten und Seiten
 - `src/graphql/`: getypte Dokumente und Query-/Mutation-Exporte
 - `src/mock/`: Mock-Daten und Mock-Link
 - `src/util/`: Utility-Funktionen

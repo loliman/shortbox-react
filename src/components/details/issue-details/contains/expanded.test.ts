@@ -74,7 +74,7 @@ describe("expanded helper", () => {
     expect(expanded(baseStoryItem, { filter: JSON.stringify(filter) })).toBe(true);
   });
 
-  it("expands cover and feature items based on matching individuals", () => {
+  it("expands cover items based on matching individuals", () => {
     const filter = {
       individuals: [{ name: "Peter Parker", type: "WRITER" }],
     };
@@ -83,15 +83,8 @@ describe("expanded helper", () => {
       __typename: "Cover",
       individuals: [{ name: "Peter Parker", type: "WRITER" }],
     };
-    const feature = {
-      __typename: "Feature",
-      parent: {
-        individuals: [{ name: "Peter Parker", type: "WRITER" }],
-      },
-    };
 
     expect(expanded(cover, { filter: JSON.stringify(filter) })).toBe(true);
-    expect(expanded(feature, { filter: JSON.stringify(filter) })).toBe(true);
   });
 
   it("uses parent issue data as compare context when present", () => {
