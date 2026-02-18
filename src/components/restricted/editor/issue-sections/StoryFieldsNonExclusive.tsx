@@ -20,7 +20,9 @@ function StoryFieldsNonExclusive(props: StoryFieldsNonExclusiveProps) {
   const setFieldValue = props.setFieldValue || (() => undefined);
   const stories = values.stories || [];
   const item = stories[index] || {};
-  const parent = (item.parent || {}) as { issue?: { series?: { title?: string; volume?: number } } };
+  const parent = (item.parent || {}) as {
+    issue?: { series?: { title?: string; volume?: number } };
+  };
   const parentIssue = parent.issue || {};
   const parentSeries = parentIssue.series || {};
   const seriesPattern = String(parentSeries.title || "");
@@ -40,9 +42,9 @@ function StoryFieldsNonExclusive(props: StoryFieldsNonExclusiveProps) {
     seriesQuery.options.find(
       (entry) =>
         normalizeText(entry.title) === normalizeText(parentSeries.title) &&
-        normalizeText(String(entry.volume || "")) === normalizeText(String(parentSeries.volume || ""))
-    ) ||
-    (seriesPattern.trim().length > 0 ? seriesPattern : null);
+        normalizeText(String(entry.volume || "")) ===
+          normalizeText(String(parentSeries.volume || ""))
+    ) || (seriesPattern.trim().length > 0 ? seriesPattern : null);
 
   return (
     <div className="storyAddInputContainer">
@@ -124,7 +126,8 @@ function isOptionLike(value: unknown): value is FieldItem {
 function formatSeriesLabel(entry: unknown) {
   const option = entry as { title?: unknown; volume?: unknown };
   const title = String(option?.title || "");
-  const volume = option?.volume === null || option?.volume === undefined ? "" : String(option.volume);
+  const volume =
+    option?.volume === null || option?.volume === undefined ? "" : String(option.volume);
   if (!volume) return title;
   return `${title} (Vol. ${volume})`;
 }
@@ -135,7 +138,9 @@ function getSeriesKey(value: unknown) {
 }
 
 function normalizeText(value: unknown) {
-  return String(value || "").trim().toLowerCase();
+  return String(value || "")
+    .trim()
+    .toLowerCase();
 }
 
 export default StoryFieldsNonExclusive;

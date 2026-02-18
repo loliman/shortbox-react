@@ -64,16 +64,14 @@ function IssueEditorSeriesFields({
   const publisherValue =
     publisherQuery.options.find(
       (entry) => normalizeText(entry.name) === normalizeText(values.series.publisher.name)
-    ) ||
-    (publisherPattern.trim().length > 0 ? publisherPattern : null);
+    ) || (publisherPattern.trim().length > 0 ? publisherPattern : null);
 
   const seriesValue =
     seriesQuery.options.find(
       (entry) =>
         normalizeText(entry.title) === normalizeText(values.series.title) &&
         normalizeText(entry.publisher?.name) === normalizeText(values.series.publisher.name)
-    ) ||
-    (seriesPattern.trim().length > 0 ? seriesPattern : null);
+    ) || (seriesPattern.trim().length > 0 ? seriesPattern : null);
 
   const publisherNoOptionsText = publisherQuery.isBelowMinLength
     ? `Mindestens ${MIN_QUERY_LENGTH} Zeichen eingeben`
@@ -200,7 +198,9 @@ function IssueEditorSeriesFields({
 }
 
 function normalizeText(value: unknown) {
-  return String(value || "").trim().toLowerCase();
+  return String(value || "")
+    .trim()
+    .toLowerCase();
 }
 
 function formatPublisherLabel(option: PublisherOption) {

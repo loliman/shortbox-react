@@ -148,8 +148,9 @@ function asFormatArray(value: unknown) {
 }
 
 function normalizeText(value: unknown) {
-  return String(value || "").trim().toLowerCase();
+  return String(value || "")
+    .trim()
+    .toLowerCase();
 }
 
 export default DetailsSection;
-

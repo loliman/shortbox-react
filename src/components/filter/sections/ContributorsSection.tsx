@@ -133,7 +133,8 @@ function buildPayload(
     role: contributorType,
   };
 
-  if (action === "select-option" || action === "create-option") payload.option = option || undefined;
+  if (action === "select-option" || action === "create-option")
+    payload.option = option || undefined;
   if (action === "remove-value") payload.removedValue = option || undefined;
 
   return payload;
@@ -178,7 +179,9 @@ function matchesType(entry: FieldItem, contributorType: string) {
 }
 
 function normalizeText(value: unknown) {
-  return String(value || "").trim().toLowerCase();
+  return String(value || "")
+    .trim()
+    .toLowerCase();
 }
 
 export default ContributorsSection;

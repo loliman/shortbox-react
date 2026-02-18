@@ -248,7 +248,12 @@ function TypedMetadataAutocomplete({
         const selectedOption =
           action === "remove"
             ? toEntry(details?.option || null, options, entryKey, type)
-            : toEntry(details?.option || arrayValue[arrayValue.length - 1] || null, options, entryKey, type);
+            : toEntry(
+                details?.option || arrayValue[arrayValue.length - 1] || null,
+                options,
+                entryKey,
+                type
+              );
 
         const nextEntries = applyTypedChange(values, {
           action,
@@ -350,7 +355,9 @@ function removeType(entry: MetadataEntry, type: string) {
 }
 
 function hasType(entry: MetadataEntry, type: string) {
-  return normalizeStringList(entry.type).includes(type) || normalizeStringList(entry.role).includes(type);
+  return (
+    normalizeStringList(entry.type).includes(type) || normalizeStringList(entry.role).includes(type)
+  );
 }
 
 function sanitizeTypedEntries(values: MetadataEntry[], entryKey: EntryKey) {
@@ -449,13 +456,16 @@ function normalizeStringList(value: string[] | string | undefined) {
 }
 
 function normalizeText(value: unknown) {
-  return String(value || "").trim().toLowerCase();
+  return String(value || "")
+    .trim()
+    .toLowerCase();
 }
 
 function asEntryList(values: Array<Record<string, unknown>> | undefined) {
   if (!Array.isArray(values)) return [];
   return values.filter(
-    (entry): entry is MetadataEntry => Boolean(entry) && typeof entry === "object" && !Array.isArray(entry)
+    (entry): entry is MetadataEntry =>
+      Boolean(entry) && typeof entry === "object" && !Array.isArray(entry)
   );
 }
 
