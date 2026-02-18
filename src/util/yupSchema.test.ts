@@ -98,7 +98,10 @@ describe("IssueSchema", () => {
           {
             number: 1,
             title: "Story",
-            parent: { number: 1, issue: { number: "1", series: { title: "Spider-Man", volume: 1 } } },
+            parent: {
+              number: 1,
+              issue: { number: "1", series: { title: "Spider-Man", volume: 1 } },
+            },
             exclusive: false,
           },
         ],
