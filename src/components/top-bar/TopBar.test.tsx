@@ -1,13 +1,21 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { HierarchyLevel } from "../../util/hierarchy";
 import { TopBar } from "./TopBar";
 
 vi.mock("./SearchBar", () => ({
   __esModule: true,
-  default: function MockSearchBar() {
-    return <div data-testid="searchbar-mock">SearchBar</div>;
+  default: function MockSearchBar(props: { onFocus?: (e: any, focus: boolean) => void }) {
+    return (
+      <button
+        type="button"
+        data-testid="searchbar-mock"
+        onClick={() => props.onFocus?.({ preventDefault: vi.fn() }, true)}
+      >
+        SearchBar
+      </button>
+    );
   },
 }));
 
@@ -62,5 +70,20 @@ describe("TopBar", () => {
     );
 
     expect(screen.queryByRole("button", { name: "Zur Startseite" })).toBeNull();
+  });
+
+  it("calls drawer toggle and closes compact search overlay on click", async () => {
+    const user = userEvent.setup();
+    const toggleDrawer = vi.fn();
+
+    render(<TopBar compactLayout={true} toggleDrawer={toggleDrawer} navigate={vi.fn()} />);
+
+    await user.click(screen.getByRole("button", { name: "Navigation umschalten" }));
+    expect(toggleDrawer).toHaveBeenCalledTimes(1);
+
+    await user.click(screen.getByTestId("searchbar-mock"));
+    const overlay = screen.getByTestId("topbar-search-overlay");
+    expect(overlay).not.toBeNull();
+    fireEvent.click(overlay);
   });
 });

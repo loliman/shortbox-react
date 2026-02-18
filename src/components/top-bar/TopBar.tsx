@@ -136,6 +136,7 @@ export function TopBar(props: TopBarProps) {
 
       {compactLayout ? (
         <Box
+          data-testid="topbar-search-overlay"
           onClick={(e) => onFocus(e, false)}
           sx={{
             position: "absolute",
