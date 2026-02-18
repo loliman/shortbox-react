@@ -11,13 +11,7 @@ query Export($filter: Filter!, $type: String!) {
 }
 
 query Publishers($pattern: String, $us: Boolean!, $first: Int, $after: String, $filter: Filter) {
-  publisherList(
-    pattern: $pattern
-    us: $us
-    first: $first
-    after: $after
-    filter: $filter
-  ) {
+  publisherList(pattern: $pattern, us: $us, first: $first, after: $after, filter: $filter) {
     edges {
       node {
         name
@@ -31,7 +25,13 @@ query Publishers($pattern: String, $us: Boolean!, $first: Int, $after: String, $
   }
 }
 
-query Series($pattern: String, $publisher: PublisherInput!, $first: Int, $after: String, $filter: Filter) {
+query Series(
+  $pattern: String
+  $publisher: PublisherInput!
+  $first: Int
+  $after: String
+  $filter: Filter
+) {
   seriesList(
     pattern: $pattern
     publisher: $publisher
@@ -58,14 +58,14 @@ query Series($pattern: String, $publisher: PublisherInput!, $first: Int, $after:
   }
 }
 
-query Issues($pattern: String, $series: SeriesInput!, $first: Int, $after: String, $filter: Filter) {
-  issueList(
-    pattern: $pattern
-    series: $series
-    first: $first
-    after: $after
-    filter: $filter
-  ) {
+query Issues(
+  $pattern: String
+  $series: SeriesInput!
+  $first: Int
+  $after: String
+  $filter: Filter
+) {
+  issueList(pattern: $pattern, series: $series, first: $first, after: $after, filter: $filter) {
     edges {
       node {
         title
@@ -158,13 +158,7 @@ mutation Logout {
 }
 
 query LastEdited($filter: Filter, $first: Int, $after: String, $order: String, $direction: String) {
-  lastEdited(
-    filter: $filter
-    first: $first
-    after: $after
-    order: $order
-    direction: $direction
-  ) {
+  lastEdited(filter: $filter, first: $first, after: $after, order: $order, direction: $direction) {
     edges {
       node {
         number

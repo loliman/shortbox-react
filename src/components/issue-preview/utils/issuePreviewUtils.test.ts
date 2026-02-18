@@ -25,12 +25,7 @@ describe("issuePreviewUtils", () => {
       blurCover: false,
     });
 
-    expect(
-      getIssuePreviewCover(
-        {},
-        false
-      )
-    ).toEqual({
+    expect(getIssuePreviewCover({}, false)).toEqual({
       coverUrl: "",
       blurCover: false,
     });
