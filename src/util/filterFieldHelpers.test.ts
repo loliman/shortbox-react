@@ -106,6 +106,29 @@ describe("filterFieldHelpers", () => {
     ]);
   });
 
+  it("handles frozen select options without mutating source objects", () => {
+    const setFieldValue = vi.fn();
+    const option = Object.freeze({ name: "Sue Storm" });
+
+    updateField(
+      {
+        action: "select-option",
+        option: option as any,
+        type: "WRITER",
+        role: "Writer",
+      },
+      false,
+      [],
+      setFieldValue,
+      "individuals",
+      "name"
+    );
+
+    expect(setFieldValue).toHaveBeenCalledWith("individuals", [
+      { name: "Sue Storm", type: ["WRITER"], role: ["Writer"] },
+    ]);
+  });
+
   it("handles deselect-option with missing payload type and role", () => {
     const setFieldValue = vi.fn();
     const values = [{ name: "Peter Parker", type: ["WRITER"], role: ["Writer"] }];
@@ -286,5 +309,23 @@ describe("filterFieldHelpers", () => {
     );
 
     expect(setFieldValue).not.toHaveBeenCalled();
+  });
+
+  it("stores selected arrays for non-typed multi-select fields", () => {
+    const setFieldValue = vi.fn();
+
+    updateField(
+      [
+        { name: "Marvel", us: false },
+        { pattern: true, name: "Mar" },
+      ],
+      false,
+      [],
+      setFieldValue,
+      "publishers",
+      "name"
+    );
+
+    expect(setFieldValue).toHaveBeenCalledWith("publishers", [{ name: "Marvel", us: false }]);
   });
 });

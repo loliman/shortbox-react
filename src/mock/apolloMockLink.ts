@@ -108,7 +108,6 @@ const mockIssues: any[] = [
     comicguideid: 0,
     collected: true,
     cover: null,
-    covers: [],
     series: {
       title: "Die Abenteuer von Red Sonja - Gesamtausgabe",
       volume: 1,
@@ -128,7 +127,6 @@ const mockIssues: any[] = [
     comicguideid: 0,
     collected: true,
     cover: null,
-    covers: [],
     series: {
       title: "Die Abenteuer von Red Sonja - Gesamtausgabe",
       volume: 1,
@@ -147,7 +145,6 @@ const issues: any[] = createMockIssueList(5).map((issue, index) => ({
   ...issue,
   comicguideid: `cg-${index + 1}`,
   cover: { url: `https://img.shortbox.mock/amazing-spider-man-${index + 1}.jpg` },
-  covers: [] as any[],
   variants: index === 0 ? [{ collected: false, variant: "B" }] : [],
   stories: [] as any[],
   individuals: [{ name: "Stan Lee", type: ["writer"] }] as any[],

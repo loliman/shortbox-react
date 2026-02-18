@@ -50,7 +50,7 @@ function baseValues(us = false): IssueEditorFormValues {
 }
 
 describe("buildIssueMutationVariables", () => {
-  it("keeps only IssueInput fields for non-US issues", () => {
+  it("includes comicguideid and relation payload for non-US issues", () => {
     const values = baseValues(false);
     const result = buildIssueMutationVariables(values, values, true);
     const item = result.item as any;
@@ -66,15 +66,33 @@ describe("buildIssueMutationVariables", () => {
     expect(item.isbn).toBe("isbn");
     expect(item.limitation).toBe("1000");
     expect(item.addinfo).toBe("note");
+    expect(item.comicguideid).toBe(42);
     expect(item.series).toEqual({
       title: "Spider-Man",
       volume: 1,
       publisher: { name: "Marvel", us: false },
     });
-    expect(item.stories).toBeUndefined();
-    expect(item.individuals).toBeUndefined();
-    expect(item.arcs).toBeUndefined();
-    expect(item.comicguideid).toBeUndefined();
+    expect(item.individuals).toEqual([{ name: "Peter Parker", type: ["WRITER", "PENCILER"] }]);
+    expect(item.arcs).toEqual([{ title: "Civil War", type: "EVENT" }]);
+    expect(item.stories).toHaveLength(1);
+    expect(item.stories[0]).toMatchObject({
+      title: "Story A",
+      exclusive: false,
+      parent: {
+        issue: {
+          series: {
+            title: "Spider-Man",
+            volume: 1,
+            publisher: { name: "Marvel", us: false },
+          },
+        },
+      },
+      individuals: [{ name: "Peter Parker", type: ["WRITER", "PENCILER"] }],
+      appearances: [
+        { name: "Spider-Man", type: "FEATURED" },
+        { name: "Venom", type: "ANTAGONIST" },
+      ],
+    });
     expect(item.verified).toBeUndefined();
     expect(item.collected).toBeUndefined();
 
@@ -86,7 +104,7 @@ describe("buildIssueMutationVariables", () => {
     });
   });
 
-  it("drops DE-only fields for US issues and removes parents for exclusive entries", () => {
+  it("drops DE-only fields for US issues but keeps relation payload", () => {
     const values = baseValues(true);
     (values.stories[0] as any).exclusive = true;
 
@@ -100,11 +118,14 @@ describe("buildIssueMutationVariables", () => {
     expect(item.isbn).toBeUndefined();
     expect(item.price).toBeUndefined();
     expect(item.currency).toBeUndefined();
-    expect(item.stories).toBeUndefined();
+    expect(item.individuals).toEqual([{ name: "Peter Parker", type: ["WRITER", "PENCILER"] }]);
+    expect(item.arcs).toEqual([{ title: "Civil War", type: "EVENT" }]);
+    expect(item.stories).toHaveLength(1);
+    expect(item.stories[0].parent).toBeUndefined();
     expect(result.old).toBeUndefined();
   });
 
-  it("ignores non-IssueInput relation payload and keeps sanitized series", () => {
+  it("sanitizes nested relation payload and keeps parent references", () => {
     const values = baseValues(false) as any;
     values.publisher = { name: "Marvel", us: false, __typename: "Publisher" };
     values.stories = [
@@ -124,7 +145,19 @@ describe("buildIssueMutationVariables", () => {
     const item = result.item as any;
 
     expect(item.publisher).toBeUndefined();
-    expect(item.stories).toBeUndefined();
+    expect(item.stories).toHaveLength(1);
+    expect(item.stories[0]).toMatchObject({
+      title: "Story B",
+      parent: {
+        issue: {
+          series: {
+            title: "Spider-Man",
+            volume: 1,
+          },
+        },
+      },
+      appearances: [{ name: "Watcher", type: "CAMEO" }],
+    });
     expect(item.series).toEqual({
       title: "Spider-Man",
       volume: 1,

@@ -94,4 +94,34 @@ describe("serializeFilterValues", () => {
     expect(individual.name).toBe("Peter Parker");
     expect(individual.role).toBeUndefined();
   });
+
+  it("serializes all optional boolean filter flags when enabled", () => {
+    const values = createBaseValues();
+    values.onlyTb = true;
+    values.exclusive = true;
+    values.reprint = true;
+    values.noPrint = true;
+    values.onlyOnePrint = true;
+    values.onlyCollected = true;
+    values.onlyNotCollected = true;
+    values.sellable = true;
+    values.noCover = true;
+    values.noContent = true;
+
+    const payload = serializeFilterValues(values, true);
+
+    expect(payload).toMatchObject({
+      onlyTb: true,
+      exclusive: true,
+      reprint: true,
+      noPrint: true,
+      onlyOnePrint: true,
+      onlyCollected: true,
+      onlyNotCollected: true,
+      sellable: true,
+      noCover: true,
+      noContent: true,
+      us: true,
+    });
+  });
 });
