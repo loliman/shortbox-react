@@ -5,6 +5,14 @@ documents:
   - src/graphql/typed-documents.graphql
 generates:
   src/graphql/typed-documents.generated.ts:
+    config:
+      scalars:
+        Date:
+          input: string
+          output: string
+        DateTime:
+          input: string
+          output: string
     plugins:
       - typescript
       - typescript-operations
