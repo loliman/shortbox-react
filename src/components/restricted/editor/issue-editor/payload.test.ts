@@ -122,7 +122,6 @@ describe("buildIssueMutationVariables", () => {
     expect(item.arcs).toEqual([{ title: "Civil War", type: "EVENT" }]);
     expect(item.stories).toHaveLength(1);
     expect(item.stories[0].parent).toBeUndefined();
-    expect(item.covers[0].parent).toBeUndefined();
     expect(result.old).toBeUndefined();
   });
 

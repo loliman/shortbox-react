@@ -272,7 +272,6 @@ export function buildIssueMutationVariables(
     individuals: normalizeIndividuals(values.individuals),
     arcs: normalizeArcs(values.arcs),
     stories: normalizeStories(values.stories),
-    covers: normalizeCovers(values.covers),
     series: seriesPayload,
   } as Record<string, unknown>;
 
