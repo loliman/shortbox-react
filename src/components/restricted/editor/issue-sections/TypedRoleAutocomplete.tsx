@@ -89,7 +89,8 @@ function TypedRoleAutocomplete({
 
         if (action === "select-option" || action === "create-option") {
           const lastValue = nextValues[nextValues.length - 1] || null;
-          payload.option = toOption(details?.option || lastValue, queryResult.options, type) || undefined;
+          payload.option =
+            toOption(details?.option || lastValue, queryResult.options, type) || undefined;
         }
 
         if (action === "remove-value") {
@@ -117,7 +118,8 @@ function toTypedAction(reason: AutocompleteChangeReason): ChangePayload["action"
 
 function sanitizeEntries(values: FieldItem[] | undefined) {
   return (values || []).filter(
-    (entry): entry is FieldItem => Boolean(entry) && typeof entry === "object" && !Array.isArray(entry)
+    (entry): entry is FieldItem =>
+      Boolean(entry) && typeof entry === "object" && !Array.isArray(entry)
   );
 }
 
@@ -132,11 +134,7 @@ function getName(option: unknown) {
   return String((option as { name?: unknown })?.name || "");
 }
 
-function toOption(
-  value: unknown,
-  options: FieldItem[],
-  type: string
-): FieldItem | null {
+function toOption(value: unknown, options: FieldItem[], type: string): FieldItem | null {
   if (value === null || value === undefined) return null;
 
   if (typeof value === "string") {
@@ -158,7 +156,9 @@ function toOption(
 }
 
 function normalizeText(value: unknown) {
-  return String(value || "").trim().toLowerCase();
+  return String(value || "")
+    .trim()
+    .toLowerCase();
 }
 
 export default TypedRoleAutocomplete;

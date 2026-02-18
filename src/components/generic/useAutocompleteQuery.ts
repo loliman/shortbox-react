@@ -127,7 +127,9 @@ export function useAutocompleteQuery<TOption>({
         if (!fetchMoreResult) return prev;
 
         if (offsetMode) {
-          const previousList = Array.isArray(prev[queryName]) ? prev[queryName].filter(Boolean) : [];
+          const previousList = Array.isArray(prev[queryName])
+            ? prev[queryName].filter(Boolean)
+            : [];
           const nextList = Array.isArray(fetchMoreResult[queryName])
             ? fetchMoreResult[queryName].filter(Boolean)
             : [];

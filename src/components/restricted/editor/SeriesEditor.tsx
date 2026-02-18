@@ -368,7 +368,9 @@ function isOptionLike(value: unknown): value is FieldItem {
 }
 
 function normalizeText(value: unknown) {
-  return String(value || "").trim().toLowerCase();
+  return String(value || "")
+    .trim()
+    .toLowerCase();
 }
 
 export default withContext(SeriesEditor);

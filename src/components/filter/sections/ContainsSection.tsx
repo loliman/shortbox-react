@@ -217,7 +217,8 @@ function ContainsSection({ values, us, isDesktop, setFieldValue }: ContainsSecti
 function asOptionArray(value: unknown): FieldItem[] {
   if (!Array.isArray(value)) return [];
   return value.filter(
-    (entry): entry is FieldItem => Boolean(entry) && typeof entry === "object" && !Array.isArray(entry)
+    (entry): entry is FieldItem =>
+      Boolean(entry) && typeof entry === "object" && !Array.isArray(entry)
   );
 }
 
@@ -230,16 +231,18 @@ function sanitizeTitleList(values: FieldItem[]) {
 }
 
 function normalizeText(value: unknown) {
-  return String(value || "").trim().toLowerCase();
+  return String(value || "")
+    .trim()
+    .toLowerCase();
 }
 
 function formatSeriesLabel(entry: unknown) {
   const option = entry as { title?: unknown; volume?: unknown };
   const title = String(option?.title || "");
-  const volume = option?.volume === undefined || option?.volume === null ? "" : String(option.volume);
+  const volume =
+    option?.volume === undefined || option?.volume === null ? "" : String(option.volume);
   if (!volume) return title;
   return `${title} (Vol. ${volume})`;
 }
 
 export default ContainsSection;
-
