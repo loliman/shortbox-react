@@ -1,3 +1,5 @@
+import type { FieldItem } from "../../util/filterFieldHelpers";
+
 export type FilterFormatOption = { name: string };
 export type FilterDateOption = { date: string; compare: string };
 export type FilterNumberOption = { number: string; compare: string; variant: string };
@@ -6,11 +8,11 @@ export interface FilterValues {
   formats: FilterFormatOption[];
   withVariants: boolean;
   releasedates: FilterDateOption[];
-  publishers: Array<Record<string, unknown>>;
-  series: Array<Record<string, unknown>>;
+  publishers: FieldItem[];
+  series: FieldItem[];
   numbers: FilterNumberOption[];
   arcs: string;
-  individuals: Array<Record<string, unknown>>;
+  individuals: FieldItem[];
   appearances: string;
   firstPrint: boolean;
   onlyPrint: boolean;
@@ -32,11 +34,11 @@ export interface FilterSubmitValues {
   formats?: string[];
   withVariants?: boolean;
   releasedates?: FilterDateOption[];
-  publishers?: Array<Record<string, unknown>>;
-  series?: Array<Record<string, unknown>>;
+  publishers?: FieldItem[];
+  series?: FieldItem[];
   numbers?: FilterNumberOption[];
   arcs?: string;
-  individuals?: Array<Record<string, unknown>>;
+  individuals?: FieldItem[];
   appearances?: string;
   firstPrint?: boolean;
   onlyPrint?: boolean;

@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import AddIcon from "@mui/icons-material/Add";
 import { FastField } from "formik";
-import AutocompleteField from "../../generic/AutocompleteField";
+import AutocompleteBase from "../../generic/AutocompleteBase";
 import { TextField } from "../../generic/FormikTextField";
 import FilterSwitch from "../FilterSwitch";
 import { COMPARE_OPTIONS, FORMAT_OPTIONS } from "../constants";
@@ -24,14 +24,18 @@ function DetailsSection({ values, isDesktop, setFieldValue, hasSession }: Detail
     <Stack spacing={2}>
       <Typography variant="h6">Details</Typography>
 
-      <AutocompleteField
-        values={FORMAT_OPTIONS}
-        nameField="name"
-        name={"formats"}
+      <AutocompleteBase
+        options={FORMAT_OPTIONS}
+        value={values.formats}
         label="Format"
         multiple
-        onChange={(option) => setFieldValue("formats", option)}
-        generateLabel={(entry) => String(entry)}
+        getOptionLabel={(option) => String((option as { name?: unknown })?.name || "")}
+        isOptionEqualToValue={(option, value) =>
+          normalizeText(option.name) === normalizeText((value as { name?: unknown })?.name)
+        }
+        onChange={(_, nextValue) => {
+          setFieldValue("formats", asFormatArray(nextValue));
+        }}
       />
 
       <FilterSwitch
@@ -131,4 +135,21 @@ function DetailsSection({ values, isDesktop, setFieldValue, hasSession }: Detail
   );
 }
 
+function asFormatArray(value: unknown) {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((entry) => {
+      if (!entry || typeof entry !== "object" || Array.isArray(entry)) return null;
+      const name = String((entry as { name?: unknown }).name || "").trim();
+      if (!name) return null;
+      return { name };
+    })
+    .filter((entry): entry is { name: string } => Boolean(entry));
+}
+
+function normalizeText(value: unknown) {
+  return String(value || "").trim().toLowerCase();
+}
+
 export default DetailsSection;
+

@@ -10,7 +10,8 @@ import withContext from "../../generic/withContext";
 import CardHeader from "@mui/material/CardHeader";
 import { publishers, series, seriesd } from "../../../graphql/queriesTyped";
 import { decapitalize, stripItem, wrapItem } from "../../../util/util";
-import AutocompleteField from "../../generic/AutocompleteField";
+import AutocompleteBase from "../../generic/AutocompleteBase";
+import { useAutocompleteQuery } from "../../generic/useAutocompleteQuery";
 import { addToCache, removeFromCache, updateInCache } from "./Editor";
 import Tooltip from "@mui/material/Tooltip";
 import Switch from "@mui/material/Switch";
@@ -18,6 +19,9 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import TitleLine from "../../generic/TitleLine";
 import Stack from "@mui/material/Stack";
 import type { DocumentNode } from "graphql";
+import type { FieldItem } from "../../../util/filterFieldHelpers";
+
+const MIN_QUERY_LENGTH = 2;
 
 interface SeriesFormValues {
   title: string;
@@ -216,29 +220,10 @@ class SeriesEditor extends React.Component<SeriesEditorProps, SeriesEditorState>
                         component={TextField}
                       />
 
-                      <AutocompleteField
-                        query={publishers}
-                        name="publisher.name"
-                        label="Verlag"
-                        variables={{
-                          pattern: values.publisher.name,
-                          us: defaultValues.publisher.us ? defaultValues.publisher.us : false,
-                        }}
-                        onChange={(option, live) => {
-                          if (typeof option !== "string" || option.trim() !== "") {
-                            if (live) {
-                              setFieldValue("publisher.name", option);
-                            } else {
-                              setFieldValue("publisher", {
-                                name: "",
-                                us: defaultValues.publisher.us,
-                              });
-
-                              if (option) setFieldValue("publisher", option);
-                            }
-                          }
-                        }}
-                        generateLabel={generateLabel}
+                      <SeriesPublisherAutocomplete
+                        publisherName={values.publisher.name}
+                        publisherUs={Boolean(defaultValues.publisher.us)}
+                        setFieldValue={setFieldValue}
                       />
 
                       <FastField
@@ -312,6 +297,78 @@ class SeriesEditor extends React.Component<SeriesEditorProps, SeriesEditorState>
       </Mutation>
     );
   }
+}
+
+interface SeriesPublisherAutocompleteProps {
+  publisherName: string;
+  publisherUs: boolean;
+  setFieldValue: (field: string, value: unknown, shouldValidate?: boolean) => void;
+}
+
+function SeriesPublisherAutocomplete({
+  publisherName,
+  publisherUs,
+  setFieldValue,
+}: Readonly<SeriesPublisherAutocompleteProps>) {
+  const query = useAutocompleteQuery<FieldItem>({
+    query: publishers,
+    variables: {
+      pattern: publisherName,
+      us: publisherUs,
+    },
+    searchText: publisherName,
+    minQueryLength: MIN_QUERY_LENGTH,
+    debounceMs: 250,
+  });
+
+  const currentValue =
+    query.options.find((entry) => normalizeText(entry.name) === normalizeText(publisherName)) ||
+    (normalizeText(publisherName).length > 0 ? publisherName : null);
+
+  return (
+    <AutocompleteBase
+      options={query.options}
+      value={currentValue}
+      inputValue={publisherName}
+      label="Verlag"
+      freeSolo
+      loading={query.loading}
+      noOptionsText={
+        query.isBelowMinLength
+          ? `Mindestens ${MIN_QUERY_LENGTH} Zeichen eingeben`
+          : query.error
+            ? "Fehler!"
+            : "Keine Ergebnisse gefunden"
+      }
+      onListboxScroll={query.onListboxScroll}
+      getOptionLabel={(option) => String((option as { name?: unknown })?.name || "")}
+      isOptionEqualToValue={(option, value) =>
+        normalizeText(option.name) === normalizeText((value as { name?: unknown })?.name)
+      }
+      onInputChange={(_, inputValue, reason) => {
+        if (reason !== "input" && reason !== "clear") return;
+        setFieldValue("publisher.name", inputValue);
+      }}
+      onChange={(_, option) => {
+        const selectedOption = Array.isArray(option) ? option[0] || null : option;
+
+        setFieldValue("publisher", {
+          name: "",
+          us: publisherUs,
+        });
+
+        if (isOptionLike(selectedOption)) setFieldValue("publisher", selectedOption);
+      }}
+    />
+  );
+}
+
+function isOptionLike(value: unknown): value is FieldItem {
+  return Boolean(value) && typeof value === "object" && !Array.isArray(value);
+}
+
+function normalizeText(value: unknown) {
+  return String(value || "").trim().toLowerCase();
 }
 
 export default withContext(SeriesEditor);

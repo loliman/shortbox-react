@@ -1,3 +1,4 @@
+import type { FieldItem } from "../../util/filterFieldHelpers";
 import { FilterFormatOption, FilterValues } from "./types";
 
 const DEFAULT_RELEASE_DATE = { date: "1900-01-01", compare: ">" };
@@ -30,15 +31,13 @@ function normalizeFormats(rawFormats: unknown): FilterFormatOption[] {
     .filter((format): format is FilterFormatOption => Boolean(format));
 }
 
-function normalizeSeries(rawSeries: unknown): Array<Record<string, unknown>> {
+function normalizeSeries(rawSeries: unknown): FieldItem[] {
   if (!Array.isArray(rawSeries)) {
     return [];
   }
 
   return rawSeries
-    .filter((entry): entry is Record<string, unknown> =>
-      Boolean(entry && typeof entry === "object")
-    )
+    .filter((entry): entry is FieldItem => Boolean(entry && typeof entry === "object"))
     .map((entry) => ({ ...entry, __typename: "Series" }));
 }
 

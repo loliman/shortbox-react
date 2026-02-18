@@ -6,14 +6,16 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import AddIcon from "@mui/icons-material/Add";
 import { FastField } from "formik";
-import AutocompleteField from "../../generic/AutocompleteField";
+import AutocompleteBase from "../../generic/AutocompleteBase";
+import { useAutocompleteQuery } from "../../generic/useAutocompleteQuery";
 import { TextField } from "../../generic/FormikTextField";
 import FilterSwitch from "../FilterSwitch";
 import { COMPARE_OPTIONS } from "../constants";
 import { FilterValues } from "../types";
-import { generateLabel } from "../../../util/hierarchy";
 import { publishers, series } from "../../../graphql/queriesTyped";
-import { getPattern, updateField } from "../queryHelpers";
+import type { FieldItem } from "../../../util/filterFieldHelpers";
+
+const MIN_QUERY_LENGTH = 2;
 
 interface ContainsSectionProps {
   values: FilterValues;
@@ -23,6 +25,31 @@ interface ContainsSectionProps {
 }
 
 function ContainsSection({ values, us, isDesktop, setFieldValue }: ContainsSectionProps) {
+  const [publisherInput, setPublisherInput] = React.useState("");
+  const [seriesInput, setSeriesInput] = React.useState("");
+
+  const publisherQuery = useAutocompleteQuery<FieldItem>({
+    query: publishers,
+    variables: { pattern: publisherInput, us: !us },
+    searchText: publisherInput,
+    minQueryLength: MIN_QUERY_LENGTH,
+    debounceMs: 250,
+  });
+
+  const seriesQuery = useAutocompleteQuery<FieldItem>({
+    query: series,
+    variables: {
+      pattern: seriesInput,
+      publisher: { name: "*", us: !us },
+    },
+    searchText: seriesInput,
+    minQueryLength: MIN_QUERY_LENGTH,
+    debounceMs: 250,
+  });
+
+  const selectedPublishers = sanitizeNameList(values.publishers);
+  const selectedSeries = sanitizeTitleList(values.series);
+
   return (
     <Stack spacing={2}>
       <Typography variant="h6">{us ? "Enthalten in" : "Enthält"}</Typography>
@@ -75,40 +102,62 @@ function ContainsSection({ values, us, isDesktop, setFieldValue }: ContainsSecti
         </Stack>
       )}
 
-      <AutocompleteField
-        query={publishers}
-        name={"publishers"}
-        nameField="name"
-        label="Verlag"
+      <AutocompleteBase
+        options={publisherQuery.options}
+        value={selectedPublishers}
+        inputValue={publisherInput}
         multiple
-        variables={{ pattern: getPattern(values.publishers, "name"), us: !us }}
-        onChange={(option, live) =>
-          updateField(
-            option as any,
-            Boolean(live),
-            values.publishers,
-            setFieldValue,
-            "publishers",
-            "name"
-          )
+        label="Verlag"
+        loading={publisherQuery.loading}
+        noOptionsText={
+          publisherQuery.isBelowMinLength
+            ? `Mindestens ${MIN_QUERY_LENGTH} Zeichen eingeben`
+            : publisherQuery.error
+              ? "Fehler!"
+              : "Keine Ergebnisse gefunden"
         }
-        generateLabel={(entry) => String(entry.name || "")}
+        onListboxScroll={publisherQuery.onListboxScroll}
+        getOptionLabel={(option) => String((option as { name?: unknown })?.name || "")}
+        isOptionEqualToValue={(option, value) =>
+          normalizeText(option.name) === normalizeText((value as { name?: unknown })?.name)
+        }
+        onInputChange={(_, nextInput, reason) => {
+          if (reason !== "input" && reason !== "clear") return;
+          setPublisherInput(nextInput);
+        }}
+        onChange={(_, nextValue) => {
+          setFieldValue("publishers", sanitizeNameList(asOptionArray(nextValue)));
+        }}
       />
 
-      <AutocompleteField
-        query={series}
-        name={"series"}
-        nameField="title"
-        label="Serie"
+      <AutocompleteBase
+        options={seriesQuery.options}
+        value={selectedSeries}
+        inputValue={seriesInput}
         multiple
-        variables={{
-          pattern: getPattern(values.series, "title"),
-          publisher: { name: "*", us: !us },
-        }}
-        onChange={(option, live) =>
-          updateField(option as any, Boolean(live), values.series, setFieldValue, "series", "title")
+        label="Serie"
+        loading={seriesQuery.loading}
+        noOptionsText={
+          seriesQuery.isBelowMinLength
+            ? `Mindestens ${MIN_QUERY_LENGTH} Zeichen eingeben`
+            : seriesQuery.error
+              ? "Fehler!"
+              : "Keine Ergebnisse gefunden"
         }
-        generateLabel={(entry) => generateLabel(entry as any)}
+        onListboxScroll={seriesQuery.onListboxScroll}
+        getOptionLabel={(option) => formatSeriesLabel(option)}
+        isOptionEqualToValue={(option, value) =>
+          normalizeText(option.title) === normalizeText((value as { title?: unknown })?.title) &&
+          normalizeText(String(option.volume || "")) ===
+            normalizeText(String((value as { volume?: unknown })?.volume || ""))
+        }
+        onInputChange={(_, nextInput, reason) => {
+          if (reason !== "input" && reason !== "clear") return;
+          setSeriesInput(nextInput);
+        }}
+        onChange={(_, nextValue) => {
+          setFieldValue("series", sanitizeTitleList(asOptionArray(nextValue)));
+        }}
       />
 
       <Stack spacing={1.5}>
@@ -165,4 +214,32 @@ function ContainsSection({ values, us, isDesktop, setFieldValue }: ContainsSecti
   );
 }
 
+function asOptionArray(value: unknown): FieldItem[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter(
+    (entry): entry is FieldItem => Boolean(entry) && typeof entry === "object" && !Array.isArray(entry)
+  );
+}
+
+function sanitizeNameList(values: FieldItem[]) {
+  return values.filter((entry) => !entry.pattern && normalizeText(entry.name).length > 0);
+}
+
+function sanitizeTitleList(values: FieldItem[]) {
+  return values.filter((entry) => !entry.pattern && normalizeText(entry.title).length > 0);
+}
+
+function normalizeText(value: unknown) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function formatSeriesLabel(entry: unknown) {
+  const option = entry as { title?: unknown; volume?: unknown };
+  const title = String(option?.title || "");
+  const volume = option?.volume === undefined || option?.volume === null ? "" : String(option.volume);
+  if (!volume) return title;
+  return `${title} (Vol. ${volume})`;
+}
+
 export default ContainsSection;
+

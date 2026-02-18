@@ -287,4 +287,22 @@ describe("filterFieldHelpers", () => {
 
     expect(setFieldValue).not.toHaveBeenCalled();
   });
+
+  it("stores selected arrays for non-typed multi-select fields", () => {
+    const setFieldValue = vi.fn();
+
+    updateField(
+      [
+        { name: "Marvel", us: false },
+        { pattern: true, name: "Mar" },
+      ],
+      false,
+      [],
+      setFieldValue,
+      "publishers",
+      "name"
+    );
+
+    expect(setFieldValue).toHaveBeenCalledWith("publishers", [{ name: "Marvel", us: false }]);
+  });
 });

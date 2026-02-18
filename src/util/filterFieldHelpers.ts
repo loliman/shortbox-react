@@ -1,4 +1,4 @@
-interface ChangePayload {
+export interface ChangePayload {
   action?: string;
   option?: FieldItem;
   removedValue?: FieldItem;
@@ -7,23 +7,37 @@ interface ChangePayload {
   name?: string;
 }
 
-interface FieldItem {
+export interface FieldItem {
   __typename?: string;
   pattern?: boolean;
   name?: string;
+  title?: string;
+  volume?: string | number;
+  us?: boolean;
+  publisher?: { name?: string; us?: boolean; [key: string]: unknown };
   type?: string[] | string;
   role?: string[] | string;
   [key: string]: unknown;
 }
 
+export type UpdateFieldOption = string | ChangePayload | null | undefined | FieldItem[];
+
 export function updateField(
-  option: string | ChangePayload | null | undefined | FieldItem[],
+  option: UpdateFieldOption,
   live: boolean,
   values: FieldItem[] | undefined,
   setFieldValue: (field: string, value: unknown) => void,
   field: string,
   pattern: string
 ) {
+  if (Array.isArray(option)) {
+    setFieldValue(
+      field,
+      option.filter((entry) => Boolean(entry) && !entry.pattern)
+    );
+    return;
+  }
+
   if (typeof option !== "string" || option.trim() !== "") {
     if (live) {
       const sourceValues = values || [];

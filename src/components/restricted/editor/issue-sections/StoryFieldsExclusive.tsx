@@ -1,8 +1,7 @@
 import React from "react";
-import AutocompleteField from "../../../generic/AutocompleteField";
 import { apps, individuals } from "../../../../graphql/queriesTyped";
-import { getPattern, updateField } from "./helpers";
 import type { ContainsProps, FieldItem } from "./types";
+import TypedRoleAutocomplete from "./TypedRoleAutocomplete";
 
 interface StoryFieldsExclusiveProps extends ContainsProps {
   index?: number;
@@ -50,59 +49,33 @@ function StoryFieldsExclusive(props: StoryFieldsExclusiveProps) {
     <React.Fragment>
       <div className="storyAddInputContainer">
         {individualFields.map((field) => (
-          <AutocompleteField
+          <TypedRoleAutocomplete
             key={field.type}
             query={individuals}
-            name={`stories[${index}].individuals`}
-            type={field.type}
-            nameField="name"
+            field={`stories[${index}].individuals`}
             label={field.label}
+            type={field.type}
+            values={storyIndividuals}
+            setFieldValue={setFieldValue}
             disabled={props.disabled}
-            multiple
-            allowCreate
-            variables={{ pattern: getPattern(storyIndividuals, "name") }}
-            onChange={(option, live) =>
-              updateField(
-                option as string | { [key: string]: unknown },
-                Boolean(live),
-                storyIndividuals,
-                setFieldValue,
-                `stories[${index}].individuals`,
-                "name"
-              )
-            }
-            generateLabel={(entry) => String(entry.name || "")}
           />
         ))}
       </div>
 
       <div className="storyAddInputContainer">
         {appearanceFields.map((field) => (
-          <AutocompleteField
+          <TypedRoleAutocomplete
             key={field.type}
             query={apps}
-            name={`stories[${index}].appearances`}
-            type={field.type}
-            nameField="name"
+            field={`stories[${index}].appearances`}
             label={field.label}
+            type={field.type}
+            values={storyAppearances}
+            setFieldValue={setFieldValue}
             disabled={props.disabled}
-            multiple
-            allowCreate
             variables={{
-              pattern: getPattern(storyAppearances, "name"),
               type: field.queryType || field.type,
             }}
-            onChange={(option, live) =>
-              updateField(
-                option as string | { [key: string]: unknown },
-                Boolean(live),
-                storyAppearances,
-                setFieldValue,
-                `stories[${index}].appearances`,
-                "name"
-              )
-            }
-            generateLabel={(entry) => String(entry.name || "")}
           />
         ))}
       </div>
