@@ -70,44 +70,6 @@ function normalizeStory(story: Record<string, unknown>, usIssue: boolean) {
   };
 }
 
-function normalizeCover(cover: Record<string, unknown>, usIssue: boolean) {
-  const parent = (cover.parent || {}) as {
-    issue?: {
-      number?: string;
-      variant?: string;
-      series?: { title?: string; volume?: number };
-    };
-  };
-  const parentIssue = parent.issue || {};
-  const parentSeries = parentIssue.series || {};
-  const exclusive = Boolean(cover.exclusive || usIssue);
-
-  return {
-    number: cover.number,
-    addinfo: String(cover.addinfo || ""),
-    exclusive,
-    individuals: !exclusive
-      ? undefined
-      : asArray(cover.individuals as Array<Record<string, unknown>>).map((entry) =>
-          stripItem(entry)
-        ),
-    parent: exclusive
-      ? undefined
-      : {
-          number: 0,
-          issue: {
-            series: {
-              title: String(parentSeries.title || ""),
-              volume: parentSeries.volume || 0,
-            },
-            number: String(parentIssue.number || ""),
-            variant: String(parentIssue.variant || ""),
-          },
-        },
-    children: cover.children,
-  };
-}
-
 export function buildIssueCreateDefaultValues(
   selected?: Record<string, unknown>,
   level?: string
@@ -170,9 +132,6 @@ export function mapIssueToEditorDefaultValues(
     stories: asArray(values.stories as Array<Record<string, unknown>>).map((story) =>
       normalizeStory(story, usIssue)
     ),
-    covers: asArray(values.covers as Array<Record<string, unknown>>).map((cover) =>
-      normalizeCover(cover, usIssue)
-    ),
   };
 
   if (!copyMode) return merged;
@@ -184,7 +143,6 @@ export function mapIssueToEditorDefaultValues(
     stories: [],
     individuals: [],
     arcs: [],
-    covers: [],
     cover: undefined,
   };
 }

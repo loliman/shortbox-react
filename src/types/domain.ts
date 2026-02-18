@@ -78,7 +78,6 @@ export interface Issue {
   currency?: string | null;
   limitation?: string | null;
   cover?: Cover | null;
-  covers?: Array<Cover | null> | null;
   arcs?: Array<Arc | null> | null;
   stories?: Array<Story | null> | null;
   variants?: Array<Issue | null> | null;

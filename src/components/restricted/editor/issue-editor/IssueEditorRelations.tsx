@@ -1,6 +1,6 @@
 import React from "react";
 import Stack from "@mui/material/Stack";
-import { Covers, Stories } from "../IssueEditorSections";
+import { Stories } from "../IssueEditorSections";
 import type { IssueEditorFormValues } from "./types";
 
 interface IssueEditorRelationsProps {
@@ -18,14 +18,6 @@ function IssueEditorRelations({ values, isDesktop, setFieldValue }: IssueEditorR
         isDesktop={isDesktop}
         values={values}
         us={values.series.publisher.us}
-      />
-
-      <Covers
-        setFieldValue={setFieldValue}
-        items={values.covers}
-        isDesktop={isDesktop}
-        us={values.series.publisher.us}
-        values={values}
       />
     </Stack>
   );

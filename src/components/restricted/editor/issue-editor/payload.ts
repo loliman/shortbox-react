@@ -1,11 +1,6 @@
 import { stripItem } from "../../../../util/util";
 import type { IssueEditorFormValues } from "./types";
 
-interface NamedTypeEntry {
-  name?: string;
-  type?: string[] | string;
-}
-
 interface MutationVariables {
   item: Record<string, unknown>;
   old?: Record<string, unknown>;

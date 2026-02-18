@@ -8,7 +8,7 @@ interface ContainsItemProps extends ContainsProps {
   item: FieldItem;
   index: number;
   fields: React.ReactElement;
-  type: "stories" | "covers";
+  type: "stories";
 }
 
 class ContainsItem extends React.Component<ContainsItemProps> {

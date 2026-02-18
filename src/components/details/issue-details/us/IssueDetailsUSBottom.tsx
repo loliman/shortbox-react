@@ -2,7 +2,7 @@ import React from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { generateLabel } from "../../../../util/hierarchy";
-import { Contains, ContainsTitleDetailed, ContainsTitleSimple } from "../../IssueDetails";
+import { Contains, ContainsTitleSimple } from "../../IssueDetails";
 import { generateMarvelDbUrl } from "../utils/externalLinks";
 import { IssueDetailsUSStoryDetails } from "./IssueDetailsUSStoryDetails";
 import type { ItemLike } from "../contains/expanded";
@@ -10,9 +10,6 @@ import type { ItemLike } from "../contains/expanded";
 interface IssueDetailsUSBottomProps {
   issue?: {
     stories?: unknown[];
-    covers?: Array<{
-      children?: Array<{ issue?: Record<string, unknown> | null } | null>;
-    }>;
     series?: Record<string, unknown>;
     number?: string | number;
   };
@@ -25,13 +22,6 @@ export function IssueDetailsUSBottom(props: Readonly<IssueDetailsUSBottomProps>)
   const stories = Array.isArray(issue.stories)
     ? issue.stories.filter((item): item is ItemLike => Boolean(item && typeof item === "object"))
     : [];
-  const covers = Array.isArray(issue.covers) ? issue.covers : [];
-  const coverChildren =
-    covers.length > 0 && Array.isArray(covers[0]?.children)
-      ? covers[0].children
-          .map((item) => item?.issue)
-          .filter((item): item is ItemLike => Boolean(item && typeof item === "object"))
-      : [];
 
   return (
     <Box sx={{ mt: 3 }}>
@@ -43,18 +33,6 @@ export function IssueDetailsUSBottom(props: Readonly<IssueDetailsUSBottomProps>)
         itemTitle={<ContainsTitleSimple {...(props as any)} />}
         itemDetails={<IssueDetailsUSStoryDetails issue={issue as any} session={props.session} />}
       />
-
-      {coverChildren.length > 0 ? (
-        <Box sx={{ mt: 3 }}>
-          <Contains
-            {...props}
-            header="Cover erschienen in"
-            noEntriesHint="Das Cover ist noch keinen deutschen Ausgaben zugeordnet"
-            items={coverChildren}
-            itemTitle={<ContainsTitleDetailed {...(props as any)} />}
-          />
-        </Box>
-      ) : null}
 
       <Box sx={{ mt: 3 }}>
         <Typography>

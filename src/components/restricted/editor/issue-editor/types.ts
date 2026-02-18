@@ -27,7 +27,6 @@ export interface IssueEditorFormValues {
   isbn?: string;
   arcs?: Array<Record<string, unknown>>;
   stories: Array<Record<string, unknown>>;
-  covers: Array<Record<string, unknown>>;
 }
 
 export interface IssueEditorProps {

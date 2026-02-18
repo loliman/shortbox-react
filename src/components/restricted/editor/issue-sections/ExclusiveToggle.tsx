@@ -4,7 +4,7 @@ import Switch from "@mui/material/Switch";
 import type { ContainsProps } from "./types";
 
 interface ExclusiveToggleProps extends ContainsProps {
-  type: "stories" | "covers";
+  type: "stories";
   index?: number;
 }
 

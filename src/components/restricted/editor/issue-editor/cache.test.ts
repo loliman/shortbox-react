@@ -47,7 +47,6 @@ describe("updateIssueEditorCache", () => {
         individuals: [],
         addinfo: "",
         stories: [],
-        covers: [],
       } as any
     );
 
@@ -92,7 +91,6 @@ describe("updateIssueEditorCache", () => {
           individuals: [],
           addinfo: "",
           stories: [],
-          covers: [],
         } as any
       )
     ).not.toThrow();
@@ -134,7 +132,6 @@ describe("updateIssueEditorCache", () => {
           individuals: [],
           addinfo: "",
           stories: [],
-          covers: [],
         } as any
       )
     ).not.toThrow();

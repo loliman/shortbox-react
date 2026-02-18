@@ -40,6 +40,5 @@ export function createEmptyIssueValues(): IssueEditorFormValues {
     isbn: "",
     arcs: [],
     stories: [],
-    covers: [],
   };
 }
