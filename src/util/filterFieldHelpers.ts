@@ -79,7 +79,7 @@ export function updateField(
             if (Array.isArray(previous[0].role)) previous[0].role.push(payload.role || "");
           }
         } else {
-          const value = payload.option as FieldItem;
+          const value = structuredClone(payload.option || {}) as FieldItem;
 
           if (payload.option?.__typename === "Appearance") {
             value.type = payload.type;
@@ -121,7 +121,7 @@ export function updateField(
 
       case "create-option":
         selected.push({
-          name: (values && values[values.length - 1]?.name) || "",
+          name: payload.option?.name || (values && values[values.length - 1]?.name) || "",
           type: payload.type ? [payload.type] : [],
           role: payload.role ? [payload.role] : [],
         });

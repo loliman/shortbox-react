@@ -100,7 +100,7 @@ function ContributorAutocomplete({
         normalizeText(option.name) === normalizeText((value as { name?: unknown })?.name)
       }
       onInputChange={(_, nextInput, reason) => {
-        if (reason !== "input" && reason !== "clear") return;
+        if (reason !== "input" && reason !== "clear" && reason !== "reset") return;
         setInputValue(nextInput);
       }}
       onChange={(_, nextValue, reason, details) => {
@@ -112,6 +112,7 @@ function ContributorAutocomplete({
         if (!payload) return;
 
         updateField(payload, false, values, setFieldValue, "individuals", "name");
+        setInputValue("");
       }}
     />
   );
@@ -181,4 +182,3 @@ function normalizeText(value: unknown) {
 }
 
 export default ContributorsSection;
-

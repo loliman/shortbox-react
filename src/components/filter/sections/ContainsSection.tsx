@@ -122,11 +122,12 @@ function ContainsSection({ values, us, isDesktop, setFieldValue }: ContainsSecti
           normalizeText(option.name) === normalizeText((value as { name?: unknown })?.name)
         }
         onInputChange={(_, nextInput, reason) => {
-          if (reason !== "input" && reason !== "clear") return;
+          if (reason !== "input" && reason !== "clear" && reason !== "reset") return;
           setPublisherInput(nextInput);
         }}
         onChange={(_, nextValue) => {
           setFieldValue("publishers", sanitizeNameList(asOptionArray(nextValue)));
+          setPublisherInput("");
         }}
       />
 
@@ -152,11 +153,12 @@ function ContainsSection({ values, us, isDesktop, setFieldValue }: ContainsSecti
             normalizeText(String((value as { volume?: unknown })?.volume || ""))
         }
         onInputChange={(_, nextInput, reason) => {
-          if (reason !== "input" && reason !== "clear") return;
+          if (reason !== "input" && reason !== "clear" && reason !== "reset") return;
           setSeriesInput(nextInput);
         }}
         onChange={(_, nextValue) => {
           setFieldValue("series", sanitizeTitleList(asOptionArray(nextValue)));
+          setSeriesInput("");
         }}
       />
 
@@ -242,4 +244,3 @@ function formatSeriesLabel(entry: unknown) {
 }
 
 export default ContainsSection;
-
