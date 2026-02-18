@@ -1,8 +1,6 @@
 export {
   Cover,
-  Covers,
   Stories,
-  coverDefault,
   getPattern,
   storyDefault,
   updateField,

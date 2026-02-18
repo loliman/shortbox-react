@@ -4,9 +4,6 @@ import React from "react";
 type CoverTooltipIssue = {
   cover?: { url?: string | null } | null;
   series?: { publisher?: { us?: boolean | null } | null } | null;
-  covers?: Array<{
-    parent?: { issue?: { cover?: { url?: string | null } | null } | null } | null;
-  }> | null;
 };
 
 type CoverTooltipProps = {
@@ -18,18 +15,10 @@ type CoverTooltipProps = {
 
 function getCoverSource(
   issue: CoverTooltipIssue,
-  us?: boolean
+  _us?: boolean
 ): { coverUrl: string; blurCover: boolean } {
   const directCover = issue.cover?.url?.trim();
   if (directCover) return { coverUrl: directCover, blurCover: false };
-
-  const parentCover = issue.covers?.[0]?.parent?.issue?.cover?.url?.trim();
-  const isUsIssue = us !== undefined ? us : Boolean(issue.series?.publisher?.us);
-  const shouldUseParentCover = !isUsIssue && Boolean(parentCover);
-
-  if (shouldUseParentCover && parentCover) {
-    return { coverUrl: parentCover, blurCover: true };
-  }
 
   return { coverUrl: "/nocover.jpg", blurCover: false };
 }

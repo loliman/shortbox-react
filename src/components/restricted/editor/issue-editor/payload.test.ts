@@ -46,20 +46,6 @@ function baseValues(us = false): IssueEditorFormValues {
         ],
       },
     ],
-    covers: [
-      {
-        exclusive: false,
-        parent: {
-          issue: {
-            series: { title: "Spider-Man", volume: 1, publisher: { name: "Marvel", us: false } },
-          },
-        },
-        individuals: [
-          { name: "John Romita", type: "ARTIST" },
-          { name: "John Romita", type: "ARTIST" },
-        ],
-      },
-    ],
   };
 }
 
@@ -86,7 +72,6 @@ describe("buildIssueMutationVariables", () => {
       publisher: { name: "Marvel", us: false },
     });
     expect(item.stories).toBeUndefined();
-    expect(item.covers).toBeUndefined();
     expect(item.individuals).toBeUndefined();
     expect(item.arcs).toBeUndefined();
     expect(item.comicguideid).toBeUndefined();
@@ -104,7 +89,6 @@ describe("buildIssueMutationVariables", () => {
   it("drops DE-only fields for US issues and removes parents for exclusive entries", () => {
     const values = baseValues(true);
     (values.stories[0] as any).exclusive = true;
-    (values.covers[0] as any).exclusive = true;
 
     const result = buildIssueMutationVariables(values, values, false);
     const item = result.item as any;
@@ -117,7 +101,6 @@ describe("buildIssueMutationVariables", () => {
     expect(item.price).toBeUndefined();
     expect(item.currency).toBeUndefined();
     expect(item.stories).toBeUndefined();
-    expect(item.covers).toBeUndefined();
     expect(result.old).toBeUndefined();
   });
 

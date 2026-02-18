@@ -5,7 +5,7 @@ import { cloneFieldItem } from "./defaults";
 import type { ContainsProps, FieldItem } from "./types";
 
 interface AddContainsButtonProps extends ContainsProps {
-  type: "stories" | "covers";
+  type: "stories";
   defaultItem: FieldItem;
 }
 

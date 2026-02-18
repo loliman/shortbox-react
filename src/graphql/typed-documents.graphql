@@ -11,7 +11,13 @@ query Export($filter: Filter!, $type: String!) {
 }
 
 query Publishers($pattern: String, $us: Boolean!, $first: Int, $after: String, $filter: Filter) {
-  publisherList(pattern: $pattern, us: $us, first: $first, after: $after, filter: $filter) {
+  publisherList(
+    pattern: $pattern
+    us: $us
+    first: $first
+    after: $after
+    filter: $filter
+  ) {
     edges {
       node {
         name
@@ -25,13 +31,7 @@ query Publishers($pattern: String, $us: Boolean!, $first: Int, $after: String, $
   }
 }
 
-query Series(
-  $pattern: String
-  $publisher: PublisherInput!
-  $first: Int
-  $after: String
-  $filter: Filter
-) {
+query Series($pattern: String, $publisher: PublisherInput!, $first: Int, $after: String, $filter: Filter) {
   seriesList(
     pattern: $pattern
     publisher: $publisher
@@ -58,14 +58,14 @@ query Series(
   }
 }
 
-query Issues(
-  $pattern: String
-  $series: SeriesInput!
-  $first: Int
-  $after: String
-  $filter: Filter
-) {
-  issueList(pattern: $pattern, series: $series, first: $first, after: $after, filter: $filter) {
+query Issues($pattern: String, $series: SeriesInput!, $first: Int, $after: String, $filter: Filter) {
+  issueList(
+    pattern: $pattern
+    series: $series
+    first: $first
+    after: $after
+    filter: $filter
+  ) {
     edges {
       node {
         title
@@ -74,15 +74,6 @@ query Issues(
         collected
         cover {
           url
-        }
-        covers {
-          parent {
-            issue {
-              cover {
-                url
-              }
-            }
-          }
         }
         series {
           title
@@ -167,7 +158,13 @@ mutation Logout {
 }
 
 query LastEdited($filter: Filter, $first: Int, $after: String, $order: String, $direction: String) {
-  lastEdited(filter: $filter, first: $first, after: $after, order: $order, direction: $direction) {
+  lastEdited(
+    filter: $filter
+    first: $first
+    after: $after
+    order: $order
+    direction: $direction
+  ) {
     edges {
       node {
         number
@@ -182,15 +179,6 @@ query LastEdited($filter: Filter, $first: Int, $after: String, $order: String, $
         cover {
           url
         }
-        covers {
-          parent {
-            issue {
-              cover {
-                url
-              }
-            }
-          }
-        }
         series {
           title
           volume
@@ -199,15 +187,6 @@ query LastEdited($filter: Filter, $first: Int, $after: String, $order: String, $
           publisher {
             name
             us
-          }
-        }
-        covers {
-          parent {
-            issue {
-              cover {
-                url
-              }
-            }
           }
         }
         stories {
@@ -270,15 +249,6 @@ query Publisher($publisher: PublisherInput!) {
       cover {
         url
       }
-      covers {
-        parent {
-          issue {
-            cover {
-              url
-            }
-          }
-        }
-      }
       comicguideid
       series {
         title
@@ -338,15 +308,6 @@ query Publisher($publisher: PublisherInput!) {
       updatedat
       cover {
         url
-      }
-      covers {
-        parent {
-          issue {
-            cover {
-              url
-            }
-          }
-        }
       }
       comicguideid
       series {
@@ -421,15 +382,6 @@ query Seriesd($series: SeriesInput!) {
       cover {
         url
       }
-      covers {
-        parent {
-          issue {
-            cover {
-              url
-            }
-          }
-        }
-      }
       comicguideid
       series {
         title
@@ -489,15 +441,6 @@ query Seriesd($series: SeriesInput!) {
       updatedat
       cover {
         url
-      }
-      covers {
-        parent {
-          issue {
-            cover {
-              url
-            }
-          }
-        }
       }
       comicguideid
       series {
@@ -583,15 +526,6 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
         type
       }
     }
-    covers {
-      parent {
-        issue {
-          cover {
-            url
-          }
-        }
-      }
-    }
     series {
       title
       volume
@@ -611,15 +545,6 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
         issue {
           cover {
             url
-          }
-          covers {
-            parent {
-              issue {
-                cover {
-                  url
-                }
-              }
-            }
           }
           number
           series {
@@ -648,15 +573,6 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
             cover {
               url
             }
-            covers {
-              parent {
-                issue {
-                  cover {
-                    url
-                  }
-                }
-              }
-            }
             number
             series {
               title
@@ -677,15 +593,6 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
         issue {
           cover {
             url
-          }
-          covers {
-            parent {
-              issue {
-                cover {
-                  url
-                }
-              }
-            }
           }
           number
           title
@@ -719,15 +626,6 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
           cover {
             url
           }
-          covers {
-            parent {
-              issue {
-                cover {
-                  url
-                }
-              }
-            }
-          }
           number
           series {
             title
@@ -751,15 +649,6 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
           number
           cover {
             url
-          }
-          covers {
-            parent {
-              issue {
-                cover {
-                  url
-                }
-              }
-            }
           }
           series {
             title
@@ -952,56 +841,6 @@ mutation CreateIssue($item: IssueInput!) {
       firstapp
       exclusive
     }
-    covers {
-      url
-      addinfo
-      number
-      children {
-        issue {
-          number
-          format
-          variant
-          series {
-            title
-            volume
-            startyear
-            endyear
-            publisher {
-              name
-              us
-            }
-          }
-        }
-      }
-      parent {
-        issue {
-          variant
-          format
-          number
-          series {
-            title
-            startyear
-            endyear
-            volume
-            publisher {
-              name
-              us
-            }
-          }
-        }
-        individuals {
-          name
-          type
-        }
-      }
-      onlyapp
-      firstapp
-      exclusive
-      individuals {
-        name
-        type
-      }
-    }
     variants {
       format
       variant
@@ -1129,57 +968,6 @@ mutation EditIssue($old: IssueInput!, $item: IssueInput!) {
       onlytb
       onlyoneprint
       exclusive
-    }
-    covers {
-      url
-      addinfo
-      number
-      children {
-        addinfo
-        issue {
-          number
-          format
-          variant
-          series {
-            title
-            volume
-            startyear
-            endyear
-            publisher {
-              name
-              us
-            }
-          }
-        }
-      }
-      parent {
-        issue {
-          variant
-          format
-          number
-          series {
-            title
-            startyear
-            endyear
-            volume
-            publisher {
-              name
-              us
-            }
-          }
-        }
-        individuals {
-          name
-          type
-        }
-      }
-      onlyapp
-      firstapp
-      exclusive
-      individuals {
-        name
-        type
-      }
     }
     variants {
       format

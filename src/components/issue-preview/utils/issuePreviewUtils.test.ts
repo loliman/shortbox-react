@@ -12,7 +12,7 @@ describe("issuePreviewUtils", () => {
     expect(getIssueVariantLabel({ format: "HC", variant: "B" })).toBe("HC (B Variant)");
   });
 
-  it("chooses direct cover first, then DE parent cover as fallback", () => {
+  it("chooses direct cover and otherwise returns empty preview cover", () => {
     expect(
       getIssuePreviewCover(
         {
@@ -27,22 +27,8 @@ describe("issuePreviewUtils", () => {
 
     expect(
       getIssuePreviewCover(
-        {
-          covers: [{ parent: { issue: { cover: { url: " https://cdn/parent.jpg " } } } }],
-        },
+        {},
         false
-      )
-    ).toEqual({
-      coverUrl: "https://cdn/parent.jpg",
-      blurCover: true,
-    });
-
-    expect(
-      getIssuePreviewCover(
-        {
-          covers: [{ parent: { issue: { cover: { url: "https://cdn/parent.jpg" } } } }],
-        },
-        true
       )
     ).toEqual({
       coverUrl: "",

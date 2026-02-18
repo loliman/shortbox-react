@@ -4,7 +4,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import type { ContainsProps } from "./types";
 
 interface RemoveContainsButtonProps extends ContainsProps {
-  type: "stories" | "covers";
+  type: "stories";
   index: number;
 }
 

@@ -1,0 +1,11 @@
+overwrite: true
+schema:
+  - ./node_modules/@loliman/shortbox-contract/schema/shortbox.graphql
+documents:
+  - src/graphql/typed-documents.graphql
+generates:
+  src/graphql/typed-documents.generated.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typed-document-node

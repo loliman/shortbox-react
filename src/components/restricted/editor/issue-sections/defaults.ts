@@ -20,27 +20,6 @@ export const storyDefault: FieldItem = {
   exclusive: false,
 };
 
-export const coverDefault: FieldItem = {
-  parent: {
-    issue: {
-      series: {
-        title: "",
-        volume: 1,
-        publisher: {
-          name: "",
-        },
-      },
-      number: "0",
-      variant: "",
-    },
-    number: 0,
-  },
-  individuals: [],
-  addinfo: "",
-  number: 0,
-  exclusive: false,
-};
-
 export function cloneFieldItem<T>(item: T): T {
   return structuredClone(item);
 }
