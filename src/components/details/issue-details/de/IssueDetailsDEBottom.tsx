@@ -5,13 +5,11 @@ import { generateLabel } from "../../../../util/hierarchy";
 import { Contains, ContainsTitleDetailed } from "../../IssueDetails";
 import { generateComicGuideUrl } from "../utils/externalLinks";
 import { IssueDetailsDEStoryDetails } from "./IssueDetailsDEStoryDetails";
-import { IssueDetailsDECoverDetails } from "./IssueDetailsDECoverDetails";
 import type { ItemLike } from "../contains/expanded";
 
 interface IssueDetailsDEBottomProps {
   issue?: {
     stories?: unknown[];
-    covers?: unknown[];
     comicguideid?: string | number | null;
     series?: Record<string, unknown>;
     number?: string | number;
@@ -24,9 +22,6 @@ export function IssueDetailsDEBottom(props: Readonly<IssueDetailsDEBottomProps>)
   const stories = Array.isArray(issue.stories)
     ? issue.stories.filter((item): item is ItemLike => Boolean(item && typeof item === "object"))
     : [];
-  const covers = Array.isArray(issue.covers)
-    ? issue.covers.filter((item): item is ItemLike => Boolean(item && typeof item === "object"))
-    : [];
 
   return (
     <Box sx={{ mt: 3 }}>
@@ -38,19 +33,6 @@ export function IssueDetailsDEBottom(props: Readonly<IssueDetailsDEBottomProps>)
         itemTitle={<ContainsTitleDetailed {...(props as any)} />}
         itemDetails={<IssueDetailsDEStoryDetails />}
       />
-
-      {covers.length > 0 ? (
-        <Box sx={{ mt: 3 }}>
-          <Contains
-            {...props}
-            header="Cover"
-            noEntriesHint="Dieser Ausgabe sind noch keine Cover zugeordnet"
-            items={covers}
-            itemTitle={<ContainsTitleDetailed isCover={true} {...(props as any)} />}
-            itemDetails={<IssueDetailsDECoverDetails />}
-          />
-        </Box>
-      ) : null}
 
       {issue.comicguideid ? (
         <Box sx={{ mt: 3 }}>

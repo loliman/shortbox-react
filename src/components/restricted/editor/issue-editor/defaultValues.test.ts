@@ -74,19 +74,6 @@ describe("issue-editor default values", () => {
             },
           },
         ],
-        covers: [
-          {
-            number: 1,
-            individuals: [{ name: "D", type: "ARTIST" }],
-            parent: {
-              issue: {
-                number: "2",
-                variant: "A",
-                series: { title: "Spider-Man", volume: 1 },
-              },
-            },
-          },
-        ],
       },
       false
     );
@@ -95,8 +82,6 @@ describe("issue-editor default values", () => {
     expect(mapped.comicguideid).toBe(10);
     expect(mapped.stories[0].exclusive).toBe(true);
     expect(mapped.stories[0].parent).toBeUndefined();
-    expect(mapped.covers[0].exclusive).toBe(true);
-    expect(mapped.covers[0].parent).toBeUndefined();
     expect(mapped.individuals[0]).toEqual({ name: "Peter", type: "WRITER" });
 
     const copied = mapIssueToEditorDefaultValues(
@@ -105,7 +90,6 @@ describe("issue-editor default values", () => {
         stories: [{ title: "A" }],
         individuals: [{ name: "X", type: "WRITER" }],
         arcs: [{ title: "Y" }],
-        covers: [{ number: 1 }],
       },
       true
     );
@@ -115,11 +99,10 @@ describe("issue-editor default values", () => {
     expect(copied.stories).toEqual([]);
     expect(copied.individuals).toEqual([]);
     expect(copied.arcs).toEqual([]);
-    expect(copied.covers).toEqual([]);
     expect(copied.cover).toBeUndefined();
   });
 
-  it("keeps parent links for non-exclusive stories and covers on non-US issues", () => {
+  it("keeps parent links for non-exclusive stories on non-US issues", () => {
     const mapped = mapIssueToEditorDefaultValues(
       {
         title: "Issue 2",
@@ -143,19 +126,6 @@ describe("issue-editor default values", () => {
             },
           },
         ],
-        covers: [
-          {
-            number: 1,
-            individuals: [{ name: "Cover Artist", type: "ARTIST" }],
-            parent: {
-              issue: {
-                number: "9",
-                variant: "B",
-                series: { title: "Batman", volume: 2 },
-              },
-            },
-          },
-        ],
       },
       false
     );
@@ -169,17 +139,6 @@ describe("issue-editor default values", () => {
       issue: {
         series: { title: "Batman", volume: 2 },
         number: "8",
-      },
-    });
-
-    expect(mapped.covers[0].exclusive).toBe(false);
-    expect(mapped.covers[0].individuals).toBeUndefined();
-    expect(mapped.covers[0].parent).toEqual({
-      number: 0,
-      issue: {
-        series: { title: "Batman", volume: 2 },
-        number: "9",
-        variant: "B",
       },
     });
   });

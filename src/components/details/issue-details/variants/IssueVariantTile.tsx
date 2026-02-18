@@ -62,13 +62,10 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
 
 function getVariantCoverSource(
   variant: VariantIssue,
-  us: boolean
+  _us: boolean
 ): { coverUrl: string; blurCover: boolean } {
   const directCover = variant.cover?.url?.trim();
   if (directCover) return { coverUrl: directCover, blurCover: false };
-
-  const parentCover = variant.covers?.[0]?.parent?.issue?.cover?.url?.trim();
-  if (!us && parentCover) return { coverUrl: parentCover, blurCover: true };
 
   return { coverUrl: "/nocover_simple.jpg", blurCover: false };
 }

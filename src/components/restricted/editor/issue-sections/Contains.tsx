@@ -5,7 +5,7 @@ import { getContainsKey } from "./containsKey";
 import type { ContainsProps } from "./types";
 
 interface ContainsListProps extends ContainsProps {
-  type: "stories" | "covers";
+  type: "stories";
   fields: React.ReactElement;
 }
 

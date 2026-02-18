@@ -46,20 +46,6 @@ function baseValues(us = false): IssueEditorFormValues {
         ],
       },
     ],
-    covers: [
-      {
-        exclusive: false,
-        parent: {
-          issue: {
-            series: { title: "Spider-Man", volume: 1, publisher: { name: "Marvel", us: false } },
-          },
-        },
-        individuals: [
-          { name: "John Romita", type: "ARTIST" },
-          { name: "John Romita", type: "ARTIST" },
-        ],
-      },
-    ],
   };
 }
 
@@ -107,20 +93,6 @@ describe("buildIssueMutationVariables", () => {
         { name: "Venom", type: "ANTAGONIST" },
       ],
     });
-    expect(item.covers).toHaveLength(1);
-    expect(item.covers[0]).toMatchObject({
-      exclusive: false,
-      parent: {
-        issue: {
-          series: {
-            title: "Spider-Man",
-            volume: 1,
-            publisher: { name: "Marvel", us: false },
-          },
-        },
-      },
-      individuals: [{ name: "John Romita", type: ["ARTIST"] }],
-    });
     expect(item.verified).toBeUndefined();
     expect(item.collected).toBeUndefined();
 
@@ -135,7 +107,6 @@ describe("buildIssueMutationVariables", () => {
   it("drops DE-only fields for US issues but keeps relation payload", () => {
     const values = baseValues(true);
     (values.stories[0] as any).exclusive = true;
-    (values.covers[0] as any).exclusive = true;
 
     const result = buildIssueMutationVariables(values, values, false);
     const item = result.item as any;
@@ -150,7 +121,6 @@ describe("buildIssueMutationVariables", () => {
     expect(item.individuals).toEqual([{ name: "Peter Parker", type: ["WRITER", "PENCILER"] }]);
     expect(item.arcs).toEqual([{ title: "Civil War", type: "EVENT" }]);
     expect(item.stories).toHaveLength(1);
-    expect(item.covers).toHaveLength(1);
     expect(item.stories[0].parent).toBeUndefined();
     expect(item.covers[0].parent).toBeUndefined();
     expect(result.old).toBeUndefined();

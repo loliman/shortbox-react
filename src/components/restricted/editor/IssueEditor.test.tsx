@@ -12,7 +12,6 @@ const mocks = vi.hoisted(() => ({
     individuals: [],
     addinfo: "",
     stories: [],
-    covers: [],
   })),
   buildIssueEditorStateMock: vi.fn((props: any, defaultValues: any) => ({
     defaultValues,

@@ -19,7 +19,7 @@ export interface ChangePayload {
   name?: string;
 }
 
-export type ContainsType = "stories" | "covers";
+export type ContainsType = "stories";
 
 export interface ContainsProps {
   items?: FieldItem[];

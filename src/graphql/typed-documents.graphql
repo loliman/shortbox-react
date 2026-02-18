@@ -75,15 +75,6 @@ query Issues(
         cover {
           url
         }
-        covers {
-          parent {
-            issue {
-              cover {
-                url
-              }
-            }
-          }
-        }
         series {
           title
           volume
@@ -182,15 +173,6 @@ query LastEdited($filter: Filter, $first: Int, $after: String, $order: String, $
         cover {
           url
         }
-        covers {
-          parent {
-            issue {
-              cover {
-                url
-              }
-            }
-          }
-        }
         series {
           title
           volume
@@ -199,15 +181,6 @@ query LastEdited($filter: Filter, $first: Int, $after: String, $order: String, $
           publisher {
             name
             us
-          }
-        }
-        covers {
-          parent {
-            issue {
-              cover {
-                url
-              }
-            }
           }
         }
         stories {
@@ -270,15 +243,6 @@ query Publisher($publisher: PublisherInput!) {
       cover {
         url
       }
-      covers {
-        parent {
-          issue {
-            cover {
-              url
-            }
-          }
-        }
-      }
       comicguideid
       series {
         title
@@ -338,15 +302,6 @@ query Publisher($publisher: PublisherInput!) {
       updatedat
       cover {
         url
-      }
-      covers {
-        parent {
-          issue {
-            cover {
-              url
-            }
-          }
-        }
       }
       comicguideid
       series {
@@ -421,15 +376,6 @@ query Seriesd($series: SeriesInput!) {
       cover {
         url
       }
-      covers {
-        parent {
-          issue {
-            cover {
-              url
-            }
-          }
-        }
-      }
       comicguideid
       series {
         title
@@ -489,15 +435,6 @@ query Seriesd($series: SeriesInput!) {
       updatedat
       cover {
         url
-      }
-      covers {
-        parent {
-          issue {
-            cover {
-              url
-            }
-          }
-        }
       }
       comicguideid
       series {
@@ -583,15 +520,6 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
         type
       }
     }
-    covers {
-      parent {
-        issue {
-          cover {
-            url
-          }
-        }
-      }
-    }
     series {
       title
       volume
@@ -611,15 +539,6 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
         issue {
           cover {
             url
-          }
-          covers {
-            parent {
-              issue {
-                cover {
-                  url
-                }
-              }
-            }
           }
           number
           series {
@@ -648,15 +567,6 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
             cover {
               url
             }
-            covers {
-              parent {
-                issue {
-                  cover {
-                    url
-                  }
-                }
-              }
-            }
             number
             series {
               title
@@ -677,15 +587,6 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
         issue {
           cover {
             url
-          }
-          covers {
-            parent {
-              issue {
-                cover {
-                  url
-                }
-              }
-            }
           }
           number
           title
@@ -719,15 +620,6 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
           cover {
             url
           }
-          covers {
-            parent {
-              issue {
-                cover {
-                  url
-                }
-              }
-            }
-          }
           number
           series {
             title
@@ -751,15 +643,6 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
           number
           cover {
             url
-          }
-          covers {
-            parent {
-              issue {
-                cover {
-                  url
-                }
-              }
-            }
           }
           series {
             title
@@ -952,56 +835,6 @@ mutation CreateIssue($item: IssueInput!) {
       firstapp
       exclusive
     }
-    covers {
-      url
-      addinfo
-      number
-      children {
-        issue {
-          number
-          format
-          variant
-          series {
-            title
-            volume
-            startyear
-            endyear
-            publisher {
-              name
-              us
-            }
-          }
-        }
-      }
-      parent {
-        issue {
-          variant
-          format
-          number
-          series {
-            title
-            startyear
-            endyear
-            volume
-            publisher {
-              name
-              us
-            }
-          }
-        }
-        individuals {
-          name
-          type
-        }
-      }
-      onlyapp
-      firstapp
-      exclusive
-      individuals {
-        name
-        type
-      }
-    }
     variants {
       format
       variant
@@ -1129,57 +962,6 @@ mutation EditIssue($old: IssueInput!, $item: IssueInput!) {
       onlytb
       onlyoneprint
       exclusive
-    }
-    covers {
-      url
-      addinfo
-      number
-      children {
-        addinfo
-        issue {
-          number
-          format
-          variant
-          series {
-            title
-            volume
-            startyear
-            endyear
-            publisher {
-              name
-              us
-            }
-          }
-        }
-      }
-      parent {
-        issue {
-          variant
-          format
-          number
-          series {
-            title
-            startyear
-            endyear
-            volume
-            publisher {
-              name
-              us
-            }
-          }
-        }
-        individuals {
-          name
-          type
-        }
-      }
-      onlyapp
-      firstapp
-      exclusive
-      individuals {
-        name
-        type
-      }
     }
     variants {
       format

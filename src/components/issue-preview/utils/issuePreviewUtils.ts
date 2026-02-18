@@ -33,7 +33,6 @@ export type PreviewIssue = {
   title?: string | null;
   verified?: boolean | null;
   stories?: Array<StoryLike | null> | null;
-  covers?: Array<{ parent?: { issue?: { cover?: CoverLike | null } | null } | null } | null> | null;
   cover?: CoverLike | null;
   collected?: boolean | null;
   format?: string | null;
@@ -75,13 +74,10 @@ export function getIssueVariantLabel(issue: PreviewIssue): string {
 
 export function getIssuePreviewCover(
   issue: PreviewIssue,
-  us: boolean
+  _us: boolean
 ): { coverUrl: string; blurCover: boolean } {
   const directCover = issue.cover?.url?.trim();
   if (directCover) return { coverUrl: directCover, blurCover: false };
-
-  const parentCover = issue.covers?.[0]?.parent?.issue?.cover?.url?.trim();
-  if (!us && parentCover) return { coverUrl: parentCover, blurCover: true };
 
   return { coverUrl: "", blurCover: false };
 }
