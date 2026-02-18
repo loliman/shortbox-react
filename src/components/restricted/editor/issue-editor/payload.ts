@@ -6,6 +6,17 @@ interface NamedTypeEntry {
   type?: string[] | string;
 }
 
+interface ArcEntry {
+  title?: string;
+  type?: string;
+}
+
+interface AppearanceEntry {
+  name?: string;
+  type?: string;
+  role?: string;
+}
+
 interface MutationVariables {
   item: Record<string, unknown>;
   old?: Record<string, unknown>;
@@ -23,6 +34,217 @@ function toOptionalInt(value: unknown): number | undefined {
   const parsed =
     typeof value === "number" ? Math.trunc(value) : Number.parseInt(String(value).trim(), 10);
   return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+function toOptionalString(value: unknown): string | undefined {
+  if (value === null || value === undefined) return undefined;
+  const normalized = String(value).trim();
+  return normalized.length > 0 ? normalized : undefined;
+}
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return null;
+  return value as Record<string, unknown>;
+}
+
+function asRecordArray(value: unknown): Record<string, unknown>[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter(
+    (entry): entry is Record<string, unknown> =>
+      Boolean(entry) && typeof entry === "object" && !Array.isArray(entry)
+  );
+}
+
+function normalizeTypeList(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value
+      .map((entry) => toOptionalString(entry))
+      .filter((entry): entry is string => Boolean(entry));
+  }
+
+  const single = toOptionalString(value);
+  if (!single) return [];
+  return [single];
+}
+
+function normalizeIndividuals(value: unknown): NamedTypeEntry[] {
+  const merged = new Map<string, Set<string>>();
+
+  asRecordArray(value).forEach((entry) => {
+    if (entry.pattern) return;
+
+    const name = toOptionalString(entry.name);
+    if (!name) return;
+
+    const types = normalizeTypeList(entry.type);
+    if (types.length === 0) return;
+
+    const current = merged.get(name) || new Set<string>();
+    types.forEach((type) => current.add(type));
+    merged.set(name, current);
+  });
+
+  return Array.from(merged.entries()).map(([name, typeSet]) => ({
+    name,
+    type: Array.from(typeSet),
+  }));
+}
+
+function normalizeArcs(value: unknown): ArcEntry[] {
+  const unique = new Set<string>();
+  const entries: ArcEntry[] = [];
+
+  asRecordArray(value).forEach((entry) => {
+    if (entry.pattern) return;
+
+    const title = toOptionalString(entry.title);
+    if (!title) return;
+    const type = toOptionalString(entry.type);
+    const key = `${title}::${type || ""}`;
+    if (unique.has(key)) return;
+
+    unique.add(key);
+    entries.push(type ? { title, type } : { title });
+  });
+
+  return entries;
+}
+
+function normalizeAppearances(value: unknown): AppearanceEntry[] {
+  const unique = new Set<string>();
+  const entries: AppearanceEntry[] = [];
+
+  asRecordArray(value).forEach((entry) => {
+    if (entry.pattern) return;
+
+    const name = toOptionalString(entry.name);
+    if (!name) return;
+
+    const typeList = normalizeTypeList(entry.type);
+    const type = typeList[0] || undefined;
+    if (!type) return;
+
+    const roleList = normalizeTypeList(entry.role);
+    const role = roleList[0] || undefined;
+    const key = `${name}::${type}::${role || ""}`;
+    if (unique.has(key)) return;
+
+    unique.add(key);
+    entries.push(role ? { name, type, role } : { name, type });
+  });
+
+  return entries;
+}
+
+function normalizePublisherInput(value: unknown): Record<string, unknown> | undefined {
+  const publisher = asRecord(value);
+  if (!publisher) return undefined;
+
+  const name = toOptionalString(publisher.name);
+  const us = typeof publisher.us === "boolean" ? publisher.us : undefined;
+
+  const normalized: Record<string, unknown> = {};
+  if (name) normalized.name = name;
+  if (typeof us === "boolean") normalized.us = us;
+  return Object.keys(normalized).length > 0 ? normalized : undefined;
+}
+
+function normalizeSeriesInput(value: unknown): Record<string, unknown> | undefined {
+  const series = asRecord(value);
+  if (!series) return undefined;
+
+  const normalized: Record<string, unknown> = {};
+  const title = toOptionalString(series.title);
+  const volume = toOptionalInt(series.volume);
+  const publisher = normalizePublisherInput(series.publisher);
+
+  if (title) normalized.title = title;
+  if (volume !== undefined) normalized.volume = volume;
+  if (publisher) normalized.publisher = publisher;
+  return Object.keys(normalized).length > 0 ? normalized : undefined;
+}
+
+function normalizeIssueReference(value: unknown): Record<string, unknown> | undefined {
+  const issue = asRecord(value);
+  if (!issue) return undefined;
+
+  const normalized: Record<string, unknown> = {};
+  const series = normalizeSeriesInput(issue.series);
+  const number = toOptionalString(issue.number);
+  const format = toOptionalString(issue.format);
+  const variant = toOptionalString(issue.variant);
+
+  if (series) normalized.series = series;
+  if (number) normalized.number = number;
+  if (format) normalized.format = format;
+  if (variant) normalized.variant = variant;
+  return Object.keys(normalized).length > 0 ? normalized : undefined;
+}
+
+function normalizeStoryParent(value: unknown): Record<string, unknown> | undefined {
+  const parent = asRecord(value);
+  if (!parent) return undefined;
+
+  const normalized: Record<string, unknown> = {};
+  const title = toOptionalString(parent.title);
+  const number = toOptionalInt(parent.number);
+  const issue = normalizeIssueReference(parent.issue);
+
+  if (title) normalized.title = title;
+  if (number !== undefined) normalized.number = number;
+  if (issue) normalized.issue = issue;
+  return Object.keys(normalized).length > 0 ? normalized : undefined;
+}
+
+function normalizeCoverParent(value: unknown): Record<string, unknown> | undefined {
+  const parent = asRecord(value);
+  if (!parent) return undefined;
+
+  const normalized: Record<string, unknown> = {};
+  const number = toOptionalInt(parent.number);
+  const issue = normalizeIssueReference(parent.issue);
+
+  if (number !== undefined) normalized.number = number;
+  if (issue) normalized.issue = issue;
+  return Object.keys(normalized).length > 0 ? normalized : undefined;
+}
+
+function normalizeStories(value: unknown): Array<Record<string, unknown>> {
+  return asRecordArray(value).map((story) => {
+    const exclusive = Boolean(story.exclusive);
+
+    const normalized: Record<string, unknown> = {
+      title: String(story.title || ""),
+      addinfo: String(story.addinfo || ""),
+      part: String(story.part || ""),
+      number: toOptionalInt(story.number) || 0,
+      exclusive,
+      individuals: normalizeIndividuals(story.individuals),
+      appearances: normalizeAppearances(story.appearances),
+    };
+
+    const parent = normalizeStoryParent(story.parent);
+    if (!exclusive && parent) normalized.parent = parent;
+
+    return normalized;
+  });
+}
+
+function normalizeCovers(value: unknown): Array<Record<string, unknown>> {
+  return asRecordArray(value).map((cover) => {
+    const exclusive = Boolean(cover.exclusive);
+    const normalized: Record<string, unknown> = {
+      number: toOptionalInt(cover.number) || 0,
+      addinfo: String(cover.addinfo || ""),
+      exclusive,
+      individuals: normalizeIndividuals(cover.individuals),
+    };
+
+    const parent = normalizeCoverParent(cover.parent);
+    if (!exclusive && parent) normalized.parent = parent;
+
+    return normalized;
+  });
 }
 
 export function buildIssueMutationVariables(
@@ -45,7 +267,12 @@ export function buildIssueMutationVariables(
     currency: values.currency,
     isbn: values.isbn,
     limitation: values.limitation,
+    comicguideid: toOptionalInt(values.comicguideid),
     addinfo: values.addinfo,
+    individuals: normalizeIndividuals(values.individuals),
+    arcs: normalizeArcs(values.arcs),
+    stories: normalizeStories(values.stories),
+    covers: normalizeCovers(values.covers),
     series: seriesPayload,
   } as Record<string, unknown>;
 
@@ -53,6 +280,7 @@ export function buildIssueMutationVariables(
     itemPayload.format = undefined;
     itemPayload.limitation = undefined;
     itemPayload.pages = undefined;
+    itemPayload.comicguideid = undefined;
     itemPayload.isbn = undefined;
     itemPayload.price = undefined;
     itemPayload.currency = undefined;
