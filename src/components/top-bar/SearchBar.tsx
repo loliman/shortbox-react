@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
-import SearchIcon from "@mui/icons-material/Search";
 import TextField from "@mui/material/TextField";
 import { useQuery } from "@apollo/client";
 import { search } from "../../graphql/queriesTyped";
@@ -13,12 +12,6 @@ type SearchNode = NonNullable<NonNullable<NodesQuery["nodes"]>[number]>;
 const MIN_QUERY_LENGTH = 2;
 
 interface SearchBarProps {
-  focus?: boolean;
-  alignLeft?: boolean;
-  isPhone?: boolean;
-  isTablet?: boolean;
-  isTabletLandscape?: boolean;
-  compactLayout?: boolean;
   us?: boolean;
   navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
   onFocus?: (
@@ -30,9 +23,6 @@ interface SearchBarProps {
 export function SearchBar(props: Readonly<SearchBarProps>) {
   const [pattern, setPattern] = useState("");
   const [debouncedPattern, setDebouncedPattern] = useState("");
-  const isFocused = Boolean(props.focus);
-  const mobileHeader =
-    props.compactLayout ?? Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
   const queryPattern = debouncedPattern;
   const us = Boolean(props.us);
 
@@ -73,15 +63,10 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
   };
 
   return (
-    <Box
-      sx={{
-        width: isFocused ? "100%" : mobileHeader ? 58 : 300,
-        ml: props.alignLeft ? 0 : "auto",
-        transition: "width 0.2s ease-in-out",
-        maxWidth: isFocused ? "100%" : undefined,
-      }}
-    >
+    <Box sx={{ width: "100%" }}>
       <Autocomplete
+        size="small"
+        disablePortal
         options={options}
         filterOptions={(x) => x}
         loading={loading}
@@ -110,35 +95,13 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
           props.navigate?.(null, value.url);
         }}
         onFocus={(e) => handleFocus(e, true)}
-        onBlur={(e) => (mobileHeader ? undefined : handleFocus(e, false))}
-        popupIcon={<SearchIcon />}
-        sx={(theme) => ({
-          "& .MuiOutlinedInput-root": {
-            color: "common.white",
-            backgroundColor: "rgba(255, 255, 255, 0.18)",
-            "& fieldset": {
-              borderColor: "rgba(255, 255, 255, 0.58)",
-            },
-            "&:hover fieldset": {
-              borderColor: "rgba(255, 255, 255, 0.82)",
-            },
-            "&.Mui-focused fieldset": {
-              borderColor: theme.palette.common.white,
-            },
-          },
-          "& .MuiInputBase-input::placeholder": {
-            color: "rgba(255, 255, 255, 0.9)",
-            opacity: 1,
-          },
-          "& .MuiSvgIcon-root": {
-            color: "common.white",
-          },
-        })}
+        onBlur={(e) => handleFocus(e, false)}
+        sx={{ width: "100%" }}
         renderInput={(params) => (
           <TextField
             {...params}
             variant="outlined"
-            placeholder={mobileHeader ? " " : "Suchen"}
+            placeholder="Suchen"
             inputProps={{
               ...params.inputProps,
               "aria-label": "Suche",

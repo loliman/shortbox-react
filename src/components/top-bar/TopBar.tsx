@@ -3,7 +3,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
-import React, { useState } from "react";
+import React from "react";
 import { HierarchyLevel, type HierarchyLevelType } from "../../util/hierarchy";
 import MenuIcon from "@mui/icons-material/Menu";
 import { withContext } from "../generic";
@@ -12,11 +12,9 @@ import SearchBar from "./SearchBar";
 import type { SelectedRoot } from "../../types/domain";
 import TopBarFilterMenu from "./TopBarFilterMenu";
 import Tooltip from "@mui/material/Tooltip";
-import { getNavDrawerWidth } from "../layoutMetrics";
 
 interface TopBarProps {
   toggleDrawer?: () => void;
-  drawerOpen?: boolean;
   us?: boolean;
   isPhone?: boolean;
   isPhoneLandscape?: boolean;
@@ -34,29 +32,19 @@ export function TopBar(props: TopBarProps) {
   const { toggleDrawer, navigate } = props;
   const us = Boolean(props.us);
   const selected = props.selected || { us };
-  const compactLayout =
-    props.compactLayout ?? Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
   const phonePortrait = props.isPhonePortrait ?? Boolean(props.isPhone && !props.isPhoneLandscape);
-  const [searchbarFocus, setSearchbarFocus] = useState(false);
   const isFilter = props.query?.filter;
-  const drawerWidth = getNavDrawerWidth(compactLayout);
-  const searchOffsetWidth = !compactLayout && props.drawerOpen ? `${drawerWidth}px` : "auto";
-
-  const onFocus = (e: React.MouseEvent<HTMLElement> | null, focus: boolean) => {
-    setSearchbarFocus(focus);
-    if (e) e.preventDefault();
-  };
 
   return (
     <AppBar position="sticky" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-      <Toolbar sx={{ gap: 1 }}>
+      <Toolbar sx={{ gap: 1, position: "relative" }}>
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
             minWidth: 0,
             flexShrink: 0,
-            width: searchOffsetWidth,
+            flexGrow: 1,
           }}
         >
           <IconButton
@@ -91,13 +79,27 @@ export function TopBar(props: TopBarProps) {
           )}
         </Box>
 
-        <Box sx={{ display: "flex", alignItems: "center", minWidth: 0, flexGrow: 1 }}>
-          <Box sx={{ width: "100%", maxWidth: { xs: "100%", sm: 420 } }}>
-            <SearchBar alignLeft focus={searchbarFocus} onFocus={onFocus} />
+        <Box
+          data-testid="topbar-search-center"
+          sx={{
+            position: "absolute",
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: {
+              xs: "clamp(148px, 48vw, 320px)",
+              sm: "min(520px, calc(100% - 430px))",
+            },
+            maxWidth: "100%",
+            px: 1,
+            pointerEvents: "none",
+          }}
+        >
+          <Box sx={{ pointerEvents: "auto" }}>
+            <SearchBar />
           </Box>
         </Box>
 
-        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, flexShrink: 0 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, flexShrink: 0, ml: "auto" }}>
           <TopBarFilterMenu
             us={us}
             selected={selected}
@@ -123,19 +125,6 @@ export function TopBar(props: TopBarProps) {
           />
         </Box>
       </Toolbar>
-
-      {compactLayout ? (
-        <Box
-          data-testid="topbar-search-overlay"
-          onClick={(e) => onFocus(e, false)}
-          sx={{
-            position: "absolute",
-            inset: 0,
-            display: searchbarFocus ? "block" : "none",
-            zIndex: 1,
-          }}
-        />
-      ) : null}
     </AppBar>
   );
 }
