@@ -97,7 +97,7 @@ export function TopBar(props: TopBarProps) {
             px: 1,
           }}
         >
-          <SearchBar />
+          <SearchBar us={us} navigate={navigate} />
         </Box>
 
         <Box

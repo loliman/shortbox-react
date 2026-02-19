@@ -96,7 +96,25 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
         }}
         onFocus={(e) => handleFocus(e, true)}
         onBlur={(e) => handleFocus(e, false)}
-        sx={{ width: "100%" }}
+        sx={{
+          width: "100%",
+          "& .MuiOutlinedInput-root": {
+            backgroundColor: "background.paper",
+            "& fieldset": {
+              borderColor: "divider",
+            },
+            "&:hover fieldset": {
+              borderColor: "text.secondary",
+            },
+            "&.Mui-focused fieldset": {
+              borderColor: "primary.light",
+            },
+          },
+          "& .MuiInputBase-input::placeholder": {
+            color: "text.secondary",
+            opacity: 1,
+          },
+        }}
         renderInput={(params) => (
           <TextField
             {...params}
