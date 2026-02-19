@@ -87,7 +87,15 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
     : null;
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 1 }}>
+    <Box
+      sx={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "flex-start",
+        gap: 1,
+      }}
+    >
       <Box sx={{ minWidth: 0 }}>
         <Box>
           <Typography sx={{ fontWeight: 600 }}>
@@ -149,7 +157,17 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
         </Typography>
       </Box>
 
-      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75, justifyContent: "flex-end" }}>
+      <Box
+        sx={{
+          ml: "auto",
+          alignSelf: "center",
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 0.75,
+          justifyContent: "flex-end",
+          alignItems: "center",
+        }}
+      >
         {!props.isCover && item.url && item.number === 0 ? (
           !smallChip ? (
             <Chip label="Cover" color="default" />

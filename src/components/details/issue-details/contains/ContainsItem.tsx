@@ -33,7 +33,14 @@ export function ContainsItem(props: Readonly<ContainsItemProps>) {
 
   return (
     <Accordion sx={{ borderRadius }} defaultExpanded={expanded(props.item, props.query)}>
-      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        sx={{
+          "& .MuiAccordionSummary-content": {
+            width: "100%",
+          },
+        }}
+      >
         {React.cloneElement(props.itemTitle, {
           navigate: props.navigate,
           item: props.item,

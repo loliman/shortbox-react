@@ -23,37 +23,59 @@ export function IssueDetailsPreview() {
       />
 
       <CardContent>
-        <Box sx={{ display: "flex", gap: 2, alignItems: "flex-start", flexWrap: "wrap" }}>
-          <Paper sx={{ flex: "1 1 420px", minWidth: 0 }}>
-            <Table size="small">
-              <TableBody>
-                <TableRow>
-                  <TableCell align="left">
-                    <Skeleton variant="text" width="76%" />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="left">
-                    <Skeleton variant="text" width="58%" />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="left">
-                    <Skeleton variant="text" width="74%" />
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell align="left">
-                    <Skeleton variant="text" width="42%" />
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </Paper>
-
-          <Box sx={{ width: 220, maxWidth: "100%", flex: "0 0 220px" }}>
-            <Skeleton variant="rectangular" width={220} height={220} />
+        <Box
+          sx={{
+            mt: 1,
+            display: "grid",
+            gridTemplateColumns: { xs: "1fr", md: "minmax(320px, 500px) 260px" },
+            gap: 2,
+            alignItems: "stretch",
+            justifyContent: { xs: "stretch", md: "center" },
+          }}
+        >
+          <Box sx={{ minWidth: 0, display: "flex", alignItems: "center" }}>
+            <Paper variant="outlined" sx={{ width: "100%" }}>
+              <Table size="small">
+                <TableBody>
+                  <TableRow>
+                    <TableCell align="left">
+                      <Skeleton variant="text" width="76%" />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell align="left">
+                      <Skeleton variant="text" width="58%" />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell align="left">
+                      <Skeleton variant="text" width="74%" />
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell align="left">
+                      <Skeleton variant="text" width="42%" />
+                    </TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </Paper>
           </Box>
+
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
+            <Skeleton variant="rectangular" width={260} height={390} />
+          </Box>
+        </Box>
+
+        <Paper variant="outlined" sx={{ mt: 2, p: 2 }}>
+          <Skeleton variant="text" width="100%" />
+          <Skeleton variant="text" width="84%" />
+        </Paper>
+
+        <Box sx={{ mt: 2, display: "flex", flexWrap: "wrap", gap: 1 }}>
+          <Skeleton variant="rounded" width={180} height={32} />
+          <Skeleton variant="rounded" width={168} height={32} />
+          <Skeleton variant="rounded" width={150} height={32} />
         </Box>
 
         <Box sx={{ mt: 4 }}>

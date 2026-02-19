@@ -28,6 +28,7 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
         cursor: "pointer",
         borderRadius: 1.5,
         overflow: "hidden",
+        height: "100%",
         border: (theme) =>
           selected
             ? `2px solid ${theme.palette.primary.main}`
@@ -40,6 +41,9 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
         style={{
           display: "block",
           width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          objectPosition: "center",
           filter: blurCover ? "blur(2px)" : "none",
         }}
         alt={(props.variant.variant || "") + " (" + (props.variant.format || "") + ")"}
@@ -47,11 +51,16 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
 
       <ImageListItemBar
         title={
-          <Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <Box
               sx={{
+                minWidth: 0,
+                flex: 1,
                 fontWeight: selected ? 700 : 500,
                 color: selected ? "primary.light" : "inherit",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
               }}
             >
               {(props.variant.format || "") +
@@ -64,7 +73,7 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
                 component="img"
                 src="/collected_badge.png"
                 alt="gesammelt"
-                sx={{ mt: 0.5, height: 25, width: "auto" }}
+                sx={{ height: 20, width: "auto", flexShrink: 0 }}
               />
             ) : null}
           </Box>

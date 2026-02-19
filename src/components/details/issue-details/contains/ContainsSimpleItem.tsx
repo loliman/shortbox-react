@@ -15,7 +15,13 @@ interface ContainsSimpleItemProps {
 export function ContainsSimpleItem(props: Readonly<ContainsSimpleItemProps>) {
   return (
     <Accordion defaultExpanded={expanded(props.item, props.query)}>
-      <AccordionSummary>
+      <AccordionSummary
+        sx={{
+          "& .MuiAccordionSummary-content": {
+            width: "100%",
+          },
+        }}
+      >
         {React.cloneElement(props.itemTitle, {
           navigate: props.navigate,
           item: props.item,

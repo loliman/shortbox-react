@@ -39,9 +39,9 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
           sx={{
             m: 0,
             gridAutoFlow: "column",
-            gridTemplateRows: "1fr",
             gridTemplateColumns: "none !important",
-            gridAutoColumns: { xs: "150px", sm: "170px", md: "190px" },
+            gridAutoColumns: { xs: "220px", sm: "250px", md: "285px" },
+            gridAutoRows: { xs: "88px", sm: "96px", md: "104px" },
             width: "max-content",
             overflow: "visible",
             gap: 8,

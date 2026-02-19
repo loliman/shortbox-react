@@ -10,8 +10,20 @@ interface DetailsRowProps {
 export function DetailsRow(props: Readonly<DetailsRowProps>) {
   return (
     <TableRow>
-      <TableCell align="left">{props.label}</TableCell>
-      <TableCell align="left">{props.value}</TableCell>
+      <TableCell
+        align="left"
+        sx={{
+          width: "38%",
+          color: "text.secondary",
+          fontWeight: 500,
+          verticalAlign: "top",
+        }}
+      >
+        {props.label}
+      </TableCell>
+      <TableCell align="left" sx={{ width: "62%" }}>
+        {props.value}
+      </TableCell>
     </TableRow>
   );
 }

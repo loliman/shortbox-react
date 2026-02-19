@@ -1,11 +1,13 @@
 import React from "react";
+import Card from "@mui/material/Card";
+import CardActionArea from "@mui/material/CardActionArea";
+import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
 import Skeleton from "@mui/material/Skeleton";
+import Stack from "@mui/material/Stack";
 import { withContext } from "../generic";
 import { getIssueLabel, getIssueUrl } from "../../util/issuePresentation";
 import {
-  getIssuePreviewBorderRadius,
   getIssuePreviewCover,
   getIssueVariantLabel,
   type PreviewIssue,
@@ -22,70 +24,64 @@ interface IssuePreviewSmallProps {
 function IssuePreviewSmall(props: Readonly<IssuePreviewSmallProps>) {
   const us = Boolean(props.us);
   const variant = getIssueVariantLabel(props.issue);
-  const { coverUrl, blurCover } = getIssuePreviewCover(props.issue, us);
-  const borderRadius = getIssuePreviewBorderRadius(props.idx, props.isLast);
+  const { coverUrl } = getIssuePreviewCover(props.issue, us);
   const url = getIssueUrl(props.issue, us);
   const issueLabel = getIssueLabel(props.issue);
+  const cardBackground = coverUrl
+    ? `linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 10%, rgba(255, 255, 255, 0.16) 100%), url(${coverUrl})`
+    : "none";
 
   return (
-    <Box
-      component="button"
-      type="button"
-      onClick={(e) => props.navigate?.(e, url)}
-      aria-label={`Zu ${issueLabel}`}
+    <Card
+      variant="outlined"
       sx={{
-        all: "unset",
-        cursor: "pointer",
-        display: "block",
-        width: "100%",
-        borderRadius,
         backgroundColor: "background.paper",
-        backgroundImage: coverUrl
-          ? `linear-gradient(to right, rgba(255, 255, 255, 0.98) 65%, rgba(255, 255, 255, 0.08)), url(${coverUrl})`
-          : "none",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "100% 40%",
-        backgroundSize: "35%",
+        backgroundImage: cardBackground,
+        backgroundRepeat: coverUrl ? "no-repeat, no-repeat" : "no-repeat",
+        backgroundPosition: coverUrl ? "0 0, 100% 50%" : "0 0",
+        backgroundSize: coverUrl ? "100% 100%, cover" : "auto",
+        overflow: "hidden",
       }}
     >
-      <Box
-        sx={{
-          backdropFilter: blurCover ? "blur(2px)" : "none",
-          width: "100%",
-        }}
+      <CardActionArea
+        onClick={(e) => props.navigate?.(e, url)}
+        aria-label={`Zu ${issueLabel}`}
       >
-        <Box sx={{ width: "100%" }}>
-          <Box>
-            <Typography variant="subtitle1">{issueLabel}</Typography>
+        <CardContent sx={{ py: 1.25, "&:last-child": { pb: 1.25 } }}>
+          <Stack spacing={0.5}>
+            <Typography variant="subtitle2" noWrap>
+              {issueLabel}
+            </Typography>
 
             {props.issue.title ? (
-              <Typography variant="subtitle2">{props.issue.title}</Typography>
+              <Typography variant="body2" color="text.secondary" noWrap>
+                {props.issue.title}
+              </Typography>
             ) : null}
-          </Box>
 
-          {variant ? (
-            <Typography variant="caption" color="text.secondary">
-              {variant}
-            </Typography>
-          ) : null}
-        </Box>
-      </Box>
-    </Box>
+            {variant ? (
+              <Typography variant="caption" color="text.secondary" noWrap>
+                {variant}
+              </Typography>
+            ) : null}
+          </Stack>
+        </CardContent>
+      </CardActionArea>
+    </Card>
   );
 }
 
 export function IssuePreviewPlaceholderSmall(props: { idx?: number; isLast?: boolean }) {
   const widths = ["84%", "72%", "68%", "78%", "62%"] as const;
   const width = widths[(props.idx ?? 0) % widths.length];
-  const borderRadius = getIssuePreviewBorderRadius(props.idx, props.isLast);
 
   return (
-    <Box sx={{ borderRadius }}>
-      <Box sx={{ p: 1 }}>
+    <Card variant="outlined">
+      <CardContent sx={{ py: 1.25, "&:last-child": { pb: 1.25 } }}>
         <Skeleton variant="text" width={width} />
         <Skeleton variant="text" width={width} />
-      </Box>
-    </Box>
+      </CardContent>
+    </Card>
   );
 }
 

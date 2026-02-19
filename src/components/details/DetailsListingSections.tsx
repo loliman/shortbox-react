@@ -2,6 +2,7 @@ import React from "react";
 import Box from "@mui/material/Box";
 import CardHeader from "@mui/material/CardHeader";
 import Skeleton from "@mui/material/Skeleton";
+import Stack from "@mui/material/Stack";
 import IssuePreview, { IssuePreviewPlaceholder } from "../issue-preview/IssuePreview";
 import IssuePreviewSmall, {
   IssuePreviewPlaceholderSmall,
@@ -72,7 +73,7 @@ export function IssueHistoryList(props: Readonly<IssueHistoryListProps>) {
   return (
     <Box component="section">
       <SortContainer {...props.previewProps} />
-      <Box sx={{ mt: 2 }}>
+      <Stack spacing={1} sx={{ mt: 2 }}>
         {issues.map((issue, idx) => (
           <IssuePreviewSmall
             {...props.previewProps}
@@ -82,7 +83,7 @@ export function IssueHistoryList(props: Readonly<IssueHistoryListProps>) {
             issue={issue}
           />
         ))}
-      </Box>
+      </Stack>
       {props.loadingMore ? <LoadingDots /> : null}
     </Box>
   );
@@ -106,13 +107,13 @@ export function IssueHistoryPlaceholder(props: Readonly<{ query?: QueryState }>)
 
       <Box component="section">
         <CardHeader title={<Skeleton variant="text" width={120} height={30} />} />
-        <Box>
+        <Stack spacing={1}>
           <IssuePreviewPlaceholderSmall idx={0} />
           <IssuePreviewPlaceholderSmall />
           <IssuePreviewPlaceholderSmall />
           <IssuePreviewPlaceholderSmall />
           <IssuePreviewPlaceholderSmall isLast={true} />
-        </Box>
+        </Stack>
       </Box>
     </React.Fragment>
   );

@@ -4,9 +4,9 @@ import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
-import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import Skeleton from "@mui/material/Skeleton";
 import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 import { withContext } from "../generic";
 import { getIssueLabel, getIssueUrl } from "../../util/issuePresentation";
 import {
@@ -29,24 +29,13 @@ interface IssuePreviewProps {
 function IssuePreview(props: Readonly<IssuePreviewProps>) {
   const us = Boolean(props.us);
   const hasSession = Boolean(props.session);
-  const smallChip =
-    Boolean(props.isPhone) || (Boolean(props.isTablet) && Boolean(props.drawerOpen));
   const variant = getIssueVariantLabel(props.issue);
-  const { coverUrl, blurCover } = getIssuePreviewCover(props.issue, us);
+  const { coverUrl } = getIssuePreviewCover(props.issue, us);
   const flags = getIssuePreviewFlags(props.issue, us, hasSession);
-  const issueStories = props.issue.stories || [];
-  const isSellable = Boolean(
-    props.issue.collected &&
-    flags.sellable > 0 &&
-    flags.sellable === issueStories.length &&
-    hasSession
-  );
   const url = getIssueUrl(props.issue, us);
   const issueLabel = getIssueLabel(props.issue);
-
-  const mobileAlertLabel = <PriorityHighIcon sx={{ fontSize: 16 }} />;
   const cardBackground = coverUrl
-    ? `linear-gradient(90deg, rgba(255, 255, 255, 0.96) 30%, rgba(255, 255, 255, 0.75) 58%, rgba(255, 255, 255, 0.12) 100%), url(${coverUrl})`
+    ? `linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 6%, rgba(255, 255, 255, 0.08) 100%), url(${coverUrl})`
     : "none";
 
   return (
@@ -54,144 +43,44 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
       sx={{
         backgroundColor: "background.paper",
         backgroundImage: cardBackground,
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "100% 50%",
-        backgroundSize: "75%",
+        backgroundRepeat: coverUrl ? "no-repeat, no-repeat" : "no-repeat",
+        backgroundPosition: coverUrl ? "0 0, 100% 50%" : "0 0",
+        backgroundSize: coverUrl ? "100% 100%, cover" : "auto",
+        overflow: "hidden",
       }}
     >
       <CardActionArea
         onClick={(e) => props.navigate?.(e, url)}
         aria-label={`Zu ${getIssueLabel(props.issue)}`}
       >
-        <Box
-          sx={{
-            backdropFilter: blurCover ? "blur(2px)" : "none",
-          }}
-        >
-          <CardContent sx={{ pb: 2.5 }}>
-            <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1 }}>
-              <Box>
-                <Typography variant="subtitle1">{issueLabel}</Typography>
-
-                {props.issue.title ? (
-                  <Typography variant="subtitle2">{props.issue.title}</Typography>
-                ) : null}
-              </Box>
-
-              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                {props.issue.verified ? (
-                  <Box
-                    component="img"
-                    src="/verified_badge.png"
-                    alt="verifiziert"
-                    sx={{ height: 24, width: "auto" }}
-                  />
-                ) : null}
-                {flags.collected ? (
-                  <Box
-                    component="img"
-                    src="/collected_badge.png"
-                    alt="gesammelt"
-                    sx={{ height: 24, width: "auto" }}
-                  />
-                ) : null}
-              </Box>
+        <CardContent>
+          <Stack spacing={1.5}>
+            <Box>
+              <Typography variant="subtitle1">{issueLabel}</Typography>
+              {props.issue.title ? (
+                <Typography variant="body2" color="text.secondary">
+                  {props.issue.title}
+                </Typography>
+              ) : null}
+              {variant ? (
+                <Typography variant="caption" color="text.secondary">
+                  {variant}
+                </Typography>
+              ) : null}
             </Box>
 
-            {variant ? <Typography variant="caption">{variant}</Typography> : null}
-
-            <Box sx={{ mt: 2, display: "flex", flexWrap: "wrap", gap: 0.75 }}>
-              {!us && flags.hasOnlyApp ? (
-                <Chip
-                  label={!smallChip ? "Einzige Veröffentlichung" : mobileAlertLabel}
-                  color="secondary"
-                />
-              ) : null}
-
-              {!us && flags.hasFirstApp ? (
-                <Chip
-                  label={!smallChip ? "Erstveröffentlichung" : "1."}
-                  color="primary"
-                />
-              ) : null}
-
-              {!us && flags.hasOtherOnlyTb ? (
-                <Chip
-                  variant="outlined"
-                  label={!smallChip ? "Sonst nur in Taschenbuch" : "TB"}
-                  color="default"
-                />
-              ) : null}
-
-              {!us && flags.hasExclusive ? (
-                <Chip
-                  label={!smallChip ? "Exklusiver Inhalt" : mobileAlertLabel}
-                  color="secondary"
-                />
-              ) : null}
-
-              {!us && flags.isPureReprintDe ? (
-                <Chip
-                  label={!smallChip ? "Reiner Nachdruck" : "ND"}
-                  color="default"
-                />
-              ) : null}
-
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75 }}>
+              {props.issue.verified ? <Chip size="small" label="Verifiziert" color="primary" /> : null}
+              {flags.collected ? <Chip size="small" label="Gesammelt" color="success" /> : null}
               {flags.collectedMultipleTimes ? (
-                <Chip
-                  label={
-                    !smallChip ? "Mehrfach " + (us ? "auf deutsch " : "") + "gesammelt" : "Mehrfach"
-                  }
-                  color="success"
-                />
+                <Chip size="small" label="Mehrfach gesammelt" color="success" variant="outlined" />
               ) : null}
-
-              {isSellable ? (
-                <Chip
-                  label="Verkaufbar"
-                  color="success"
-                />
-              ) : null}
-
-              {!us && flags.hasNoStoriesDe ? (
-                <Chip
-                  label={!smallChip ? "Keine Geschichten zugeordnet" : "n/a"}
-                  color="default"
-                />
-              ) : null}
-
-              {us && flags.hasOnlyOnePrintUs ? (
-                <Chip
-                  label={!smallChip ? "Nur einfach auf deutsch veröffentlicht" : mobileAlertLabel}
-                  color="secondary"
-                />
-              ) : null}
-
-              {us && flags.hasOnlyTbUs ? (
-                <Chip
-                  variant="outlined"
-                  label={!smallChip ? "Nur in Taschenbuch" : "TB"}
-                  color="primary"
-                />
-              ) : null}
-
-              {us && flags.notPublishedInDe ? (
-                <Chip
-                  label={!smallChip ? "Nicht auf deutsch erschienen" : "n/a"}
-                  color="default"
-                />
-              ) : null}
-
-              {us && flags.hasReprintOfUs ? (
-                <Chip label={!smallChip ? "Nachdruck" : "ND"} color="default" />
-              ) : null}
-
-              {us && flags.hasReprintsUs ? (
-                <Chip label={!smallChip ? "Nachgedruckt" : "ND"} color="default" />
+              {!us && flags.isPureReprintDe ? (
+                <Chip size="small" label="Nachdruck" variant="outlined" />
               ) : null}
             </Box>
-          </CardContent>
-        </Box>
+          </Stack>
+        </CardContent>
       </CardActionArea>
     </Card>
   );
@@ -201,15 +90,16 @@ export function IssuePreviewPlaceholder() {
   return (
     <Card>
       <CardContent>
-        <Box>
-          <Skeleton variant="text" width="72%" height={30} />
-          <Skeleton variant="text" width="28%" />
-          <Skeleton variant="text" width="34%" />
-        </Box>
-
-        <Box sx={{ mt: 2 }}>
-          <Skeleton variant="text" width="30%" />
-        </Box>
+        <Stack spacing={1.5}>
+          <Box>
+            <Skeleton variant="text" width="72%" height={30} />
+            <Skeleton variant="text" width="42%" />
+          </Box>
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <Skeleton variant="rounded" width={96} height={24} />
+            <Skeleton variant="rounded" width={104} height={24} />
+          </Box>
+        </Stack>
       </CardContent>
     </Card>
   );

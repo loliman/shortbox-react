@@ -35,7 +35,15 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
   const reprints = Array.isArray(item.reprints) ? item.reprints : [];
 
   return (
-    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 1 }}>
+    <Box
+      sx={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "flex-start",
+        gap: 1,
+      }}
+    >
       <Box sx={{ minWidth: 0 }}>
         <Typography sx={{ fontWeight: 600 }}>{generateItemTitle(item, Boolean(props.us))}</Typography>
         <Typography variant="body2" color="text.secondary">
@@ -43,7 +51,17 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
         </Typography>
       </Box>
 
-      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75, justifyContent: "flex-end" }}>
+      <Box
+        sx={{
+          ml: "auto",
+          alignSelf: "center",
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 0.75,
+          justifyContent: "flex-end",
+          alignItems: "center",
+        }}
+      >
         {item.onlyoneprint && !item.parent ? (
           !smallChip ? (
             <Chip label="Nur einfach auf deutsch veröffentlicht" color="secondary" />

@@ -11,8 +11,16 @@ interface DetailsTableProps {
 
 export function DetailsTable(props: Readonly<DetailsTableProps>) {
   return (
-    <Paper sx={{ width: "100%" }}>
-      <Table size="small">
+    <Paper variant="outlined" sx={{ width: "100%" }}>
+      <Table
+        size="small"
+        sx={{
+          "& .MuiTableCell-root": {
+            px: 1.5,
+            py: 0.9,
+          },
+        }}
+      >
         <TableBody>
           {React.cloneElement(props.details, {
             ...props,

@@ -11,6 +11,7 @@ import { withContext } from "../generic";
 import { generateIssueSubHeader } from "../../util/issues";
 import Typography from "@mui/material/Typography";
 import { generateLabel } from "../../util/hierarchy";
+import { isMockMode } from "../../app/mockMode";
 import EditButton from "../restricted/EditButton";
 import SnackbarContent from "@mui/material/SnackbarContent";
 import TitleLine from "../generic/TitleLine";
@@ -88,10 +89,11 @@ function IssueDetails(props: IssueDetailsProps) {
   }
 
   const loadedIssue = data.issueDetails as unknown as Issue;
+  const issueForVariants = toIssueWithMockVariants(loadedIssue);
 
-  const arcs = collectIssueArcs(loadedIssue, us);
+  const arcs = collectIssueArcs(issueForVariants, us);
   const today = getTodayLocalDate();
-  const releaseDate = loadedIssue.releasedate ? new Date(loadedIssue.releasedate) : null;
+  const releaseDate = issueForVariants.releasedate ? new Date(issueForVariants.releasedate) : null;
 
   return (
     <Layout>
@@ -139,50 +141,60 @@ function IssueDetails(props: IssueDetailsProps) {
         <CardContent sx={{ pt: 1 }}>
           <IssueVariants
             us={us}
-            issue={loadedIssue as unknown as VariantIssue}
+            issue={issueForVariants as unknown as VariantIssue}
             session={props.session}
             navigate={props.navigate}
           />
 
           <Box
             sx={{
-              display: "flex",
+              mt: 2,
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", md: "minmax(320px, 500px) 260px" },
               gap: 2,
-              alignItems: "flex-start",
-              flexWrap: "wrap",
+              alignItems: "stretch",
+              justifyContent: { xs: "stretch", md: "center" },
             }}
           >
-            <Box sx={{ flex: "1 1 420px", minWidth: 0 }}>
+            <Box sx={{ minWidth: 0, width: "100%", display: "flex", alignItems: "center" }}>
               <DetailsTable
-                issue={loadedIssue}
+                issue={issueForVariants}
                 details={details}
                 navigate={props.navigate}
                 us={us}
               />
             </Box>
 
-            <Box sx={{ width: 220, maxWidth: "100%", flex: "0 0 220px" }}>
-              <IssueCover us={us} issue={loadedIssue as unknown as PreviewIssue} />
+            <Box
+              sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}
+            >
+              <Box sx={{ width: 260, display: "flex", justifyContent: "center" }}>
+                <IssueCover us={us} issue={issueForVariants as unknown as PreviewIssue} />
+              </Box>
             </Box>
-
-            {loadedIssue.addinfo && loadedIssue.addinfo !== "" ? (
-              <Paper sx={{ width: "100%", p: 2 }}>
-                <Typography
-                  dangerouslySetInnerHTML={{
-                    __html: sanitizeHtml(loadedIssue.addinfo),
-                  }}
-                />
-              </Paper>
-            ) : null}
           </Box>
 
-          <StoryArcChips arcs={arcs} us={us} navigate={props.navigate} />
+          {issueForVariants.addinfo && issueForVariants.addinfo !== "" ? (
+            <Paper variant="outlined" sx={{ mt: 2, p: 2 }}>
+              <Typography
+                dangerouslySetInnerHTML={{
+                  __html: sanitizeHtml(issueForVariants.addinfo),
+                }}
+              />
+            </Paper>
+          ) : null}
+
+          {arcs.length > 0 ? (
+            <Box sx={{ mt: 2 }}>
+              <StoryArcChips arcs={arcs} us={us} navigate={props.navigate} />
+            </Box>
+          ) : null}
 
           {props.bottom
             ? React.cloneElement(props.bottom, {
                 navigate: props.navigate,
-                selected: loadedIssue,
-                issue: loadedIssue,
+                selected: issueForVariants,
+                issue: issueForVariants,
                 us: us,
               })
             : null}
@@ -190,6 +202,28 @@ function IssueDetails(props: IssueDetailsProps) {
       </React.Fragment>
     </Layout>
   );
+}
+
+function toIssueWithMockVariants(issue: Issue): Issue {
+  if (!isMockMode) return issue;
+
+  const cover = issue.cover?.url ? issue.cover : { url: "/nocover_simple.jpg" };
+  const primaryVariant: Issue = {
+    ...issue,
+    cover,
+    variants: null,
+  };
+  const secondaryVariant: Issue = {
+    ...issue,
+    variant: issue.variant && issue.variant !== "" ? `${issue.variant}-2` : "B",
+    cover,
+    variants: null,
+  };
+
+  return {
+    ...issue,
+    variants: [primaryVariant, secondaryVariant],
+  };
 }
 
 export default withContext(IssueDetails);
