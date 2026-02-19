@@ -37,10 +37,21 @@ export function ChipList(props: Readonly<ChipListProps>) {
   if (items.length === 0 && props.hideIfEmpty) return null;
 
   return (
-    <Box sx={{ mb: 2 }}>
-      <Typography>
-        <b>{props.label}</b>
-      </Typography>
+    <Box
+      sx={{
+        mb: 2,
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        columnGap: 1,
+        rowGap: 1,
+      }}
+    >
+      {props.label ? (
+        <Typography component="span" sx={{ fontWeight: 700, flexShrink: 0 }}>
+          {props.label}
+        </Typography>
+      ) : null}
       {toChipList(items, props, props.type || "")}
     </Box>
   );

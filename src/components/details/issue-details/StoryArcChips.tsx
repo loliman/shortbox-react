@@ -11,6 +11,7 @@ type StoryArcChipsProps = {
   arcs?: ArcLike[];
   us?: boolean;
   navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
+  inline?: boolean;
 };
 
 export function StoryArcChips(props: Readonly<StoryArcChipsProps>) {
@@ -18,7 +19,7 @@ export function StoryArcChips(props: Readonly<StoryArcChipsProps>) {
   if (arcs.length === 0) return null;
 
   return (
-    <Box sx={{ mt: 1, display: "flex", flexWrap: "wrap", gap: 1 }}>
+    <Box sx={{ mt: props.inline ? 0 : 1, display: "flex", flexWrap: "wrap", gap: 1 }}>
       {arcs.map((arc) => {
         const arcTitle = arc.title || "";
         const { color, type } = toArcMeta(arc.type || "");

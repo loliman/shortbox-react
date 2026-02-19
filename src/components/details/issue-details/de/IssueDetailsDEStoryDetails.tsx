@@ -30,11 +30,20 @@ export function IssueDetailsDEStoryDetails(props: Readonly<IssueDetailsDEStoryDe
   return (
     <Box>
       {storyArcs.length > 0 ? (
-        <Box sx={{ mb: 2 }}>
-          <Typography>
-            <b>Teil von</b>
+        <Box
+          sx={{
+            mb: 2,
+            display: "flex",
+            flexWrap: "wrap",
+            alignItems: "center",
+            columnGap: 1,
+            rowGap: 1,
+          }}
+        >
+          <Typography component="span" sx={{ fontWeight: 700, flexShrink: 0 }}>
+            Teil von
           </Typography>
-          <StoryArcChips arcs={storyArcs} us={props.us} navigate={props.navigate} />
+          <StoryArcChips arcs={storyArcs} us={props.us} navigate={props.navigate} inline />
         </Box>
       ) : null}
 

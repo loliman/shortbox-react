@@ -98,7 +98,7 @@ function IssueEditorSection({ title, children }: Readonly<IssueEditorSectionProp
   return (
     <Paper variant="outlined" sx={{ p: { xs: 2, sm: 2.5 } }}>
       <Stack spacing={2}>
-        <Typography variant="h6" sx={{ fontSize: "1.05rem", fontWeight: 600 }}>
+        <Typography variant="subtitle1">
           {title}
         </Typography>
         {children}

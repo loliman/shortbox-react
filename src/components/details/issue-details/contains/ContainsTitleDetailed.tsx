@@ -122,12 +122,12 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
             <Link
               component="button"
               type="button"
+              variant="body2"
               underline="hover"
               color="text.secondary"
               sx={{
                 p: 0,
                 textAlign: "left",
-                fontSize: "0.875rem",
                 lineHeight: 1.43,
               }}
               onClick={(e) => {

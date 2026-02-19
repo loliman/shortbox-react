@@ -36,7 +36,7 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
           selected
             ? `2px solid ${theme.palette.primary.main}`
             : `1px solid ${theme.palette.divider}`,
-        boxShadow: mainIssue ? "0 8px 20px rgba(15, 23, 42, 0.08)" : "none",
+        boxShadow: mainIssue ? 1 : 0,
       }}
     >
       <ButtonBase
