@@ -43,10 +43,7 @@ function IssuePreviewSmall(props: Readonly<IssuePreviewSmallProps>) {
         overflow: "hidden",
       }}
     >
-      <CardActionArea
-        onClick={(e) => props.navigate?.(e, url)}
-        aria-label={`Zu ${issueLabel}`}
-      >
+      <CardActionArea onClick={(e) => props.navigate?.(e, url)} aria-label={`Zu ${issueLabel}`}>
         <CardContent sx={{ py: 1.25, "&:last-child": { pb: 1.25 } }}>
           <Stack spacing={0.5}>
             <Typography variant="subtitle2" noWrap>

@@ -78,12 +78,7 @@ function Login(props: Readonly<LoginProps>) {
 
             <CardContent sx={{ pt: 1 }}>
               <Stack spacing={2}>
-                <Field
-                  name="name"
-                  label="Name"
-                  component={TextField}
-                  fullWidth
-                />
+                <Field name="name" label="Name" component={TextField} fullWidth />
                 <Field
                   name="password"
                   type="password"
@@ -102,7 +97,12 @@ function Login(props: Readonly<LoginProps>) {
                 >
                   Abbrechen
                 </Button>
-                <Button disabled={isSubmitting} onClick={submitForm} variant="contained" color="primary">
+                <Button
+                  disabled={isSubmitting}
+                  onClick={submitForm}
+                  variant="contained"
+                  color="primary"
+                >
                   Login
                 </Button>
               </Box>

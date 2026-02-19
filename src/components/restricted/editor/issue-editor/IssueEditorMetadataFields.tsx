@@ -92,13 +92,7 @@ function IssueEditorMetadataFields({
           </Grid>
 
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <FastField
-              name="pages"
-              label="Seiten"
-              type="number"
-              component={TextField}
-              fullWidth
-            />
+            <FastField name="pages" label="Seiten" type="number" component={TextField} fullWidth />
           </Grid>
 
           <Grid size={{ xs: 8, sm: 4, md: 3 }}>

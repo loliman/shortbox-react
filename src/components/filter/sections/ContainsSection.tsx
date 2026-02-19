@@ -24,7 +24,12 @@ interface ContainsSectionProps {
   setFieldValue: (field: string, value: unknown) => void;
 }
 
-function ContainsSection({ values, us, isDesktop: _isDesktop, setFieldValue }: ContainsSectionProps) {
+function ContainsSection({
+  values,
+  us,
+  isDesktop: _isDesktop,
+  setFieldValue,
+}: ContainsSectionProps) {
   const [publisherInput, setPublisherInput] = React.useState("");
   const [seriesInput, setSeriesInput] = React.useState("");
 

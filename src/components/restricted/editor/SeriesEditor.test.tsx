@@ -8,13 +8,11 @@ const mocks = vi.hoisted(() => ({
   generateLabelMock: vi.fn(() => "Spider-Man"),
   generateUrlMock: vi.fn(() => "/de/marvel/spider-man"),
   runMutationMock: vi.fn(() => Promise.resolve({})),
-  mutationOptions: null as
-    | null
-    | {
-        update?: (cache: unknown, result: { data?: Record<string, unknown> }) => void;
-        onCompleted?: (data: Record<string, unknown>) => void;
-        onError?: (error: { graphQLErrors?: Array<{ message?: string }> }) => void;
-      },
+  mutationOptions: null as null | {
+    update?: (cache: unknown, result: { data?: Record<string, unknown> }) => void;
+    onCompleted?: (data: Record<string, unknown>) => void;
+    onError?: (error: { graphQLErrors?: Array<{ message?: string }> }) => void;
+  },
 }));
 
 vi.mock("@apollo/client", () => ({
@@ -168,8 +166,11 @@ describe("SeriesEditor", () => {
     expect(mocks.removeFromCacheMock).toHaveBeenCalledTimes(1);
 
     mocks.mutationOptions?.onError?.({ graphQLErrors: [{ message: "nope" }] });
-    expect(enqueueSnackbar).toHaveBeenCalledWith("Spider-Man konnte nicht gespeichert werden [nope]", {
-      variant: "error",
-    });
+    expect(enqueueSnackbar).toHaveBeenCalledWith(
+      "Spider-Man konnte nicht gespeichert werden [nope]",
+      {
+        variant: "error",
+      }
+    );
   });
 });

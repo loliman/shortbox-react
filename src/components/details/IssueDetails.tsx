@@ -166,7 +166,12 @@ function IssueDetails(props: IssueDetailsProps) {
             </Box>
 
             <Box
-              sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100%",
+              }}
             >
               <Box sx={{ width: 260, display: "flex", justifyContent: "center" }}>
                 <IssueCover us={us} issue={issueForVariants as unknown as PreviewIssue} />

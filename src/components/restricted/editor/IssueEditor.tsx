@@ -27,13 +27,7 @@ function IssueEditor(props: Readonly<IssueEditorProps>) {
     copyModeRef.current = copyMode;
   }, [copyMode]);
 
-  const {
-    header,
-    submitLabel,
-    submitAndCopyLabel,
-    successMessage,
-    errorMessage,
-  } = React.useMemo(
+  const { header, submitLabel, submitAndCopyLabel, successMessage, errorMessage } = React.useMemo(
     () =>
       buildIssueEditorState(
         {

@@ -14,11 +14,7 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { useQuery } from "@apollo/client";
-import {
-  issues,
-  publishers,
-  series,
-} from "../../graphql/queriesTyped";
+import { issues, publishers, series } from "../../graphql/queriesTyped";
 import type {
   IssuesQuery,
   IssuesQueryVariables,
@@ -96,10 +92,7 @@ function List(props: Readonly<ListProps>) {
     fetchPolicy: "cache-first",
   });
 
-  const publisherNodes = React.useMemo(
-    () => toPublisherNodes(publisherData),
-    [publisherData]
-  );
+  const publisherNodes = React.useMemo(() => toPublisherNodes(publisherData), [publisherData]);
 
   const selectedPublisherName = getSelectedPublisherName(props.selected);
   const selectedSeriesKey = getSelectedSeriesKey(props.selected);
@@ -132,9 +125,7 @@ function List(props: Readonly<ListProps>) {
   if (isInitialLoading) {
     content = Array.from({ length: 25 }).map((_, idx) => <TypeListEntryPlaceholder key={idx} />);
   } else if (publisherError) {
-    content = (
-      <NestedErrorRow depth={0} message="Fehler beim Laden der Navigation" />
-    );
+    content = <NestedErrorRow depth={0} message="Fehler beim Laden der Navigation" />;
   } else if (publisherNodes.length === 0) {
     content = <NoEntries />;
   } else {
@@ -260,9 +251,7 @@ const SeriesBranch = React.memo(function SeriesBranch(props: Readonly<SeriesBran
     const activeSeriesKey = props.activeSeriesKey;
 
     setExpandedSeries((prev) =>
-      prev[activeSeriesKey]
-        ? prev
-        : { ...prev, [activeSeriesKey]: true }
+      prev[activeSeriesKey] ? prev : { ...prev, [activeSeriesKey]: true }
     );
   }, [props.activeSeriesKey]);
 
@@ -474,7 +463,13 @@ function NestedLoadingRow({ depth }: { depth: number }) {
   );
 }
 
-function NestedErrorRow({ depth, message = "Fehler beim Laden" }: { depth: number; message?: string }) {
+function NestedErrorRow({
+  depth,
+  message = "Fehler beim Laden",
+}: {
+  depth: number;
+  message?: string;
+}) {
   return (
     <ListItem sx={{ pl: getDepthPadding(depth) }}>
       <ListItemIcon sx={{ minWidth: 32 }}>
@@ -505,7 +500,10 @@ function createIssueSecondary(issueNode: IssueNode, showCollected: boolean): str
     parts.push(`+${variantCount} ${variantCount === 1 ? "Variante" : "Varianten"}`);
   }
 
-  if (showCollected && (issueNode.collected || issueNode.variants?.some((entry) => entry?.collected))) {
+  if (
+    showCollected &&
+    (issueNode.collected || issueNode.variants?.some((entry) => entry?.collected))
+  ) {
     parts.push("Gesammelt");
   }
 
@@ -591,7 +589,11 @@ function toSeriesInput(seriesNode: SeriesNode, us: boolean): IssuesQueryVariable
   };
 }
 
-function toIssueSeriesSelected(issueNode: IssueNode, fallbackSeries: SeriesNode, us: boolean): Series {
+function toIssueSeriesSelected(
+  issueNode: IssueNode,
+  fallbackSeries: SeriesNode,
+  us: boolean
+): Series {
   return {
     title: issueNode.series?.title || fallbackSeries.title || "",
     volume: issueNode.series?.volume ?? fallbackSeries.volume ?? 1,

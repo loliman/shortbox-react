@@ -62,7 +62,9 @@ export function IssueDetailsPreview() {
             </Paper>
           </Box>
 
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
+          <Box
+            sx={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}
+          >
             <Skeleton variant="rectangular" width={260} height={390} />
           </Box>
         </Box>

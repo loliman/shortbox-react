@@ -83,12 +83,13 @@ class Home extends React.Component<HomeProps> {
                       </Typography>
 
                       <Typography color="text.secondary">
-                        Angefangen über Geschichten der bekanntesten Superhelden Spider-Man, Deadpool,
-                        den X-Men oder den Avengers oder unbekannteren Helden wie Moon Knight und den New Mutants,
-                        über Comics zum Marvel Cinematic Universe mit Captain America, Captain Marvel und Iron Man
-                        bis hin zu Western-Comics, Horror-Comics und Kinder-Comics wie den Glücksbärchis oder der
-                        Police Acadamy findet ihr hier alle Veröffentlichungen in offiziellen Ausgaben, Raubkopien
-                        oder Fan-Comics.
+                        Angefangen über Geschichten der bekanntesten Superhelden Spider-Man,
+                        Deadpool, den X-Men oder den Avengers oder unbekannteren Helden wie Moon
+                        Knight und den New Mutants, über Comics zum Marvel Cinematic Universe mit
+                        Captain America, Captain Marvel und Iron Man bis hin zu Western-Comics,
+                        Horror-Comics und Kinder-Comics wie den Glücksbärchis oder der Police
+                        Acadamy findet ihr hier alle Veröffentlichungen in offiziellen Ausgaben,
+                        Raubkopien oder Fan-Comics.
                       </Typography>
 
                       <Typography color="text.secondary">
@@ -121,7 +122,8 @@ class Home extends React.Component<HomeProps> {
                         >
                           ComicGuide
                         </Link>{" "}
-                        bereitgestellten Cover. Diese dürfen ohne Genehmigung weiter verbreitet werden.
+                        bereitgestellten Cover. Diese dürfen ohne Genehmigung weiter verbreitet
+                        werden.
                       </Typography>
                     </Stack>
 

@@ -251,7 +251,11 @@ function SeriesEditor(props: Readonly<SeriesEditorProps>) {
                   sx={editorTextAreaSx}
                 />
 
-                <Stack direction={{ xs: "column", sm: "row" }} spacing={1} justifyContent="flex-end">
+                <Stack
+                  direction={{ xs: "column", sm: "row" }}
+                  spacing={1}
+                  justifyContent="flex-end"
+                >
                   <Button
                     disabled={isSubmitting}
                     onClick={() => resetForm()}

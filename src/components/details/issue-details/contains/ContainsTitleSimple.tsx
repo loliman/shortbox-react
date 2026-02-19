@@ -44,7 +44,9 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
       }}
     >
       <Box sx={{ minWidth: 0 }}>
-        <Typography sx={{ fontWeight: 600 }}>{generateItemTitle(item, Boolean(props.us))}</Typography>
+        <Typography sx={{ fontWeight: 600 }}>
+          {generateItemTitle(item, Boolean(props.us))}
+        </Typography>
         <Typography variant="body2" color="text.secondary">
           {item.addinfo ? item.addinfo : null}
         </Typography>

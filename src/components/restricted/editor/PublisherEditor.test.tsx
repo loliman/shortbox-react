@@ -7,13 +7,11 @@ const mocks = vi.hoisted(() => ({
   generateLabelMock: vi.fn(() => "Marvel"),
   generateUrlMock: vi.fn(() => "/de/marvel"),
   runMutationMock: vi.fn(() => Promise.resolve({})),
-  mutationOptions: null as
-    | null
-    | {
-        update?: (cache: unknown, result: { data?: Record<string, unknown> }) => void;
-        onCompleted?: (data: Record<string, unknown>) => void;
-        onError?: (error: { graphQLErrors?: Array<{ message?: string }> }) => void;
-      },
+  mutationOptions: null as null | {
+    update?: (cache: unknown, result: { data?: Record<string, unknown> }) => void;
+    onCompleted?: (data: Record<string, unknown>) => void;
+    onError?: (error: { graphQLErrors?: Array<{ message?: string }> }) => void;
+  },
 }));
 
 vi.mock("@apollo/client", () => ({
@@ -93,7 +91,10 @@ describe("PublisherEditor", () => {
       },
     });
 
-    mocks.mutationOptions?.update?.({}, { data: { createPublisher: { name: "Marvel", us: true } } });
+    mocks.mutationOptions?.update?.(
+      {},
+      { data: { createPublisher: { name: "Marvel", us: true } } }
+    );
     expect(mocks.addToCacheMock).toHaveBeenCalledTimes(1);
 
     mocks.mutationOptions?.onCompleted?.({ createPublisher: { name: "Marvel", us: true } });
@@ -141,8 +142,11 @@ describe("PublisherEditor", () => {
     expect(mocks.updateInCacheMock).toHaveBeenCalledTimes(2);
 
     mocks.mutationOptions?.onError?.({ graphQLErrors: [{ message: "denied" }] });
-    expect(enqueueSnackbar).toHaveBeenCalledWith("Marvel konnte nicht gespeichert werden [denied]", {
-      variant: "error",
-    });
+    expect(enqueueSnackbar).toHaveBeenCalledWith(
+      "Marvel konnte nicht gespeichert werden [denied]",
+      {
+        variant: "error",
+      }
+    );
   });
 });

@@ -99,7 +99,12 @@ export function StoryIssueListItem(props: Readonly<StoryIssueListItemProps>) {
 
       <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, flexShrink: 0 }}>
         {props.showCollected && props.issue.collected && props.session ? (
-          <Box component="img" src="/collected_badge.png" sx={{ height: 25, width: "auto" }} alt="gesammelt" />
+          <Box
+            component="img"
+            src="/collected_badge.png"
+            sx={{ height: 25, width: "auto" }}
+            alt="gesammelt"
+          />
         ) : null}
 
         <CoverTooltip issue={props.issue} us={coverUs} number={props.number}>

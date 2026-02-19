@@ -19,7 +19,12 @@ interface DetailsSectionProps {
   hasSession: boolean;
 }
 
-function DetailsSection({ values, isDesktop: _isDesktop, setFieldValue, hasSession }: DetailsSectionProps) {
+function DetailsSection({
+  values,
+  isDesktop: _isDesktop,
+  setFieldValue,
+  hasSession,
+}: DetailsSectionProps) {
   return (
     <Stack spacing={2}>
       <Typography variant="h6">Details</Typography>

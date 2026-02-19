@@ -31,13 +31,11 @@ const mocks = vi.hoisted(() => ({
   generateLabelMock: vi.fn(() => "Issue #1"),
   generateUrlMock: vi.fn(() => "/de/marvel/spider-man/1"),
   runMutationMock: vi.fn(() => Promise.resolve({})),
-  mutationOptions: null as
-    | null
-    | {
-        update?: (cache: unknown, result: { data?: Record<string, unknown> }) => void;
-        onCompleted?: (data: Record<string, unknown>) => void;
-        onError?: (error: { graphQLErrors?: Array<{ message?: string }> }) => void;
-      },
+  mutationOptions: null as null | {
+    update?: (cache: unknown, result: { data?: Record<string, unknown> }) => void;
+    onCompleted?: (data: Record<string, unknown>) => void;
+    onError?: (error: { graphQLErrors?: Array<{ message?: string }> }) => void;
+  },
 }));
 
 vi.mock("@apollo/client", () => ({
@@ -190,7 +188,9 @@ describe("IssueEditor", () => {
     });
     const mutationArgs = mocks.buildIssueMutationVariablesMock.mock.calls[0];
     expect(mutationArgs).toBeDefined();
-    const initialValues = mutationArgs?.[1] as { series: { publisher: { us: boolean } } } | undefined;
+    const initialValues = mutationArgs?.[1] as
+      | { series: { publisher: { us: boolean } } }
+      | undefined;
     expect(initialValues?.series.publisher.us).toBe(true);
 
     mocks.mutationOptions?.onCompleted?.({
