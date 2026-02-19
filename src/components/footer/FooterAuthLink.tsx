@@ -1,4 +1,4 @@
-import Link from "@mui/material/Link";
+import Button from "@mui/material/Button";
 import { useApolloClient, useMutation } from "@apollo/client";
 import { logout } from "../../graphql/mutationsTyped";
 import { isMockMode } from "../../app/mockMode";
@@ -13,18 +13,21 @@ type FooterAuthLinkProps = {
   handleLogout?: () => void;
 };
 
-const authLinkSx = { px: 1, color: "text.secondary" };
+const authButtonSx = { px: 0.75, color: "text.secondary", minWidth: 0 };
 
 export default function FooterAuthLink(props: Readonly<FooterAuthLinkProps>) {
   if (!props.loggedIn) {
     return (
-      <Link
-        component="button"
-        sx={authLinkSx}
+      <Button
+        type="button"
+        variant="text"
+        size="small"
+        color="inherit"
+        sx={authButtonSx}
         onClick={() => props.navigate?.(null, "/login")}
       >
         Login
-      </Link>
+      </Button>
     );
   }
 
@@ -53,9 +56,12 @@ function LogoutLink(props: Readonly<FooterAuthLinkProps>) {
   });
 
   return (
-    <Link
-      component="button"
-      sx={authLinkSx}
+    <Button
+      type="button"
+      variant="text"
+      size="small"
+      color="inherit"
+      sx={authButtonSx}
       onClick={() => {
         if (isMockMode) {
           props.enqueueSnackbar?.("Auf Wiedersehen!", { variant: "success" });
@@ -68,6 +74,6 @@ function LogoutLink(props: Readonly<FooterAuthLinkProps>) {
       }}
     >
       Logout
-    </Link>
+    </Button>
   );
 }

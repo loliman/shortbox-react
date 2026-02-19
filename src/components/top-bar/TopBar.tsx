@@ -8,6 +8,7 @@ import { HierarchyLevel, type HierarchyLevelType } from "../../util/hierarchy";
 import MenuIcon from "@mui/icons-material/Menu";
 import { withContext } from "../generic";
 import IconButton from "@mui/material/IconButton";
+import ButtonBase from "@mui/material/ButtonBase";
 import SearchBar from "./SearchBar";
 import type { SelectedRoot } from "../../types/domain";
 import TopBarFilterMenu from "./TopBarFilterMenu";
@@ -71,22 +72,18 @@ export function TopBar(props: TopBarProps) {
           (props.level === HierarchyLevel.SERIES ||
             props.level === HierarchyLevel.PUBLISHER ||
             props.level === HierarchyLevel.ISSUE) ? null : (
-            <Box
-              component="button"
-              type="button"
+            <ButtonBase
               aria-label="Zur Startseite"
-              onClick={() => navigate?.(null, us ? "/us" : "/de")}
+              onClick={(e) => navigate?.(e, us ? "/us" : "/de")}
               sx={{
-                p: 0,
-                border: 0,
-                background: "transparent",
                 display: "inline-flex",
-                cursor: "pointer",
                 lineHeight: 0,
+                borderRadius: 1,
+                px: 0.25,
               }}
             >
-              <img src="/Shortbox_Logo.png" alt="Shortbox" height="34" />
-            </Box>
+              <Box component="img" src="/Shortbox_Logo.png" alt="Shortbox" sx={{ height: 34 }} />
+            </ButtonBase>
           )}
         </Box>
 

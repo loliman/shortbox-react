@@ -1,5 +1,6 @@
 import Box from "@mui/material/Box";
-import Link from "@mui/material/Link";
+import Breadcrumbs from "@mui/material/Breadcrumbs";
+import Button from "@mui/material/Button";
 import FooterAuthLink from "./FooterAuthLink";
 
 type FooterLinksProps = {
@@ -13,7 +14,7 @@ type FooterLinksProps = {
   handleLogout?: () => void;
 };
 
-const footerLinkSx = { px: 1, color: "text.secondary" };
+const footerButtonSx = { px: 0.75, color: "text.secondary", minWidth: 0 };
 
 export default function FooterLinks(props: Readonly<FooterLinksProps>) {
   const showExtendedContactText = !props.isPhonePortrait;
@@ -23,50 +24,58 @@ export default function FooterLinks(props: Readonly<FooterLinksProps>) {
       component="nav"
       aria-label="Footer"
       sx={{
-        display: "flex",
-        alignItems: "center",
-        flexWrap: "wrap",
+        color: "text.secondary",
       }}
     >
-      <Link
-        component="button"
-        sx={footerLinkSx}
-        onClick={() => props.navigate?.(null, "/contact")}
+      <Breadcrumbs
+        separator="|"
+        aria-label="Footer Navigation"
+        sx={{
+          "& .MuiBreadcrumbs-ol": {
+            alignItems: "center",
+            flexWrap: "wrap",
+            rowGap: 0.5,
+          },
+        }}
       >
-        Kontakt
-        {showExtendedContactText ? "/Fehler melden/Unterstützen" : ""}
-      </Link>
-      <Separator />
-      <Link
-        component="button"
-        sx={footerLinkSx}
-        onClick={() => props.navigate?.(null, "/impress")}
-      >
-        Impressum
-      </Link>
-      <Separator />
-      <Link
-        component="button"
-        sx={footerLinkSx}
-        onClick={() => props.navigate?.(null, "/privacy")}
-      >
-        Datenschutz
-      </Link>
-      <Separator />
-      <FooterAuthLink
-        loggedIn={props.loggedIn}
-        navigate={props.navigate}
-        enqueueSnackbar={props.enqueueSnackbar}
-        handleLogout={props.handleLogout}
-      />
-    </Box>
-  );
-}
-
-function Separator() {
-  return (
-    <Box component="span" sx={{ px: 0.5, color: "text.disabled" }}>
-      |
+        <Button
+          type="button"
+          size="small"
+          variant="text"
+          color="inherit"
+          sx={footerButtonSx}
+          onClick={() => props.navigate?.(null, "/contact")}
+        >
+          Kontakt
+          {showExtendedContactText ? "/Fehler melden/Unterstützen" : ""}
+        </Button>
+        <Button
+          type="button"
+          size="small"
+          variant="text"
+          color="inherit"
+          sx={footerButtonSx}
+          onClick={() => props.navigate?.(null, "/impress")}
+        >
+          Impressum
+        </Button>
+        <Button
+          type="button"
+          size="small"
+          variant="text"
+          color="inherit"
+          sx={footerButtonSx}
+          onClick={() => props.navigate?.(null, "/privacy")}
+        >
+          Datenschutz
+        </Button>
+        <FooterAuthLink
+          loggedIn={props.loggedIn}
+          navigate={props.navigate}
+          enqueueSnackbar={props.enqueueSnackbar}
+          handleLogout={props.handleLogout}
+        />
+      </Breadcrumbs>
     </Box>
   );
 }
