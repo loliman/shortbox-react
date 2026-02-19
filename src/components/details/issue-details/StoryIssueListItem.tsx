@@ -1,6 +1,7 @@
 import React from "react";
 import ListItem from "@mui/material/ListItem";
 import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
 import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 import SearchIcon from "@mui/icons-material/Search";
@@ -57,18 +58,16 @@ export function StoryIssueListItem(props: Readonly<StoryIssueListItemProps>) {
             us={Boolean(props.parentLink.coverUs)}
             number={props.parentLink.number}
           >
-            <Typography
-              variant="body2"
-              color="text.secondary"
+            <Link
               component="button"
               type="button"
+              underline="hover"
+              color="text.secondary"
               sx={{
-                border: 0,
                 p: 0,
-                background: "transparent",
-                cursor: "pointer",
-                font: "inherit",
                 textAlign: "left",
+                fontSize: "0.875rem",
+                lineHeight: 1.43,
               }}
               onClick={(e) => {
                 e.stopPropagation();
@@ -89,7 +88,7 @@ export function StoryIssueListItem(props: Readonly<StoryIssueListItemProps>) {
               >
                 {getIssueLabel(props.parentLink.issue)}
               </Box>
-            </Typography>
+            </Link>
           </CoverTooltip>
         ) : null}
 

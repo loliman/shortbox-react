@@ -1,5 +1,6 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
 import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
 import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
@@ -119,18 +120,16 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
             us={props.us}
             number={item.parent.reprintOf.number}
           >
-            <Typography
-              variant="body2"
-              color="text.secondary"
+            <Link
               component="button"
               type="button"
+              underline="hover"
+              color="text.secondary"
               sx={{
-                border: 0,
                 p: 0,
-                background: "transparent",
-                cursor: "pointer",
-                font: "inherit",
                 textAlign: "left",
+                fontSize: "0.875rem",
+                lineHeight: 1.43,
               }}
               onClick={(e) => {
                 e.stopPropagation();
@@ -148,7 +147,7 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
               >
                 {reprintSelection ? generateLabel(reprintSelection) : ""}
               </Box>
-            </Typography>
+            </Link>
           </CoverTooltip>
         ) : null}
 
