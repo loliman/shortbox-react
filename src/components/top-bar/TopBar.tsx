@@ -28,6 +28,8 @@ interface TopBarProps {
   navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
 }
 
+const SEARCH_MAX_WIDTH = 520;
+
 export function TopBar(props: TopBarProps) {
   const { toggleDrawer, navigate } = props;
   const us = Boolean(props.us);
@@ -37,14 +39,23 @@ export function TopBar(props: TopBarProps) {
 
   return (
     <AppBar position="sticky" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
-      <Toolbar sx={{ gap: 1, position: "relative" }}>
+      <Toolbar
+        sx={{
+          display: "grid",
+          alignItems: "center",
+          columnGap: 1,
+          gridTemplateColumns: {
+            xs: "auto minmax(148px, 1fr) auto",
+            sm: "minmax(0, 1fr) minmax(220px, 520px) minmax(0, 1fr)",
+          },
+        }}
+      >
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
             minWidth: 0,
             flexShrink: 0,
-            flexGrow: 1,
           }}
         >
           <IconButton
@@ -82,24 +93,25 @@ export function TopBar(props: TopBarProps) {
         <Box
           data-testid="topbar-search-center"
           sx={{
-            position: "absolute",
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: {
-              xs: "clamp(148px, 48vw, 320px)",
-              sm: "min(520px, calc(100% - 430px))",
-            },
-            maxWidth: "100%",
+            minWidth: 0,
+            width: "100%",
+            maxWidth: SEARCH_MAX_WIDTH,
+            justifySelf: "center",
             px: 1,
-            pointerEvents: "none",
           }}
         >
-          <Box sx={{ pointerEvents: "auto" }}>
-            <SearchBar />
-          </Box>
+          <SearchBar />
         </Box>
 
-        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, flexShrink: 0, ml: "auto" }}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 0.5,
+            minWidth: 0,
+            justifySelf: "end",
+          }}
+        >
           <TopBarFilterMenu
             us={us}
             selected={selected}

@@ -19,7 +19,7 @@ interface DetailsSectionProps {
   hasSession: boolean;
 }
 
-function DetailsSection({ values, isDesktop, setFieldValue, hasSession }: DetailsSectionProps) {
+function DetailsSection({ values, isDesktop: _isDesktop, setFieldValue, hasSession }: DetailsSectionProps) {
   return (
     <Stack spacing={2}>
       <Typography variant="h6">Details</Typography>
@@ -51,10 +51,13 @@ function DetailsSection({ values, isDesktop, setFieldValue, hasSession }: Detail
             <Box
               key={key}
               sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                alignItems: "flex-end",
+                display: "grid",
+                alignItems: "end",
                 gap: 1,
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  sm: "minmax(220px, 320px) minmax(120px, 160px) auto",
+                },
               }}
             >
               <FastField
@@ -63,7 +66,7 @@ function DetailsSection({ values, isDesktop, setFieldValue, hasSession }: Detail
                 type="date"
                 InputLabelProps={{ shrink: true }}
                 component={TextField}
-                sx={{ width: isDesktop ? 300 : "100%" }}
+                sx={{ width: "100%" }}
               />
 
               <FastField
@@ -73,7 +76,7 @@ function DetailsSection({ values, isDesktop, setFieldValue, hasSession }: Detail
                 select
                 component={TextField}
                 InputLabelProps={{ shrink: true }}
-                sx={{ width: isDesktop ? 120 : "100%" }}
+                sx={{ width: "100%" }}
               >
                 {COMPARE_OPTIONS.map((option) => (
                   <MenuItem key={option} value={option}>

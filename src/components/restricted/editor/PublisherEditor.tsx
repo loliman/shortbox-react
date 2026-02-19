@@ -19,6 +19,9 @@ import TitleLine from "../../generic/TitleLine";
 import Stack from "@mui/material/Stack";
 import type { DocumentNode } from "graphql";
 
+const editorFieldSx = { width: "100%", maxWidth: { xs: "100%", md: 420 } } as const;
+const editorTextAreaSx = { width: "100%", maxWidth: { xs: "100%", md: 640 } } as const;
+
 interface PublisherFormValues {
   name: string;
   startyear: number;
@@ -192,7 +195,7 @@ class PublisherEditor extends React.Component<PublisherEditorProps, PublisherEdi
                       name="name"
                       label="Name"
                       component={TextField}
-                      sx={{ width: this.props.isDesktop ? "35%" : "100%" }}
+                      sx={editorFieldSx}
                     />
 
                     <FastField
@@ -200,7 +203,7 @@ class PublisherEditor extends React.Component<PublisherEditorProps, PublisherEdi
                       label="Startjahr"
                       type="number"
                       component={TextField}
-                      sx={{ width: this.props.isDesktop ? "35%" : "100%" }}
+                      sx={editorFieldSx}
                     />
 
                     <FastField
@@ -208,7 +211,7 @@ class PublisherEditor extends React.Component<PublisherEditorProps, PublisherEdi
                       label="Endjahr"
                       type="number"
                       component={TextField}
-                      sx={{ width: this.props.isDesktop ? "35%" : "100%" }}
+                      sx={editorFieldSx}
                     />
 
                     <FastField
@@ -217,7 +220,7 @@ class PublisherEditor extends React.Component<PublisherEditorProps, PublisherEdi
                       multiline
                       rows={10}
                       component={TextField}
-                      sx={{ width: this.props.isDesktop ? "35%" : "100%" }}
+                      sx={editorTextAreaSx}
                     />
 
                     <Stack direction={{ xs: "column", sm: "row" }} spacing={1} justifyContent="flex-end">

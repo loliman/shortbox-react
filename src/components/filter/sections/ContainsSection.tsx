@@ -24,7 +24,7 @@ interface ContainsSectionProps {
   setFieldValue: (field: string, value: unknown) => void;
 }
 
-function ContainsSection({ values, us, isDesktop, setFieldValue }: ContainsSectionProps) {
+function ContainsSection({ values, us, isDesktop: _isDesktop, setFieldValue }: ContainsSectionProps) {
   const [publisherInput, setPublisherInput] = React.useState("");
   const [seriesInput, setSeriesInput] = React.useState("");
 
@@ -169,17 +169,20 @@ function ContainsSection({ values, us, isDesktop, setFieldValue }: ContainsSecti
             <Box
               key={key}
               sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                alignItems: "flex-end",
+                display: "grid",
+                alignItems: "end",
                 gap: 1,
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  sm: "minmax(220px, 320px) minmax(120px, 160px) auto",
+                },
               }}
             >
               <FastField
                 name={`numbers[${index}].number`}
                 label="Nummer"
                 component={TextField}
-                sx={{ width: isDesktop ? 300 : "100%" }}
+                sx={{ width: "100%" }}
               />
 
               <FastField
@@ -189,7 +192,7 @@ function ContainsSection({ values, us, isDesktop, setFieldValue }: ContainsSecti
                 select
                 component={TextField}
                 InputLabelProps={{ shrink: true }}
-                sx={{ width: isDesktop ? 120 : "100%" }}
+                sx={{ width: "100%" }}
               >
                 {COMPARE_OPTIONS.map((option) => (
                   <MenuItem key={option} value={option}>

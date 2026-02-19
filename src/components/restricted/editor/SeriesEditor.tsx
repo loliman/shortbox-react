@@ -21,8 +21,11 @@ import TitleLine from "../../generic/TitleLine";
 import Stack from "@mui/material/Stack";
 import type { DocumentNode } from "graphql";
 import type { FieldItem } from "../../../util/filterFieldHelpers";
+import type { SxProps, Theme } from "@mui/material/styles";
 
 const MIN_QUERY_LENGTH = 2;
+const editorFieldSx = { width: "100%", maxWidth: { xs: "100%", md: 420 } } as const;
+const editorTextAreaSx = { width: "100%", maxWidth: { xs: "100%", md: 640 } } as const;
 
 interface SeriesFormValues {
   title: string;
@@ -218,13 +221,14 @@ class SeriesEditor extends React.Component<SeriesEditorProps, SeriesEditorState>
                         name="title"
                         label="Titel"
                         component={TextField}
-                        sx={{ width: this.props.isDesktop ? "35%" : "100%" }}
+                        sx={editorFieldSx}
                       />
 
                       <SeriesPublisherAutocomplete
                         publisherName={values.publisher.name}
                         publisherUs={Boolean(defaultValues.publisher.us)}
                         setFieldValue={setFieldValue}
+                        textFieldSx={editorFieldSx}
                       />
 
                       <FastField
@@ -232,7 +236,7 @@ class SeriesEditor extends React.Component<SeriesEditorProps, SeriesEditorState>
                         label="Volume"
                         type="number"
                         component={TextField}
-                        sx={{ width: this.props.isDesktop ? "35%" : "100%" }}
+                        sx={editorFieldSx}
                       />
 
                       <FastField
@@ -240,7 +244,7 @@ class SeriesEditor extends React.Component<SeriesEditorProps, SeriesEditorState>
                         label="Startjahr"
                         type="number"
                         component={TextField}
-                        sx={{ width: this.props.isDesktop ? "35%" : "100%" }}
+                        sx={editorFieldSx}
                       />
 
                       <FastField
@@ -248,7 +252,7 @@ class SeriesEditor extends React.Component<SeriesEditorProps, SeriesEditorState>
                         label="Endjahr"
                         type="number"
                         component={TextField}
-                        sx={{ width: this.props.isDesktop ? "35%" : "100%" }}
+                        sx={editorFieldSx}
                       />
 
                       <FastField
@@ -257,7 +261,7 @@ class SeriesEditor extends React.Component<SeriesEditorProps, SeriesEditorState>
                         multiline
                         rows={10}
                         component={TextField}
-                        sx={{ width: this.props.isDesktop ? "35%" : "100%" }}
+                        sx={editorTextAreaSx}
                       />
 
                       <Stack direction={{ xs: "column", sm: "row" }} spacing={1} justifyContent="flex-end">
@@ -301,12 +305,14 @@ interface SeriesPublisherAutocompleteProps {
   publisherName: string;
   publisherUs: boolean;
   setFieldValue: (field: string, value: unknown, shouldValidate?: boolean) => void;
+  textFieldSx?: SxProps<Theme>;
 }
 
 function SeriesPublisherAutocomplete({
   publisherName,
   publisherUs,
   setFieldValue,
+  textFieldSx,
 }: Readonly<SeriesPublisherAutocompleteProps>) {
   const query = useAutocompleteQuery<FieldItem>({
     query: publishers,
@@ -330,6 +336,7 @@ function SeriesPublisherAutocomplete({
       inputValue={publisherName}
       label="Verlag"
       freeSolo
+      textFieldSx={textFieldSx}
       loading={query.loading}
       noOptionsText={
         query.isBelowMinLength
