@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
 import Box from "@mui/material/Box";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -26,6 +25,7 @@ export default function TopBarFilterMenu(props: Readonly<TopBarFilterMenuProps>)
   const { us, selected, isFilterActive, navigate } = props;
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [exportOpen, setExportOpen] = useState(false);
+  const menuOpen = Boolean(anchorEl);
 
   const handleFilterMenuOpen = (e: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(e.currentTarget);
@@ -36,81 +36,89 @@ export default function TopBarFilterMenu(props: Readonly<TopBarFilterMenuProps>)
   };
 
   return (
-    <ClickAwayListener onClickAway={handleFilterMenuClose}>
-      <Box>
-        <Tooltip title={isFilterActive ? "Filter aktiv" : "Filtern"}>
-          <IconButton
-            color={isFilterActive ? "secondary" : "inherit"}
-            aria-label={isFilterActive ? "Filteroptionen" : "Filter öffnen"}
-            onClick={(e) => {
-              if (!isFilterActive) navigate?.(e, us ? "/filter/us" : "/filter/de");
-              else handleFilterMenuOpen(e);
-            }}
-          >
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-
-        <Menu
-          id="topbar-filter-menu"
-          anchorEl={anchorEl}
-          open={anchorEl !== null}
-          onClose={handleFilterMenuClose}
-          PaperProps={{
-            style: {
-              maxHeight: 48 * 4.5,
-              width: 200,
-            },
+    <Box>
+      <Tooltip title={isFilterActive ? "Filter aktiv" : "Filtern"}>
+        <IconButton
+          color={isFilterActive ? "secondary" : "inherit"}
+          aria-label={isFilterActive ? "Filteroptionen" : "Filter öffnen"}
+          aria-controls={menuOpen ? "topbar-filter-menu" : undefined}
+          aria-haspopup="menu"
+          aria-expanded={menuOpen ? "true" : undefined}
+          onClick={(e) => {
+            if (!isFilterActive) {
+              navigate?.(e, us ? "/filter/us" : "/filter/de");
+              return;
+            }
+            if (menuOpen) {
+              handleFilterMenuClose();
+            } else {
+              handleFilterMenuOpen(e);
+            }
           }}
         >
-          <MenuItem
-            key="edit"
-            onClick={(e) => {
-              handleFilterMenuClose();
-              navigate?.(e, us ? "/filter/us" : "/filter/de");
-            }}
-          >
-            <ListItemIcon>
-              <EditIcon />
-            </ListItemIcon>
-            <Typography variant="inherit" noWrap>
-              Bearbeiten
-            </Typography>
-          </MenuItem>
+          <FilterListIcon />
+        </IconButton>
+      </Tooltip>
 
-          <MenuItem
-            key="export"
-            onClick={() => {
-              handleFilterMenuClose();
-              setExportOpen(true);
-            }}
-          >
-            <ListItemIcon>
-              <CloudDownloadIcon />
-            </ListItemIcon>
-            <Typography variant="inherit" noWrap>
-              Exportieren
-            </Typography>
-          </MenuItem>
+      <Menu
+        id="topbar-filter-menu"
+        anchorEl={anchorEl}
+        open={menuOpen}
+        onClose={handleFilterMenuClose}
+        PaperProps={{
+          sx: {
+            maxHeight: 48 * 4.5,
+            width: 200,
+          },
+        }}
+      >
+        <MenuItem
+          key="edit"
+          onClick={(e) => {
+            handleFilterMenuClose();
+            navigate?.(e, us ? "/filter/us" : "/filter/de");
+          }}
+        >
+          <ListItemIcon>
+            <EditIcon />
+          </ListItemIcon>
+          <Typography variant="inherit" noWrap>
+            Bearbeiten
+          </Typography>
+        </MenuItem>
 
-          <MenuItem
-            key="reset"
-            onClick={(e) => {
-              handleFilterMenuClose();
-              navigate?.(e, generateUrl(selected, us), { filter: null });
-            }}
-          >
-            <ListItemIcon>
-              <ClearIcon />
-            </ListItemIcon>
-            <Typography variant="inherit" noWrap>
-              Zurücksetzen
-            </Typography>
-          </MenuItem>
-        </Menu>
+        <MenuItem
+          key="export"
+          onClick={() => {
+            handleFilterMenuClose();
+            setExportOpen(true);
+          }}
+        >
+          <ListItemIcon>
+            <CloudDownloadIcon />
+          </ListItemIcon>
+          <Typography variant="inherit" noWrap>
+            Exportieren
+          </Typography>
+        </MenuItem>
 
-        <ExportDialog handleClose={() => setExportOpen(false)} open={exportOpen} />
-      </Box>
-    </ClickAwayListener>
+        <MenuItem
+          key="reset"
+          onClick={(e) => {
+            handleFilterMenuClose();
+            navigate?.(e, generateUrl(selected, us), { filter: null });
+          }}
+        >
+          <ListItemIcon>
+            <ClearIcon />
+          </ListItemIcon>
+          <Typography variant="inherit" noWrap>
+            Zurücksetzen
+          </Typography>
+        </MenuItem>
+      </Menu>
+
+      <ExportDialog handleClose={() => setExportOpen(false)} open={exportOpen} />
+    </Box>
   );
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import {
@@ -152,26 +152,25 @@ function BreadcrumbNav(props: BreadcrumbProps & { mode: BreadcrumbMode }) {
             {token.kind === "separator" ? <KeyboardArrowRightIcon fontSize="small" /> : null}
             {token.kind === "current" ? <span>{token.label}</span> : null}
             {token.kind === "link" ? (
-              <Typography
+              <Link
                 component="button"
                 type="button"
+                underline="hover"
+                color="inherit"
                 sx={{
                   p: 0,
                   border: 0,
-                  background: "transparent",
-                  font: "inherit",
-                  color: "inherit",
-                  cursor: "pointer",
                   display: "inline-flex",
                   alignItems: "center",
-                  textDecoration: "underline",
+                  minWidth: 0,
+                  textAlign: "left",
                 }}
-                onClick={() => {
-                  props.navigate?.(null, token.to);
+                onClick={(e) => {
+                  props.navigate?.(e, token.to);
                 }}
               >
                 {token.icon === "back" ? <KeyboardArrowLeftIcon fontSize="small" /> : token.label}
-              </Typography>
+              </Link>
             ) : null}
           </Box>
         ))}

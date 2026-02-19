@@ -2,6 +2,7 @@ import React from "react";
 import CardMedia from "@mui/material/CardMedia";
 import Dialog from "@mui/material/Dialog";
 import Box from "@mui/material/Box";
+import ButtonBase from "@mui/material/ButtonBase";
 import type { PreviewIssue } from "../../issue-preview/utils/issuePreviewUtils";
 import { getIssueLabel } from "../../../util/issuePresentation";
 
@@ -17,8 +18,9 @@ export function IssueCover(props: Readonly<IssueCoverProps>) {
 
   return (
     <React.Fragment>
-      <Box
-        onClick={() => setIsOpen((value) => !value)}
+      <ButtonBase
+        onClick={() => setIsOpen(true)}
+        aria-label={`${issueLabel} Cover vergrößern`}
         sx={{
           width: 260,
           height: 390,
@@ -26,6 +28,7 @@ export function IssueCover(props: Readonly<IssueCoverProps>) {
           overflow: "hidden",
           bgcolor: "grey.300",
           cursor: "zoom-in",
+          display: "block",
         }}
       >
         <CardMedia
@@ -41,10 +44,23 @@ export function IssueCover(props: Readonly<IssueCoverProps>) {
             filter: blurCover ? "blur(2px)" : "none",
           }}
         />
-      </Box>
+      </ButtonBase>
 
-      <Dialog open={isOpen} onClose={() => setIsOpen((value) => !value)} maxWidth="md">
-        <img src={coverUrl} alt={issueLabel} />
+      <Dialog open={isOpen} onClose={() => setIsOpen(false)} maxWidth="md">
+        <Box
+          component="img"
+          src={coverUrl}
+          alt={issueLabel}
+          sx={{
+            display: "block",
+            maxWidth: "min(90vw, 960px)",
+            maxHeight: "85vh",
+            width: "auto",
+            height: "auto",
+            objectFit: "contain",
+            bgcolor: "grey.200",
+          }}
+        />
       </Dialog>
     </React.Fragment>
   );
