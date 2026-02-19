@@ -1,6 +1,7 @@
 import React from "react";
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
+import Box from "@mui/material/Box";
 import { getIssueUrl } from "../../../../util/issuePresentation";
 import type { VariantIssue } from "./types";
 
@@ -23,37 +24,58 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
   return (
     <ImageListItem
       onClick={(e) => props.navigate?.(e, getIssueUrl(props.variant, props.us))}
-      className={"tile " + (mainIssue ? "mainIssue" : "")}
+      sx={{
+        cursor: "pointer",
+        borderRadius: 1.5,
+        overflow: "hidden",
+        border: (theme) =>
+          selected
+            ? `2px solid ${theme.palette.primary.main}`
+            : `1px solid ${theme.palette.divider}`,
+        boxShadow: mainIssue ? "0 8px 20px rgba(15, 23, 42, 0.08)" : "none",
+      }}
     >
       <img
         src={coverUrl}
-        className={blurCover ? "blurredImage" : ""}
+        style={{
+          display: "block",
+          width: "100%",
+          filter: blurCover ? "blur(2px)" : "none",
+        }}
         alt={(props.variant.variant || "") + " (" + (props.variant.format || "") + ")"}
       />
 
       <ImageListItemBar
         title={
-          <div>
-            <div className={selected ? "selectedVariant" : ""}>
+          <Box>
+            <Box
+              sx={{
+                fontWeight: selected ? 700 : 500,
+                color: selected ? "primary.light" : "inherit",
+              }}
+            >
               {(props.variant.format || "") +
                 " (" +
                 (props.variant.variant ? props.variant.variant + " Variant" : "Reguläre Ausgabe") +
                 ")"}
-            </div>
+            </Box>
             {props.variant.collected && props.session ? (
-              <img
-                className="verifiedBadge"
+              <Box
+                component="img"
                 src="/collected_badge.png"
                 alt="gesammelt"
-                height="25"
+                sx={{ mt: 0.5, height: 25, width: "auto" }}
               />
             ) : null}
-          </div>
+          </Box>
         }
-        classes={{
-          root: "titleBar",
-          title: "title",
-          titleWrap: "titleWrap",
+        sx={{
+          background:
+            "linear-gradient(to top, rgba(11, 23, 45, 0.88), rgba(11, 23, 45, 0.4) 65%, transparent)",
+          "& .MuiImageListItemBar-titleWrap": {
+            px: 1,
+            py: 0.5,
+          },
         }}
       />
     </ImageListItem>

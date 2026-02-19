@@ -11,7 +11,7 @@ function Contact() {
     <Layout>
       <CardHeader title="Kontakt" />
 
-      <CardContent className="cardContent">
+      <CardContent sx={{ pt: 1 }}>
         <Stack spacing={3}>
           <Typography>
             Shortbox.de ist eine Eigenentwicklung von mir und wird ausschließlich von mir

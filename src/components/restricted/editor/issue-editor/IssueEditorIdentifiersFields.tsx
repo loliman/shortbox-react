@@ -14,31 +14,31 @@ function IssueEditorIdentifiersFields({ values, isDesktop }: IssueEditorIdentifi
     <Stack spacing={2}>
       {!values.series.publisher.us ? (
         <FastField
-          className={isDesktop ? "field field35" : "field field100"}
           name="comicguideid"
           label="Comicguide ID"
           type="number"
           component={TextField}
+          sx={{ width: isDesktop ? "35%" : "100%" }}
         />
       ) : null}
 
       {!values.series.publisher.us ? (
         <FastField
-          className={isDesktop ? "field field35" : "field field100"}
           name="isbn"
           label="ISBN"
           type="string"
           component={TextField}
+          sx={{ width: isDesktop ? "35%" : "100%" }}
         />
       ) : null}
 
       <FastField
-        className={isDesktop ? "field field35" : "field field100"}
         name="addinfo"
         label="Weitere Informationen"
         multiline
         rows={10}
         component={TextField}
+        sx={{ width: isDesktop ? "35%" : "100%" }}
       />
     </Stack>
   );

@@ -13,6 +13,7 @@ import { decapitalize, stripItem, wrapItem } from "../../../util/util";
 import AutocompleteBase from "../../generic/AutocompleteBase";
 import { useAutocompleteQuery } from "../../generic/useAutocompleteQuery";
 import { addToCache, removeFromCache, updateInCache } from "./Editor";
+import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -192,7 +193,7 @@ class SeriesEditor extends React.Component<SeriesEditorProps, SeriesEditorState>
                     }
                     action={
                       <FormControlLabel
-                        className="switchEditor"
+                        sx={{ m: 0 }}
                         control={
                           <Tooltip title={(values.publisher.us ? "Deutscher" : "US") + " Serie"}>
                             <Switch
@@ -211,13 +212,13 @@ class SeriesEditor extends React.Component<SeriesEditorProps, SeriesEditorState>
                     }
                   />
 
-                  <CardContent className="cardContent">
+                  <CardContent sx={{ pt: 1 }}>
                     <Stack spacing={2.5}>
                       <FastField
-                        className={this.props.isDesktop ? "field field35" : "field field100"}
                         name="title"
                         label="Titel"
                         component={TextField}
+                        sx={{ width: this.props.isDesktop ? "35%" : "100%" }}
                       />
 
                       <SeriesPublisherAutocomplete
@@ -227,39 +228,39 @@ class SeriesEditor extends React.Component<SeriesEditorProps, SeriesEditorState>
                       />
 
                       <FastField
-                        className={this.props.isDesktop ? "field field35" : "field field100"}
                         name="volume"
                         label="Volume"
                         type="number"
                         component={TextField}
+                        sx={{ width: this.props.isDesktop ? "35%" : "100%" }}
                       />
 
                       <FastField
-                        className={this.props.isDesktop ? "field field35" : "field field100"}
                         name="startyear"
                         label="Startjahr"
                         type="number"
                         component={TextField}
+                        sx={{ width: this.props.isDesktop ? "35%" : "100%" }}
                       />
 
                       <FastField
-                        className={this.props.isDesktop ? "field field35" : "field field100"}
                         name="endyear"
                         label="Endjahr"
                         type="number"
                         component={TextField}
+                        sx={{ width: this.props.isDesktop ? "35%" : "100%" }}
                       />
 
                       <FastField
-                        className={this.props.isDesktop ? "field field35" : "field field100"}
                         name="addinfo"
                         label="Weitere Informationen"
                         multiline
                         rows={10}
                         component={TextField}
+                        sx={{ width: this.props.isDesktop ? "35%" : "100%" }}
                       />
 
-                      <div className="formButtons">
+                      <Stack direction={{ xs: "column", sm: "row" }} spacing={1} justifyContent="flex-end">
                         <Button
                           disabled={isSubmitting}
                           onClick={() => resetForm()}
@@ -278,15 +279,12 @@ class SeriesEditor extends React.Component<SeriesEditorProps, SeriesEditorState>
                           Abbrechen
                         </Button>
 
-                        <Button
-                          className="createButton"
-                          disabled={isSubmitting}
-                          onClick={submitForm}
-                          color="primary"
-                        >
-                          {submitLabel}
-                        </Button>
-                      </div>
+                        <Box>
+                          <Button disabled={isSubmitting} onClick={submitForm} color="primary">
+                            {submitLabel}
+                          </Button>
+                        </Box>
+                      </Stack>
                     </Stack>
                   </CardContent>
                 </Form>

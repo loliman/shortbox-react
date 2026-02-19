@@ -39,16 +39,19 @@ function IssuePreviewSmall(props: Readonly<IssuePreviewSmallProps>) {
         display: "block",
         width: "100%",
         borderRadius,
-        background: coverUrl ? `white url(${coverUrl}) no-repeat 100% 40%` : "white",
+        backgroundColor: "background.paper",
+        backgroundImage: coverUrl
+          ? `linear-gradient(to right, rgba(255, 255, 255, 0.98) 65%, rgba(255, 255, 255, 0.08)), url(${coverUrl})`
+          : "none",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "100% 40%",
         backgroundSize: "35%",
       }}
     >
       <Box
-        className={blurCover ? "blurred" : ""}
         sx={{
+          backdropFilter: blurCover ? "blur(2px)" : "none",
           width: "100%",
-          background:
-            "linear-gradient(to right, rgba(255, 255, 255, 1) 65%, rgba(255, 255, 255, 0))",
         }}
       >
         <Box sx={{ width: "100%" }}>
@@ -61,7 +64,7 @@ function IssuePreviewSmall(props: Readonly<IssuePreviewSmallProps>) {
           </Box>
 
           {variant ? (
-            <Typography className="issuePreviewTitleVariant" variant="caption">
+            <Typography variant="caption" color="text.secondary">
               {variant}
             </Typography>
           ) : null}

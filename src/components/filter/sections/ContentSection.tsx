@@ -14,17 +14,17 @@ function ContentSection({ isDesktop }: ContentSectionProps) {
       <Typography variant="h6">Inhalt</Typography>
 
       <FastField
-        className={isDesktop ? "field field40" : "field field90"}
         name={"arcs"}
         label="Teil von (Event, Story Arc, Story Line)"
         component={TextField}
+        sx={{ width: isDesktop ? "70%" : "100%" }}
       />
 
       <FastField
-        className={isDesktop ? "field field40" : "field field90"}
         name={"appearances"}
         label="Auftritte (Personen, Gegenstände, Orte, ...)"
         component={TextField}
+        sx={{ width: isDesktop ? "70%" : "100%" }}
       />
     </Stack>
   );

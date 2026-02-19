@@ -154,7 +154,7 @@ function DeletionDialog(props: Readonly<DeletionDialogProps>) {
   return (
     <Dialog open={Boolean(open)} onClose={handleClose} aria-labelledby="form-delete-dialog-title">
       <DialogTitle id="form-delete-dialog-title">
-        <WarningIcon className="deleteTitleIcon" />
+        <WarningIcon sx={{ mr: 1, verticalAlign: "middle" }} />
         Löschen bestätigen
       </DialogTitle>
       <DialogContent>{getDeleteConfimText(level, item)}</DialogContent>

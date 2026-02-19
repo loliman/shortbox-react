@@ -1,4 +1,5 @@
 import React from "react";
+import Box from "@mui/material/Box";
 import { FastField } from "formik";
 import AutocompleteBase from "../../../generic/AutocompleteBase";
 import { useAutocompleteQuery } from "../../../generic/useAutocompleteQuery";
@@ -47,7 +48,14 @@ function StoryFieldsNonExclusive(props: StoryFieldsNonExclusiveProps) {
     ) || (seriesPattern.trim().length > 0 ? seriesPattern : null);
 
   return (
-    <div className="storyAddInputContainer">
+    <Box
+      sx={{
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "flex-end",
+        gap: 1,
+      }}
+    >
       <AutocompleteBase
         options={seriesQuery.options}
         value={currentSeriesValue}
@@ -84,26 +92,26 @@ function StoryFieldsNonExclusive(props: StoryFieldsNonExclusiveProps) {
       />
 
       <FastField
-        className={props.isDesktop ? "field field5" : "field field25"}
         name={`stories[${index}].parent.issue.series.volume`}
         label="Volume"
         type="number"
         component={TextField}
+        sx={{ width: props.isDesktop ? "12%" : "30%" }}
       />
 
       <FastField
-        className={props.isDesktop ? "field field5" : "field field60"}
         name={`stories[${index}].parent.issue.number`}
         label="Nummer"
         component={TextField}
+        sx={{ width: props.isDesktop ? "12%" : "40%" }}
       />
 
       <FastField
-        className={props.isDesktop ? "field field5" : "field field10"}
         name={`stories[${index}].parent.number`}
         label="#"
         type="number"
         component={TextField}
+        sx={{ width: props.isDesktop ? "12%" : "20%" }}
       />
 
       <TypedRoleAutocomplete
@@ -115,7 +123,7 @@ function StoryFieldsNonExclusive(props: StoryFieldsNonExclusiveProps) {
         setFieldValue={setFieldValue}
         disabled={props.disabled}
       />
-    </div>
+    </Box>
   );
 }
 

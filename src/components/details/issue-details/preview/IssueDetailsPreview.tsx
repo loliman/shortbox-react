@@ -23,9 +23,9 @@ export function IssueDetailsPreview() {
       />
 
       <CardContent>
-        <div className={"details"}>
-          <Paper className="detailsPaper detailsPaperPreview">
-            <Table className="table">
+        <Box sx={{ display: "flex", gap: 2, alignItems: "flex-start", flexWrap: "wrap" }}>
+          <Paper sx={{ flex: "1 1 420px", minWidth: 0 }}>
+            <Table size="small">
               <TableBody>
                 <TableRow>
                   <TableCell align="left">
@@ -51,12 +51,12 @@ export function IssueDetailsPreview() {
             </Table>
           </Paper>
 
-          <div className="media">
+          <Box sx={{ width: 220, maxWidth: "100%", flex: "0 0 220px" }}>
             <Skeleton variant="rectangular" width={220} height={220} />
-          </div>
-        </div>
+          </Box>
+        </Box>
 
-        <Box sx={{ mt: 4 }} className="stories">
+        <Box sx={{ mt: 4 }}>
           <CardHeader title={<Skeleton variant="text" width={120} height={30} />} />
 
           <IssueDetailsStoryPreview idx={0} />

@@ -28,9 +28,9 @@ export function IssueDetailsDEStoryDetails(props: Readonly<IssueDetailsDEStoryDe
   const item = (props.item || {}) as Record<string, unknown>;
 
   return (
-    <div>
+    <Box>
       {storyArcs.length > 0 ? (
-        <Box className="individualListContainer" sx={{ mb: 2 }}>
+        <Box sx={{ mb: 2 }}>
           <Typography>
             <b>Teil von</b>
           </Typography>
@@ -40,6 +40,6 @@ export function IssueDetailsDEStoryDetails(props: Readonly<IssueDetailsDEStoryDe
 
       <StoryPeopleSection item={item} us={props.us} navigate={props.navigate} />
       <StoryAppearanceSection item={item} us={props.us} navigate={props.navigate} />
-    </div>
+    </Box>
   );
 }

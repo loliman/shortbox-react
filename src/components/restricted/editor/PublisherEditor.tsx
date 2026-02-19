@@ -11,6 +11,7 @@ import CardHeader from "@mui/material/CardHeader";
 import { publisher, publishers } from "../../../graphql/queriesTyped";
 import { decapitalize, stripItem } from "../../../util/util";
 import { addToCache, updateInCache } from "./Editor";
+import Box from "@mui/material/Box";
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Tooltip from "@mui/material/Tooltip";
@@ -166,7 +167,7 @@ class PublisherEditor extends React.Component<PublisherEditorProps, PublisherEdi
                   }
                   action={
                     <FormControlLabel
-                      className="switchEditor"
+                      sx={{ m: 0 }}
                       control={
                         <Tooltip title={(values.us ? "Deutscher" : "US") + " Verlag"}>
                           <Switch
@@ -185,41 +186,41 @@ class PublisherEditor extends React.Component<PublisherEditorProps, PublisherEdi
                   }
                 />
 
-                <CardContent className="cardContent">
+                <CardContent sx={{ pt: 1 }}>
                   <Stack spacing={2.5}>
                     <FastField
-                      className={this.props.isDesktop ? "field field35" : "field field100"}
                       name="name"
                       label="Name"
                       component={TextField}
+                      sx={{ width: this.props.isDesktop ? "35%" : "100%" }}
                     />
 
                     <FastField
-                      className={this.props.isDesktop ? "field field35" : "field field100"}
                       name="startyear"
                       label="Startjahr"
                       type="number"
                       component={TextField}
+                      sx={{ width: this.props.isDesktop ? "35%" : "100%" }}
                     />
 
                     <FastField
-                      className={this.props.isDesktop ? "field field35" : "field field100"}
                       name="endyear"
                       label="Endjahr"
                       type="number"
                       component={TextField}
+                      sx={{ width: this.props.isDesktop ? "35%" : "100%" }}
                     />
 
                     <FastField
-                      className={this.props.isDesktop ? "field field35" : "field field100"}
                       name="addinfo"
                       label="Weitere Informationen"
                       multiline
                       rows={10}
                       component={TextField}
+                      sx={{ width: this.props.isDesktop ? "35%" : "100%" }}
                     />
 
-                    <div className="formButtons">
+                    <Stack direction={{ xs: "column", sm: "row" }} spacing={1} justifyContent="flex-end">
                       <Button disabled={isSubmitting} onClick={() => resetForm()} color="secondary">
                         Zurücksetzen
                       </Button>
@@ -234,15 +235,12 @@ class PublisherEditor extends React.Component<PublisherEditorProps, PublisherEdi
                         Abbrechen
                       </Button>
 
-                      <Button
-                        className="createButton"
-                        disabled={isSubmitting}
-                        onClick={submitForm}
-                        color="primary"
-                      >
-                        {submitLabel}
-                      </Button>
-                    </div>
+                      <Box>
+                        <Button disabled={isSubmitting} onClick={submitForm} color="primary">
+                          {submitLabel}
+                        </Button>
+                      </Box>
+                    </Stack>
                   </Stack>
                 </CardContent>
               </Form>

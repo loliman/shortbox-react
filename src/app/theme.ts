@@ -93,7 +93,7 @@ export const appTheme = createTheme({
       },
       styleOverrides: {
         root: ({ theme }) => ({
-          borderRadius: theme.shape.borderRadius - 2,
+          borderRadius: (Number(theme.shape.borderRadius) || 12) - 2,
         }),
       },
     },
@@ -110,7 +110,7 @@ export const appTheme = createTheme({
     MuiOutlinedInput: {
       styleOverrides: {
         root: ({ theme }) => ({
-          borderRadius: theme.shape.borderRadius - 2,
+          borderRadius: (Number(theme.shape.borderRadius) || 12) - 2,
           backgroundColor: alpha(theme.palette.common.white, 0.82),
         }),
       },
@@ -129,7 +129,7 @@ export const appTheme = createTheme({
     MuiSnackbarContent: {
       styleOverrides: {
         root: ({ theme }) => ({
-          borderRadius: theme.shape.borderRadius - 2,
+          borderRadius: (Number(theme.shape.borderRadius) || 12) - 2,
         }),
       },
     },

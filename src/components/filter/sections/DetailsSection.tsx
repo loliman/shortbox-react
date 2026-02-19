@@ -39,7 +39,6 @@ function DetailsSection({ values, isDesktop, setFieldValue, hasSession }: Detail
       />
 
       <FilterSwitch
-        className="switchEditor withVariants"
         checked={values.withVariants}
         label="Mit Varianten"
         onToggle={() => setFieldValue("withVariants", !values.withVariants)}
@@ -49,14 +48,22 @@ function DetailsSection({ values, isDesktop, setFieldValue, hasSession }: Detail
         {values.releasedates.map((entry, index) => {
           const key = `${entry.date}-${entry.compare}-${index}`;
           return (
-            <Box key={key}>
+            <Box
+              key={key}
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                alignItems: "flex-end",
+                gap: 1,
+              }}
+            >
               <FastField
-                className={isDesktop ? "field field352" : "field field90"}
                 name={`releasedates[${index}].date`}
                 label="Erscheinungsdatum"
                 type="date"
                 InputLabelProps={{ shrink: true }}
                 component={TextField}
+                sx={{ width: isDesktop ? 300 : "100%" }}
               />
 
               <FastField
@@ -65,8 +72,8 @@ function DetailsSection({ values, isDesktop, setFieldValue, hasSession }: Detail
                 label="ist"
                 select
                 component={TextField}
-                className={"field field5"}
                 InputLabelProps={{ shrink: true }}
+                sx={{ width: isDesktop ? 120 : "100%" }}
               >
                 {COMPARE_OPTIONS.map((option) => (
                   <MenuItem key={option} value={option}>
@@ -77,8 +84,8 @@ function DetailsSection({ values, isDesktop, setFieldValue, hasSession }: Detail
 
               {index === values.releasedates.length - 1 ? (
                 <IconButton
-                  className="addBtnFilter"
                   aria-label="Hinzufügen"
+                  color="primary"
                   onClick={() =>
                     setFieldValue("releasedates", [
                       ...values.releasedates,

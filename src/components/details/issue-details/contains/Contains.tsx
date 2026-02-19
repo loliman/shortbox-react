@@ -1,6 +1,7 @@
 import React from "react";
 import CardHeader from "@mui/material/CardHeader";
 import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 import { getContainsItemKey } from "../utils/issueDetailsUtils";
 import { ContainsSimpleItem } from "./ContainsSimpleItem";
 import { ContainsItem } from "./ContainsItem";
@@ -22,11 +23,11 @@ export function Contains(props: Readonly<ContainsProps>) {
   const items = Array.isArray(props.items) ? props.items : [];
 
   return (
-    <div className="stories">
+    <Box>
       {props.header ? <CardHeader title={props.header} /> : null}
 
       {items.length === 0 ? (
-        <Typography className="noRelationsWarning">{props.noEntriesHint}</Typography>
+        <Typography color="text.secondary">{props.noEntriesHint}</Typography>
       ) : (
         items.map((item, idx) => {
           if (!props.itemDetails) {
@@ -57,6 +58,6 @@ export function Contains(props: Readonly<ContainsProps>) {
           );
         })
       )}
-    </div>
+    </Box>
   );
 }

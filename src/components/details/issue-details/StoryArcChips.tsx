@@ -25,7 +25,7 @@ export function StoryArcChips(props: Readonly<StoryArcChipsProps>) {
         return (
           <Chip
             key={`${arc.type || "ARC"}|${arcTitle}`}
-            className="chip partOfChip"
+            variant="outlined"
             label={arcTitle + " (" + type + ")"}
             color={color}
             onClick={(e) =>

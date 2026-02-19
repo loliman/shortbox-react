@@ -14,8 +14,8 @@ interface ContainsSimpleItemProps {
 
 export function ContainsSimpleItem(props: Readonly<ContainsSimpleItemProps>) {
   return (
-    <Accordion className="story" defaultExpanded={expanded(props.item, props.query)}>
-      <AccordionSummary className="summary">
+    <Accordion defaultExpanded={expanded(props.item, props.query)}>
+      <AccordionSummary>
         {React.cloneElement(props.itemTitle, {
           navigate: props.navigate,
           item: props.item,

@@ -24,46 +24,53 @@ function StoryFields(props: StoryFieldsProps) {
 
   return (
     <React.Fragment>
-      <div className="storyAddInputContainer">
-        <Box component="span" sx={{ display: "block" }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "flex-end",
+          gap: 1,
+        }}
+      >
+        <Box sx={{ width: "100%" }}>
           {parentTitle}
         </Box>
 
         <FastField
-          className="field field3"
           name={`stories[${index}].number`}
           disabled={props.disabled}
           label="#"
           type="number"
           component={TextField}
+          sx={{ width: props.isDesktop ? "12%" : "25%" }}
         />
 
         <FastField
-          className={props.isDesktop ? "field field35" : "field field95"}
           name={`stories[${index}].title`}
           disabled={props.disabled}
           label="Titel"
           component={TextField}
+          sx={{ width: props.isDesktop ? "35%" : "100%" }}
         />
 
         <FastField
-          className={props.isDesktop ? "field field30" : "field field100"}
           name={`stories[${index}].addinfo`}
           disabled={props.disabled}
           label="Weitere Informationen"
           component={TextField}
+          sx={{ width: props.isDesktop ? "30%" : "100%" }}
         />
 
         <FastField
-          className={props.isDesktop ? "field field10" : "field field100"}
           name={`stories[${index}].part`}
           disabled={props.disabled}
           label="Teil"
           component={TextField}
+          sx={{ width: props.isDesktop ? "10%" : "100%" }}
         />
 
         {!props.us ? <ExclusiveToggle {...props} type="stories" index={index} /> : null}
-      </div>
+      </Box>
 
       {isExclusive ? (
         <StoryFieldsExclusive {...props} index={index} />

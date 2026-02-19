@@ -1,5 +1,7 @@
 import React from "react";
 import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import Box from "@mui/material/Box";
 import type { MouseEvent } from "react";
 
 interface IssueEditorActionsProps {
@@ -20,7 +22,7 @@ function IssueEditorActions({
   onSubmitMode,
 }: IssueEditorActionsProps) {
   return (
-    <div className="formButtons">
+    <Stack direction={{ xs: "column", sm: "row" }} spacing={1} justifyContent="flex-end">
       <Button disabled={isSubmitting} onClick={() => resetForm()} color="secondary">
         Zurücksetzen
       </Button>
@@ -29,7 +31,7 @@ function IssueEditorActions({
         Abbrechen
       </Button>
 
-      <div className="createButton">
+      <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", justifyContent: "flex-end" }}>
         <Button disabled={isSubmitting} onClick={() => onSubmitMode(false)} color="primary">
           {submitLabel}
         </Button>
@@ -42,8 +44,8 @@ function IssueEditorActions({
         >
           {submitAndCopyLabel}
         </Button>
-      </div>
-    </div>
+      </Box>
+    </Stack>
   );
 }
 

@@ -1,6 +1,7 @@
 import React from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
+import Box from "@mui/material/Box";
 import RemoveContainsButton from "./RemoveContainsButton";
 import type { ContainsProps, FieldItem } from "./types";
 
@@ -27,18 +28,18 @@ class ContainsItem extends React.Component<ContainsItemProps> {
     const isDisabled = childCount > 0;
 
     return (
-      <div className="storyAddContainer">
+      <Box>
         <RemoveContainsButton {...this.props} disabled={isDisabled} />
 
-        <Accordion className="storyAddPanel" expanded={true}>
-          <AccordionSummary className="storyAdd">
+        <Accordion expanded={true} sx={{ mt: 1 }}>
+          <AccordionSummary>
             {React.cloneElement(this.props.fields, {
               ...this.props,
               disabled: isDisabled,
             })}
           </AccordionSummary>
         </Accordion>
-      </div>
+      </Box>
     );
   }
 }

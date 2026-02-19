@@ -61,8 +61,8 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
   const reprintOf = currentItem.reprintOf;
 
   return (
-    <div className="usStoryContainer">
-      <div className="usStoryDetails">
+    <Box>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         <StoryPeopleSection
           item={(currentItem as Record<string, unknown>) || {}}
           us={us}
@@ -75,13 +75,13 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
           us={us}
           navigate={props.navigate}
         />
-      </div>
+      </Box>
 
       {!reprintOf?.issue ? null : (
         <Box sx={{ mt: 2 }}>
           <Typography variant="h6">Nachdruck von</Typography>
 
-          <List className="issueStoryIssueList">
+          <List sx={{ p: 0 }}>
             <StoryIssueListItem
               issue={reprintOf.issue}
               number={reprintOf.number}
@@ -98,7 +98,7 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
         <Box sx={{ mt: 2 }}>
           <Typography variant="h6">Nachgedruckt in</Typography>
 
-          <List className="issueStoryIssueList">
+          <List sx={{ p: 0 }}>
             {reprints.map((child, idx) => {
               if (!child.issue) return null;
               const relation = toStoryIssueRelation(child);
@@ -124,7 +124,7 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
         <Box sx={{ mt: 2 }}>
           <Typography variant="h6">Auf deutsch erschienen in</Typography>
 
-          <List className="issueStoryIssueList">
+          <List sx={{ p: 0 }}>
             {children.map((child, idx) => {
               if (!child.issue) return null;
               const relation = toStoryIssueRelation(child);
@@ -160,6 +160,6 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
           </List>
         </Box>
       )}
-    </div>
+    </Box>
   );
 }

@@ -21,7 +21,7 @@ export function toChipList(
 ) {
   const safeItems = Array.isArray(items) ? items : [];
   if (safeItems.length === 0) {
-    return <Chip key={0} className="chip" variant={"outlined"} label="Unbekannt" />;
+    return <Chip key={0} variant="outlined" label="Unbekannt" />;
   }
 
   return (
@@ -47,7 +47,7 @@ export function toChipList(
         return (
           <Chip
             key={`${typename}|${label}|${idx}`}
-            className="chip partOfChip"
+            variant="outlined"
             label={label}
             onClick={(e) =>
               props.navigate?.(e, props.us ? "/us" : "/de", { filter: JSON.stringify(filter) })

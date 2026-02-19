@@ -126,8 +126,7 @@ function ListEntryPrimary(props: {
               }
             >
               <Typography
-                className={"material-icons"}
-                sx={{ color: "gray", pl: "2px", fontSize: "8px" }}
+                sx={{ color: "text.disabled", pl: 0.25, fontSize: "10px" }}
                 color={"disabled"}
               >
                 +{props.variantCount}

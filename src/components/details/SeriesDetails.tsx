@@ -126,7 +126,7 @@ function SeriesDetails(props: Readonly<SeriesDetailsProps>) {
                   action={<EditButton item={details} />}
                 />
 
-                <CardContent className="cardContent">
+                <CardContent sx={{ pt: 1 }}>
                   <DetailsAddInfo addinfo={details.addinfo} />
 
                   <FirstLastIssueSections

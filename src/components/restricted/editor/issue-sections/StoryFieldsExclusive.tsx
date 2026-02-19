@@ -1,4 +1,5 @@
 import React from "react";
+import Stack from "@mui/material/Stack";
 import { apps, individuals } from "../../../../graphql/queriesTyped";
 import type { ContainsProps, FieldItem } from "./types";
 import TypedRoleAutocomplete from "./TypedRoleAutocomplete";
@@ -46,8 +47,8 @@ function StoryFieldsExclusive(props: StoryFieldsExclusiveProps) {
   const storyAppearances = (item.appearances as FieldItem[]) || [];
 
   return (
-    <React.Fragment>
-      <div className="storyAddInputContainer">
+    <>
+      <Stack spacing={1.5}>
         {individualFields.map((field) => (
           <TypedRoleAutocomplete
             key={field.type}
@@ -60,9 +61,9 @@ function StoryFieldsExclusive(props: StoryFieldsExclusiveProps) {
             disabled={props.disabled}
           />
         ))}
-      </div>
+      </Stack>
 
-      <div className="storyAddInputContainer">
+      <Stack spacing={1.5}>
         {appearanceFields.map((field) => (
           <TypedRoleAutocomplete
             key={field.type}
@@ -78,8 +79,8 @@ function StoryFieldsExclusive(props: StoryFieldsExclusiveProps) {
             }}
           />
         ))}
-      </div>
-    </React.Fragment>
+      </Stack>
+    </>
   );
 }
 

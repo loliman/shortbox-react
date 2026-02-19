@@ -90,10 +90,10 @@ function IssueEditorSeriesFields({
   return (
     <Stack spacing={2}>
       <FastField
-        className={isDesktop ? "field field35" : "field field100"}
         name="title"
         label="Titel"
         component={TextField}
+        sx={{ width: isDesktop ? "35%" : "100%" }}
       />
 
       <AutocompleteBase
@@ -180,18 +180,18 @@ function IssueEditorSeriesFields({
 
       <FastField
         disabled={isSeriesDisabled}
-        className={isDesktop ? "field field10" : "field field25"}
         name="series.volume"
         label="Volume"
         type="number"
         component={TextField}
+        sx={{ width: isDesktop ? "10%" : "25%" }}
       />
 
       <FastField
-        className={isDesktop ? "field field35" : "field field100"}
         name="number"
         label="Nummer"
         component={TextField}
+        sx={{ width: isDesktop ? "35%" : "100%" }}
       />
     </Stack>
   );

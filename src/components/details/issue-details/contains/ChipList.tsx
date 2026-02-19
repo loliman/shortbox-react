@@ -1,5 +1,6 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 import { toChipList } from "./toChipList";
 
 type ChipNavigationProps = {
@@ -36,11 +37,11 @@ export function ChipList(props: Readonly<ChipListProps>) {
   if (items.length === 0 && props.hideIfEmpty) return null;
 
   return (
-    <div className="individualListContainer">
+    <Box sx={{ mb: 2 }}>
       <Typography>
         <b>{props.label}</b>
       </Typography>
       {toChipList(items, props, props.type || "")}
-    </div>
+    </Box>
   );
 }

@@ -11,7 +11,7 @@ interface ContainsListProps extends ContainsProps {
 
 function Contains(props: ContainsListProps) {
   if (!props.items || props.items.length === 0)
-    return <Typography className="noRelationsWarning">Hinzufügen mit '+'</Typography>;
+    return <Typography color="text.secondary">Hinzufügen mit '+'</Typography>;
 
   return (
     <React.Fragment>

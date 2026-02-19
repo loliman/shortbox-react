@@ -13,7 +13,6 @@ function AddContainsButton(props: AddContainsButtonProps) {
   return (
     <IconButton
       disabled={props.disabled}
-      className="addBtn"
       aria-label="Hinzufügen"
       onClick={() => {
         if (!props.setFieldValue) return;

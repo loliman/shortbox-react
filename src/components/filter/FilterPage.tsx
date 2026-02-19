@@ -39,7 +39,7 @@ function FilterPage(props: FilterPageProps) {
           <Form>
             <CardHeader title="Filter" />
 
-            <CardContent className="cardContent">
+            <CardContent sx={{ pt: 1 }}>
               <Stack spacing={5}>
                 <DetailsSection
                   values={values}

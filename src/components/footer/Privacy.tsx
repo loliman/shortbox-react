@@ -12,7 +12,7 @@ function Privacy() {
     <Layout>
       <CardHeader title="Datenschutzerklärung" />
 
-      <CardContent className="cardContent">
+      <CardContent sx={{ pt: 1 }}>
         <Typography>
           Diese Datenschutzerklärung klärt Sie über die Art, den Umfang und Zweck der Verarbeitung
           von personenbezogenen Daten (nachfolgend kurz „Daten“) im Rahmen der Erbringung unserer

@@ -110,7 +110,7 @@ function PublisherDetails(props: Readonly<PublisherDetailsProps>) {
                   action={<EditButton item={details} />}
                 />
 
-                <CardContent className="cardContent">
+                <CardContent sx={{ pt: 1 }}>
                   <DetailsAddInfo addinfo={details.addinfo} />
 
                   <FirstLastIssueSections

@@ -1,4 +1,5 @@
 import React from "react";
+import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
 import type {
@@ -62,8 +63,8 @@ function IssueEditorMetadataFields({
           label="Format"
           select
           component={TextField}
-          className={isDesktop ? "field field35" : "field field100"}
           InputLabelProps={{ shrink: true }}
+          sx={{ width: isDesktop ? "35%" : "100%" }}
         >
           {formats.map((formatValue) => (
             <MenuItem key={formatValue} value={formatValue}>
@@ -74,62 +75,64 @@ function IssueEditorMetadataFields({
       ) : null}
 
       <FastField
-        className={isDesktop ? "field field35" : "field field100"}
         name="variant"
         label="Variante"
         component={TextField}
+        sx={{ width: isDesktop ? "35%" : "100%" }}
       />
 
       {!us ? (
         <React.Fragment>
           <FastField
-            className={isDesktop ? "field field35" : "field field100"}
             name="limitation"
             label="Limitierung"
             type="text"
             component={TextField}
+            sx={{ width: isDesktop ? "35%" : "100%" }}
           />
 
           <FastField
-            className={isDesktop ? "field field35" : "field field100"}
             name="pages"
             label="Seiten"
             type="number"
             component={TextField}
+            sx={{ width: isDesktop ? "35%" : "100%" }}
           />
 
-          <FastField
-            className={isDesktop ? "field field30" : "field field75"}
-            name="price"
-            label="Preis"
-            component={TextField}
-          />
+          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1.5 }}>
+            <FastField
+              name="price"
+              label="Preis"
+              component={TextField}
+              sx={{ width: isDesktop ? "30%" : "75%" }}
+            />
 
-          <FastField
-            type="text"
-            name="currency"
-            label="Währung"
-            select
-            component={TextField}
-            className={isDesktop ? "field field10" : "field field25"}
-            InputLabelProps={{ shrink: true }}
-          >
-            {currencies.map((currency) => (
-              <MenuItem key={currency} value={currency}>
-                {currency}
-              </MenuItem>
-            ))}
-          </FastField>
+            <FastField
+              type="text"
+              name="currency"
+              label="Währung"
+              select
+              component={TextField}
+              InputLabelProps={{ shrink: true }}
+              sx={{ width: isDesktop ? "10%" : "25%" }}
+            >
+              {currencies.map((currency) => (
+                <MenuItem key={currency} value={currency}>
+                  {currency}
+                </MenuItem>
+              ))}
+            </FastField>
+          </Box>
         </React.Fragment>
       ) : null}
 
       <FastField
-        className={isDesktop ? "field field35" : "field field100"}
         name="releasedate"
         label="Erscheinungsdatum"
         type="date"
         InputLabelProps={{ shrink: true }}
         component={TextField}
+        sx={{ width: isDesktop ? "35%" : "100%" }}
       />
 
       {us ? (

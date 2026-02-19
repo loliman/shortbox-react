@@ -20,7 +20,7 @@ function IssueEditorHeader({ header, id, session, edit, us, onToggle }: IssueEdi
       title={<TitleLine title={header} id={id} session={session} />}
       action={
         <FormControlLabel
-          className="switchEditor"
+          sx={{ m: 0 }}
           control={
             <Tooltip title={(us ? "Deutsche" : "US") + " Ausgabe"}>
               <Switch disabled={edit} checked={us} onChange={onToggle} color="secondary" />

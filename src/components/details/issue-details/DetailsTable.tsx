@@ -11,8 +11,8 @@ interface DetailsTableProps {
 
 export function DetailsTable(props: Readonly<DetailsTableProps>) {
   return (
-    <Paper className="detailsPaper">
-      <Table className="table">
+    <Paper sx={{ width: "100%" }}>
+      <Table size="small">
         <TableBody>
           {React.cloneElement(props.details, {
             ...props,

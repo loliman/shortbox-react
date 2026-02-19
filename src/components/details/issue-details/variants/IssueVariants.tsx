@@ -23,12 +23,11 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
 
   return (
     <React.Fragment>
-      <Typography className="coverGalleryHeader" component="p">
+      <Typography component="p" sx={{ fontWeight: 600, mb: 1 }}>
         Erhältlich in {variants.length} Varianten
       </Typography>
 
       <Box
-        className="coverGallery"
         sx={{
           overflowX: "auto",
           overflowY: "hidden",
@@ -37,7 +36,6 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
         }}
       >
         <ImageList
-          className="gridList"
           sx={{
             m: 0,
             gridAutoFlow: "column",

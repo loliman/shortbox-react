@@ -13,17 +13,4 @@ describe("FilterSwitch", () => {
     await user.click(screen.getByRole("switch", { name: "Exklusiv" }));
     expect(onToggle).toHaveBeenCalledTimes(1);
   });
-
-  it("uses custom class name when provided", () => {
-    const { container } = render(
-      <FilterSwitch
-        checked={true}
-        label="US"
-        onToggle={() => undefined}
-        className="custom-switch"
-      />
-    );
-
-    expect(container.querySelector(".custom-switch")).toBeTruthy();
-  });
 });

@@ -14,7 +14,7 @@ export function HomeListingPlaceholder() {
         subheader={<Skeleton variant="text" width={260} height={24} />}
       />
 
-      <CardContent className="cardContent">
+      <CardContent sx={{ pt: 1 }}>
         <Stack spacing={2.5}>
           <Skeleton variant="text" width="92%" />
 

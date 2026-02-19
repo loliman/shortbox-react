@@ -166,12 +166,20 @@ function ContainsSection({ values, us, isDesktop, setFieldValue }: ContainsSecti
         {values.numbers.map((entry, index) => {
           const key = `${entry.number || "empty"}-${entry.compare}-${entry.variant || "base"}-${index}`;
           return (
-            <Box key={key}>
+            <Box
+              key={key}
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                alignItems: "flex-end",
+                gap: 1,
+              }}
+            >
               <FastField
-                className={isDesktop ? "field field352" : "field field90"}
                 name={`numbers[${index}].number`}
                 label="Nummer"
                 component={TextField}
+                sx={{ width: isDesktop ? 300 : "100%" }}
               />
 
               <FastField
@@ -180,8 +188,8 @@ function ContainsSection({ values, us, isDesktop, setFieldValue }: ContainsSecti
                 label="ist"
                 select
                 component={TextField}
-                className={"field field5"}
                 InputLabelProps={{ shrink: true }}
+                sx={{ width: isDesktop ? 120 : "100%" }}
               >
                 {COMPARE_OPTIONS.map((option) => (
                   <MenuItem key={option} value={option}>
@@ -192,8 +200,8 @@ function ContainsSection({ values, us, isDesktop, setFieldValue }: ContainsSecti
 
               {index === values.numbers.length - 1 ? (
                 <IconButton
-                  className="addBtnFilter"
                   aria-label="Hinzufügen"
+                  color="primary"
                   onClick={() =>
                     setFieldValue("numbers", [
                       ...values.numbers,

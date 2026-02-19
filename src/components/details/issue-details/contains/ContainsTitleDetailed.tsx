@@ -1,6 +1,7 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
+import Box from "@mui/material/Box";
 import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
@@ -86,19 +87,23 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
     : null;
 
   return (
-    <div className={props.simple ? "storyTitle storyTitleSimple" : "storyTitle"}>
-      <div className="headingContainer">
-        <div>
-          <Typography className="heading itemTitle">
+    <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 1 }}>
+      <Box sx={{ minWidth: 0 }}>
+        <Box>
+          <Typography sx={{ fontWeight: 600 }}>
             {generateItemTitle(item.issue ? item.issue : item, Boolean(props.us))}
           </Typography>
           {parentTitle && !props.isPhonePortrait ? (
-            <Typography className="parentTitle">{parentTitle}</Typography>
+            <Typography variant="body2" color="text.secondary">
+              {parentTitle}
+            </Typography>
           ) : null}
           {variant && !props.isPhonePortrait ? (
-            <Typography className="parentTitle">{variant} Variant</Typography>
+            <Typography variant="body2" color="text.secondary">
+              {variant} Variant
+            </Typography>
           ) : null}
-        </div>
+        </Box>
 
         {item.parent?.reprintOf?.issue ? (
           <CoverTooltip
@@ -107,7 +112,8 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
             number={item.parent.reprintOf.number}
           >
             <Typography
-              className="parentTitle"
+              variant="body2"
+              color="text.secondary"
               component="button"
               type="button"
               sx={{
@@ -128,50 +134,45 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
               }}
             >
               Original erschienen als{" "}
-              <span className="asLink">
+              <Box
+                component="span"
+                sx={{ textDecoration: "underline", textUnderlineOffset: "2px", color: "inherit" }}
+              >
                 {reprintSelection ? generateLabel(reprintSelection) : ""}
-              </span>
+              </Box>
             </Typography>
           </CoverTooltip>
         ) : null}
 
-        <Typography className="heading headingAddInfo">
+        <Typography variant="body2" color="text.secondary">
           {addinfoText !== "" ? addinfoText : null}
         </Typography>
-      </div>
+      </Box>
 
-      <div className="chips">
+      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75, justifyContent: "flex-end" }}>
         {!props.isCover && item.url && item.number === 0 ? (
           !smallChip ? (
-            <Chip className="chip" label="Cover" color="default" />
+            <Chip label="Cover" color="default" />
           ) : (
-            <Chip className="chip" label="C" color="default" />
+            <Chip label="C" color="default" />
           )
         ) : null}
 
         {!props.isCover && item.onlyapp && item.parent ? (
           !smallChip ? (
-            <Chip className="chip" label="Einzige Veröffentlichung" color="secondary" />
+            <Chip label="Einzige Veröffentlichung" color="secondary" />
           ) : (
-            <Chip
-              className="chip"
-              label={<PriorityHighIcon className="mobileChip" />}
-              color="secondary"
-            />
+            <Chip label={<PriorityHighIcon sx={{ fontSize: 16 }} />} color="secondary" />
           )
         ) : null}
 
         {!props.isCover && !item.onlyapp && item.firstapp && item.parent ? (
-          <Chip
-            className="chip"
-            label={!smallChip ? "Erstveröffentlichung" : "1."}
-            color="primary"
-          />
+          <Chip label={!smallChip ? "Erstveröffentlichung" : "1."} color="primary" />
         ) : null}
 
         {!props.isCover && item.otheronlytb && item.parent ? (
           <Chip
-            className="tbchip chip"
+            variant="outlined"
             label={!smallChip ? "Sonst nur in Taschenbuch" : "TB"}
             color="default"
           />
@@ -179,33 +180,28 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
 
         {exclusive ? (
           !smallChip ? (
-            <Chip className="chip" label="Exklusiv" color="secondary" />
+            <Chip label="Exklusiv" color="secondary" />
           ) : (
-            <Chip
-              className="chip"
-              label={<PriorityHighIcon className="mobileChip" />}
-              color="secondary"
-            />
+            <Chip label={<PriorityHighIcon sx={{ fontSize: 16 }} />} color="secondary" />
           )
         ) : null}
 
         {item.parent?.collectedmultipletimes && props.session ? (
           !smallChip ? (
-            <Chip className="chip" label="Mehrfach gesammelt" />
+            <Chip color="success" label="Mehrfach gesammelt" />
           ) : (
-            <Chip className="chip" label="Mehrfach" />
+            <Chip color="success" label="Mehrfach" />
           )
         ) : null}
 
         {!item.parent?.collectedmultipletimes && item.parent?.collected && props.session ? (
-          <Chip className="chip" label="Gesammelt" />
+          <Chip color="success" label="Gesammelt" />
         ) : null}
 
         {!exclusive && issue && issueSelection ? (
           <CoverTooltip issue={issue} us={props.us}>
             <IconButton
               component="span"
-              className="detailsIcon"
               onClick={(e) => {
                 e.stopPropagation();
                 props.navigate?.(e, generateUrl(issueSelection, !props.us), { filter: null });
@@ -216,8 +212,8 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
             </IconButton>
           </CoverTooltip>
         ) : null}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }
 

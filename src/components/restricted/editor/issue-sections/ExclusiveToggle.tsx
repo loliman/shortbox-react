@@ -14,7 +14,7 @@ function ExclusiveToggle(props: ExclusiveToggleProps) {
 
   return (
     <FormControlLabel
-      className="exclusiveToggle"
+      sx={{ m: 0 }}
       control={
         <Switch
           checked={Boolean(item.exclusive)}

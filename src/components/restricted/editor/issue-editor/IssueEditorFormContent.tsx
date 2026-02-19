@@ -42,7 +42,7 @@ function IssueEditorFormContent(props: IssueEditorFormContentProps) {
         }}
       />
 
-      <CardContent className="cardContent">
+      <CardContent sx={{ pt: 1 }}>
         <Stack spacing={2.5}>
           {isDesktop ? <Cover isDesktop={isDesktop} cover={values.cover} /> : null}
 

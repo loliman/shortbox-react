@@ -12,7 +12,6 @@ function RemoveContainsButton(props: RemoveContainsButtonProps) {
   return (
     <IconButton
       disabled={props.disabled}
-      className="removeBtn"
       aria-label="Entfernen"
       onClick={() => {
         if (!props.setFieldValue || !props.items) return;

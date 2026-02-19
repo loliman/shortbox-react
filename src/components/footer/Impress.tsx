@@ -11,7 +11,7 @@ function Impress() {
     <Layout>
       <CardHeader title="Impressum" />
 
-      <CardContent className="cardContent">
+      <CardContent sx={{ pt: 1 }}>
         <Stack spacing={3}>
           <Typography>Angaben gemäß § 5 TMG</Typography>
 
