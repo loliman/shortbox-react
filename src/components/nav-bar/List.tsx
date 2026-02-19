@@ -17,6 +17,11 @@ import {
 } from "./listUtils";
 import type { HierarchyLevelType } from "../../util/hierarchy";
 import type { SelectedRoot } from "../../types/domain";
+import {
+  drawerHeaderAdjustedHeight,
+  drawerHeaderTopOffset,
+  getNavDrawerWidth,
+} from "../layoutMetrics";
 
 const LIST_PAGE_SIZE = 250;
 
@@ -38,7 +43,7 @@ function List(props: Readonly<ListProps>) {
   const { drawerOpen, toggleDrawer } = props;
   const temporaryDrawer =
     props.compactLayout ?? Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
-  const drawerWidth = temporaryDrawer ? 320 : 360;
+  const drawerWidth = getNavDrawerWidth(temporaryDrawer);
   const listRef = React.useRef<HTMLUListElement | null>(null);
 
   const filter = parseFilter(props.query?.filter);
@@ -93,8 +98,8 @@ function List(props: Readonly<ListProps>) {
         sx: {
           width: drawerWidth,
           maxWidth: "100%",
-          top: { xs: 56, sm: 64 },
-          height: { xs: "calc(100% - 56px)", sm: "calc(100% - 64px)" },
+          top: drawerHeaderTopOffset,
+          height: drawerHeaderAdjustedHeight,
         },
       }}
     >

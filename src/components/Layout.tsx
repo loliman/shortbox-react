@@ -6,6 +6,7 @@ import { withContext } from "./generic";
 import AddFab from "./fab/AddFab";
 import Box from "@mui/material/Box";
 import FooterLinks from "./footer/FooterLinks";
+import { getNavDrawerWidth } from "./layoutMetrics";
 
 interface SessionData {
   loggedIn: boolean;
@@ -35,7 +36,7 @@ function Layout(props: Readonly<LayoutProps>) {
   const { us, children, session, drawerOpen } = props;
   const temporaryDrawer =
     props.compactLayout ?? Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
-  const drawerWidth = temporaryDrawer ? 320 : 360;
+  const drawerWidth = getNavDrawerWidth(temporaryDrawer);
   const contentOffset = !temporaryDrawer && drawerOpen ? `${drawerWidth}px` : 0;
 
   React.useEffect(() => {
@@ -52,16 +53,19 @@ function Layout(props: Readonly<LayoutProps>) {
   }, [props.handleScroll]);
 
   return (
-    <>
+    <Box sx={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
       <TopBar />
 
-      <Box component="main">
+      <Box component="main" sx={{ display: "flex", flexGrow: 1, minHeight: 0 }}>
         <List />
 
         <Box
           sx={{
+            display: "flex",
+            flexGrow: 1,
+            minWidth: 0,
             px: { xs: 1, sm: 2 },
-            pb: 2,
+            py: 2,
             ml: contentOffset,
             transition: (theme) =>
               theme.transitions.create("margin-left", {
@@ -71,13 +75,20 @@ function Layout(props: Readonly<LayoutProps>) {
           }}
           onScroll={(e) => (props.handleScroll ? props.handleScroll(e) : false)}
         >
-          <Card sx={{ p: { xs: 1.5, sm: 2 } }}>
-            <Box sx={{ flexGrow: 1 }}>{children}</Box>
+          <Card sx={{ width: "100%", display: "flex", flexDirection: "column", minWidth: 0 }}>
+            <Box sx={{ flexGrow: 1, p: { xs: 1.5, sm: 2 }, minHeight: 0 }}>{children}</Box>
 
             <Box
               sx={{
-                mt: 2,
-                pt: 1.5,
+                mt: "auto",
+                px: { xs: 1.5, sm: 2 },
+                py: 1.25,
+                borderTop: 1,
+                borderColor: "divider",
+                backgroundColor: "background.paper",
+                position: "sticky",
+                bottom: 0,
+                zIndex: 1,
                 display: "flex",
                 justifyContent: "flex-end",
               }}
@@ -95,7 +106,7 @@ function Layout(props: Readonly<LayoutProps>) {
 
         <AddFab us={us} />
       </Box>
-    </>
+    </Box>
   );
 }
 

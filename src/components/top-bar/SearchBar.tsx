@@ -14,6 +14,7 @@ const MIN_QUERY_LENGTH = 2;
 
 interface SearchBarProps {
   focus?: boolean;
+  alignLeft?: boolean;
   isPhone?: boolean;
   isTablet?: boolean;
   isTabletLandscape?: boolean;
@@ -75,7 +76,7 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
     <Box
       sx={{
         width: isFocused ? "100%" : mobileHeader ? 58 : 300,
-        ml: "auto",
+        ml: props.alignLeft ? 0 : "auto",
         transition: "width 0.2s ease-in-out",
         maxWidth: isFocused ? "100%" : undefined,
       }}

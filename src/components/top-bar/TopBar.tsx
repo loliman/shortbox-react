@@ -10,12 +10,13 @@ import { withContext } from "../generic";
 import IconButton from "@mui/material/IconButton";
 import SearchBar from "./SearchBar";
 import type { SelectedRoot } from "../../types/domain";
-import { BreadcrumbCompact, BreadcrumbExpanded } from "./TopBarBreadcrumbs";
 import TopBarFilterMenu from "./TopBarFilterMenu";
 import Tooltip from "@mui/material/Tooltip";
+import { getNavDrawerWidth } from "../layoutMetrics";
 
 interface TopBarProps {
   toggleDrawer?: () => void;
+  drawerOpen?: boolean;
   us?: boolean;
   isPhone?: boolean;
   isPhoneLandscape?: boolean;
@@ -38,6 +39,8 @@ export function TopBar(props: TopBarProps) {
   const phonePortrait = props.isPhonePortrait ?? Boolean(props.isPhone && !props.isPhoneLandscape);
   const [searchbarFocus, setSearchbarFocus] = useState(false);
   const isFilter = props.query?.filter;
+  const drawerWidth = getNavDrawerWidth(compactLayout);
+  const searchOffsetWidth = !compactLayout && props.drawerOpen ? `${drawerWidth}px` : "auto";
 
   const onFocus = (e: React.MouseEvent<HTMLElement> | null, focus: boolean) => {
     setSearchbarFocus(focus);
@@ -47,15 +50,24 @@ export function TopBar(props: TopBarProps) {
   return (
     <AppBar position="sticky" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
       <Toolbar sx={{ gap: 1 }}>
-        <IconButton
-          color="inherit"
-          aria-label="Navigation umschalten"
-          onClick={() => toggleDrawer?.()}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            minWidth: 0,
+            flexShrink: 0,
+            width: searchOffsetWidth,
+          }}
         >
-          <MenuIcon />
-        </IconButton>
+          <IconButton
+            color="inherit"
+            aria-label="Navigation umschalten"
+            onClick={() => toggleDrawer?.()}
+            sx={{ mr: 0.5 }}
+          >
+            <MenuIcon />
+          </IconButton>
 
-        <Box sx={{ display: "flex", alignItems: "center", minWidth: 0, flexGrow: 1, gap: 1 }}>
           {phonePortrait &&
           (props.level === HierarchyLevel.SERIES ||
             props.level === HierarchyLevel.PUBLISHER ||
@@ -77,37 +89,15 @@ export function TopBar(props: TopBarProps) {
               <img src="/Shortbox_Logo.png" alt="Shortbox" height="34" />
             </Box>
           )}
+        </Box>
 
-          <Box
-            sx={{
-              typography: "subtitle1",
-              color: "inherit",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              minWidth: 0,
-            }}
-          >
-            {phonePortrait ? (
-              <BreadcrumbCompact {...props} selected={selected} us={us} navigate={navigate} />
-            ) : (
-              <BreadcrumbExpanded {...props} selected={selected} us={us} navigate={navigate} />
-            )}
+        <Box sx={{ display: "flex", alignItems: "center", minWidth: 0, flexGrow: 1 }}>
+          <Box sx={{ width: "100%", maxWidth: { xs: "100%", sm: 420 } }}>
+            <SearchBar alignLeft focus={searchbarFocus} onFocus={onFocus} />
           </Box>
         </Box>
 
         <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, flexShrink: 0 }}>
-          <Box
-            sx={{
-              width: compactLayout ? 56 : 320,
-              minWidth: 56,
-              display: "flex",
-              justifyContent: "flex-end",
-            }}
-          >
-            <SearchBar focus={searchbarFocus} onFocus={onFocus} />
-          </Box>
-
           <TopBarFilterMenu
             us={us}
             selected={selected}
