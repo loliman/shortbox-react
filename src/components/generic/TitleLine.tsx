@@ -16,7 +16,7 @@ export default function TitleLine(props: Readonly<TitleLineProps>) {
       sx={{
         width: "100%",
         display: "flex",
-        alignItems: "baseline",
+        alignItems: "center",
         gap: 1,
       }}
     >
@@ -29,11 +29,13 @@ export default function TitleLine(props: Readonly<TitleLineProps>) {
           component="span"
           sx={{
             flexShrink: 0,
+            alignSelf: "center",
             color: "text.secondary",
             fontSize: "0.75rem",
             fontWeight: 500,
             opacity: 0.8,
             whiteSpace: "nowrap",
+            lineHeight: 1,
           }}
         >
           #{props.id}
