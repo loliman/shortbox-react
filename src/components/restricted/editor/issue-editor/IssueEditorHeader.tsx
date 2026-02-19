@@ -1,5 +1,8 @@
 import React from "react";
-import CardHeader from "@mui/material/CardHeader";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import Tooltip from "@mui/material/Tooltip";
@@ -16,9 +19,19 @@ interface IssueEditorHeaderProps {
 
 function IssueEditorHeader({ header, id, session, edit, us, onToggle }: IssueEditorHeaderProps) {
   return (
-    <CardHeader
-      title={<TitleLine title={header} id={id} session={session} />}
-      action={
+    <Paper variant="outlined" sx={{ p: { xs: 2, sm: 2.5 } }}>
+      <Stack
+        direction={{ xs: "column", sm: "row" }}
+        spacing={1.5}
+        alignItems={{ xs: "flex-start", sm: "center" }}
+        justifyContent="space-between"
+      >
+        <Box sx={{ minWidth: 0 }}>
+          <Typography variant="h5" component="h1" sx={{ fontWeight: 600 }}>
+            <TitleLine title={header} id={id} session={session} />
+          </Typography>
+        </Box>
+
         <FormControlLabel
           sx={{ m: 0 }}
           control={
@@ -28,8 +41,8 @@ function IssueEditorHeader({ header, id, session, edit, us, onToggle }: IssueEdi
           }
           label="US"
         />
-      }
-    />
+      </Stack>
+    </Paper>
   );
 }
 

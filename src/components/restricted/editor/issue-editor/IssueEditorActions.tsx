@@ -22,17 +22,29 @@ function IssueEditorActions({
   onSubmitMode,
 }: IssueEditorActionsProps) {
   return (
-    <Stack direction={{ xs: "column", sm: "row" }} spacing={1} justifyContent="flex-end">
-      <Button disabled={isSubmitting} onClick={() => resetForm()} color="secondary">
-        Zurücksetzen
-      </Button>
+    <Stack
+      direction={{ xs: "column", md: "row" }}
+      spacing={1.5}
+      justifyContent="space-between"
+      alignItems={{ xs: "stretch", md: "center" }}
+    >
+      <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+        <Button disabled={isSubmitting} onClick={() => resetForm()} variant="text" color="inherit">
+          Zurücksetzen
+        </Button>
 
-      <Button disabled={isSubmitting} onClick={onCancel} color="primary">
-        Abbrechen
-      </Button>
+        <Button disabled={isSubmitting} onClick={onCancel} variant="outlined" color="inherit">
+          Abbrechen
+        </Button>
+      </Box>
 
       <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", justifyContent: "flex-end" }}>
-        <Button disabled={isSubmitting} onClick={() => onSubmitMode(false)} color="primary">
+        <Button
+          disabled={isSubmitting}
+          onClick={() => onSubmitMode(false)}
+          variant="contained"
+          color="primary"
+        >
           {submitLabel}
         </Button>
 
@@ -40,7 +52,8 @@ function IssueEditorActions({
           value="createAndCopy"
           disabled={isSubmitting}
           onClick={() => onSubmitMode(true)}
-          color="primary"
+          variant="contained"
+          color="secondary"
         >
           {submitAndCopyLabel}
         </Button>

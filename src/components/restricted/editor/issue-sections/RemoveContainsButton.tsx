@@ -1,6 +1,7 @@
 import React from "react";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Tooltip from "@mui/material/Tooltip";
 import type { ContainsProps } from "./types";
 
 interface RemoveContainsButtonProps extends ContainsProps {
@@ -10,21 +11,27 @@ interface RemoveContainsButtonProps extends ContainsProps {
 
 function RemoveContainsButton(props: RemoveContainsButtonProps) {
   return (
-    <IconButton
-      disabled={props.disabled}
-      aria-label="Entfernen"
-      onClick={() => {
-        if (!props.setFieldValue || !props.items) return;
+    <Tooltip title="Geschichte entfernen">
+      <span>
+        <IconButton
+          disabled={props.disabled}
+          aria-label="Entfernen"
+          color="error"
+          size="small"
+          onClick={() => {
+            if (!props.setFieldValue || !props.items) return;
 
-        props.setFieldValue(
-          props.type,
-          props.items.filter((_, itemIndex) => itemIndex !== props.index),
-          true
-        );
-      }}
-    >
-      <DeleteIcon />
-    </IconButton>
+            props.setFieldValue(
+              props.type,
+              props.items.filter((_, itemIndex) => itemIndex !== props.index),
+              true
+            );
+          }}
+        >
+          <DeleteIcon fontSize="small" />
+        </IconButton>
+      </span>
+    </Tooltip>
   );
 }
 

@@ -1,7 +1,8 @@
 import React from "react";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
 import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import RemoveContainsButton from "./RemoveContainsButton";
 import type { ContainsProps, FieldItem } from "./types";
 
@@ -28,18 +29,23 @@ class ContainsItem extends React.Component<ContainsItemProps> {
     const isDisabled = childCount > 0;
 
     return (
-      <Box>
-        <RemoveContainsButton {...this.props} disabled={isDisabled} />
+      <Paper variant="outlined" sx={{ p: 2 }}>
+        <Stack spacing={1.5}>
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
+              Geschichte {this.props.index + 1}
+            </Typography>
+            <RemoveContainsButton {...this.props} disabled={isDisabled} />
+          </Box>
 
-        <Accordion expanded={true} sx={{ mt: 1 }}>
-          <AccordionSummary>
+          <Box>
             {React.cloneElement(this.props.fields, {
               ...this.props,
               disabled: isDisabled,
             })}
-          </AccordionSummary>
-        </Accordion>
-      </Box>
+          </Box>
+        </Stack>
+      </Paper>
     );
   }
 }

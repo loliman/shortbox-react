@@ -1,5 +1,6 @@
 import React from "react";
-import Stack from "@mui/material/Stack";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 import { apps, individuals } from "../../../../graphql/queriesTyped";
 import type { ContainsProps, FieldItem } from "./types";
 import TypedRoleAutocomplete from "./TypedRoleAutocomplete";
@@ -47,11 +48,15 @@ function StoryFieldsExclusive(props: StoryFieldsExclusiveProps) {
   const storyAppearances = (item.appearances as FieldItem[]) || [];
 
   return (
-    <>
-      <Stack spacing={1.5}>
-        {individualFields.map((field) => (
+    <Grid container spacing={2}>
+      <Grid size={12}>
+        <Typography variant="subtitle2" color="text.secondary">
+          Kreative
+        </Typography>
+      </Grid>
+      {individualFields.map((field) => (
+        <Grid size={{ xs: 12, md: 6 }} key={field.type}>
           <TypedRoleAutocomplete
-            key={field.type}
             query={individuals}
             field={`stories[${index}].individuals`}
             label={field.label}
@@ -60,13 +65,17 @@ function StoryFieldsExclusive(props: StoryFieldsExclusiveProps) {
             setFieldValue={setFieldValue}
             disabled={props.disabled}
           />
-        ))}
-      </Stack>
+        </Grid>
+      ))}
 
-      <Stack spacing={1.5}>
-        {appearanceFields.map((field) => (
+      <Grid size={12} sx={{ pt: 1 }}>
+        <Typography variant="subtitle2" color="text.secondary">
+          Auftritte
+        </Typography>
+      </Grid>
+      {appearanceFields.map((field) => (
+        <Grid size={{ xs: 12, md: 6 }} key={field.type}>
           <TypedRoleAutocomplete
-            key={field.type}
             query={apps}
             field={`stories[${index}].appearances`}
             label={field.label}
@@ -78,9 +87,9 @@ function StoryFieldsExclusive(props: StoryFieldsExclusiveProps) {
               type: field.queryType || field.type,
             }}
           />
-        ))}
-      </Stack>
-    </>
+        </Grid>
+      ))}
+    </Grid>
   );
 }
 

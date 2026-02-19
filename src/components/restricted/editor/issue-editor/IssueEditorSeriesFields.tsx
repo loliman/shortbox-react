@@ -1,5 +1,5 @@
 import React from "react";
-import Stack from "@mui/material/Stack";
+import Grid from "@mui/material/Grid";
 import { FastField } from "formik";
 import { TextField } from "../../../generic/FormikTextField";
 import AutocompleteBase from "../../../generic/AutocompleteBase";
@@ -30,7 +30,7 @@ const MIN_QUERY_LENGTH = 2;
 
 function IssueEditorSeriesFields({
   values,
-  isDesktop,
+  isDesktop: _isDesktop,
   setFieldValue,
 }: IssueEditorSeriesFieldsProps) {
   const publisherPattern = String(values.series.publisher.name || "");
@@ -88,112 +88,112 @@ function IssueEditorSeriesFields({
         : "Keine Ergebnisse gefunden";
 
   return (
-    <Stack spacing={2}>
-      <FastField
-        name="title"
-        label="Titel"
-        component={TextField}
-        sx={{ width: isDesktop ? "35%" : "100%" }}
-      />
+    <Grid container spacing={2}>
+      <Grid size={{ xs: 12, md: 8 }}>
+        <FastField name="title" label="Titel" component={TextField} fullWidth />
+      </Grid>
 
-      <AutocompleteBase
-        options={publisherQuery.options}
-        value={publisherValue}
-        inputValue={publisherPattern}
-        label="Verlag"
-        loading={publisherQuery.loading}
-        freeSolo
-        noOptionsText={publisherNoOptionsText}
-        onListboxScroll={publisherQuery.onListboxScroll}
-        getOptionLabel={(option) =>
-          typeof option === "string" ? option : formatPublisherLabel(option as PublisherOption)
-        }
-        isOptionEqualToValue={(option, value) =>
-          normalizeText(option.name) ===
-          normalizeText(typeof value === "string" ? value : value?.name)
-        }
-        onInputChange={(_, value, reason) => {
-          if (reason !== "input" && reason !== "clear") return;
-          setFieldValue("series.publisher.name", value);
-        }}
-        onChange={(_, option) => {
-          const selectedOption = Array.isArray(option) ? option[0] || null : option;
-
-          setFieldValue("series", {
-            title: "",
-            volume: "",
-            publisher: { name: "", us: values.series.publisher.us },
-          });
-
-          if (selectedOption && typeof selectedOption !== "string") {
-            setFieldValue("series.publisher", selectedOption);
+      <Grid size={{ xs: 12, md: 8 }}>
+        <AutocompleteBase
+          options={publisherQuery.options}
+          value={publisherValue}
+          inputValue={publisherPattern}
+          label="Verlag"
+          loading={publisherQuery.loading}
+          freeSolo
+          noOptionsText={publisherNoOptionsText}
+          onListboxScroll={publisherQuery.onListboxScroll}
+          getOptionLabel={(option) =>
+            typeof option === "string" ? option : formatPublisherLabel(option as PublisherOption)
           }
-        }}
-      />
+          isOptionEqualToValue={(option, value) =>
+            normalizeText(option.name) ===
+            normalizeText(typeof value === "string" ? value : value?.name)
+          }
+          onInputChange={(_, value, reason) => {
+            if (reason !== "input" && reason !== "clear") return;
+            setFieldValue("series.publisher.name", value);
+          }}
+          onChange={(_, option) => {
+            const selectedOption = Array.isArray(option) ? option[0] || null : option;
 
-      <AutocompleteBase
-        disabled={isSeriesDisabled}
-        options={seriesQuery.options}
-        value={seriesValue}
-        inputValue={seriesPattern}
-        label="Serie"
-        loading={seriesQuery.loading}
-        freeSolo
-        noOptionsText={seriesNoOptionsText}
-        onListboxScroll={seriesQuery.onListboxScroll}
-        getOptionLabel={(option) =>
-          typeof option === "string" ? option : formatSeriesLabel(option as SeriesOption)
-        }
-        isOptionEqualToValue={(option, value) =>
-          normalizeText(getSeriesKey(option)) ===
-          normalizeText(typeof value === "string" ? value : getSeriesKey(value))
-        }
-        onInputChange={(_, value, reason) => {
-          if (reason !== "input" && reason !== "clear") return;
-          setFieldValue("series.title", value);
-        }}
-        onChange={(_, option) => {
-          const selectedOption = Array.isArray(option) ? option[0] || null : option;
+            setFieldValue("series", {
+              title: "",
+              volume: "",
+              publisher: { name: "", us: values.series.publisher.us },
+            });
 
-          setFieldValue(
-            "series",
-            selectedOption && typeof selectedOption !== "string"
-              ? {
-                  title: selectedOption.title,
-                  volume: selectedOption.volume,
-                  publisher: {
-                    name: values.series.publisher.name,
-                    us: values.series.publisher.us,
-                  },
-                }
-              : {
-                  title: "",
-                  volume: "",
-                  publisher: {
-                    name: values.series.publisher.name,
-                    us: values.series.publisher.us,
-                  },
-                }
-          );
-        }}
-      />
+            if (selectedOption && typeof selectedOption !== "string") {
+              setFieldValue("series.publisher", selectedOption);
+            }
+          }}
+        />
+      </Grid>
 
-      <FastField
-        disabled={isSeriesDisabled}
-        name="series.volume"
-        label="Volume"
-        type="number"
-        component={TextField}
-        sx={{ width: isDesktop ? "10%" : "25%" }}
-      />
+      <Grid size={{ xs: 12, md: 8 }}>
+        <AutocompleteBase
+          disabled={isSeriesDisabled}
+          options={seriesQuery.options}
+          value={seriesValue}
+          inputValue={seriesPattern}
+          label="Serie"
+          loading={seriesQuery.loading}
+          freeSolo
+          noOptionsText={seriesNoOptionsText}
+          onListboxScroll={seriesQuery.onListboxScroll}
+          getOptionLabel={(option) =>
+            typeof option === "string" ? option : formatSeriesLabel(option as SeriesOption)
+          }
+          isOptionEqualToValue={(option, value) =>
+            normalizeText(getSeriesKey(option)) ===
+            normalizeText(typeof value === "string" ? value : getSeriesKey(value))
+          }
+          onInputChange={(_, value, reason) => {
+            if (reason !== "input" && reason !== "clear") return;
+            setFieldValue("series.title", value);
+          }}
+          onChange={(_, option) => {
+            const selectedOption = Array.isArray(option) ? option[0] || null : option;
 
-      <FastField
-        name="number"
-        label="Nummer"
-        component={TextField}
-        sx={{ width: isDesktop ? "35%" : "100%" }}
-      />
-    </Stack>
+            setFieldValue(
+              "series",
+              selectedOption && typeof selectedOption !== "string"
+                ? {
+                    title: selectedOption.title,
+                    volume: selectedOption.volume,
+                    publisher: {
+                      name: values.series.publisher.name,
+                      us: values.series.publisher.us,
+                    },
+                  }
+                : {
+                    title: "",
+                    volume: "",
+                    publisher: {
+                      name: values.series.publisher.name,
+                      us: values.series.publisher.us,
+                    },
+                  }
+            );
+          }}
+        />
+      </Grid>
+
+      <Grid size={{ xs: 6, sm: 4, md: 2 }}>
+        <FastField
+          disabled={isSeriesDisabled}
+          name="series.volume"
+          label="Volume"
+          type="number"
+          component={TextField}
+          fullWidth
+        />
+      </Grid>
+
+      <Grid size={{ xs: 6, sm: 4, md: 2 }}>
+        <FastField name="number" label="Nummer" component={TextField} fullWidth />
+      </Grid>
+    </Grid>
   );
 }
 
