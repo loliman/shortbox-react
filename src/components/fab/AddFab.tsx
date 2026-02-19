@@ -3,7 +3,6 @@ import ClickAwayListener from "@mui/material/ClickAwayListener";
 import SpeedDial from "@mui/material/SpeedDial";
 import SpeedDialIcon from "@mui/material/SpeedDialIcon";
 import SpeedDialAction from "@mui/material/SpeedDialAction";
-import Box from "@mui/material/Box";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import BookIcon from "@mui/icons-material/Book";
 import ListIcon from "@mui/icons-material/List";
@@ -42,74 +41,72 @@ class AddFab extends React.Component<AddFabProps, AddFabState> {
 
     return (
       <ClickAwayListener onClickAway={this.handleClose}>
-        <Box sx={{ float: "right" }}>
-          <SpeedDial
-            ariaLabel="Erstellen"
-            icon={<SpeedDialIcon />}
-            onClick={this.handleClick}
-            open={this.state.open}
-            sx={{
-              position: "fixed",
-              bottom: 16,
-              right: 24,
+        <SpeedDial
+          ariaLabel="Erstellen"
+          icon={<SpeedDialIcon />}
+          onClick={this.handleClick}
+          open={this.state.open}
+          sx={{
+            position: "fixed",
+            bottom: 16,
+            right: 24,
+          }}
+        >
+          <SpeedDialAction
+            key="publisher"
+            icon={<AccountBalanceIcon />}
+            tooltipTitle="Verlag"
+            tooltipOpen
+            onClick={(e) => {
+              navigate?.(e, "/create/publisher");
+              this.handleClose();
             }}
-          >
-            <SpeedDialAction
-              key="publisher"
-              icon={<AccountBalanceIcon />}
-              tooltipTitle="Verlag"
-              tooltipOpen
-              onClick={(e) => {
-                navigate?.(e, "/create/publisher");
-                this.handleClose();
-              }}
-            />
-            <SpeedDialAction
-              key="series"
-              icon={<ListIcon />}
-              tooltipTitle="Serie"
-              tooltipOpen
-              onClick={(e) => {
-                navigate?.(e, "/create/series");
-                this.handleClose();
-              }}
-            />
-            <SpeedDialAction
-              key="issue"
-              icon={<BookIcon />}
-              tooltipTitle="Ausgabe"
-              tooltipOpen
-              onClick={(e) => {
-                navigate?.(e, getIssueCreatePath(this.props.level, selected, us));
-                this.handleClose();
-              }}
-            />
+          />
+          <SpeedDialAction
+            key="series"
+            icon={<ListIcon />}
+            tooltipTitle="Serie"
+            tooltipOpen
+            onClick={(e) => {
+              navigate?.(e, "/create/series");
+              this.handleClose();
+            }}
+          />
+          <SpeedDialAction
+            key="issue"
+            icon={<BookIcon />}
+            tooltipTitle="Ausgabe"
+            tooltipOpen
+            onClick={(e) => {
+              navigate?.(e, getIssueCreatePath(this.props.level, selected, us));
+              this.handleClose();
+            }}
+          />
 
-            {this.props.level === HierarchyLevel.ISSUE && selected.issue ? (
-              <SpeedDialAction
-                key="variant"
-                icon={<FileCopyIcon />}
-                tooltipTitle="Variant"
-                tooltipOpen
-                onClick={(e) => {
-                  const selectedCopy: SelectedRoot = {
-                    ...selected,
-                    issue: selected.issue
-                      ? {
-                          ...selected.issue,
-                          format: undefined,
-                          variant: undefined,
-                        }
-                      : undefined,
-                  };
+          {this.props.level === HierarchyLevel.ISSUE && selected.issue ? (
+            <SpeedDialAction
+              key="variant"
+              icon={<FileCopyIcon />}
+              tooltipTitle="Variant"
+              tooltipOpen
+              onClick={(e) => {
+                const selectedCopy: SelectedRoot = {
+                  ...selected,
+                  issue: selected.issue
+                    ? {
+                        ...selected.issue,
+                        format: undefined,
+                        variant: undefined,
+                      }
+                    : undefined,
+                };
 
-                  navigate?.(e, "/copy/issue" + generateUrl(selectedCopy, us));
-                  this.handleClose();
-                }}
-              />
-            ) : null}
-          </SpeedDial>
-        </Box>
+                navigate?.(e, "/copy/issue" + generateUrl(selectedCopy, us));
+                this.handleClose();
+              }}
+            />
+          ) : null}
+        </SpeedDial>
       </ClickAwayListener>
     );
   }

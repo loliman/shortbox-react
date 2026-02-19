@@ -35,26 +35,26 @@ function QueryResult(props: Readonly<QueryResultProps>) {
       return placeholder;
     } else
       return (
-        <Box sx={{ p: "15px", display: "flex" }}>
+        <Box sx={{ p: 2, display: "flex" }}>
           <CircularProgress />
-          <Typography sx={{ pl: "10px", alignSelf: "center" }}>Lade...</Typography>
+          <Typography sx={{ pl: 1.25, alignSelf: "center" }}>Lade...</Typography>
         </Box>
       );
   }
 
   if (error || (data && data.errors))
     return (
-      <Box sx={{ p: "15px", display: "flex" }}>
+      <Box sx={{ p: 2, display: "flex" }}>
         <ErrorIcon fontSize="large" />
-        <Typography sx={{ pl: "10px", alignSelf: "center" }}>Fehler</Typography>
+        <Typography sx={{ pl: 1.25, alignSelf: "center" }}>Fehler</Typography>
       </Box>
     );
 
   if (!data)
     return (
-      <Box sx={{ p: "15px", display: "flex" }}>
+      <Box sx={{ p: 2, display: "flex" }}>
         <SearchIcon fontSize="large" />
-        <Typography sx={{ pl: "10px", alignSelf: "center" }}>
+        <Typography sx={{ pl: 1.25, alignSelf: "center" }}>
           {generateLabel(selected)} nicht gefunden
         </Typography>
       </Box>

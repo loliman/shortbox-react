@@ -117,7 +117,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
           open={this.props.EditDropdown.anchorEl !== null}
           onClose={() => this.props.handleClose?.()}
           PaperProps={{
-            style: {
+            sx: {
               maxHeight: 48 * 4.5,
               width: 260,
             },
