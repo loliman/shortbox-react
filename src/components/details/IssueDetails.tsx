@@ -67,19 +67,20 @@ function IssueDetails(props: IssueDetailsProps) {
         },
       }
     : undefined;
-  const { networkStatus, error, data } = useQuery(issue, {
+  const { networkStatus, error, data, previousData, loading } = useQuery(issue, {
     variables: issueVariables,
     skip: !issueVariables,
     notifyOnNetworkStatusChange: true,
   });
+  const resolvedIssue = data?.issueDetails ?? (loading ? previousData?.issueDetails : null);
 
-  if (props.appIsLoading || error || !data?.issueDetails || networkStatus < 7) {
+  if (error || !resolvedIssue) {
     return (
       <Layout>
         <QueryResult
           error={error}
-          data={data ? data.issueDetails : null}
-          loading={networkStatus < 7}
+          data={resolvedIssue}
+          loading={loading || networkStatus < 7}
           selected={selected}
           placeholder={<IssueDetailsPreview />}
           placeholderCount={1}
@@ -88,7 +89,7 @@ function IssueDetails(props: IssueDetailsProps) {
     );
   }
 
-  const loadedIssue = data.issueDetails as unknown as Issue;
+  const loadedIssue = resolvedIssue as unknown as Issue;
   const issueForVariants = toIssueWithMockVariants(loadedIssue);
 
   const arcs = collectIssueArcs(issueForVariants, us);

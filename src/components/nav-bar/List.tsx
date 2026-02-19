@@ -68,6 +68,11 @@ type IssueNode = NonNullable<
   NonNullable<NonNullable<NonNullable<IssuesQuery["issueList"]>["edges"]>[number]>["node"]
 >;
 
+let lastPublisherNodesCache: PublisherNode[] = [];
+let expandedPublishersCache: Record<string, Record<string, boolean>> = {};
+let expandedSeriesCache: Record<string, Record<string, boolean>> = {};
+let navScrollTopCache: Record<string, number> = {};
+
 function List(props: Readonly<ListProps>) {
   const { drawerOpen, toggleDrawer } = props;
   const temporaryDrawer =
@@ -79,9 +84,33 @@ function List(props: Readonly<ListProps>) {
     [filterQuery]
   );
   const us = Boolean(props.us);
+  const navStateKey = React.useMemo(() => `${us}|${filterQuery || ""}`, [us, filterQuery]);
   const phonePortrait = props.isPhonePortrait ?? Boolean(props.isPhone && !props.isPhoneLandscape);
   const listRef = React.useRef<HTMLUListElement | null>(null);
-  const [expandedPublishers, setExpandedPublishers] = React.useState<Record<string, boolean>>({});
+  const navScrollContainerRef = React.useRef<HTMLDivElement | null>(null);
+  const storeScrollTop = React.useCallback(() => {
+    const container = navScrollContainerRef.current;
+    if (container) {
+      navScrollTopCache[navStateKey] = container.scrollTop;
+      return;
+    }
+
+    const listElement = listRef.current;
+    if (listElement) {
+      navScrollTopCache[navStateKey] = listElement.scrollTop;
+    }
+  }, [navStateKey]);
+  const [expandedPublishers, setExpandedPublishers] = React.useState<Record<string, boolean>>(
+    () => expandedPublishersCache[navStateKey] || {}
+  );
+
+  React.useEffect(() => {
+    setExpandedPublishers(expandedPublishersCache[navStateKey] || {});
+  }, [navStateKey]);
+
+  React.useEffect(() => {
+    expandedPublishersCache[navStateKey] = expandedPublishers;
+  }, [expandedPublishers, navStateKey]);
 
   const {
     data: publisherData,
@@ -93,12 +122,33 @@ function List(props: Readonly<ListProps>) {
   });
 
   const publisherNodes = React.useMemo(() => toPublisherNodes(publisherData), [publisherData]);
+  if (publisherNodes.length > 0) {
+    lastPublisherNodesCache = publisherNodes;
+  }
+  const visiblePublisherNodes =
+    publisherNodes.length > 0 ? publisherNodes : lastPublisherNodesCache;
+
+  React.useLayoutEffect(() => {
+    const container = navScrollContainerRef.current;
+    const targetScrollTop = navScrollTopCache[navStateKey] || 0;
+    if (container) container.scrollTop = targetScrollTop;
+
+    const listElement = listRef.current;
+    if (listElement) listElement.scrollTop = targetScrollTop;
+  }, [navStateKey, visiblePublisherNodes.length]);
+
+  React.useEffect(() => {
+    return () => {
+      storeScrollTop();
+    };
+  }, [storeScrollTop]);
 
   const selectedPublisherName = getSelectedPublisherName(props.selected);
   const selectedSeriesKey = getSelectedSeriesKey(props.selected);
   const selectedIssueMatchKey = getIssueMatchKey(props.selected?.issue);
-  const isInitialLoading =
-    props.appIsLoading || (publisherNetworkStatus === 1 && publisherNodes.length === 0);
+  // Keep nav loading isolated from content-area loading to avoid full-nav skeleton flashes
+  // when switching detail routes from the list.
+  const isInitialLoading = publisherNetworkStatus === 1 && visiblePublisherNodes.length === 0;
 
   React.useEffect(() => {
     if (!selectedPublisherName) return;
@@ -110,6 +160,7 @@ function List(props: Readonly<ListProps>) {
 
   const navigateTo = React.useCallback(
     (event: unknown, item: SelectedRoot, closeOnPhone = false) => {
+      storeScrollTop();
       if (closeOnPhone && phonePortrait) toggleDrawer?.();
 
       props.navigate?.(event, generateUrl(item, us), {
@@ -117,7 +168,21 @@ function List(props: Readonly<ListProps>) {
         filter: filterQuery,
       });
     },
-    [phonePortrait, toggleDrawer, props.navigate, filterQuery, us]
+    [storeScrollTop, phonePortrait, toggleDrawer, props.navigate, filterQuery, us]
+  );
+  const handleTogglePublisher = React.useCallback((publisherName: string) => {
+    setExpandedPublishers((prev) => ({ ...prev, [publisherName]: !prev[publisherName] }));
+  }, []);
+  const handlePublisherClick = React.useCallback(
+    (event: React.MouseEvent<HTMLElement>, publisherName: string) => {
+      navigateTo(event, {
+        publisher: {
+          name: publisherName,
+          us,
+        },
+      });
+    },
+    [navigateTo, us]
   );
 
   let content: React.ReactNode;
@@ -126,10 +191,10 @@ function List(props: Readonly<ListProps>) {
     content = Array.from({ length: 25 }).map((_, idx) => <TypeListEntryPlaceholder key={idx} />);
   } else if (publisherError) {
     content = <NestedErrorRow depth={0} message="Fehler beim Laden der Navigation" />;
-  } else if (publisherNodes.length === 0) {
+  } else if (visiblePublisherNodes.length === 0) {
     content = <NoEntries />;
   } else {
-    content = publisherNodes.map((publisherNode) => {
+    content = visiblePublisherNodes.map((publisherNode) => {
       const publisherName = publisherNode.name || "";
       const expanded = Boolean(expandedPublishers[publisherName]);
       const selected = Boolean(selectedPublisherName && selectedPublisherName === publisherName);
@@ -137,21 +202,13 @@ function List(props: Readonly<ListProps>) {
       return (
         <Box key={publisherName || "publisher-empty"}>
           <NestedRow
+            rowKey={publisherName}
             depth={0}
             selected={selected}
             label={publisherName}
             expanded={expanded}
-            onToggle={() =>
-              setExpandedPublishers((prev) => ({ ...prev, [publisherName]: !prev[publisherName] }))
-            }
-            onClick={(e) =>
-              navigateTo(e, {
-                publisher: {
-                  name: publisherNode.name || "",
-                  us,
-                },
-              })
-            }
+            onToggle={handleTogglePublisher}
+            onClick={handlePublisherClick}
           />
 
           <Collapse in={expanded} timeout="auto" unmountOnExit>
@@ -159,6 +216,7 @@ function List(props: Readonly<ListProps>) {
               us={us}
               filter={filter as SeriesQueryVariables["filter"]}
               publisher={publisherNode}
+              navStateKey={navStateKey}
               activeSeriesKey={selected ? selectedSeriesKey : null}
               selectedIssueMatchKey={selected ? selectedIssueMatchKey : null}
               session={props.session}
@@ -178,6 +236,10 @@ function List(props: Readonly<ListProps>) {
     height: drawerHeaderAdjustedHeight,
   };
 
+  const handleNavScroll = React.useCallback((event: React.UIEvent<HTMLDivElement>) => {
+    navScrollTopCache[navStateKey] = event.currentTarget.scrollTop;
+  }, [navStateKey]);
+
   const drawerContent = (
     <MuiList ref={listRef} sx={{ width: "100%", p: 0 }}>
       {content}
@@ -194,6 +256,8 @@ function List(props: Readonly<ListProps>) {
         onOpen={() => toggleDrawer?.()}
         PaperProps={{
           sx: paperSx,
+          ref: navScrollContainerRef,
+          onScroll: handleNavScroll,
         }}
       >
         {drawerContent}
@@ -207,6 +271,8 @@ function List(props: Readonly<ListProps>) {
       open={Boolean(drawerOpen)}
       PaperProps={{
         sx: paperSx,
+        ref: navScrollContainerRef,
+        onScroll: handleNavScroll,
       }}
     >
       {drawerContent}
@@ -218,6 +284,7 @@ type SeriesBranchProps = {
   us: boolean;
   filter: SeriesQueryVariables["filter"];
   publisher: PublisherNode;
+  navStateKey: string;
   activeSeriesKey: string | null;
   selectedIssueMatchKey: string | null;
   session?: unknown;
@@ -227,9 +294,20 @@ type SeriesBranchProps = {
 
 const SeriesBranch = React.memo(function SeriesBranch(props: Readonly<SeriesBranchProps>) {
   const { publisher, us, filter } = props;
-  const [expandedSeries, setExpandedSeries] = React.useState<Record<string, boolean>>({});
   const publisherName = publisher.name || "";
+  const seriesStateKey = `${props.navStateKey}|${publisherName}`;
+  const [expandedSeries, setExpandedSeries] = React.useState<Record<string, boolean>>(
+    () => expandedSeriesCache[seriesStateKey] || {}
+  );
   const publisherUs = publisher.us ?? us;
+
+  React.useEffect(() => {
+    setExpandedSeries(expandedSeriesCache[seriesStateKey] || {});
+  }, [seriesStateKey]);
+
+  React.useEffect(() => {
+    expandedSeriesCache[seriesStateKey] = expandedSeries;
+  }, [expandedSeries, seriesStateKey]);
 
   const {
     data: seriesData,
@@ -245,6 +323,13 @@ const SeriesBranch = React.memo(function SeriesBranch(props: Readonly<SeriesBran
   });
 
   const seriesNodes = React.useMemo(() => toSeriesNodes(seriesData), [seriesData]);
+  const seriesSelectionByKey = React.useMemo(() => {
+    const selection: Record<string, Series> = {};
+    for (const seriesNode of seriesNodes) {
+      selection[getSeriesKey(seriesNode)] = toSeriesSelected(seriesNode, us);
+    }
+    return selection;
+  }, [seriesNodes, us]);
 
   React.useEffect(() => {
     if (!props.activeSeriesKey) return;
@@ -254,6 +339,23 @@ const SeriesBranch = React.memo(function SeriesBranch(props: Readonly<SeriesBran
       prev[activeSeriesKey] ? prev : { ...prev, [activeSeriesKey]: true }
     );
   }, [props.activeSeriesKey]);
+  const handleToggleSeries = React.useCallback((seriesKey: string) => {
+    setExpandedSeries((prev) => ({ ...prev, [seriesKey]: !prev[seriesKey] }));
+  }, []);
+  const handleSeriesClick = React.useCallback(
+    (event: React.MouseEvent<HTMLElement>, seriesKey: string) => {
+      const selectedSeries = seriesSelectionByKey[seriesKey];
+      if (!selectedSeries) return;
+      props.navigateTo(
+        event,
+        {
+          series: selectedSeries,
+        },
+        true
+      );
+    },
+    [props.navigateTo, seriesSelectionByKey]
+  );
 
   if (seriesLoading && seriesNodes.length === 0) return <NestedLoadingRow depth={1} />;
   if (seriesError) return <NestedErrorRow depth={1} />;
@@ -269,22 +371,13 @@ const SeriesBranch = React.memo(function SeriesBranch(props: Readonly<SeriesBran
         return (
           <Box key={seriesKey}>
             <NestedRow
+              rowKey={seriesKey}
               depth={1}
               label={createSeriesLabel(seriesNode)}
               selected={selected}
               expanded={expanded}
-              onToggle={() =>
-                setExpandedSeries((prev) => ({ ...prev, [seriesKey]: !prev[seriesKey] }))
-              }
-              onClick={(e) =>
-                props.navigateTo(
-                  e,
-                  {
-                    series: toSeriesSelected(seriesNode, us),
-                  },
-                  true
-                )
-              }
+              onToggle={handleToggleSeries}
+              onClick={handleSeriesClick}
             />
 
             <Collapse in={expanded} timeout="auto" unmountOnExit>
@@ -406,34 +499,45 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
 });
 
 type NestedRowProps = {
+  rowKey: string;
   depth: number;
   label: string;
   selected?: boolean;
   expanded: boolean;
-  onToggle: () => void;
-  onClick: (event: React.MouseEvent<HTMLElement>) => void;
+  onToggle: (rowKey: string) => void;
+  onClick: (event: React.MouseEvent<HTMLElement>, rowKey: string) => void;
 };
 
-function NestedRow(props: Readonly<NestedRowProps>) {
+const NestedRow = React.memo(function NestedRow(props: Readonly<NestedRowProps>) {
+  const handleToggle = React.useCallback(() => {
+    props.onToggle(props.rowKey);
+  }, [props.onToggle, props.rowKey]);
+  const handleClick = React.useCallback(
+    (event: React.MouseEvent<HTMLElement>) => {
+      props.onClick(event, props.rowKey);
+    },
+    [props.onClick, props.rowKey]
+  );
+
   return (
     <ListItemButton
       divider
       selected={props.selected ?? false}
-      onClick={props.onClick}
+      onClick={handleClick}
       sx={{ pl: getDepthPadding(props.depth) }}
     >
-      <ExpandToggle expanded={props.expanded} onToggle={props.onToggle} />
+      <ExpandToggle expanded={props.expanded} onToggle={handleToggle} />
       <ListItemText primary={props.label} primaryTypographyProps={{ noWrap: true }} />
     </ListItemButton>
   );
-}
+});
 
 type ExpandToggleProps = {
   expanded: boolean;
   onToggle: () => void;
 };
 
-function ExpandToggle(props: Readonly<ExpandToggleProps>) {
+const ExpandToggle = React.memo(function ExpandToggle(props: Readonly<ExpandToggleProps>) {
   const Icon = props.expanded ? ExpandMoreIcon : ChevronRightIcon;
 
   return (
@@ -450,7 +554,7 @@ function ExpandToggle(props: Readonly<ExpandToggleProps>) {
       </IconButton>
     </ListItemIcon>
   );
-}
+});
 
 function NestedLoadingRow({ depth }: { depth: number }) {
   return (

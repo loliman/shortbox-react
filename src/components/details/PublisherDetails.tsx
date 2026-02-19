@@ -52,16 +52,21 @@ function PublisherDetails(props: Readonly<PublisherDetailsProps>) {
     };
   }, [props.query, props.selected.publisher.name, us]);
 
-  const { error: detailsError, data: detailsData } = useQuery(publisher, {
-    variables: selected,
-    notifyOnNetworkStatusChange: true,
-  });
+  const { error: detailsError, data: detailsData, previousData: previousDetailsData, loading } =
+    useQuery(publisher, {
+      variables: selected,
+      notifyOnNetworkStatusChange: true,
+    });
+  const details =
+    detailsData?.publisherDetails ?? (loading ? previousDetailsData?.publisherDetails : null);
+  const endYearLabel =
+    details && (details.active || details.endyear === 0) ? "heute" : details?.endyear;
 
   React.useEffect(() => {
-    if (detailsData || detailsError) {
+    if (details || detailsError) {
       markDetailsLoaded();
     }
-  }, [detailsData, detailsError, markDetailsLoaded]);
+  }, [details, detailsError, markDetailsLoaded]);
 
   return (
     <PaginatedQuery
@@ -75,12 +80,11 @@ function PublisherDetails(props: Readonly<PublisherDetailsProps>) {
     >
       {({ error, data, fetchMore, fetching, hasMore }) => {
         const issues = data ? data.lastEdited : [];
-        const details = detailsData?.publisherDetails;
         const combinedError = detailsError || error;
 
         return (
           <Layout handleScroll={fetchMore}>
-            {props.appIsLoading || combinedError || !details ? (
+            {combinedError || !details ? (
               <QueryResult
                 error={combinedError}
                 data={details || null}
@@ -105,7 +109,7 @@ function PublisherDetails(props: Readonly<PublisherDetailsProps>) {
                     />
                   }
                   subheader={
-                    details.startyear + " - " + (details.active ? "heute" : details.endyear)
+                    details.startyear + " - " + endYearLabel
                   }
                   action={<EditButton item={details} />}
                 />

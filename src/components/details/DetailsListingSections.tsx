@@ -54,6 +54,7 @@ export function FirstLastIssueSections(props: Readonly<FirstLastIssueSectionsPro
       {props.lastIssue && issueCount > 1 ? (
         <Box component="section" sx={{ mb: 3 }}>
           <CardHeader
+            sx={{ pb: 2 }}
             title={
               !props.us
                 ? "Letztes veröffentlichtes Comic mit Marvel Material"
