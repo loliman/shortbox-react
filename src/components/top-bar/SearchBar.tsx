@@ -74,9 +74,9 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
   return (
     <Box
       sx={{
-        width: isFocused ? "100%" : mobileHeader ? "58px" : "300px",
+        width: isFocused ? "100%" : mobileHeader ? 58 : 300,
         ml: "auto",
-        transition: "all 0.2s ease-in-out",
+        transition: "width 0.2s ease-in-out",
         maxWidth: isFocused ? "100%" : undefined,
       }}
     >
@@ -111,28 +111,28 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
         onFocus={(e) => handleFocus(e, true)}
         onBlur={(e) => (mobileHeader ? undefined : handleFocus(e, false))}
         popupIcon={<SearchIcon />}
-        sx={{
+        sx={(theme) => ({
           "& .MuiOutlinedInput-root": {
-            color: "white",
-            backgroundColor: "rgba(255, 255, 255, 0.14)",
+            color: "common.white",
+            backgroundColor: "rgba(255, 255, 255, 0.18)",
             "& fieldset": {
-              borderColor: "rgba(255, 255, 255, 0.55)",
+              borderColor: "rgba(255, 255, 255, 0.58)",
             },
             "&:hover fieldset": {
-              borderColor: "rgba(255, 255, 255, 0.8)",
+              borderColor: "rgba(255, 255, 255, 0.82)",
             },
             "&.Mui-focused fieldset": {
-              borderColor: "white",
+              borderColor: theme.palette.common.white,
             },
           },
           "& .MuiInputBase-input::placeholder": {
-            color: "rgba(255, 255, 255, 0.85)",
+            color: "rgba(255, 255, 255, 0.9)",
             opacity: 1,
           },
           "& .MuiSvgIcon-root": {
-            color: "white",
+            color: "common.white",
           },
-        }}
+        })}
         renderInput={(params) => (
           <TextField
             {...params}

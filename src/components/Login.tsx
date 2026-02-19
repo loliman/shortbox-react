@@ -8,6 +8,7 @@ import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 import { withContext } from "./generic";
 import { LoginSchema } from "../util/yupSchema";
 import { isMockMode } from "../app/mockMode";
@@ -72,21 +73,27 @@ function Login(props: Readonly<LoginProps>) {
     >
       {({ submitForm, isSubmitting }) => (
         <Form id="loginForm">
-          <Card>
+          <Card sx={{ maxWidth: 520, mx: "auto" }}>
             <CardHeader title="Login" subheader="Bitte Benutzername und Passwort eingeben" />
 
-            <CardContent>
-              <Field className="field field100" name="name" label="Name" component={TextField} />
-              <Box sx={{ mt: 2 }}>
+            <CardContent sx={{ pt: 1 }}>
+              <Stack spacing={2}>
                 <Field
-                  className="field field100"
+                  name="name"
+                  label="Name"
+                  component={TextField}
+                  fullWidth
+                />
+                <Field
                   name="password"
                   type="password"
                   label="Passwort"
                   component={TextField}
+                  fullWidth
                 />
-              </Box>
-              <div id="loginButtons">
+              </Stack>
+
+              <Box sx={{ mt: 3, display: "flex", justifyContent: "flex-end", gap: 1 }}>
                 <Button
                   disabled={isSubmitting}
                   onClick={(e) => props.navigate(e, fallbackPath)}
@@ -97,7 +104,7 @@ function Login(props: Readonly<LoginProps>) {
                 <Button disabled={isSubmitting} onClick={submitForm} color="primary">
                   Login
                 </Button>
-              </div>
+              </Box>
             </CardContent>
           </Card>
         </Form>

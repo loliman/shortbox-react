@@ -69,17 +69,17 @@ class Home extends React.Component<HomeProps> {
               ) : (
                 <React.Fragment>
                   <CardHeader
-                    title="Willkommen auf Shortbox "
-                    subheader="Das deutsche Archiv für Marvel Comics "
+                    title="Willkommen auf Shortbox"
+                    subheader="Das deutsche Archiv für Marvel Comics"
                   />
 
-                  <CardContent className="cardContent">
-                    <Typography paragraph>
+                  <CardContent sx={{ pt: 1 }}>
+                    <Typography paragraph color="text.secondary">
                       Shortbox listet alle deutschen Marvel Veröffentlichungen detailliert auf und
                       ordnet diese den entsprechenden US Geschichten zu.
                     </Typography>
 
-                    <Typography paragraph>
+                    <Typography paragraph color="text.secondary">
                       Angefangen über Geschichten der bekanntesten Superhelden Spider-Man, Deadpool,
                       den X-Men oder den Avengers oder unbekannteren Helden wie Moon Knight und den
                       New Mutants, über Comics zum Marvel Cinematic Universe mit Captain America,
@@ -88,7 +88,7 @@ class Home extends React.Component<HomeProps> {
                       alle Veröffentlichungen in offiziellen Ausgaben, Raubkopien oder Fan-Comics.
                     </Typography>
 
-                    <Typography paragraph>
+                    <Typography paragraph color="text.secondary">
                       Inspiriert durch{" "}
                       <a
                         href="https://www.maxithecat.de/UHBMCC/INDEX.HTM"
@@ -101,7 +101,7 @@ class Home extends React.Component<HomeProps> {
                       Projekt von mir für alle Marvel Fans.
                     </Typography>
 
-                    <Typography paragraph>
+                    <Typography paragraph color="text.secondary">
                       Aus diesem Grund unterliegen alle auf Shortbox gelisteten Informationen
                       der&nbsp;
                       <a
@@ -124,11 +124,11 @@ class Home extends React.Component<HomeProps> {
                       dürfen.
                     </Typography>
 
-                    <Box sx={{ mt: 3 }}>
+                    <Box sx={{ mt: 4 }}>
                       <SortContainer {...this.props} />
                     </Box>
 
-                    <Box sx={{ mt: 2 }}>
+                    <Box sx={{ mt: 3 }}>
                       {data.lastEdited
                         ? data.lastEdited.map((i: Record<string, unknown>, idx: number) => (
                             <IssuePreview

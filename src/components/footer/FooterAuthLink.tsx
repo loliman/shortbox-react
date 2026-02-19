@@ -13,15 +13,13 @@ type FooterAuthLinkProps = {
   handleLogout?: () => void;
 };
 
-const authLinkSx = { px: 1.25, color: "darkgray" };
+const authLinkSx = { px: 1, color: "text.secondary" };
 
 export default function FooterAuthLink(props: Readonly<FooterAuthLinkProps>) {
   if (!props.loggedIn) {
     return (
       <Link
         component="button"
-        underline="hover"
-        color="inherit"
         sx={authLinkSx}
         onClick={() => props.navigate?.(null, "/login")}
       >
@@ -57,8 +55,6 @@ function LogoutLink(props: Readonly<FooterAuthLinkProps>) {
   return (
     <Link
       component="button"
-      underline="hover"
-      color="inherit"
       sx={authLinkSx}
       onClick={() => {
         if (isMockMode) {

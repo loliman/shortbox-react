@@ -3,6 +3,7 @@ import { useQuery } from "@apollo/client";
 import { issue } from "../../graphql/queriesTyped";
 import QueryResult from "../generic/QueryResult";
 import React from "react";
+import Box from "@mui/material/Box";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import Paper from "@mui/material/Paper";
@@ -113,29 +114,29 @@ function IssueDetails(props: IssueDetailsProps) {
           }
           subheader={props.subheader ? generateIssueSubHeader(loadedIssue) : ""}
           action={
-            <div>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               {loadedIssue.verified ? (
-                <img
-                  className="verifiedBadge"
+                <Box
+                  component="img"
                   src="/verified_badge.png"
                   alt="verifiziert"
-                  height="35"
+                  sx={{ height: 35, width: "auto" }}
                 />
               ) : null}
               {loadedIssue.collected && props.session ? (
-                <img
-                  className="verifiedBadge"
+                <Box
+                  component="img"
                   src="/collected_badge.png"
                   alt="gesammelt"
-                  height="35"
+                  sx={{ height: 35, width: "auto" }}
                 />
               ) : null}
               <EditButton item={loadedIssue} />
-            </div>
+            </Box>
           }
         />
 
-        <CardContent className="cardContent">
+        <CardContent sx={{ pt: 1 }}>
           <IssueVariants
             us={us}
             issue={loadedIssue as unknown as VariantIssue}
@@ -143,29 +144,29 @@ function IssueDetails(props: IssueDetailsProps) {
             navigate={props.navigate}
           />
 
-          <div
-            className={"detailsWrapper"}
-            style={{
+          <Box
+            sx={{
               display: "flex",
-              gap: "16px",
+              gap: 2,
               alignItems: "flex-start",
               flexWrap: "wrap",
             }}
           >
-            <div className="details" style={{ flex: "1 1 420px", minWidth: 0 }}>
+            <Box sx={{ flex: "1 1 420px", minWidth: 0 }}>
               <DetailsTable
                 issue={loadedIssue}
                 details={details}
                 navigate={props.navigate}
                 us={us}
               />
-            </div>
-            <div style={{ width: "220px", maxWidth: "100%", flex: "0 0 220px" }}>
+            </Box>
+
+            <Box sx={{ width: 220, maxWidth: "100%", flex: "0 0 220px" }}>
               <IssueCover us={us} issue={loadedIssue as unknown as PreviewIssue} />
-            </div>
+            </Box>
 
             {loadedIssue.addinfo && loadedIssue.addinfo !== "" ? (
-              <Paper className="addinfo">
+              <Paper sx={{ width: "100%", p: 2 }}>
                 <Typography
                   dangerouslySetInnerHTML={{
                     __html: sanitizeHtml(loadedIssue.addinfo),
@@ -173,7 +174,8 @@ function IssueDetails(props: IssueDetailsProps) {
                 />
               </Paper>
             ) : null}
-          </div>
+          </Box>
+
           <StoryArcChips arcs={arcs} us={us} navigate={props.navigate} />
 
           {props.bottom

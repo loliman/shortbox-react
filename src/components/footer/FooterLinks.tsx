@@ -13,17 +13,23 @@ type FooterLinksProps = {
   handleLogout?: () => void;
 };
 
-const footerLinkSx = { px: 1.25, color: "darkgray" };
+const footerLinkSx = { px: 1, color: "text.secondary" };
 
 export default function FooterLinks(props: Readonly<FooterLinksProps>) {
   const showExtendedContactText = !props.isPhonePortrait;
 
   return (
-    <Box component="nav" aria-label="Footer">
+    <Box
+      component="nav"
+      aria-label="Footer"
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        flexWrap: "wrap",
+      }}
+    >
       <Link
         component="button"
-        underline="hover"
-        color="inherit"
         sx={footerLinkSx}
         onClick={() => props.navigate?.(null, "/contact")}
       >
@@ -33,8 +39,6 @@ export default function FooterLinks(props: Readonly<FooterLinksProps>) {
       <Separator />
       <Link
         component="button"
-        underline="hover"
-        color="inherit"
         sx={footerLinkSx}
         onClick={() => props.navigate?.(null, "/impress")}
       >
@@ -43,8 +47,6 @@ export default function FooterLinks(props: Readonly<FooterLinksProps>) {
       <Separator />
       <Link
         component="button"
-        underline="hover"
-        color="inherit"
         sx={footerLinkSx}
         onClick={() => props.navigate?.(null, "/privacy")}
       >
@@ -63,7 +65,7 @@ export default function FooterLinks(props: Readonly<FooterLinksProps>) {
 
 function Separator() {
   return (
-    <Box component="span" sx={{ px: "5px", color: "darkgray" }}>
+    <Box component="span" sx={{ px: 0.5, color: "text.disabled" }}>
       |
     </Box>
   );

@@ -44,12 +44,18 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
   const url = getIssueUrl(props.issue, us);
   const issueLabel = getIssueLabel(props.issue);
 
-  const mobileAlertLabel = <PriorityHighIcon className="mobileChip" />;
+  const mobileAlertLabel = <PriorityHighIcon sx={{ fontSize: 16 }} />;
+  const cardBackground = coverUrl
+    ? `linear-gradient(90deg, rgba(255, 255, 255, 0.96) 30%, rgba(255, 255, 255, 0.75) 58%, rgba(255, 255, 255, 0.12) 100%), url(${coverUrl})`
+    : "none";
 
   return (
     <Card
       sx={{
-        background: coverUrl ? `white url(${coverUrl}) no-repeat 100% 50%` : "white",
+        backgroundColor: "background.paper",
+        backgroundImage: cardBackground,
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "100% 50%",
         backgroundSize: "75%",
       }}
     >
@@ -58,13 +64,11 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
         aria-label={`Zu ${getIssueLabel(props.issue)}`}
       >
         <Box
-          className={blurCover ? "blurred" : ""}
           sx={{
-            background:
-              "linear-gradient(to right, rgba(255, 255, 255, 1) 30%, rgba(255, 255, 255, 0))",
+            backdropFilter: blurCover ? "blur(2px)" : "none",
           }}
         >
-          <CardContent sx={{ pb: "20px" }}>
+          <CardContent sx={{ pb: 2.5 }}>
             <Box sx={{ display: "flex", justifyContent: "space-between", gap: 1 }}>
               <Box>
                 <Typography variant="subtitle1">{issueLabel}</Typography>
@@ -74,12 +78,22 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
                 ) : null}
               </Box>
 
-              <Box>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                 {props.issue.verified ? (
-                  <img src="/verified_badge.png" alt="verifiziert" height="25" />
+                  <Box
+                    component="img"
+                    src="/verified_badge.png"
+                    alt="verifiziert"
+                    sx={{ height: 24, width: "auto" }}
+                  />
                 ) : null}
                 {flags.collected ? (
-                  <img src="/collected_badge.png" alt="gesammelt" height="25" />
+                  <Box
+                    component="img"
+                    src="/collected_badge.png"
+                    alt="gesammelt"
+                    sx={{ height: 24, width: "auto" }}
+                  />
                 ) : null}
               </Box>
             </Box>
@@ -89,7 +103,6 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
             <Box sx={{ mt: 2, display: "flex", flexWrap: "wrap", gap: 0.75 }}>
               {!us && flags.hasOnlyApp ? (
                 <Chip
-                  className="chip"
                   label={!smallChip ? "Einzige Veröffentlichung" : mobileAlertLabel}
                   color="secondary"
                 />
@@ -97,7 +110,6 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
 
               {!us && flags.hasFirstApp ? (
                 <Chip
-                  className="chip"
                   label={!smallChip ? "Erstveröffentlichung" : "1."}
                   color="primary"
                 />
@@ -105,7 +117,7 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
 
               {!us && flags.hasOtherOnlyTb ? (
                 <Chip
-                  className="tbchip chip"
+                  variant="outlined"
                   label={!smallChip ? "Sonst nur in Taschenbuch" : "TB"}
                   color="default"
                 />
@@ -113,7 +125,6 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
 
               {!us && flags.hasExclusive ? (
                 <Chip
-                  className="chip"
                   label={!smallChip ? "Exklusiver Inhalt" : mobileAlertLabel}
                   color="secondary"
                 />
@@ -121,7 +132,6 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
 
               {!us && flags.isPureReprintDe ? (
                 <Chip
-                  className="chip"
                   label={!smallChip ? "Reiner Nachdruck" : "ND"}
                   color="default"
                 />
@@ -129,25 +139,22 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
 
               {flags.collectedMultipleTimes ? (
                 <Chip
-                  className="chip"
                   label={
                     !smallChip ? "Mehrfach " + (us ? "auf deutsch " : "") + "gesammelt" : "Mehrfach"
                   }
-                  sx={{ bgcolor: "#4eaf51", color: "common.white" }}
+                  color="success"
                 />
               ) : null}
 
               {isSellable ? (
                 <Chip
-                  className="chip"
                   label="Verkaufbar"
-                  sx={{ bgcolor: "#4eaf51", color: "common.white" }}
+                  color="success"
                 />
               ) : null}
 
               {!us && flags.hasNoStoriesDe ? (
                 <Chip
-                  className="chip"
                   label={!smallChip ? "Keine Geschichten zugeordnet" : "n/a"}
                   color="default"
                 />
@@ -155,7 +162,6 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
 
               {us && flags.hasOnlyOnePrintUs ? (
                 <Chip
-                  className="chip"
                   label={!smallChip ? "Nur einfach auf deutsch veröffentlicht" : mobileAlertLabel}
                   color="secondary"
                 />
@@ -163,7 +169,7 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
 
               {us && flags.hasOnlyTbUs ? (
                 <Chip
-                  className="chip"
+                  variant="outlined"
                   label={!smallChip ? "Nur in Taschenbuch" : "TB"}
                   color="primary"
                 />
@@ -171,18 +177,17 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
 
               {us && flags.notPublishedInDe ? (
                 <Chip
-                  className="chip"
                   label={!smallChip ? "Nicht auf deutsch erschienen" : "n/a"}
                   color="default"
                 />
               ) : null}
 
               {us && flags.hasReprintOfUs ? (
-                <Chip className="chip" label={!smallChip ? "Nachdruck" : "ND"} color="default" />
+                <Chip label={!smallChip ? "Nachdruck" : "ND"} color="default" />
               ) : null}
 
               {us && flags.hasReprintsUs ? (
-                <Chip className="chip" label={!smallChip ? "Nachgedruckt" : "ND"} color="default" />
+                <Chip label={!smallChip ? "Nachgedruckt" : "ND"} color="default" />
               ) : null}
             </Box>
           </CardContent>

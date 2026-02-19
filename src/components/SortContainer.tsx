@@ -38,7 +38,7 @@ function SortContainer(props: Readonly<SortContainerProps>) {
   return (
     <Box>
       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <FormControl sx={{ minWidth: 220 }}>
+        <FormControl size="small" sx={{ minWidth: 240 }}>
           <InputLabel id={SORT_LABEL_ID}>Sortieren</InputLabel>
           <Select
             id={SORT_SELECT_ID}
@@ -46,11 +46,7 @@ function SortContainer(props: Readonly<SortContainerProps>) {
             value={currentOrder}
             label="Sortieren"
             sx={{
-              "& .MuiSelect-select": { py: 0.625 },
-              "& .Mui-focused": {
-                borderRadius: "15px",
-                backgroundColor: "rgba(0, 0, 0, 0.08)",
-              },
+              "& .MuiSelect-select": { py: 1 },
             }}
             onChange={(e) =>
               props.navigate?.(
@@ -74,6 +70,7 @@ function SortContainer(props: Readonly<SortContainerProps>) {
 
         <IconButton
           aria-label="Reihenfolge"
+          color="primary"
           onClick={(e) =>
             props.navigate?.(
               e,

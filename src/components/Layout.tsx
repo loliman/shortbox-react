@@ -52,15 +52,15 @@ function Layout(props: Readonly<LayoutProps>) {
   }, [props.handleScroll]);
 
   return (
-    <React.Fragment>
+    <>
       <TopBar />
 
-      <Box>
+      <Box component="main">
         <List />
 
         <Box
           sx={{
-            px: 2,
+            px: { xs: 1, sm: 2 },
             pb: 2,
             ml: contentOffset,
             transition: (theme) =>
@@ -71,10 +71,17 @@ function Layout(props: Readonly<LayoutProps>) {
           }}
           onScroll={(e) => (props.handleScroll ? props.handleScroll(e) : false)}
         >
-          <Card sx={{ p: 1 }}>
+          <Card sx={{ p: { xs: 1.5, sm: 2 } }}>
             <Box sx={{ flexGrow: 1 }}>{children}</Box>
 
-            <Box sx={{ mt: "7px", mb: "7px", display: "flex", flexDirection: "row-reverse" }}>
+            <Box
+              sx={{
+                mt: 2,
+                pt: 1.5,
+                display: "flex",
+                justifyContent: "flex-end",
+              }}
+            >
               <FooterLinks
                 isPhonePortrait={props.isPhonePortrait}
                 loggedIn={session?.loggedIn}
@@ -88,7 +95,7 @@ function Layout(props: Readonly<LayoutProps>) {
 
         <AddFab us={us} />
       </Box>
-    </React.Fragment>
+    </>
   );
 }
 
