@@ -1,8 +1,8 @@
+import { useMutation } from "@apollo/client";
 import { PublisherSchema } from "../../../util/yupSchema";
 import { FastField, Form, Formik } from "formik";
 import { TextField } from "../../generic/FormikTextField";
 import React from "react";
-import { Mutation } from "@apollo/client/react/components";
 import { generateLabel, generateUrl } from "../../../util/hierarchy";
 import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
@@ -46,224 +46,207 @@ interface PublisherEditorProps {
   [key: string]: unknown;
 }
 
-interface PublisherEditorState {
-  defaultValues: PublisherFormValues;
-  header: string;
-  submitLabel: string;
-  successMessage: string;
-  errorMessage: string;
+type PublisherMutationResult = {
+  us?: boolean;
+  [key: string]: unknown;
+};
+
+function createInitialPublisherValues(defaultValues?: PublisherFormValues): PublisherFormValues {
+  if (defaultValues) return defaultValues;
+
+  return {
+    name: "",
+    startyear: 1900,
+    endyear: 1900,
+    addinfo: "",
+    us: false,
+  };
 }
 
-class PublisherEditor extends React.Component<PublisherEditorProps, PublisherEditorState> {
-  constructor(props: PublisherEditorProps) {
-    super(props);
+function PublisherEditor(props: Readonly<PublisherEditorProps>) {
+  const { lastLocation, navigate, enqueueSnackbar, edit = false, mutation } = props;
 
-    let defaultValues = props.defaultValues;
-    if (!defaultValues)
-      defaultValues = {
-        name: "",
-        startyear: 1900,
-        endyear: 1900,
-        addinfo: "",
-        us: false,
-      };
+  const [defaultValues, setDefaultValues] = React.useState<PublisherFormValues>(() =>
+    createInitialPublisherValues(props.defaultValues)
+  );
 
-    this.state = {
-      defaultValues: defaultValues,
-      header: props.edit ? generateLabel(defaultValues) + " bearbeiten" : "Verlag erstellen",
-      submitLabel: props.edit ? "Speichern" : "Erstellen",
-      successMessage: props.edit ? " erfolgreich gespeichert" : " erfolgreich erstellt",
-      errorMessage: props.edit
-        ? generateLabel(defaultValues) + " konnte nicht gespeichert werden"
-        : "Verlag konnte nicht erstellt werden",
-    };
-  }
+  const mutationDefinition = mutation.definitions[0] as { name?: { value?: string } };
+  const mutationName = decapitalize(mutationDefinition.name?.value || "");
 
-  toggleUs = () => {
-    this.setState((prevState) => ({
-      defaultValues: {
-        ...prevState.defaultValues,
-        us: !prevState.defaultValues.us,
-      },
+  const header = edit ? generateLabel(defaultValues) + " bearbeiten" : "Verlag erstellen";
+  const submitLabel = edit ? "Speichern" : "Erstellen";
+  const successMessage = edit ? " erfolgreich gespeichert" : " erfolgreich erstellt";
+  const errorMessage = edit
+    ? generateLabel(defaultValues) + " konnte nicht gespeichert werden"
+    : "Verlag konnte nicht erstellt werden";
+
+  const [runMutation] = useMutation(mutation, {
+    update: (cache, result) => {
+      const payload = result.data as Record<string, unknown> | null | undefined;
+      const res = payload?.[mutationName] as PublisherMutationResult | undefined;
+      if (!res) return;
+
+      if (!edit) {
+        try {
+          addToCache(cache, publishers, { us: res.us }, res);
+        } catch {
+          // ignore cache exception
+        }
+        return;
+      }
+
+      try {
+        const publisherRef = {
+          name: defaultValues.name,
+          startyear: defaultValues.startyear,
+          endyear: defaultValues.endyear,
+        };
+
+        updateInCache(cache, publisher, { publisher: publisherRef }, defaultValues, {
+          publisher: res,
+        });
+      } catch {
+        // ignore cache exception
+      }
+
+      try {
+        updateInCache(cache, publishers, { us: res.us }, defaultValues, res);
+      } catch {
+        // ignore cache exception
+      }
+    },
+    onCompleted: (data) => {
+      const result = (data as Record<string, unknown>)[mutationName] as PublisherMutationResult;
+      enqueueSnackbar(generateLabel(result) + successMessage, {
+        variant: "success",
+      });
+      navigate(null, generateUrl(result, Boolean(result.us)));
+    },
+    onError: (errors) => {
+      const message =
+        errors.graphQLErrors && errors.graphQLErrors.length > 0
+          ? " [" + errors.graphQLErrors[0].message + "]"
+          : "";
+      enqueueSnackbar(errorMessage + message, { variant: "error" });
+    },
+  });
+
+  const toggleUs = React.useCallback(() => {
+    setDefaultValues((prevState) => ({
+      ...prevState,
+      us: !prevState.us,
     }));
-  };
+  }, []);
 
-  render() {
-    const { lastLocation, navigate, enqueueSnackbar, edit, mutation } = this.props;
-    const { defaultValues, header, submitLabel, successMessage, errorMessage } = this.state;
+  return (
+    <Formik
+      initialValues={defaultValues}
+      enableReinitialize
+      validationSchema={PublisherSchema}
+      onSubmit={async (values, actions) => {
+        actions.setSubmitting(true);
 
-    const mutationDefinition = mutation.definitions[0] as { name?: { value?: string } };
-    let mutationName = decapitalize(mutationDefinition.name?.value || "");
+        try {
+          const variables: Record<string, unknown> = {};
+          variables.item = stripItem(values);
+          if (edit) variables.old = stripItem(defaultValues);
 
-    return (
-      <Mutation
-        mutation={mutation}
-        update={(cache, result) => {
-          let res = result.data[mutationName];
-
-          if (!edit) {
-            try {
-              addToCache(cache, publishers, { us: res.us }, res);
-            } catch {
-              //ignore cache exception;
+          await runMutation({ variables });
+        } finally {
+          actions.setSubmitting(false);
+        }
+      }}
+    >
+      {({ values, resetForm, submitForm, isSubmitting }) => (
+        <Form>
+          <CardHeader
+            title={<TitleLine title={header} id={props.id} session={props.session} />}
+            action={
+              <FormControlLabel
+                sx={{ m: 0 }}
+                control={
+                  <Tooltip title={(values.us ? "Deutscher" : "US") + " Verlag"}>
+                    <Switch
+                      disabled={edit}
+                      checked={values.us}
+                      onChange={() => {
+                        toggleUs();
+                        resetForm();
+                      }}
+                      color="secondary"
+                    />
+                  </Tooltip>
+                }
+                label="US"
+              />
             }
-          } else {
-            try {
-              let pub = {
-                name: defaultValues.name,
-                startyear: defaultValues.startyear,
-                endyear: defaultValues.endyear,
-              };
+          />
 
-              updateInCache(cache, publisher, { publisher: pub }, defaultValues, {
-                publisher: res,
-              });
-            } catch {
-              //ignore cache exception;
-            }
+          <CardContent sx={{ pt: 1 }}>
+            <Stack spacing={2.5}>
+              <FastField name="name" label="Name" component={TextField} sx={editorFieldSx} />
 
-            try {
-              updateInCache(cache, publishers, { us: res.us }, defaultValues, res);
-            } catch {
-              //ignore cache exception;
-            }
-          }
-        }}
-        onCompleted={(data) => {
-          enqueueSnackbar(generateLabel(data[mutationName]) + successMessage, {
-            variant: "success",
-          });
-          navigate(null, generateUrl(data[mutationName], data[mutationName].us));
-        }}
-        onError={(errors) => {
-          let message =
-            errors.graphQLErrors && errors.graphQLErrors.length > 0
-              ? " [" + errors.graphQLErrors[0].message + "]"
-              : "";
-          enqueueSnackbar(errorMessage + message, { variant: "error" });
-        }}
-      >
-        {(mutation) => (
-          <Formik
-            initialValues={defaultValues}
-            enableReinitialize
-            validationSchema={PublisherSchema}
-            onSubmit={async (values, actions) => {
-              actions.setSubmitting(true);
+              <FastField
+                name="startyear"
+                label="Startjahr"
+                type="number"
+                component={TextField}
+                sx={editorFieldSx}
+              />
 
-              let variables: Record<string, unknown> = {};
-              variables.item = stripItem(values);
-              if (edit) variables.old = stripItem(defaultValues);
+              <FastField
+                name="endyear"
+                label="Endjahr"
+                type="number"
+                component={TextField}
+                sx={editorFieldSx}
+              />
 
-              await mutation({
-                variables: variables,
-              });
+              <FastField
+                name="addinfo"
+                label="Weitere Informationen"
+                multiline
+                rows={10}
+                component={TextField}
+                sx={editorTextAreaSx}
+              />
 
-              actions.setSubmitting(false);
-            }}
-          >
-            {({ values, resetForm, submitForm, isSubmitting }) => (
-              <Form>
-                <CardHeader
-                  title={
-                    <TitleLine title={header} id={this.props.id} session={this.props.session} />
-                  }
-                  action={
-                    <FormControlLabel
-                      sx={{ m: 0 }}
-                      control={
-                        <Tooltip title={(values.us ? "Deutscher" : "US") + " Verlag"}>
-                          <Switch
-                            disabled={edit}
-                            checked={values.us}
-                            onChange={() => {
-                              this.toggleUs();
-                              resetForm();
-                            }}
-                            color="secondary"
-                          />
-                        </Tooltip>
-                      }
-                      label="US"
-                    />
-                  }
-                />
+              <Stack direction={{ xs: "column", sm: "row" }} spacing={1} justifyContent="flex-end">
+                <Button
+                  disabled={isSubmitting}
+                  onClick={() => resetForm()}
+                  variant="text"
+                  color="inherit"
+                >
+                  Zurücksetzen
+                </Button>
 
-                <CardContent sx={{ pt: 1 }}>
-                  <Stack spacing={2.5}>
-                    <FastField
-                      name="name"
-                      label="Name"
-                      component={TextField}
-                      sx={editorFieldSx}
-                    />
+                <Button
+                  disabled={isSubmitting}
+                  onClick={(e) => props.navigate(e, lastLocation ? lastLocation.pathname : "/")}
+                  variant="outlined"
+                  color="inherit"
+                >
+                  Abbrechen
+                </Button>
 
-                    <FastField
-                      name="startyear"
-                      label="Startjahr"
-                      type="number"
-                      component={TextField}
-                      sx={editorFieldSx}
-                    />
-
-                    <FastField
-                      name="endyear"
-                      label="Endjahr"
-                      type="number"
-                      component={TextField}
-                      sx={editorFieldSx}
-                    />
-
-                    <FastField
-                      name="addinfo"
-                      label="Weitere Informationen"
-                      multiline
-                      rows={10}
-                      component={TextField}
-                      sx={editorTextAreaSx}
-                    />
-
-                    <Stack direction={{ xs: "column", sm: "row" }} spacing={1} justifyContent="flex-end">
-                      <Button
-                        disabled={isSubmitting}
-                        onClick={() => resetForm()}
-                        variant="text"
-                        color="inherit"
-                      >
-                        Zurücksetzen
-                      </Button>
-
-                      <Button
-                        disabled={isSubmitting}
-                        onClick={(e) =>
-                          this.props.navigate(e, lastLocation ? lastLocation.pathname : "/")
-                        }
-                        variant="outlined"
-                        color="inherit"
-                      >
-                        Abbrechen
-                      </Button>
-
-                      <Box>
-                        <Button
-                          disabled={isSubmitting}
-                          onClick={submitForm}
-                          variant="contained"
-                          color="primary"
-                        >
-                          {submitLabel}
-                        </Button>
-                      </Box>
-                    </Stack>
-                  </Stack>
-                </CardContent>
-              </Form>
-            )}
-          </Formik>
-        )}
-      </Mutation>
-    );
-  }
+                <Box>
+                  <Button
+                    disabled={isSubmitting}
+                    onClick={submitForm}
+                    variant="contained"
+                    color="primary"
+                  >
+                    {submitLabel}
+                  </Button>
+                </Box>
+              </Stack>
+            </Stack>
+          </CardContent>
+        </Form>
+      )}
+    </Formik>
+  );
 }
 
 export default withContext(PublisherEditor);

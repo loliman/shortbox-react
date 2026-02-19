@@ -126,7 +126,7 @@ function ListEntryPrimary(props: {
               }
             >
               <Typography
-                sx={{ color: "text.disabled", pl: 0.25, fontSize: "10px" }}
+                sx={{ color: "text.disabled", pl: 0.25, typography: "caption" }}
                 color={"disabled"}
               >
                 +{props.variantCount}
