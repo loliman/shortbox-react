@@ -47,7 +47,7 @@ export default function FooterLinks(props: Readonly<FooterLinksProps>) {
           onClick={() => props.navigate?.(null, "/contact")}
         >
           Kontakt
-          {showExtendedContactText ? "/Fehler melden/Unterstützen" : ""}
+          {showExtendedContactText ? " / Fehler melden / Unterstützen" : ""}
         </Button>
         <Button
           type="button"
