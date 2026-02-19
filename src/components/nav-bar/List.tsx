@@ -1,4 +1,5 @@
 import React from "react";
+import Drawer from "@mui/material/Drawer";
 import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import MuiList from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -179,26 +180,46 @@ function List(props: Readonly<ListProps>) {
     });
   }
 
+  const paperSx = {
+    width: drawerWidth,
+    maxWidth: "100%",
+    top: drawerHeaderTopOffset,
+    height: drawerHeaderAdjustedHeight,
+  };
+
+  const drawerContent = (
+    <MuiList ref={listRef} sx={{ width: "100%", p: 0 }}>
+      {content}
+    </MuiList>
+  );
+
+  if (temporaryDrawer) {
+    return (
+      <SwipeableDrawer
+        disableDiscovery={true}
+        variant="temporary"
+        open={Boolean(drawerOpen)}
+        onClose={() => toggleDrawer?.()}
+        onOpen={() => toggleDrawer?.()}
+        PaperProps={{
+          sx: paperSx,
+        }}
+      >
+        {drawerContent}
+      </SwipeableDrawer>
+    );
+  }
+
   return (
-    <SwipeableDrawer
-      disableDiscovery={true}
-      variant={temporaryDrawer ? "temporary" : "persistent"}
-      open={drawerOpen}
-      onClose={() => toggleDrawer?.()}
-      onOpen={() => toggleDrawer?.()}
+    <Drawer
+      variant="persistent"
+      open={Boolean(drawerOpen)}
       PaperProps={{
-        sx: {
-          width: drawerWidth,
-          maxWidth: "100%",
-          top: drawerHeaderTopOffset,
-          height: drawerHeaderAdjustedHeight,
-        },
+        sx: paperSx,
       }}
     >
-      <MuiList ref={listRef} sx={{ width: "100%", p: 0 }}>
-        {content}
-      </MuiList>
-    </SwipeableDrawer>
+      {drawerContent}
+    </Drawer>
   );
 }
 

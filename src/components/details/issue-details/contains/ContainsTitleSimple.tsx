@@ -2,7 +2,6 @@ import React from "react";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
-import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import { generateItemTitle } from "../../../../util/issues";
 
 type ContainsTitleSimpleItem = {
@@ -66,7 +65,7 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
           !smallChip ? (
             <Chip label="Nur einfach auf deutsch veröffentlicht" color="secondary" />
           ) : (
-            <Chip label={<PriorityHighIcon sx={{ fontSize: 16 }} />} color="secondary" />
+            <Chip label="1x" color="secondary" />
           )
         ) : null}
 

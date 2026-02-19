@@ -196,19 +196,6 @@ function normalizeStoryParent(value: unknown): Record<string, unknown> | undefin
   return Object.keys(normalized).length > 0 ? normalized : undefined;
 }
 
-function normalizeCoverParent(value: unknown): Record<string, unknown> | undefined {
-  const parent = asRecord(value);
-  if (!parent) return undefined;
-
-  const normalized: Record<string, unknown> = {};
-  const number = toOptionalInt(parent.number);
-  const issue = normalizeIssueReference(parent.issue);
-
-  if (number !== undefined) normalized.number = number;
-  if (issue) normalized.issue = issue;
-  return Object.keys(normalized).length > 0 ? normalized : undefined;
-}
-
 function normalizeStories(value: unknown): Array<Record<string, unknown>> {
   return asRecordArray(value).map((story) => {
     const exclusive = Boolean(story.exclusive);
@@ -224,23 +211,6 @@ function normalizeStories(value: unknown): Array<Record<string, unknown>> {
     };
 
     const parent = normalizeStoryParent(story.parent);
-    if (!exclusive && parent) normalized.parent = parent;
-
-    return normalized;
-  });
-}
-
-function normalizeCovers(value: unknown): Array<Record<string, unknown>> {
-  return asRecordArray(value).map((cover) => {
-    const exclusive = Boolean(cover.exclusive);
-    const normalized: Record<string, unknown> = {
-      number: toOptionalInt(cover.number) || 0,
-      addinfo: String(cover.addinfo || ""),
-      exclusive,
-      individuals: normalizeIndividuals(cover.individuals),
-    };
-
-    const parent = normalizeCoverParent(cover.parent);
     if (!exclusive && parent) normalized.parent = parent;
 
     return normalized;

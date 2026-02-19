@@ -3,7 +3,6 @@ import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
-import PriorityHighIcon from "@mui/icons-material/PriorityHigh";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import CoverTooltip from "../../../nav-bar/CoverTooltip";
@@ -179,7 +178,7 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
           !smallChip ? (
             <Chip label="Einzige Veröffentlichung" color="secondary" />
           ) : (
-            <Chip label={<PriorityHighIcon sx={{ fontSize: 16 }} />} color="secondary" />
+            <Chip label="1x" color="secondary" />
           )
         ) : null}
 
@@ -199,7 +198,7 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
           !smallChip ? (
             <Chip label="Exklusiv" color="secondary" />
           ) : (
-            <Chip label={<PriorityHighIcon sx={{ fontSize: 16 }} />} color="secondary" />
+            <Chip label="Exkl." color="secondary" />
           )
         ) : null}
 

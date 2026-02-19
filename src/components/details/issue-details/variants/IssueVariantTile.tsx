@@ -1,5 +1,4 @@
 import React from "react";
-import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
 import Box from "@mui/material/Box";
 import ButtonBase from "@mui/material/ButtonBase";
@@ -28,7 +27,7 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
     ")";
 
   return (
-    <ImageListItem
+    <Box
       sx={{
         borderRadius: 1.5,
         overflow: "hidden",
@@ -95,7 +94,7 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
           }}
         />
       </ButtonBase>
-    </ImageListItem>
+    </Box>
   );
 }
 

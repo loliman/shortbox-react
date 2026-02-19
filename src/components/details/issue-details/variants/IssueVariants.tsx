@@ -1,7 +1,7 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
-import ImageList from "@mui/material/ImageList";
 import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 import { getVariantKey } from "../utils/issueDetailsUtils";
 import { IssueVariantTile } from "./IssueVariantTile";
 import type { VariantIssue } from "./types";
@@ -35,29 +35,39 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
           pb: 1,
         }}
       >
-        <ImageList
+        <Stack
+          component="ul"
+          direction="row"
+          spacing={1}
           sx={{
             m: 0,
-            gridAutoFlow: "column",
-            gridTemplateColumns: "none !important",
-            gridAutoColumns: { xs: "220px", sm: "250px", md: "285px" },
-            gridAutoRows: { xs: "88px", sm: "96px", md: "104px" },
+            p: 0,
+            listStyle: "none",
             width: "max-content",
-            overflow: "visible",
-            gap: 8,
           }}
         >
           {variants.map((variant, idx) => (
-            <IssueVariantTile
-              issue={props.issue}
-              variant={variant}
-              session={props.session}
-              navigate={props.navigate}
-              us={Boolean(props.us)}
+            <Box
+              component="li"
               key={getVariantKey(variant, idx)}
-            />
+              sx={{
+                p: 0,
+                m: 0,
+                width: { xs: "220px", sm: "250px", md: "285px" },
+                height: { xs: "88px", sm: "96px", md: "104px" },
+                flex: "0 0 auto",
+              }}
+            >
+              <IssueVariantTile
+                issue={props.issue}
+                variant={variant}
+                session={props.session}
+                navigate={props.navigate}
+                us={Boolean(props.us)}
+              />
+            </Box>
           ))}
-        </ImageList>
+        </Stack>
       </Box>
     </React.Fragment>
   );
