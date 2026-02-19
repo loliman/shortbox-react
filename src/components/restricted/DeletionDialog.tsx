@@ -159,12 +159,13 @@ function DeletionDialog(props: Readonly<DeletionDialogProps>) {
       </DialogTitle>
       <DialogContent>{getDeleteConfimText(level, item)}</DialogContent>
       <DialogActions>
-        <Button onClick={() => handleClose?.()} color="primary">
+        <Button onClick={() => handleClose?.()} variant="text" color="inherit">
           Abbrechen
         </Button>
 
         <Button
-          color="secondary"
+          color="error"
+          variant="contained"
           onClick={() => {
             runDeleteMutation({
               variables: {

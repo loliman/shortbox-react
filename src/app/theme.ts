@@ -52,41 +52,6 @@ export const appTheme = createTheme({
         }),
       },
     },
-    MuiCard: {
-      defaultProps: {
-        elevation: 0,
-      },
-      styleOverrides: {
-        root: ({ theme }) => ({
-          border: `1px solid ${theme.palette.divider}`,
-          boxShadow: "0 8px 24px rgba(15, 23, 42, 0.06)",
-        }),
-      },
-    },
-    MuiPaper: {
-      defaultProps: {
-        elevation: 0,
-      },
-      styleOverrides: {
-        root: ({ theme }) => ({
-          border: `1px solid ${theme.palette.divider}`,
-        }),
-      },
-    },
-    MuiCardHeader: {
-      styleOverrides: {
-        root: {
-          padding: "20px 24px 8px",
-        },
-      },
-    },
-    MuiCardContent: {
-      styleOverrides: {
-        root: {
-          padding: "16px 24px 24px",
-        },
-      },
-    },
     MuiButton: {
       defaultProps: {
         disableElevation: true,
@@ -107,14 +72,6 @@ export const appTheme = createTheme({
         },
       },
     },
-    MuiOutlinedInput: {
-      styleOverrides: {
-        root: ({ theme }) => ({
-          borderRadius: (Number(theme.shape.borderRadius) || 12) - 2,
-          backgroundColor: alpha(theme.palette.common.white, 0.82),
-        }),
-      },
-    },
     MuiLink: {
       defaultProps: {
         underline: "hover",
@@ -132,17 +89,6 @@ export const appTheme = createTheme({
           borderRadius: (Number(theme.shape.borderRadius) || 12) - 2,
         }),
       },
-    },
-    MuiCssBaseline: {
-      styleOverrides: (theme) => ({
-        body: {
-          margin: 0,
-          background:
-            "radial-gradient(circle at 0% 0%, rgba(16, 34, 63, 0.05), transparent 45%), radial-gradient(circle at 100% 0%, rgba(177, 44, 74, 0.05), transparent 35%), " +
-            theme.palette.background.default,
-          color: theme.palette.text.primary,
-        },
-      }),
     },
   },
 });

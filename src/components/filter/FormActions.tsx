@@ -18,16 +18,16 @@ function FormActions({ isSubmitting, onReset, onCancel, onSubmit }: FormActionsP
       justifyContent="flex-end"
       sx={{ pt: 1 }}
     >
-      <Button disabled={isSubmitting} onClick={onReset} color="secondary">
+      <Button disabled={isSubmitting} onClick={onReset} variant="text" color="inherit">
         Zurücksetzen
       </Button>
 
-      <Button disabled={isSubmitting} onClick={onCancel} color="primary">
+      <Button disabled={isSubmitting} onClick={onCancel} variant="outlined" color="inherit">
         Abbrechen
       </Button>
 
       <Box>
-        <Button disabled={isSubmitting} onClick={onSubmit} color="primary">
+        <Button disabled={isSubmitting} onClick={onSubmit} variant="contained" color="primary">
           Filtern
         </Button>
       </Box>

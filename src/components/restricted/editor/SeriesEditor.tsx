@@ -268,7 +268,8 @@ class SeriesEditor extends React.Component<SeriesEditorProps, SeriesEditorState>
                         <Button
                           disabled={isSubmitting}
                           onClick={() => resetForm()}
-                          color="secondary"
+                          variant="text"
+                          color="inherit"
                         >
                           Zurücksetzen
                         </Button>
@@ -278,13 +279,19 @@ class SeriesEditor extends React.Component<SeriesEditorProps, SeriesEditorState>
                           onClick={(e) =>
                             this.props.navigate(e, lastLocation ? lastLocation.pathname : "/")
                           }
-                          color="primary"
+                          variant="outlined"
+                          color="inherit"
                         >
                           Abbrechen
                         </Button>
 
                         <Box>
-                          <Button disabled={isSubmitting} onClick={submitForm} color="primary">
+                          <Button
+                            disabled={isSubmitting}
+                            onClick={submitForm}
+                            variant="contained"
+                            color="primary"
+                          >
                             {submitLabel}
                           </Button>
                         </Box>

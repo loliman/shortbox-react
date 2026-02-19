@@ -224,7 +224,12 @@ class PublisherEditor extends React.Component<PublisherEditorProps, PublisherEdi
                     />
 
                     <Stack direction={{ xs: "column", sm: "row" }} spacing={1} justifyContent="flex-end">
-                      <Button disabled={isSubmitting} onClick={() => resetForm()} color="secondary">
+                      <Button
+                        disabled={isSubmitting}
+                        onClick={() => resetForm()}
+                        variant="text"
+                        color="inherit"
+                      >
                         Zurücksetzen
                       </Button>
 
@@ -233,13 +238,19 @@ class PublisherEditor extends React.Component<PublisherEditorProps, PublisherEdi
                         onClick={(e) =>
                           this.props.navigate(e, lastLocation ? lastLocation.pathname : "/")
                         }
-                        color="primary"
+                        variant="outlined"
+                        color="inherit"
                       >
                         Abbrechen
                       </Button>
 
                       <Box>
-                        <Button disabled={isSubmitting} onClick={submitForm} color="primary">
+                        <Button
+                          disabled={isSubmitting}
+                          onClick={submitForm}
+                          variant="contained"
+                          color="primary"
+                        >
                           {submitLabel}
                         </Button>
                       </Box>

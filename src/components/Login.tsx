@@ -97,11 +97,12 @@ function Login(props: Readonly<LoginProps>) {
                 <Button
                   disabled={isSubmitting}
                   onClick={(e) => props.navigate(e, fallbackPath)}
-                  color="secondary"
+                  variant="outlined"
+                  color="inherit"
                 >
                   Abbrechen
                 </Button>
-                <Button disabled={isSubmitting} onClick={submitForm} color="primary">
+                <Button disabled={isSubmitting} onClick={submitForm} variant="contained" color="primary">
                   Login
                 </Button>
               </Box>
