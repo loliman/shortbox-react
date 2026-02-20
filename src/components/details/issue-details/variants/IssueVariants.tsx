@@ -14,6 +14,9 @@ type NavigateFn = (event: unknown, url: string, query?: Record<string, unknown>)
 
 type IssueVariantsProps = {
   issue: VariantIssue;
+  storyOwnerKey?: string;
+  activeFormat?: string;
+  activeVariant?: string;
   us?: boolean;
   session?: unknown;
   navigate?: NavigateFn;
@@ -32,7 +35,7 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
       defaultExpanded={false}
       slotProps={{
         transition: {
-          collapsedSize: "20px",
+          collapsedSize: "25px",
         },
       }}
       sx={{
@@ -77,36 +80,57 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
             direction="row"
             spacing={0.35}
             sx={{
+              alignItems: "center",
               m: 0,
               p: 0,
               listStyle: "none",
               width: "max-content",
             }}
           >
-            {variants.map((variant, idx) => (
-              <Box
-                component="li"
-                key={getVariantKey(variant, idx)}
-                sx={{
-                  p: 0,
-                  m: 0,
-                  width: { xs: "330px", sm: "375px", md: "430px" },
-                  height: { xs: "132px", sm: "144px", md: "156px" },
-                  flex: "0 0 auto",
-                }}
-              >
-                <IssueVariantTile
-                  issue={props.issue}
-                  variant={variant}
-                  session={props.session}
-                  navigate={props.navigate}
-                  us={Boolean(props.us)}
-                />
-              </Box>
-            ))}
+            {variants.map((variant, idx) => {
+              const activeKey = getIssueKey({
+                format: props.activeFormat ?? props.issue.format,
+                variant: props.activeVariant ?? props.issue.variant,
+              });
+              const selected = getIssueKey(variant) === activeKey;
+              const storyOwner = getIssueKey(variant) === (props.storyOwnerKey || "");
+
+              return (
+                <Box
+                  component="li"
+                  key={getVariantKey(variant, idx)}
+                  sx={{
+                    p: 0,
+                    m: 0,
+                    width: selected
+                      ? { xs: "363px", sm: "412.5px", md: "473px" }
+                      : { xs: "330px", sm: "375px", md: "430px" },
+                    height: selected
+                      ? { xs: "145.2px", sm: "158.4px", md: "171.6px" }
+                      : { xs: "132px", sm: "144px", md: "156px" },
+                    flex: "0 0 auto",
+                    transition: "width 180ms ease, height 180ms ease",
+                  }}
+                >
+                  <IssueVariantTile
+                    issue={props.issue}
+                    variant={variant}
+                    selected={selected}
+                    storyOwner={storyOwner}
+                    session={props.session}
+                    navigate={props.navigate}
+                    us={Boolean(props.us)}
+                  />
+                </Box>
+              );
+            })}
           </Stack>
         </Box>
       </AccordionDetails>
     </Accordion>
   );
+}
+
+function getIssueKey(issue: VariantIssue): string {
+  return [String(issue.format || "").trim(), String(issue.variant || "").trim()].join("|");
 }

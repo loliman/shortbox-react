@@ -40,9 +40,7 @@ function SeriesEdit(props: Readonly<SeriesEditProps>) {
 
         defaultValues.issueCount = undefined;
         defaultValues.active = undefined;
-        defaultValues.firstIssue = undefined;
         defaultValues["lastEdited"] = undefined;
-        defaultValues.lastIssue = undefined;
 
         return (
           <SeriesEditor

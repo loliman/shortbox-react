@@ -254,20 +254,6 @@ const buildResult = (key: string, variables: Record<string, unknown>) => {
         seriesDetails: {
           ...mockSeriesFixture,
           publisher: { ...mockSeriesFixture.publisher, us: publisherUs },
-          firstIssue: {
-            ...mockSeriesFixture.firstIssue,
-            series: {
-              ...mockSeriesFixture.firstIssue.series,
-              publisher: { ...mockSeriesFixture.firstIssue.series.publisher, us: publisherUs },
-            },
-          },
-          lastIssue: {
-            ...mockSeriesFixture.lastIssue,
-            series: {
-              ...mockSeriesFixture.lastIssue.series,
-              publisher: { ...mockSeriesFixture.lastIssue.series.publisher, us: publisherUs },
-            },
-          },
         },
       };
     }

@@ -2,6 +2,7 @@ import React from "react";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
 import Box from "@mui/material/Box";
 import ButtonBase from "@mui/material/ButtonBase";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import { getIssueUrl } from "../../../../util/issuePresentation";
 import type { VariantIssue } from "./types";
 
@@ -11,6 +12,8 @@ type IssueVariantTileProps = {
   issue: VariantIssue;
   variant: VariantIssue;
   us: boolean;
+  selected?: boolean;
+  storyOwner?: boolean;
   session?: unknown;
   navigate?: NavigateFn;
 };
@@ -18,8 +21,9 @@ type IssueVariantTileProps = {
 export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
   const { coverUrl, blurCover } = getVariantCoverSource(props.variant, props.us);
   const selected =
-    props.issue.format === props.variant.format && props.issue.variant === props.variant.variant;
-  const mainIssue = Boolean(props.session) && (props.variant.stories?.length || 0) > 0;
+    props.selected ??
+    (props.issue.format === props.variant.format && props.issue.variant === props.variant.variant);
+  const mainIssue = Boolean(props.session) && Boolean(props.storyOwner);
   const variantLabel =
     (props.variant.format || "") +
     " (" +
@@ -31,14 +35,36 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
       sx={{
         borderRadius: (theme) => `${Number(theme.shape.borderRadius) || 12}px`,
         overflow: "hidden",
+        position: "relative",
         height: "100%",
+        transition: "box-shadow 180ms ease, border-color 180ms ease",
         border: (theme) =>
           selected
             ? `2px solid ${theme.palette.common.white}`
             : `1px solid ${theme.palette.divider}`,
-        boxShadow: mainIssue ? 2 : 1,
+        boxShadow: 1,
       }}
     >
+      {mainIssue ? (
+        <Box
+          sx={{
+            position: "absolute",
+            top: 6,
+            left: 6,
+            zIndex: 2,
+            color: "common.white",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            pointerEvents: "none",
+          }}
+          title="Story-Quelle"
+          aria-label="Story-Quelle"
+        >
+          <BookmarkBorderIcon sx={{ fontSize: 22 }} />
+        </Box>
+      ) : null}
+
       <ButtonBase
         onClick={(e) => props.navigate?.(e, getIssueUrl(props.variant, props.us))}
         aria-label={`Zu ${variantLabel}`}

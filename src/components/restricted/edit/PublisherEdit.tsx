@@ -41,9 +41,7 @@ function PublisherEdit(props: Readonly<PublisherEditProps>) {
         defaultValues.seriesCount = undefined;
         defaultValues.issueCount = undefined;
         defaultValues.active = undefined;
-        defaultValues.firstIssue = undefined;
         defaultValues["lastEdited"] = undefined;
-        defaultValues.lastIssue = undefined;
 
         return (
           <PublisherEditor

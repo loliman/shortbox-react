@@ -503,7 +503,7 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
                       number: issueNumber,
                       title: issueNode.title,
                       format: issueNode.format,
-                      variant: issueNode.variant,
+                      variant: getIssueNodeVariant(issueNode),
                       series: issueSeries,
                     },
                   },
@@ -706,7 +706,8 @@ function createSeriesLabel(seriesNode: SeriesNode): string {
 function createIssueLabel(issueNode: IssueNode, us: boolean): string {
   const number = issueNode.number || "";
   const seriesTitle = issueNode.series?.title || "";
-  const variantLabel = issueNode.variant ? ` [${issueNode.variant}]` : "";
+  const variant = getIssueNodeVariant(issueNode);
+  const variantLabel = variant ? ` [${variant}]` : "";
   if (us) return `#${number} ${seriesTitle}`;
   if (issueNode.title && issueNode.title !== "")
     return `#${number} ${issueNode.title}${variantLabel}`;
@@ -781,7 +782,14 @@ function getIssueMatchKey(selectedIssue?: Issue): string | null {
 }
 
 function getIssueNodeMatchKey(issueNode: IssueNode): string {
-  return [issueNode.number || "", issueNode.format || "", issueNode.variant || ""].join("|");
+  return [issueNode.number || "", issueNode.format || "", getIssueNodeVariant(issueNode) || ""].join("|");
+}
+
+function getIssueNodeVariant(issueNode: IssueNode): string | undefined {
+  const rawVariant = (issueNode as unknown as { variant?: unknown }).variant;
+  if (rawVariant === null || rawVariant === undefined) return undefined;
+  const value = String(rawVariant).trim();
+  return value === "" ? undefined : value;
 }
 
 export default withContext(List);

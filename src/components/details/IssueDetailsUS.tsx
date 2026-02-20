@@ -9,6 +9,7 @@ type IssueDetailsUSProps = Record<string, unknown>;
 function IssueDetailsUS(props: IssueDetailsUSProps) {
   return (
     <IssueDetails
+      {...props}
       bottom={<IssueDetailsUSBottom {...props} />}
       details={<IssueDetailsUSDetails />}
       subheader

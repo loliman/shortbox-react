@@ -7,7 +7,6 @@ import Box from "@mui/material/Box";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import Paper from "@mui/material/Paper";
-import { withContext } from "../generic";
 import { generateIssueSubHeader } from "../../util/issues";
 import Typography from "@mui/material/Typography";
 import { generateLabel } from "../../util/hierarchy";
@@ -50,40 +49,101 @@ interface IssueDetailsProps {
   [key: string]: unknown;
 }
 
+function getIssueSelectionKey(issueLike?: {
+  number?: string | null;
+  format?: string | null;
+  variant?: string | null;
+  series?: {
+    title?: string | null;
+    volume?: number | null;
+    publisher?: { name?: string | null };
+  } | null;
+} | null) {
+  if (!issueLike) return "";
+  return [
+    String(issueLike.series?.publisher?.name || ""),
+    String(issueLike.series?.title || ""),
+    String(issueLike.series?.volume || ""),
+    String(issueLike.number || ""),
+    String(issueLike.format || ""),
+    String(issueLike.variant || ""),
+  ].join("|");
+}
+
+function getIssueVariantKey(issueLike?: { format?: string | null; variant?: string | null } | null) {
+  return [String(issueLike?.format || "").trim(), String(issueLike?.variant || "").trim()].join("|");
+}
+
 function IssueDetails(props: IssueDetailsProps) {
   const selected = props.selected || { us: Boolean(props.us) };
   const us = Boolean(props.us);
   const details = props.details || <React.Fragment />;
-  const issueVariables = selected.issue
-    ? {
-        issue: {
-          number: selected.issue.number,
-          format: selected.issue.format,
-          variant: selected.issue.variant,
-          series: {
-            title: selected.issue.series.title,
-            volume: selected.issue.series.volume,
-            publisher: { name: selected.issue.series.publisher.name },
-          },
-        },
-      }
-    : undefined;
-  const { networkStatus, error, data, previousData, loading } = useQuery(issue, {
-    variables: issueVariables,
-    skip: !issueVariables,
-    notifyOnNetworkStatusChange: true,
-    fetchPolicy: "cache-and-network",
-    nextFetchPolicy: "cache-first",
-  });
-  const resolvedIssue = data?.issueDetails ?? (loading ? previousData?.issueDetails : null);
+  const issueVariables = React.useMemo(
+    () =>
+      selected.issue
+        ? {
+            issue: {
+              number: selected.issue.number,
+              format: selected.issue.format,
+              variant: selected.issue.variant,
+              series: {
+                title: selected.issue.series.title,
+                volume: selected.issue.series.volume,
+                publisher: { name: selected.issue.series.publisher.name },
+              },
+            },
+          }
+        : undefined,
+    [
+      selected.issue?.number,
+      selected.issue?.format,
+      selected.issue?.variant,
+      selected.issue?.series.title,
+      selected.issue?.series.volume,
+      selected.issue?.series.publisher.name,
+    ]
+  );
+  const issueQueryOptions = React.useMemo(
+    () => ({
+      variables: issueVariables,
+      skip: !issueVariables,
+      notifyOnNetworkStatusChange: true,
+      fetchPolicy: "cache-first" as const,
+      nextFetchPolicy: "cache-first" as const,
+    }),
+    [issueVariables]
+  );
+  const { networkStatus, error, data, previousData, loading } = useQuery(issue, issueQueryOptions);
+  const requestedIssueKey = getIssueSelectionKey(selected.issue as unknown as any);
+  const currentIssue = data?.issueDetails ?? null;
+  const previousIssue = previousData?.issueDetails ?? null;
+  const currentIssueKey = getIssueSelectionKey(currentIssue as unknown as any);
+  const hasRequestedIssueData = currentIssueKey === requestedIssueKey;
+  const resolvedIssue = (currentIssue && hasRequestedIssueData ? currentIssue : null) as
+    | Issue
+    | null;
+  const fallbackIssue = (currentIssue || previousIssue || null) as Issue | null;
+  const loadedIssue = (resolvedIssue || fallbackIssue) as Issue | null;
+  const issueForVariants = loadedIssue ? toIssueWithMockVariants(loadedIssue) : null;
+  const isIssueTransitioning =
+    Boolean(issueVariables) && !hasRequestedIssueData && (loading || networkStatus < 7);
+  const isIssueMissing = Boolean(issueVariables) && !loading && networkStatus >= 7 && !currentIssue;
+  const storyOwnerVariantKey = React.useMemo(() => {
+    if (!issueForVariants) return "";
+    const storyOwner = (issueForVariants as { storyOwner?: unknown }).storyOwner;
+    if (storyOwner) return getIssueVariantKey(storyOwner as { format?: string | null; variant?: string | null });
+    const inheritsStories = Boolean((issueForVariants as { inheritsStories?: unknown }).inheritsStories);
+    if (inheritsStories) return "";
+    return getIssueVariantKey(issueForVariants as unknown as any);
+  }, [issueForVariants]);
 
-  if (error || !resolvedIssue) {
+  if (error || isIssueMissing || !issueForVariants || !loadedIssue) {
     return (
       <Layout>
         <QueryResult
           error={error}
-          data={resolvedIssue}
-          loading={loading || networkStatus < 7}
+          data={isIssueMissing ? null : resolvedIssue}
+          loading={isIssueTransitioning || loading || networkStatus < 7}
           selected={selected}
           placeholder={<IssueDetailsPreview />}
           placeholderCount={1}
@@ -92,8 +152,6 @@ function IssueDetails(props: IssueDetailsProps) {
     );
   }
 
-  const loadedIssue = resolvedIssue as unknown as Issue;
-  const issueForVariants = toIssueWithMockVariants(loadedIssue);
   const hasVariantBox = (issueForVariants.variants || []).filter(Boolean).length > 1;
 
   const arcs = collectIssueArcs(issueForVariants, us);
@@ -158,6 +216,9 @@ function IssueDetails(props: IssueDetailsProps) {
             <IssueVariants
               us={us}
               issue={issueForVariants as unknown as VariantIssue}
+              storyOwnerKey={storyOwnerVariantKey}
+              activeFormat={selected.issue?.format ?? undefined}
+              activeVariant={selected.issue?.variant ?? undefined}
               session={props.session}
               navigate={props.navigate}
             />
@@ -411,4 +472,4 @@ function toIssueWithMockVariants(issue: Issue): Issue {
   };
 }
 
-export default withContext(IssueDetails);
+export default IssueDetails;

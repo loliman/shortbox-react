@@ -237,16 +237,12 @@ function toDeletePayload(
   if (level === HierarchyLevel.SERIES) {
     payload.issueCount = undefined;
     payload.active = undefined;
-    payload.firstIssue = undefined;
     payload.lastEdited = undefined;
-    payload.lastIssue = undefined;
   } else if (level === HierarchyLevel.PUBLISHER) {
     payload.seriesCount = undefined;
     payload.issueCount = undefined;
     payload.active = undefined;
-    payload.firstIssue = undefined;
     payload.lastEdited = undefined;
-    payload.lastIssue = undefined;
   }
 
   return payload;

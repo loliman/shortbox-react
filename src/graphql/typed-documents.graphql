@@ -234,126 +234,6 @@ query Publisher($publisher: PublisherInput!) {
     endyear
     seriesCount
     issueCount
-    firstIssue {
-      number
-      format
-      variant
-      createdat
-      updatedat
-      cover {
-        url
-      }
-      comicguideid
-      series {
-        title
-        volume
-        startyear
-        endyear
-        publisher {
-          name
-          us
-        }
-      }
-      releasedate
-      stories {
-        onlyapp
-        firstapp
-        onlytb
-        exclusive
-        otheronlytb
-        onlyoneprint
-        collectedmultipletimes
-        collected
-        number
-        children {
-          parent {
-            collectedmultipletimes
-            collected
-          }
-          issue {
-            collected
-          }
-          number
-        }
-        reprintOf {
-          number
-        }
-        reprints {
-          number
-        }
-        parent {
-          number
-          collectedmultipletimes
-          collected
-          children {
-            issue {
-              collected
-            }
-            number
-          }
-        }
-      }
-    }
-    lastIssue {
-      number
-      format
-      variant
-      createdat
-      updatedat
-      cover {
-        url
-      }
-      comicguideid
-      series {
-        title
-        volume
-        startyear
-        endyear
-        publisher {
-          name
-          us
-        }
-      }
-      releasedate
-      stories {
-        onlyapp
-        firstapp
-        onlytb
-        exclusive
-        otheronlytb
-        onlyoneprint
-        collectedmultipletimes
-        collected
-        number
-        children {
-          parent {
-            collectedmultipletimes
-            collected
-          }
-          issue {
-            collected
-          }
-          number
-        }
-        reprintOf {
-          number
-        }
-        reprints {
-          number
-        }
-        parent {
-          collectedmultipletimes
-          collected
-          number
-          children {
-            issue {
-              collected
-            }
-            number
-          }
-        }
-      }
-    }
     active
     addinfo
   }
@@ -367,126 +247,6 @@ query Seriesd($series: SeriesInput!) {
     startyear
     endyear
     issueCount
-    firstIssue {
-      number
-      format
-      variant
-      createdat
-      updatedat
-      cover {
-        url
-      }
-      comicguideid
-      series {
-        title
-        volume
-        startyear
-        endyear
-        publisher {
-          name
-          us
-        }
-      }
-      releasedate
-      stories {
-        onlyapp
-        firstapp
-        onlytb
-        exclusive
-        otheronlytb
-        onlyoneprint
-        collectedmultipletimes
-        collected
-        number
-        children {
-          parent {
-            collectedmultipletimes
-            collected
-          }
-          issue {
-            collected
-          }
-          number
-        }
-        reprintOf {
-          number
-        }
-        reprints {
-          number
-        }
-        parent {
-          collectedmultipletimes
-          collected
-          number
-          children {
-            issue {
-              collected
-            }
-            number
-          }
-        }
-      }
-    }
-    lastIssue {
-      number
-      format
-      variant
-      createdat
-      updatedat
-      cover {
-        url
-      }
-      comicguideid
-      series {
-        title
-        volume
-        startyear
-        endyear
-        publisher {
-          name
-          us
-        }
-      }
-      releasedate
-      stories {
-        onlyapp
-        firstapp
-        onlytb
-        exclusive
-        otheronlytb
-        onlyoneprint
-        collectedmultipletimes
-        collected
-        number
-        children {
-          parent {
-            collectedmultipletimes
-            collected
-          }
-          issue {
-            collected
-          }
-          number
-        }
-        reprintOf {
-          number
-        }
-        reprints {
-          number
-        }
-        parent {
-          collectedmultipletimes
-          collected
-          number
-          children {
-            issue {
-              collected
-            }
-            number
-          }
-        }
-      }
-    }
     active
     addinfo
     publisher {
@@ -681,6 +441,20 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
       onlytb
       onlyoneprint
       exclusive
+    }
+    inheritsStories
+    storyOwner {
+      number
+      format
+      variant
+      series {
+        title
+        volume
+        publisher {
+          name
+          us
+        }
+      }
     }
     arcs {
       title
