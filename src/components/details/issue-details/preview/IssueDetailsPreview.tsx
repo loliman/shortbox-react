@@ -5,6 +5,12 @@ import Skeleton from "@mui/material/Skeleton";
 import Box from "@mui/material/Box";
 
 export function IssueDetailsPreview() {
+  const coverWidth = {
+    xs: "min(85.3vw, 717px)",
+    md: "46.03vw",
+    lg: "clamp(262px, 27.64vw, 478px)",
+  };
+
   return (
     <React.Fragment>
       <CardHeader
@@ -17,15 +23,6 @@ export function IssueDetailsPreview() {
       />
 
       <CardContent>
-        <Box sx={{ mb: 3 }}>
-          <Skeleton variant="text" width={120} height={24} />
-          <Box sx={{ mt: 1, display: "flex", gap: 1, flexWrap: "wrap" }}>
-            <Skeleton variant="rounded" width={110} height={24} />
-            <Skeleton variant="rounded" width={96} height={24} />
-            <Skeleton variant="rounded" width={132} height={24} />
-          </Box>
-        </Box>
-
         <Box
           sx={{
             display: "grid",
@@ -39,15 +36,21 @@ export function IssueDetailsPreview() {
           }}
         >
           <Box sx={{ minWidth: 0, gridColumn: { md: "1 / 2" }, gridRow: { md: "1 / 2" } }}>
-            <Skeleton variant="rounded" width="100%" height={250} />
-            <Box sx={{ mt: 2, display: "flex", flexDirection: "column", gap: 1 }}>
-              <Skeleton variant="text" width="100%" />
-              <Skeleton variant="text" width="88%" />
-              <Skeleton variant="text" width="78%" />
-            </Box>
+            <Skeleton variant="rounded" width="100%" height={200} />
           </Box>
 
-          <Box sx={{ minWidth: 0, gridColumn: { md: "2 / 3" }, gridRow: { md: "1 / 2" }, pt: 0.5 }}>
+          <Box
+            sx={{
+              minWidth: 0,
+              gridColumn: { md: "2 / 3" },
+              gridRow: { md: "1 / 2" },
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-end",
+              alignSelf: { md: "end" },
+              pb: { md: 0.5 },
+            }}
+          >
             <Skeleton variant="text" width={95} height={24} />
             <Box sx={{ mt: 1, display: "flex", gap: 1, flexWrap: "wrap" }}>
               <Skeleton variant="rounded" width={130} height={28} />
@@ -58,21 +61,29 @@ export function IssueDetailsPreview() {
           <Box
             sx={{
               display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-start",
+              justifyContent: "flex-end",
               alignItems: { xs: "center", md: "flex-end" },
               minWidth: 0,
               gridColumn: { md: "3 / 4" },
               gridRow: { md: "1 / span 2" },
             }}
           >
-            <Skeleton variant="rectangular" width="100%" sx={{ maxWidth: 360, aspectRatio: "2 / 3" }} />
-            <Skeleton variant="text" width="100%" sx={{ maxWidth: 360, mt: 1 }} />
-            <Skeleton variant="text" width="82%" sx={{ maxWidth: 360 }} />
+            <Box sx={{ width: coverWidth, maxWidth: "100%" }}>
+              <Skeleton
+                variant="rectangular"
+                width="100%"
+                sx={{
+                  aspectRatio: "2 / 3",
+                  minHeight: { xs: 648, sm: 756, md: 648, lg: 756 },
+                }}
+              />
+            </Box>
           </Box>
 
           <Box sx={{ minWidth: 0, gridColumn: { md: "1 / 3" }, gridRow: { md: "2 / 3" }, mt: 1 }}>
-            <Skeleton variant="text" width={140} height={30} sx={{ mb: 1 }} />
+            <Skeleton variant="rounded" width="100%" height={52} sx={{ mb: 1 }} />
+            <Skeleton variant="rounded" width="100%" height={52} sx={{ mb: 1 }} />
+            <Skeleton variant="rounded" width="100%" height={52} sx={{ mb: 1 }} />
             <Skeleton variant="rounded" width="100%" height={52} sx={{ mb: 1 }} />
             <Skeleton variant="rounded" width="100%" height={52} sx={{ mb: 1 }} />
             <Skeleton variant="rounded" width="100%" height={52} />

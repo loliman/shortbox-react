@@ -30,11 +30,20 @@ describe("TopBar", () => {
   it("navigates to current locale home via logo button", async () => {
     const user = userEvent.setup();
     const navigate = vi.fn();
+    const resetNavigationState = vi.fn();
 
-    render(<TopBar us={true} selected={{ us: true }} navigate={navigate} />);
+    render(
+      <TopBar
+        us={true}
+        selected={{ us: true }}
+        navigate={navigate}
+        resetNavigationState={resetNavigationState}
+      />
+    );
 
     await user.click(screen.getByRole("button", { name: "Zur Startseite" }));
 
+    expect(resetNavigationState).toHaveBeenCalledTimes(1);
     expect(navigate).toHaveBeenCalledTimes(1);
     expect(navigate.mock.calls[0][1]).toBe("/us");
   });
@@ -42,11 +51,20 @@ describe("TopBar", () => {
   it("toggles locale switch and resets filter query", async () => {
     const user = userEvent.setup();
     const navigate = vi.fn();
+    const resetNavigationState = vi.fn();
 
-    render(<TopBar us={true} selected={{ us: true }} navigate={navigate} />);
+    render(
+      <TopBar
+        us={true}
+        selected={{ us: true }}
+        navigate={navigate}
+        resetNavigationState={resetNavigationState}
+      />
+    );
 
-    await user.click(screen.getByRole("switch", { name: /wechseln zu deutsch/i }));
+    await user.click(screen.getByRole("switch"));
 
+    expect(resetNavigationState).toHaveBeenCalledTimes(1);
     expect(navigate).toHaveBeenCalledTimes(1);
     expect(navigate.mock.calls[0][1]).toBe("/de");
     expect(navigate.mock.calls[0][2]).toEqual({ filter: null });

@@ -7,6 +7,7 @@ type SessionValue = SessionData | null;
 interface AppContextState {
   drawerOpen: boolean;
   loadingComponents: string[];
+  navResetVersion: number;
 }
 
 interface AppContextProps {
@@ -28,11 +29,13 @@ export interface AppContextValue {
   isPhonePortrait: boolean;
   compactLayout: boolean;
   navWide: boolean;
+  navResetVersion: number;
   appIsLoading: boolean;
   resetLoadingComponents: () => void;
   registerLoadingComponent: (component: string) => void;
   unregisterLoadingComponent: (component: string) => void;
   isComponentRegistered: (component: string) => string | undefined;
+  resetNavigationState: () => void;
 }
 
 const defaultContextValue: AppContextValue = {
@@ -48,11 +51,13 @@ const defaultContextValue: AppContextValue = {
   isPhonePortrait: false,
   compactLayout: false,
   navWide: true,
+  navResetVersion: 0,
   appIsLoading: false,
   resetLoadingComponents: () => {},
   registerLoadingComponent: () => {},
   unregisterLoadingComponent: () => {},
   isComponentRegistered: () => undefined,
+  resetNavigationState: () => {},
 };
 
 export const AppContext = React.createContext<AppContextValue>(defaultContextValue);
@@ -63,6 +68,7 @@ function AppContextProvider({ children, session, setSession }: Readonly<AppConte
     return {
       drawerOpen: responsive.navWide,
       loadingComponents: [],
+      navResetVersion: 0,
     };
   });
 
@@ -124,6 +130,13 @@ function AppContextProvider({ children, session, setSession }: Readonly<AppConte
     }));
   }, []);
 
+  const resetNavigationState = useCallback(() => {
+    setState((prevState) => ({
+      ...prevState,
+      navResetVersion: prevState.navResetVersion + 1,
+    }));
+  }, []);
+
   const value = useMemo<AppContextValue>(
     () => ({
       drawerOpen: state.drawerOpen,
@@ -138,11 +151,13 @@ function AppContextProvider({ children, session, setSession }: Readonly<AppConte
       isPhonePortrait: responsive.isPhonePortrait,
       compactLayout: responsive.isCompact,
       navWide: responsive.navWide,
+      navResetVersion: state.navResetVersion,
       appIsLoading: state.loadingComponents.length > 0,
       resetLoadingComponents,
       registerLoadingComponent,
       unregisterLoadingComponent,
       isComponentRegistered,
+      resetNavigationState,
     }),
     [
       handleLogin,
@@ -162,8 +177,10 @@ function AppContextProvider({ children, session, setSession }: Readonly<AppConte
       session,
       state.drawerOpen,
       state.loadingComponents.length,
+      state.navResetVersion,
       toggleDrawer,
       unregisterLoadingComponent,
+      resetNavigationState,
     ]
   );
 

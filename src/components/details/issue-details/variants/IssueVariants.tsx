@@ -58,7 +58,7 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
           },
         }}
       >
-        <Typography component="p" sx={{ fontWeight: 300 }}>
+        <Typography component="p" variant="body2" sx={{ fontWeight: 700 }}>
           Erhältlich in {variants.length} Varianten
         </Typography>
       </AccordionSummary>

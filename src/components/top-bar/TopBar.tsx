@@ -28,6 +28,7 @@ interface TopBarProps {
   query?: { filter?: string | null; order?: string | null; direction?: string | null } | null;
   selected?: SelectedRoot;
   navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
+  resetNavigationState?: () => void;
 }
 
 const SEARCH_MAX_WIDTH = 520;
@@ -127,7 +128,10 @@ export function TopBar(props: TopBarProps) {
             props.level === HierarchyLevel.ISSUE) ? null : (
             <ButtonBase
               aria-label="Zur Startseite"
-              onClick={(e) => navigate?.(e, us ? "/us" : "/de")}
+              onClick={(e) => {
+                props.resetNavigationState?.();
+                navigate?.(e, us ? "/us" : "/de");
+              }}
               sx={{
                 display: "inline-flex",
                 lineHeight: 0,
@@ -179,6 +183,7 @@ export function TopBar(props: TopBarProps) {
                 color="primary"
                 inputProps={{ "aria-label": us ? "Zu Deutsch wechseln" : "Zu US wechseln" }}
                 onChange={() => {
+                  props.resetNavigationState?.();
                   navigate?.(null, us ? "/de" : "/us", { filter: null });
                 }}
               />

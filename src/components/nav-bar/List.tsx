@@ -10,11 +10,11 @@ import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Collapse from "@mui/material/Collapse";
+import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import Skeleton from "@mui/material/Skeleton";
 import { useQuery } from "@apollo/client";
 import { issues, publishers, series } from "../../graphql/queriesTyped";
 import type {
@@ -54,6 +54,7 @@ interface ListProps {
   level: HierarchyLevelType;
   selected: SelectedRoot;
   appIsLoading?: boolean;
+  navResetVersion?: number;
   session?: unknown;
   us?: boolean;
   navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
@@ -115,6 +116,22 @@ function List(props: Readonly<ListProps>) {
   React.useEffect(() => {
     expandedPublishersCache[navStateKey] = expandedPublishers;
   }, [expandedPublishers, navStateKey]);
+
+  React.useEffect(() => {
+    if (!props.navResetVersion) return;
+
+    expandedPublishersCache = {};
+    expandedSeriesCache = {};
+    navScrollTopCache = {};
+    lastPublisherNodesCache = [];
+    setExpandedPublishers({});
+
+    const container = navScrollContainerRef.current;
+    if (container) container.scrollTop = 0;
+
+    const listElement = listRef.current;
+    if (listElement) listElement.scrollTop = 0;
+  }, [props.navResetVersion]);
 
   const {
     data: publisherData,
@@ -237,8 +254,8 @@ function List(props: Readonly<ListProps>) {
               navigateTo={navigateTo}
               listRef={listRef}
             />
-          </Collapse>
-        </Box>
+            </Collapse>
+          </Box>
       );
     });
   }
@@ -353,6 +370,7 @@ const SeriesBranch = React.memo(function SeriesBranch(props: Readonly<SeriesBran
       prev[activeSeriesKey] ? prev : { ...prev, [activeSeriesKey]: true }
     );
   }, [props.activeSeriesKey]);
+
   const handleToggleSeries = React.useCallback((seriesKey: string) => {
     setExpandedSeries((prev) => ({ ...prev, [seriesKey]: !prev[seriesKey] }));
   }, []);
@@ -441,21 +459,6 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
 
   const issueNodes = React.useMemo(() => toIssueNodes(issuesData), [issuesData]);
 
-  React.useEffect(() => {
-    if (!props.selectedIssueMatchKey || !props.listRef.current) return;
-
-    const activeIssueRow = props.listRef.current.querySelector(
-      '[data-selected-issue="true"]'
-    ) as HTMLElement | null;
-
-    if (!activeIssueRow) return;
-
-    activeIssueRow.scrollIntoView({
-      block: "center",
-      inline: "nearest",
-    });
-  }, [issueNodes, props.selectedIssueMatchKey, props.listRef]);
-
   if (issuesLoading && issueNodes.length === 0) return <NestedLoadingRow depth={2} />;
   if (issuesError) return <NestedErrorRow depth={2} />;
   if (issueNodes.length === 0) return <NestedEmptyRow depth={2} />;
@@ -479,7 +482,6 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
               issueNode.format || "",
               idx,
             ].join("|")}
-            data-selected-issue={selected ? "true" : undefined}
           >
             <ListItemButton
               divider={false}
@@ -616,9 +618,10 @@ const ExpandToggle = React.memo(function ExpandToggle(props: Readonly<ExpandTogg
 function NestedLoadingRow({ depth }: { depth: number }) {
   return (
     <ListItem sx={{ pl: getDepthPadding(depth) }}>
-      <Box sx={{ width: "100%" }}>
-        <Skeleton variant="text" width="72%" height={26} />
-      </Box>
+      <ListItemIcon sx={{ minWidth: 32 }}>
+        <CircularProgress size={16} />
+      </ListItemIcon>
+      <ListItemText primary="Lade..." />
     </ListItem>
   );
 }
