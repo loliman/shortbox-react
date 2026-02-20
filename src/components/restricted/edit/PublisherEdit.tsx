@@ -7,6 +7,7 @@ import { withContext } from "../../generic";
 import QueryResult from "../../generic/QueryResult";
 import PublisherEditor from "../editor/PublisherEditor";
 import type { SelectedRoot } from "../../../types/domain";
+import { EditorPagePlaceholder } from "../../placeholders/EditorPagePlaceholder";
 
 interface PublisherEditProps {
   selected: SelectedRoot;
@@ -26,6 +27,8 @@ function PublisherEdit(props: Readonly<PublisherEditProps>) {
               error={error}
               data={data ? data.publisherDetails : null}
               selected={selected}
+              placeholder={<EditorPagePlaceholder />}
+              placeholderCount={1}
             />
           );
 

@@ -90,5 +90,33 @@ export const appTheme = createTheme({
         }),
       },
     },
+    MuiSkeleton: {
+      defaultProps: {
+        animation: "wave",
+      },
+      styleOverrides: {
+        root: ({ theme }) => ({
+          borderRadius: (Number(theme.shape.borderRadius) || 12) - 4,
+          backgroundColor: alpha(theme.palette.text.primary, 0.08),
+          "&::after": {
+            background: `linear-gradient(90deg, transparent, ${alpha(
+              theme.palette.common.white,
+              0.42
+            )}, transparent)`,
+          },
+        }),
+      },
+    },
+    MuiCircularProgress: {
+      defaultProps: {
+        size: 20,
+        thickness: 4,
+      },
+      styleOverrides: {
+        root: ({ theme }) => ({
+          color: theme.palette.primary.light,
+        }),
+      },
+    },
   },
 });

@@ -10,11 +10,11 @@ import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Collapse from "@mui/material/Collapse";
-import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import Skeleton from "@mui/material/Skeleton";
 import { useQuery } from "@apollo/client";
 import { issues, publishers, series } from "../../graphql/queriesTyped";
 import type {
@@ -616,10 +616,9 @@ const ExpandToggle = React.memo(function ExpandToggle(props: Readonly<ExpandTogg
 function NestedLoadingRow({ depth }: { depth: number }) {
   return (
     <ListItem sx={{ pl: getDepthPadding(depth) }}>
-      <ListItemIcon sx={{ minWidth: 32 }}>
-        <CircularProgress size={16} />
-      </ListItemIcon>
-      <ListItemText primary="Lade..." />
+      <Box sx={{ width: "100%" }}>
+        <Skeleton variant="text" width="72%" height={26} />
+      </Box>
     </ListItem>
   );
 }

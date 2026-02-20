@@ -3,14 +3,16 @@ import ErrorIcon from "@mui/icons-material/Error";
 import SearchIcon from "@mui/icons-material/Search";
 import Typography from "@mui/material/Typography";
 import { generateLabel } from "../../util/hierarchy";
-import CircularProgress from "@mui/material/CircularProgress";
 import withContext from "./withContext";
 import Box from "@mui/material/Box";
 import type { SelectedRoot } from "../../types/domain";
+import { AppInlineLoader, AppPageLoader } from "./loading";
 
 interface QueryResultProps {
   appIsLoading?: boolean;
   loading?: boolean;
+  loadingVariant?: "page" | "inline" | "none";
+  loadingLabel?: string;
   error?: unknown;
   data?: Record<string, any> | null;
   selected?: SelectedRoot | null;
@@ -22,10 +24,11 @@ function QueryResult(props: Readonly<QueryResultProps>) {
   let { appIsLoading, loading, error, data, selected } = props;
 
   if (appIsLoading || loading) {
-    if (props.placeholder && props.placeholderCount) {
+    if (props.placeholder) {
       const placeholder: React.ReactElement[] = [];
+      const placeholderCount = props.placeholderCount || 1;
 
-      for (let i = 0; i < props.placeholderCount; i++)
+      for (let i = 0; i < placeholderCount; i++)
         placeholder.push(
           React.cloneElement(props.placeholder, {
             key: i,
@@ -33,13 +36,14 @@ function QueryResult(props: Readonly<QueryResultProps>) {
         );
 
       return placeholder;
-    } else
-      return (
-        <Box sx={{ p: 2, display: "flex" }}>
-          <CircularProgress />
-          <Typography sx={{ pl: 1.25, alignSelf: "center" }}>Lade...</Typography>
-        </Box>
-      );
+    }
+
+    if (props.loadingVariant === "none") return null;
+    if (props.loadingVariant === "inline") {
+      return <AppInlineLoader label={props.loadingLabel || "Lade..."} centered={false} />;
+    }
+
+    return <AppPageLoader label={props.loadingLabel} />;
   }
 
   if (error || (data && data.errors))

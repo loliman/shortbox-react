@@ -7,6 +7,7 @@ import { withContext } from "../../generic";
 import QueryResult from "../../generic/QueryResult";
 import SeriesEditor from "../editor/SeriesEditor";
 import type { SelectedRoot } from "../../../types/domain";
+import { EditorPagePlaceholder } from "../../placeholders/EditorPagePlaceholder";
 
 interface SeriesEditProps {
   selected: SelectedRoot;
@@ -26,6 +27,8 @@ function SeriesEdit(props: Readonly<SeriesEditProps>) {
               error={error}
               data={data ? data.seriesDetails : null}
               selected={selected}
+              placeholder={<EditorPagePlaceholder />}
+              placeholderCount={1}
             />
           );
 

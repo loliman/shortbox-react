@@ -9,6 +9,7 @@ import { type SessionData } from "../app/session";
 import { isMockMode } from "../app/mockMode";
 import { subscribeSessionInvalid } from "../app/authEvents";
 import { me } from "../graphql/queriesTyped";
+import { AppPageLoader } from "./generic/loading";
 
 export default function App() {
   const client = useApolloClient();
@@ -64,7 +65,7 @@ export default function App() {
     <ThemeProvider theme={appTheme}>
       <AppContextProvider session={session} setSession={setSession}>
         <CssBaseline />
-        <Suspense fallback={null}>
+        <Suspense fallback={<AppPageLoader />}>
           <AppRoutes session={session || undefined} authReady={authReady} />
         </Suspense>
       </AppContextProvider>
