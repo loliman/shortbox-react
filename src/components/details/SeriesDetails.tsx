@@ -76,6 +76,8 @@ function SeriesDetails(props: Readonly<SeriesDetailsProps>) {
   } = useQuery(seriesd, {
     variables: props.selected,
     notifyOnNetworkStatusChange: true,
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
   });
   const details =
     detailsData?.seriesDetails ?? (loading ? previousDetailsData?.seriesDetails : null);

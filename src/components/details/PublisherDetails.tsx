@@ -60,6 +60,8 @@ function PublisherDetails(props: Readonly<PublisherDetailsProps>) {
   } = useQuery(publisher, {
     variables: selected,
     notifyOnNetworkStatusChange: true,
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
   });
   const details =
     detailsData?.publisherDetails ?? (loading ? previousDetailsData?.publisherDetails : null);

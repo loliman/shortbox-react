@@ -6,26 +6,8 @@ function keyValue(value: unknown) {
 }
 
 export function getContainsKey(type: string, item: FieldItem, index: number) {
-  const parent = (item.parent || {}) as {
-    issue?: {
-      number?: string | number;
-      variant?: string;
-      series?: { title?: string; volume?: string | number };
-    };
-  };
-  const parentIssue = parent.issue || {};
-  const parentSeries = parentIssue.series || {};
+  const stableId = keyValue(item.id || item._id || item.uuid);
+  if (stableId) return `${type}|${stableId}`;
 
-  return [
-    type,
-    keyValue(item.number),
-    keyValue(item.title),
-    keyValue(item.addinfo),
-    keyValue(item.exclusive),
-    keyValue(parentIssue.number),
-    keyValue(parentIssue.variant),
-    keyValue(parentSeries.title),
-    keyValue(parentSeries.volume),
-    String(index),
-  ].join("|");
+  return `${type}|${String(index)}`;
 }

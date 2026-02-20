@@ -72,6 +72,8 @@ function IssueDetails(props: IssueDetailsProps) {
     variables: issueVariables,
     skip: !issueVariables,
     notifyOnNetworkStatusChange: true,
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
   });
   const resolvedIssue = data?.issueDetails ?? (loading ? previousData?.issueDetails : null);
 
@@ -135,7 +137,7 @@ function IssueDetails(props: IssueDetailsProps) {
                   component="img"
                   src="/verified_badge.png"
                   alt="verifiziert"
-                  sx={{ height: 35, width: "auto" }}
+                  sx={{ height: 35, width: "auto", ml: 0.75 }}
                 />
               ) : null}
               {loadedIssue.collected && props.session ? (
@@ -143,7 +145,7 @@ function IssueDetails(props: IssueDetailsProps) {
                   component="img"
                   src="/collected_badge.png"
                   alt="gesammelt"
-                  sx={{ height: 35, width: "auto" }}
+                  sx={{ height: 35, width: "auto", ml: 0.75 }}
                 />
               ) : null}
               <EditButton item={loadedIssue} />

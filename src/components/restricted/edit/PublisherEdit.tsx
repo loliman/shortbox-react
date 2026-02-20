@@ -15,7 +15,11 @@ interface PublisherEditProps {
 
 function PublisherEdit(props: Readonly<PublisherEditProps>) {
   const { selected } = props;
-  const { loading, error, data } = useQuery(publisher, { variables: selected as any });
+  const { loading, error, data } = useQuery(publisher, {
+    variables: selected as any,
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
+  });
 
   return (
     <Layout>

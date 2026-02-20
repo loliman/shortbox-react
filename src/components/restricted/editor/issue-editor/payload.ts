@@ -239,8 +239,6 @@ export function buildIssueMutationVariables(
     limitation: values.limitation,
     comicguideid: toOptionalInt(values.comicguideid),
     addinfo: values.addinfo,
-    individuals: normalizeIndividuals(values.individuals),
-    arcs: normalizeArcs(values.arcs),
     stories: normalizeStories(values.stories),
     series: seriesPayload,
   } as Record<string, unknown>;

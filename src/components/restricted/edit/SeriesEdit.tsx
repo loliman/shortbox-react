@@ -15,7 +15,11 @@ interface SeriesEditProps {
 
 function SeriesEdit(props: Readonly<SeriesEditProps>) {
   const { selected } = props;
-  const { loading, error, data } = useQuery(seriesd, { variables: selected as any });
+  const { loading, error, data } = useQuery(seriesd, {
+    variables: selected as any,
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
+  });
 
   return (
     <Layout>

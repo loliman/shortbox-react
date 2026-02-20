@@ -85,6 +85,8 @@ type IssueMutationInput = {
   limitation?: string;
   addinfo?: string;
   series?: DropdownItem["series"];
+  verified?: boolean;
+  collected?: boolean;
 };
 
 class Dropdown extends React.Component<DropdownProps, DropdownState> {
@@ -221,6 +223,8 @@ function buildIssueMutationInput(item: DropdownItem): IssueMutationInput {
     limitation: String(stripped.limitation || ""),
     addinfo: String(stripped.addinfo || ""),
     series: (stripped.series as DropdownItem["series"]) || undefined,
+    verified: Boolean(stripped.verified),
+    collected: Boolean(stripped.collected),
   };
 
   const variant = String(stripped.variant || "");
@@ -244,12 +248,16 @@ function VerifyMenuItem(props: Readonly<ActionMenuItemProps>) {
       key="verify"
       onClick={async () => {
         const oldInput = buildIssueMutationInput(props.item);
+        const nextInput = {
+          ...oldInput,
+          verified: !Boolean(props.verified),
+        };
 
         try {
           await editIssue({
             variables: {
               old: oldInput,
-              item: oldInput,
+              item: nextInput,
             },
           });
 
@@ -288,12 +296,16 @@ function CollectionMenuItem(props: Readonly<ActionMenuItemProps>) {
       key="collection"
       onClick={async () => {
         const oldInput = buildIssueMutationInput(props.item);
+        const nextInput = {
+          ...oldInput,
+          collected: !Boolean(props.collected),
+        };
 
         try {
           await editIssue({
             variables: {
               old: oldInput,
-              item: oldInput,
+              item: nextInput,
             },
           });
 

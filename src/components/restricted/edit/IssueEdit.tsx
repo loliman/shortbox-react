@@ -17,7 +17,11 @@ interface IssueEditProps {
 function IssueEdit(props: Readonly<IssueEditProps>) {
   const { selected } = props;
   const variables = { ...selected, edit: true };
-  const { loading, error, data } = useQuery(issue, { variables: variables as any });
+  const { loading, error, data } = useQuery(issue, {
+    variables: variables as any,
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
+  });
 
   return (
     <Layout>
