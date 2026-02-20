@@ -24,8 +24,7 @@ function FilterPage(props: FilterPageProps) {
     border: "1px solid",
     borderColor: "divider",
     boxShadow: "0 1px 3px rgba(0, 0, 0, 0.08)",
-    background:
-      "linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(248,249,252,0.96) 100%)",
+    background: "linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(248,249,252,0.96) 100%)",
   } as const;
 
   return (

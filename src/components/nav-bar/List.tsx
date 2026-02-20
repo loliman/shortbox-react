@@ -254,8 +254,8 @@ function List(props: Readonly<ListProps>) {
               navigateTo={navigateTo}
               listRef={listRef}
             />
-            </Collapse>
-          </Box>
+          </Collapse>
+        </Box>
       );
     });
   }
@@ -267,9 +267,12 @@ function List(props: Readonly<ListProps>) {
     height: drawerHeaderAdjustedHeight,
   };
 
-  const handleNavScroll = React.useCallback((event: React.UIEvent<HTMLDivElement>) => {
-    navScrollTopCache[navStateKey] = event.currentTarget.scrollTop;
-  }, [navStateKey]);
+  const handleNavScroll = React.useCallback(
+    (event: React.UIEvent<HTMLDivElement>) => {
+      navScrollTopCache[navStateKey] = event.currentTarget.scrollTop;
+    },
+    [navStateKey]
+  );
 
   const drawerContent = (
     <MuiList ref={listRef} sx={{ width: "100%", p: 0 }}>
@@ -693,7 +696,8 @@ function toIssueNodes(data?: IssuesQuery): IssueNode[] {
 
 function createSeriesLabel(seriesNode: SeriesNode): string {
   const title = seriesNode.title || "";
-  const year = seriesNode.startyear && seriesNode.startyear > 0 ? String(seriesNode.startyear) : "?";
+  const year =
+    seriesNode.startyear && seriesNode.startyear > 0 ? String(seriesNode.startyear) : "?";
   const volume = seriesNode.volume;
   if (volume === null || volume === undefined) return `${title} (${year})`;
   return `${title} (Vol. ${romanize(volume)}) (${year})`;
@@ -704,7 +708,8 @@ function createIssueLabel(issueNode: IssueNode, us: boolean): string {
   const seriesTitle = issueNode.series?.title || "";
   const variantLabel = issueNode.variant ? ` [${issueNode.variant}]` : "";
   if (us) return `#${number} ${seriesTitle}`;
-  if (issueNode.title && issueNode.title !== "") return `#${number} ${issueNode.title}${variantLabel}`;
+  if (issueNode.title && issueNode.title !== "")
+    return `#${number} ${issueNode.title}${variantLabel}`;
   return `#${number} ${seriesTitle}${variantLabel}`;
 }
 

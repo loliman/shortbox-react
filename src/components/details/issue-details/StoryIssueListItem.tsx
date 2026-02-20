@@ -102,7 +102,11 @@ export function StoryIssueListItem(props: Readonly<StoryIssueListItemProps>) {
                   {(props.parentLink.prefix || "als") + " "}
                   <Box
                     component="span"
-                    sx={{ textDecoration: "underline", textUnderlineOffset: "2px", color: "inherit" }}
+                    sx={{
+                      textDecoration: "underline",
+                      textUnderlineOffset: "2px",
+                      color: "inherit",
+                    }}
                   >
                     {getIssueLabel(props.parentLink.issue)}
                   </Box>

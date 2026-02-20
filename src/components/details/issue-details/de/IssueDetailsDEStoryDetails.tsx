@@ -45,9 +45,7 @@ export function IssueDetailsDEStoryDetails(props: Readonly<IssueDetailsDEStoryDe
 
       <Box
         sx={
-          storyArcs.length > 0
-            ? { mt: 3, pt: 2, borderTop: 1, borderColor: "divider" }
-            : undefined
+          storyArcs.length > 0 ? { mt: 3, pt: 2, borderTop: 1, borderColor: "divider" } : undefined
         }
       >
         <StoryPeopleSection item={item} us={props.us} navigate={props.navigate} />

@@ -174,7 +174,9 @@ export function TopBar(props: TopBarProps) {
           />
 
           <Box sx={{ ml: 0.75, display: "inline-flex", alignItems: "center", gap: 0.75 }}>
-            <Typography sx={{ fontSize: "0.82rem", fontWeight: 600, letterSpacing: 0.2, opacity: 0.95 }}>
+            <Typography
+              sx={{ fontSize: "0.82rem", fontWeight: 600, letterSpacing: 0.2, opacity: 0.95 }}
+            >
               US
             </Typography>
             <Tooltip title={"Wechseln zu " + (us ? "Deutsch" : "US")}>

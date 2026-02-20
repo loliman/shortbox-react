@@ -46,9 +46,7 @@ function IssuePreviewSmall(props: Readonly<IssuePreviewSmallProps>) {
       <CardActionArea onClick={(e) => props.navigate?.(e, url)} aria-label={`Zu ${issueLabel}`}>
         <CardContent>
           <Stack spacing={1.5}>
-            <Typography variant="subtitle1">
-              {issueLabel}
-            </Typography>
+            <Typography variant="subtitle1">{issueLabel}</Typography>
 
             {props.issue.title ? (
               <Typography variant="body2" color="text.secondary">

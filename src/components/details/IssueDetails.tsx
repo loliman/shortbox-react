@@ -236,10 +236,16 @@ function IssueDetails(props: IssueDetailsProps) {
                       rel="noopener noreferrer nofollow"
                       target="_blank"
                     >
-                      {generateLabel(issueForVariants.series as any) + " #" + issueForVariants.number}
+                      {generateLabel(issueForVariants.series as any) +
+                        " #" +
+                        issueForVariants.number}
                     </a>
                     &nbsp;wird bereitgestellt vom&nbsp;
-                    <a href="https://www.comicguide.de" rel="noopener noreferrer nofollow" target="_blank">
+                    <a
+                      href="https://www.comicguide.de"
+                      rel="noopener noreferrer nofollow"
+                      target="_blank"
+                    >
                       deutschen ComicGuide
                     </a>
                     &nbsp;und darf nicht ohne Genehmigung weiterverbreitet werden.
@@ -257,10 +263,16 @@ function IssueDetails(props: IssueDetailsProps) {
                       rel="noopener noreferrer nofollow"
                       target="_blank"
                     >
-                      {generateLabel(issueForVariants.series as any) + " #" + issueForVariants.number}
+                      {generateLabel(issueForVariants.series as any) +
+                        " #" +
+                        issueForVariants.number}
                     </a>
                     &nbsp;werden bezogen aus der&nbsp;
-                    <a href="https://marvel.fandom.com" rel="noopener noreferrer nofollow" target="_blank">
+                    <a
+                      href="https://marvel.fandom.com"
+                      rel="noopener noreferrer nofollow"
+                      target="_blank"
+                    >
                       Marvel Database
                     </a>
                     &nbsp;und stehen unter der&nbsp;
@@ -293,7 +305,6 @@ function IssueDetails(props: IssueDetailsProps) {
                 })}
               </Box>
             ) : null}
-
           </Box>
 
           {issueForVariants.addinfo && issueForVariants.addinfo !== "" ? (
@@ -305,7 +316,6 @@ function IssueDetails(props: IssueDetailsProps) {
               />
             </Paper>
           ) : null}
-
         </CardContent>
       </React.Fragment>
     </Layout>

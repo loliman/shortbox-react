@@ -205,48 +205,48 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
         loading={loading}
         inputValue={pattern}
         noOptionsText={
-          queryPattern.length < MIN_QUERY_LENGTH
-            ? (
+          queryPattern.length < MIN_QUERY_LENGTH ? (
+            <Box
+              key={`hint-${hintAnimTick}`}
+              sx={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontFamily: `${HINT_FONTS[hintFontIndex].family}, "Segoe UI", sans-serif`,
+                fontSize: "1.35rem",
+                lineHeight: 1.1,
+                letterSpacing: 0.4,
+                "@keyframes searchHintWaveOnce": {
+                  "0%": { transform: "translateY(0)" },
+                  "32%": { transform: "translateY(-5px)" },
+                  "64%": { transform: "translateY(2px)" },
+                  "100%": { transform: "translateY(0)" },
+                },
+              }}
+            >
+              {"Tippen zum Suchen...".split("").map((char, idx) => (
                 <Box
-                  key={`hint-${hintAnimTick}`}
+                  key={`${char}-${idx}`}
+                  component="span"
                   sx={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontFamily: `${HINT_FONTS[hintFontIndex].family}, "Segoe UI", sans-serif`,
-                    fontSize: "1.35rem",
-                    lineHeight: 1.1,
-                    letterSpacing: 0.4,
-                    "@keyframes searchHintWaveOnce": {
-                      "0%": { transform: "translateY(0)" },
-                      "32%": { transform: "translateY(-5px)" },
-                      "64%": { transform: "translateY(2px)" },
-                      "100%": { transform: "translateY(0)" },
-                    },
+                    display: "inline-block",
+                    whiteSpace: char === " " ? "pre" : "normal",
+                    animationName: "searchHintWaveOnce",
+                    animationDuration: "480ms",
+                    animationTimingFunction: "ease-out",
+                    animationIterationCount: 1,
+                    animationDelay: `${idx * 28}ms`,
                   }}
                 >
-                  {"Tippen zum Suchen...".split("").map((char, idx) => (
-                    <Box
-                      key={`${char}-${idx}`}
-                      component="span"
-                      sx={{
-                        display: "inline-block",
-                        whiteSpace: char === " " ? "pre" : "normal",
-                        animationName: "searchHintWaveOnce",
-                        animationDuration: "480ms",
-                        animationTimingFunction: "ease-out",
-                        animationIterationCount: 1,
-                        animationDelay: `${idx * 28}ms`,
-                      }}
-                    >
-                      {char === " " ? "\u00A0" : char}
-                    </Box>
-                  ))}
+                  {char === " " ? "\u00A0" : char}
                 </Box>
-              )
-            : error
-              ? "Fehler!"
-              : "Keine Ergebnisse gefunden"
+              ))}
+            </Box>
+          ) : error ? (
+            "Fehler!"
+          ) : (
+            "Keine Ergebnisse gefunden"
+          )
         }
         getOptionLabel={(option) =>
           typeof option === "string" ? option : `${getNodeType(option.type)} ${option.label || ""}`
@@ -272,7 +272,9 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
         onBlur={(e) => handleFocus(e, false)}
         renderOption={(optionProps, option) => (
           <li {...optionProps}>
-            <Box sx={{ width: "100%", display: "flex", alignItems: "center", gap: 1.25, minWidth: 0 }}>
+            <Box
+              sx={{ width: "100%", display: "flex", alignItems: "center", gap: 1.25, minWidth: 0 }}
+            >
               <Typography component="span" noWrap sx={{ minWidth: 0, flex: 1 }}>
                 {option.label || ""}
               </Typography>
@@ -303,7 +305,8 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
           "& .MuiOutlinedInput-root": {
             backgroundColor: "background.paper",
             borderRadius: 2.5,
-            transition: "box-shadow 180ms ease, border-color 180ms ease, background-color 180ms ease",
+            transition:
+              "box-shadow 180ms ease, border-color 180ms ease, background-color 180ms ease",
             "& fieldset": {
               borderColor: "divider",
             },
@@ -314,7 +317,8 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
               borderColor: "primary.light",
             },
             "&.Mui-focused": {
-              boxShadow: (theme) => `0 0 0 3px ${theme.palette.primary.main}33, 0 10px 26px #00000033`,
+              boxShadow: (theme) =>
+                `0 0 0 3px ${theme.palette.primary.main}33, 0 10px 26px #00000033`,
               backgroundColor: "background.paper",
             },
           },

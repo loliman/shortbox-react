@@ -14,7 +14,10 @@ interface ContainsSimpleItemProps {
 
 export function ContainsSimpleItem(props: Readonly<ContainsSimpleItemProps>) {
   return (
-    <Accordion sx={{ width: "auto", maxWidth: "100%" }} defaultExpanded={expanded(props.item, props.query)}>
+    <Accordion
+      sx={{ width: "auto", maxWidth: "100%" }}
+      defaultExpanded={expanded(props.item, props.query)}
+    >
       <AccordionSummary
         sx={{
           "& .MuiAccordionSummary-content": {

@@ -49,7 +49,7 @@ export function ChipList(props: Readonly<ChipListProps>) {
           ? {
               mb: 2,
               display: "grid",
-              gridTemplateColumns: { xs: "1fr",  sm: "120px minmax(0, 1fr)" },
+              gridTemplateColumns: { xs: "1fr", sm: "120px minmax(0, 1fr)" },
               columnGap: 2,
               rowGap: 1,
               alignItems: "center",
@@ -72,7 +72,16 @@ export function ChipList(props: Readonly<ChipListProps>) {
           {props.label}
         </Typography>
       ) : null}
-      <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", columnGap: 1, rowGap: 1, minWidth: 0 }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          alignItems: "center",
+          columnGap: 1,
+          rowGap: 1,
+          minWidth: 0,
+        }}
+      >
         {toChipList(items, props, props.type || "")}
       </Box>
     </Box>

@@ -81,7 +81,9 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
     <Box>
       {storyArcs.length > 0 ? (
         <Box sx={{ mt: 3, pt: 2, borderTop: 1, borderColor: "divider" }}>
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.5 }}>
+          <Box
+            sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.5 }}
+          >
             <Typography variant="h6">enthalten in</Typography>
             <IconButton
               size="small"
@@ -149,7 +151,9 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
 
       {children.length === 0 ? null : (
         <Box sx={{ mt: 3 }}>
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.5 }}>
+          <Box
+            sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.5 }}
+          >
             <Typography variant="h6">Erschienen in</Typography>
             <IconButton
               size="small"
@@ -208,7 +212,11 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
         </Box>
       )}
 
-      <Box sx={children.length > 0 ? { mt: 3, pt: 2, borderTop: 1, borderColor: "divider" } : undefined}>
+      <Box
+        sx={
+          children.length > 0 ? { mt: 3, pt: 2, borderTop: 1, borderColor: "divider" } : undefined
+        }
+      >
         <StoryPeopleSection
           item={(currentItem as Record<string, unknown>) || {}}
           us={us}

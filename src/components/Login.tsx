@@ -72,7 +72,15 @@ function Login(props: Readonly<LoginProps>) {
       }}
     >
       {({ submitForm, isSubmitting }) => (
-        <Box sx={{ minHeight: "100dvh", display: "flex", alignItems: "center", justifyContent: "center", p: 2 }}>
+        <Box
+          sx={{
+            minHeight: "100dvh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            p: 2,
+          }}
+        >
           <Form id="loginForm" style={{ width: "100%", maxWidth: 520 }}>
             <Card>
               <CardHeader title="Login" subheader="Bitte Benutzername und Passwort eingeben" />
