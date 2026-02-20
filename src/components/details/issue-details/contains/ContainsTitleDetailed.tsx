@@ -101,12 +101,12 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
           <Typography sx={{ fontWeight: 600 }}>
             {generateItemTitle(item.issue ? item.issue : item, Boolean(props.us))}
           </Typography>
-          {parentTitle && !props.isPhonePortrait ? (
+          {parentTitle ? (
             <Typography variant="body2" color="text.secondary">
               {parentTitle}
             </Typography>
           ) : null}
-          {variant && !props.isPhonePortrait ? (
+          {variant ? (
             <Typography variant="body2" color="text.secondary">
               {variant} Variant
             </Typography>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import FilterListIcon from "@mui/icons-material/FilterList";
@@ -18,13 +18,15 @@ type TopBarFilterMenuProps = {
   us: boolean;
   selected: SelectedRoot | { us: boolean };
   isFilterActive?: boolean | string | null;
+  session?: { loggedIn?: boolean } | null;
   navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
 };
 
 export default function TopBarFilterMenu(props: Readonly<TopBarFilterMenuProps>) {
   const { us, selected, isFilterActive, navigate } = props;
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-  const [exportOpen, setExportOpen] = useState(false);
+  const isLoggedIn = Boolean(props.session && props.session.loggedIn);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+  const [exportOpen, setExportOpen] = React.useState(false);
   const menuOpen = Boolean(anchorEl);
 
   const handleFilterMenuOpen = (e: React.MouseEvent<HTMLElement>) => {
@@ -34,6 +36,29 @@ export default function TopBarFilterMenu(props: Readonly<TopBarFilterMenuProps>)
   const handleFilterMenuClose = () => {
     setAnchorEl(null);
   };
+
+  if (!isLoggedIn) {
+    return (
+      <Box>
+        <Tooltip title="Filtern ist aufgrund von Neuentwicklung des Features aktuell nicht möglich. Stay tuned...">
+          <span data-testid="filter-disabled-wrapper">
+            <IconButton
+              disabled
+              color="inherit"
+              aria-label="Filter aktuell deaktiviert"
+              sx={{
+                "&.Mui-disabled": {
+                  color: "rgba(255,255,255,0.55)",
+                },
+              }}
+            >
+              <FilterListIcon />
+            </IconButton>
+          </span>
+        </Tooltip>
+      </Box>
+    );
+  }
 
   return (
     <Box>

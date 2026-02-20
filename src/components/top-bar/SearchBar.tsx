@@ -29,6 +29,7 @@ const HINT_FONTS = [
 interface SearchBarProps {
   us?: boolean;
   navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
+  autoFocus?: boolean;
   onFocus?: (
     event: React.FocusEvent<HTMLElement> | React.MouseEvent<HTMLElement> | null,
     focus: boolean
@@ -331,6 +332,7 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
           <TextField
             {...params}
             variant="outlined"
+            autoFocus={Boolean(props.autoFocus)}
             placeholder="Nach Comic suchen..."
             inputProps={{
               ...params.inputProps,

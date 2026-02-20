@@ -70,7 +70,7 @@ class Home extends React.Component<HomeProps> {
                 <React.Fragment>
                   <Stack spacing={3} sx={{ p: { xs: 1.5, sm: 2 } }}>
                     <Box>
-                      <Typography variant="h5">Willkommen auf Shortbox</Typography>
+                      <Typography variant="h5">All-New, All-Different Shortbox</Typography>
                       <Typography color="text.secondary">
                         Das deutsche Archiv für Marvel Comics
                       </Typography>

@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import React from "react";
 import { styled } from "@mui/material/styles";
-import { HierarchyLevel, type HierarchyLevelType } from "../../util/hierarchy";
+import type { HierarchyLevelType } from "../../util/hierarchy";
 import { withContext } from "../generic";
 import IconButton from "@mui/material/IconButton";
 import ButtonBase from "@mui/material/ButtonBase";
@@ -13,6 +13,8 @@ import SearchBar from "./SearchBar";
 import type { SelectedRoot } from "../../types/domain";
 import TopBarFilterMenu from "./TopBarFilterMenu";
 import Tooltip from "@mui/material/Tooltip";
+import SearchIcon from "@mui/icons-material/Search";
+import CloseIcon from "@mui/icons-material/Close";
 
 interface TopBarProps {
   toggleDrawer?: () => void;
@@ -25,6 +27,7 @@ interface TopBarProps {
   isPhonePortrait?: boolean;
   compactLayout?: boolean;
   level?: HierarchyLevelType;
+  session?: { loggedIn?: boolean } | null;
   query?: { filter?: string | null; order?: string | null; direction?: string | null } | null;
   selected?: SelectedRoot;
   navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
@@ -89,11 +92,16 @@ export function TopBar(props: TopBarProps) {
   const { toggleDrawer, navigate, drawerOpen } = props;
   const us = Boolean(props.us);
   const selected = props.selected || { us };
-  const phonePortrait = props.isPhonePortrait ?? Boolean(props.isPhone && !props.isPhoneLandscape);
+  const compactLayout =
+    props.compactLayout ?? Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
+  const [mobileSearchOpen, setMobileSearchOpen] = React.useState(false);
   const isFilter = props.query?.filter;
 
   return (
-    <AppBar position="sticky" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+    <AppBar
+      position="sticky"
+      sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, position: "sticky", overflow: "visible" }}
+    >
       <Toolbar
         sx={{
           display: "grid",
@@ -122,26 +130,21 @@ export function TopBar(props: TopBarProps) {
             <HamburgerIcon open={Boolean(drawerOpen)} />
           </IconButton>
 
-          {phonePortrait &&
-          (props.level === HierarchyLevel.SERIES ||
-            props.level === HierarchyLevel.PUBLISHER ||
-            props.level === HierarchyLevel.ISSUE) ? null : (
-            <ButtonBase
-              aria-label="Zur Startseite"
-              onClick={(e) => {
-                props.resetNavigationState?.();
-                navigate?.(e, us ? "/us" : "/de");
-              }}
-              sx={{
-                display: "inline-flex",
-                lineHeight: 0,
-                borderRadius: 1,
-                px: 0.25,
-              }}
-            >
-              <Box component="img" src="/Shortbox_Logo.png" alt="Shortbox" sx={{ height: 34 }} />
-            </ButtonBase>
-          )}
+          <ButtonBase
+            aria-label="Zur Startseite"
+            onClick={(e) => {
+              props.resetNavigationState?.();
+              navigate?.(e, us ? "/us" : "/de");
+            }}
+            sx={{
+              display: "inline-flex",
+              lineHeight: 0,
+              borderRadius: 1,
+              px: 0.25,
+            }}
+          >
+            <Box component="img" src="/Shortbox_Logo.png" alt="Shortbox" sx={{ height: 34 }} />
+          </ButtonBase>
         </Box>
 
         <Box
@@ -154,7 +157,7 @@ export function TopBar(props: TopBarProps) {
             px: 1,
           }}
         >
-          <SearchBar us={us} navigate={navigate} />
+          {compactLayout ? null : <SearchBar us={us} navigate={navigate} />}
         </Box>
 
         <Box
@@ -166,10 +169,20 @@ export function TopBar(props: TopBarProps) {
             justifySelf: "end",
           }}
         >
+          {compactLayout ? (
+            <IconButton
+              color="inherit"
+              aria-label="Suche öffnen"
+              onClick={() => setMobileSearchOpen(true)}
+            >
+              <SearchIcon />
+            </IconButton>
+          ) : null}
           <TopBarFilterMenu
             us={us}
             selected={selected}
             isFilterActive={isFilter}
+            session={props.session}
             navigate={navigate}
           />
 
@@ -193,6 +206,49 @@ export function TopBar(props: TopBarProps) {
           </Box>
         </Box>
       </Toolbar>
+
+      {compactLayout && mobileSearchOpen ? (
+        <Box
+          sx={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            top: 0,
+            zIndex: (theme) => theme.zIndex.drawer + 3,
+            px: 1,
+            py: 0.75,
+            bgcolor: "primary.main",
+            borderBottom: (theme) => `1px solid ${theme.palette.primary.light}`,
+          }}
+        >
+          <Box sx={{ mx: "auto", width: "min(87vw, 700px)" }}>
+            <SearchBar
+              us={us}
+              navigate={navigate}
+              autoFocus={true}
+              onFocus={(
+                _event: React.FocusEvent<HTMLElement> | React.MouseEvent<HTMLElement> | null,
+                focus: boolean
+              ) => {
+                if (!focus) setMobileSearchOpen(false);
+              }}
+            />
+            <IconButton
+              color="inherit"
+              aria-label="Suche schließen"
+              onClick={() => setMobileSearchOpen(false)}
+              sx={{
+                position: "absolute",
+                right: 6,
+                top: "50%",
+                transform: "translateY(-50%)",
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        </Box>
+      ) : null}
     </AppBar>
   );
 }

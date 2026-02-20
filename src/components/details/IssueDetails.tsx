@@ -92,6 +92,7 @@ function IssueDetails(props: IssueDetailsProps) {
 
   const loadedIssue = resolvedIssue as unknown as Issue;
   const issueForVariants = toIssueWithMockVariants(loadedIssue);
+  const hasVariantBox = (issueForVariants.variants || []).filter(Boolean).length > 1;
 
   const arcs = collectIssueArcs(issueForVariants, us);
   const today = getTodayLocalDate();
@@ -102,7 +103,7 @@ function IssueDetails(props: IssueDetailsProps) {
   const coverGridColumn = arcs.length ? "3 / 4" : "2 / 3";
   const bottomGridColumn = arcs.length ? "1 / 3" : "1 / 2";
   const coverWidth = {
-    xs: "min(85.3vw, 717px)",
+    xs: "100%",
     md: "46.03vw",
     lg: "clamp(262px, 27.64vw, 478px)",
   };
@@ -151,16 +152,17 @@ function IssueDetails(props: IssueDetailsProps) {
         />
 
         <CardContent sx={{ pt: 1 }}>
-          <IssueVariants
-            us={us}
-            issue={issueForVariants as unknown as VariantIssue}
-            session={props.session}
-            navigate={props.navigate}
-          />
+          <Box sx={{ pb: hasVariantBox ? 5 : 0 }}>
+            <IssueVariants
+              us={us}
+              issue={issueForVariants as unknown as VariantIssue}
+              session={props.session}
+              navigate={props.navigate}
+            />
+          </Box>
 
           <Box
             sx={{
-              mt: 5,
               display: "grid",
               gridTemplateColumns,
               gridTemplateRows: { xs: "auto", md: props.bottom ? "auto 1fr" : "auto" },
@@ -169,7 +171,15 @@ function IssueDetails(props: IssueDetailsProps) {
               width: "100%",
             }}
           >
-            <Box sx={{ minWidth: 0, width: "100%", display: "flex", alignItems: "flex-start" }}>
+            <Box
+              sx={{
+                minWidth: 0,
+                width: "100%",
+                display: "flex",
+                alignItems: "flex-start",
+                order: { xs: 2, md: 1 },
+              }}
+            >
               <DetailsTable
                 issue={issueForVariants}
                 details={details}
@@ -191,6 +201,7 @@ function IssueDetails(props: IssueDetailsProps) {
                   alignSelf: { md: "end" },
                   justifySelf: "start",
                   pb: { md: 0.5 },
+                  order: { xs: 3, md: 2 },
                 }}
               >
                 <Typography variant="subtitle2" sx={{ fontWeight: 500, whiteSpace: "nowrap" }}>
@@ -204,11 +215,12 @@ function IssueDetails(props: IssueDetailsProps) {
               sx={{
                 display: "flex",
                 alignItems: "flex-start",
-                justifyContent: "flex-end",
+                justifyContent: { xs: "center", md: "flex-end" },
                 minWidth: 0,
-                justifySelf: "end",
+                justifySelf: { xs: "stretch", md: "end" },
                 gridColumn: { md: coverGridColumn },
                 gridRow: { md: props.bottom ? "1 / span 2" : "1" },
+                order: { xs: 1, md: 3 },
               }}
             >
               <Box
@@ -228,7 +240,7 @@ function IssueDetails(props: IssueDetailsProps) {
                   <Typography
                     variant="caption"
                     color="text.secondary"
-                    sx={{ mt: 1, opacity: 0.82, textAlign: "left" }}
+                    sx={{ mt: 1, opacity: 0.82, textAlign: "left", display: { xs: "none", md: "block" } }}
                   >
                     Das Cover für&nbsp;
                     <a
@@ -255,7 +267,7 @@ function IssueDetails(props: IssueDetailsProps) {
                   <Typography
                     variant="caption"
                     color="text.secondary"
-                    sx={{ mt: 1, opacity: 0.82, textAlign: "left" }}
+                    sx={{ mt: 1, opacity: 0.82, textAlign: "left", display: { xs: "none", md: "block" } }}
                   >
                     Informationen über&nbsp;
                     <a
@@ -295,6 +307,7 @@ function IssueDetails(props: IssueDetailsProps) {
                   minWidth: 0,
                   gridColumn: { md: bottomGridColumn },
                   gridRow: { md: 2 },
+                  order: { xs: 4, md: 4 },
                 }}
               >
                 {React.cloneElement(props.bottom, {
@@ -305,7 +318,59 @@ function IssueDetails(props: IssueDetailsProps) {
                 })}
               </Box>
             ) : null}
+
           </Box>
+
+          {!us && issueForVariants.comicguideid ? (
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ mt: 2, opacity: 0.82, textAlign: "left", display: { xs: "block", md: "none" } }}
+            >
+              Das Cover für&nbsp;
+              <a
+                href={generateComicGuideUrl(issueForVariants as any)}
+                rel="noopener noreferrer nofollow"
+                target="_blank"
+              >
+                {generateLabel(issueForVariants.series as any) + " #" + issueForVariants.number}
+              </a>
+              &nbsp;wird bereitgestellt vom&nbsp;
+              <a href="https://www.comicguide.de" rel="noopener noreferrer nofollow" target="_blank">
+                deutschen ComicGuide
+              </a>
+              &nbsp;und darf nicht ohne Genehmigung weiterverbreitet werden.
+            </Typography>
+          ) : null}
+          {us ? (
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ mt: 2, opacity: 0.82, textAlign: "left", display: { xs: "block", md: "none" } }}
+            >
+              Informationen über&nbsp;
+              <a
+                href={generateMarvelDbUrl(issueForVariants as any)}
+                rel="noopener noreferrer nofollow"
+                target="_blank"
+              >
+                {generateLabel(issueForVariants.series as any) + " #" + issueForVariants.number}
+              </a>
+              &nbsp;werden bezogen aus der&nbsp;
+              <a href="https://marvel.fandom.com" rel="noopener noreferrer nofollow" target="_blank">
+                Marvel Database
+              </a>
+              &nbsp;und stehen unter der&nbsp;
+              <a
+                href="https://creativecommons.org/licenses/by/3.0/de/"
+                rel="noopener noreferrer nofollow"
+                target="_blank"
+              >
+                Creative Commons License 3.0
+              </a>
+              &nbsp;. Die Informationen wurden aufbereitet und unter Umständen ergänzt.&nbsp;
+            </Typography>
+          ) : null}
 
           {issueForVariants.addinfo && issueForVariants.addinfo !== "" ? (
             <Paper variant="outlined" sx={{ mt: 2, p: 2 }}>

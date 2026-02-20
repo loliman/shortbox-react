@@ -1,7 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { HierarchyLevel } from "../../util/hierarchy";
 import { TopBar } from "./TopBar";
 
 vi.mock("./SearchBar", () => ({
@@ -70,13 +69,12 @@ describe("TopBar", () => {
     expect(navigate.mock.calls[0][2]).toEqual({ filter: null });
   });
 
-  it("hides logo in phone portrait on non-root levels", () => {
+  it("keeps logo visible in phone portrait on non-root levels", () => {
     render(
       <TopBar
         us={false}
         isPhone={true}
         isPhonePortrait={true}
-        level={HierarchyLevel.ISSUE}
         selected={{
           us: false,
           issue: {
@@ -87,7 +85,7 @@ describe("TopBar", () => {
       />
     );
 
-    expect(screen.queryByRole("button", { name: "Zur Startseite" })).toBeNull();
+    expect(screen.getByRole("button", { name: "Zur Startseite" })).toBeTruthy();
   });
 
   it("calls drawer toggle and keeps searchbar centered container mounted", async () => {
@@ -99,5 +97,19 @@ describe("TopBar", () => {
     await user.click(screen.getByRole("button", { name: "Navigation umschalten" }));
     expect(toggleDrawer).toHaveBeenCalledTimes(1);
     expect(screen.getByTestId("topbar-search-center")).toBeTruthy();
+  });
+
+  it("uses icon-only search on mobile and expands full-width search on click", async () => {
+    const user = userEvent.setup();
+
+    render(<TopBar isPhone={true} isPhonePortrait={true} navigate={vi.fn()} />);
+
+    expect(screen.getByRole("button", { name: "Suche öffnen" })).toBeTruthy();
+    expect(screen.queryByTestId("searchbar-mock")).toBeNull();
+
+    await user.click(screen.getByRole("button", { name: "Suche öffnen" }));
+
+    expect(screen.getByTestId("searchbar-mock")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Suche schließen" })).toBeTruthy();
   });
 });
