@@ -11,7 +11,7 @@ interface DetailsTableProps {
 
 export function DetailsTable(props: Readonly<DetailsTableProps>) {
   return (
-    <Paper variant="outlined" sx={{ width: "100%" }}>
+    <Paper variant="outlined" sx={{ width: "100%", boxShadow: 1 }}>
       <Table
         size="small"
         sx={{

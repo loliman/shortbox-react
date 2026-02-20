@@ -31,14 +31,28 @@ function CoverTooltip(props: Readonly<CoverTooltipProps>) {
     <Tooltip
       slotProps={{
         tooltip: {
-          sx: { bgcolor: "transparent", p: 0, boxShadow: "none", m: 0.5 },
+          sx: {
+            bgcolor: "transparent",
+            p: 0,
+            boxShadow: "none",
+            m: 0.5,
+            border: (theme) => `1px solid ${theme.palette.divider}`,
+            borderRadius: 1,
+            overflow: "hidden",
+          },
         },
       }}
       title={
         <Box
           component="img"
           src={coverUrl}
-          sx={{ width: 65, display: "block", filter: blurCover ? "blur(2px)" : "none" }}
+          sx={{
+            width: 65,
+            display: "block",
+            filter: blurCover ? "blur(2px)" : "none",
+            boxShadow: 2,
+            backgroundColor: "background.paper",
+          }}
           alt="Zur Ausgabe"
         />
       }

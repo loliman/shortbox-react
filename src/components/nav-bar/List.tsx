@@ -10,6 +10,7 @@ import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 import Collapse from "@mui/material/Collapse";
 import CircularProgress from "@mui/material/CircularProgress";
+import Typography from "@mui/material/Typography";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
@@ -34,6 +35,8 @@ import {
   getNavDrawerWidth,
 } from "../layoutMetrics";
 import { parseFilter } from "./listUtils";
+import { romanize } from "../../util/util";
+import CoverTooltip from "./CoverTooltip";
 
 const LIST_PAGE_SIZE = 250;
 
@@ -452,6 +455,8 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
         const selected = getIssueNodeMatchKey(issueNode) === props.selectedIssueMatchKey;
         const issueNumber = issueNode.number || "";
         const issueSeries = toIssueSeriesSelected(issueNode, series, us);
+        const variantCount = getVariantCount(issueNode);
+        const hasVariants = variantCount > 0;
 
         return (
           <Box
@@ -477,6 +482,7 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
                       number: issueNumber,
                       title: issueNode.title,
                       format: issueNode.format,
+                      variant: issueNode.variant,
                       series: issueSeries,
                     },
                   },
@@ -484,12 +490,31 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
                 )
               }
             >
-              <ListItemText
-                primary={createIssueLabel(issueNode, us)}
-                secondary={createIssueSecondary(issueNode, Boolean(props.session))}
-                primaryTypographyProps={{ noWrap: true }}
-                secondaryTypographyProps={{ noWrap: true }}
-              />
+              <CoverTooltip issue={issueNode} us={us}>
+                <Box sx={{ width: "100%", minWidth: 0 }}>
+                  <ListItemText
+                    primary={
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: 0 }}>
+                        <Typography component="span" noWrap sx={{ minWidth: 0, flex: 1 }}>
+                          {createIssueLabel(issueNode, us)}
+                        </Typography>
+                        {hasVariants ? (
+                          <Typography
+                            component="span"
+                            variant="caption"
+                            color="text.disabled"
+                            sx={{ flexShrink: 0, fontSize: "0.68rem" }}
+                          >
+                            {variantCount} {variantCount === 1 ? "Variante" : "Varianten"}
+                          </Typography>
+                        ) : null}
+                      </Box>
+                    }
+                    secondary={createIssueSecondary(issueNode, Boolean(props.session))}
+                    secondaryTypographyProps={{ noWrap: true }}
+                  />
+                </Box>
+              </CoverTooltip>
             </ListItemButton>
           </Box>
         );
@@ -599,11 +624,6 @@ function getDepthPadding(depth: number) {
 function createIssueSecondary(issueNode: IssueNode, showCollected: boolean): string | undefined {
   const parts: string[] = [];
 
-  if (issueNode.variants && issueNode.variants.length > 1) {
-    const variantCount = issueNode.variants.length - 1;
-    parts.push(`+${variantCount} ${variantCount === 1 ? "Variante" : "Varianten"}`);
-  }
-
   if (
     showCollected &&
     (issueNode.collected || issueNode.variants?.some((entry) => entry?.collected))
@@ -612,6 +632,11 @@ function createIssueSecondary(issueNode: IssueNode, showCollected: boolean): str
   }
 
   return parts.length > 0 ? parts.join(" • ") : undefined;
+}
+
+function getVariantCount(issueNode: IssueNode): number {
+  const total = issueNode.variants?.length || 0;
+  return total > 1 ? total - 1 : 0;
 }
 
 function toPublisherNodes(data?: PublishersQuery): PublisherNode[] {
@@ -634,16 +659,19 @@ function toIssueNodes(data?: IssuesQuery): IssueNode[] {
 
 function createSeriesLabel(seriesNode: SeriesNode): string {
   const title = seriesNode.title || "";
+  const year = seriesNode.startyear && seriesNode.startyear > 0 ? String(seriesNode.startyear) : "?";
   const volume = seriesNode.volume;
-  return volume === null || volume === undefined ? title : `${title} (Vol. ${volume})`;
+  if (volume === null || volume === undefined) return `${title} (${year})`;
+  return `${title} (Vol. ${romanize(volume)}) (${year})`;
 }
 
 function createIssueLabel(issueNode: IssueNode, us: boolean): string {
   const number = issueNode.number || "";
   const seriesTitle = issueNode.series?.title || "";
+  const variantLabel = issueNode.variant ? ` [${issueNode.variant}]` : "";
   if (us) return `#${number} ${seriesTitle}`;
-  if (issueNode.title && issueNode.title !== "") return `#${number} ${issueNode.title}`;
-  return `#${number} ${seriesTitle}`;
+  if (issueNode.title && issueNode.title !== "") return `#${number} ${issueNode.title}${variantLabel}`;
+  return `#${number} ${seriesTitle}${variantLabel}`;
 }
 
 function getSelectedPublisherName(selected: SelectedRoot): string {
@@ -710,11 +738,11 @@ function toIssueSeriesSelected(
 
 function getIssueMatchKey(selectedIssue?: Issue): string | null {
   if (!selectedIssue?.number) return null;
-  return [selectedIssue.number, selectedIssue.format || ""].join("|");
+  return [selectedIssue.number, selectedIssue.format || "", selectedIssue.variant || ""].join("|");
 }
 
 function getIssueNodeMatchKey(issueNode: IssueNode): string {
-  return [issueNode.number || "", issueNode.format || ""].join("|");
+  return [issueNode.number || "", issueNode.format || "", issueNode.variant || ""].join("|");
 }
 
 export default withContext(List);

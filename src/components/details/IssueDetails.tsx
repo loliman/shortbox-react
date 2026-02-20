@@ -25,6 +25,7 @@ import { IssueDetailsPreview } from "./issue-details/preview/IssueDetailsPreview
 import { DetailsTable } from "./issue-details/DetailsTable";
 import type { PreviewIssue } from "../issue-preview/utils/issuePreviewUtils";
 import { collectIssueArcs, getTodayLocalDate } from "./issue-details/utils/issueDetailsUtils";
+import { generateComicGuideUrl, generateMarvelDbUrl } from "./issue-details/utils/externalLinks";
 
 export {
   AppearanceList,
@@ -95,6 +96,16 @@ function IssueDetails(props: IssueDetailsProps) {
   const arcs = collectIssueArcs(issueForVariants, us);
   const today = getTodayLocalDate();
   const releaseDate = issueForVariants.releasedate ? new Date(issueForVariants.releasedate) : null;
+  const gridTemplateColumns = arcs.length
+    ? { xs: "1fr", md: "minmax(0, 1.1fr) minmax(180px, 20vw) auto" }
+    : { xs: "1fr", md: "minmax(0, 1fr) auto" };
+  const coverGridColumn = arcs.length ? "3 / 4" : "2 / 3";
+  const bottomGridColumn = arcs.length ? "1 / 3" : "1 / 2";
+  const coverWidth = {
+    xs: "min(85.3vw, 717px)",
+    md: "46.03vw",
+    lg: "clamp(262px, 27.64vw, 478px)",
+  };
 
   return (
     <Layout>
@@ -149,15 +160,16 @@ function IssueDetails(props: IssueDetailsProps) {
 
           <Box
             sx={{
-              mt: 2,
+              mt: 5,
               display: "grid",
-              gridTemplateColumns: { xs: "1fr", md: "minmax(320px, 500px) 260px" },
+              gridTemplateColumns,
+              gridTemplateRows: { xs: "auto", md: props.bottom ? "auto 1fr" : "auto" },
               gap: 2,
-              alignItems: "stretch",
-              justifyContent: { xs: "stretch", md: "center" },
+              alignItems: "start",
+              width: "100%",
             }}
           >
-            <Box sx={{ minWidth: 0, width: "100%", display: "flex", alignItems: "center" }}>
+            <Box sx={{ minWidth: 0, width: "100%", display: "flex", alignItems: "flex-start" }}>
               <DetailsTable
                 issue={issueForVariants}
                 details={details}
@@ -166,18 +178,122 @@ function IssueDetails(props: IssueDetailsProps) {
               />
             </Box>
 
+            {arcs.length > 0 ? (
+              <Box
+                sx={{
+                  minWidth: 0,
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  justifyContent: "flex-end",
+                  gap: 1,
+                  alignSelf: { md: "end" },
+                  justifySelf: "start",
+                  pb: { md: 0.5 },
+                }}
+              >
+                <Typography variant="subtitle2" sx={{ fontWeight: 500, whiteSpace: "nowrap" }}>
+                  Enthält Teile von
+                </Typography>
+                <StoryArcChips arcs={arcs} us={us} navigate={props.navigate} inline />
+              </Box>
+            ) : null}
+
             <Box
               sx={{
                 display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                height: "100%",
+                alignItems: "flex-start",
+                justifyContent: "flex-end",
+                minWidth: 0,
+                justifySelf: "end",
+                gridColumn: { md: coverGridColumn },
+                gridRow: { md: props.bottom ? "1 / span 2" : "1" },
               }}
             >
-              <Box sx={{ width: 260, display: "flex", justifyContent: "center" }}>
-                <IssueCover us={us} issue={issueForVariants as unknown as PreviewIssue} />
+              <Box
+                sx={{
+                  width: coverWidth,
+                  maxWidth: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "flex-start",
+                  alignItems: "stretch",
+                }}
+              >
+                <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-start" }}>
+                  <IssueCover us={us} issue={issueForVariants as unknown as PreviewIssue} />
+                </Box>
+                {!us && issueForVariants.comicguideid ? (
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ mt: 1, opacity: 0.82, textAlign: "left" }}
+                  >
+                    Das Cover für&nbsp;
+                    <a
+                      href={generateComicGuideUrl(issueForVariants as any)}
+                      rel="noopener noreferrer nofollow"
+                      target="_blank"
+                    >
+                      {generateLabel(issueForVariants.series as any) + " #" + issueForVariants.number}
+                    </a>
+                    &nbsp;wird bereitgestellt vom&nbsp;
+                    <a href="https://www.comicguide.de" rel="noopener noreferrer nofollow" target="_blank">
+                      deutschen ComicGuide
+                    </a>
+                    &nbsp;und darf nicht ohne Genehmigung weiterverbreitet werden.
+                  </Typography>
+                ) : null}
+                {us ? (
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ mt: 1, opacity: 0.82, textAlign: "left" }}
+                  >
+                    Informationen über&nbsp;
+                    <a
+                      href={generateMarvelDbUrl(issueForVariants as any)}
+                      rel="noopener noreferrer nofollow"
+                      target="_blank"
+                    >
+                      {generateLabel(issueForVariants.series as any) + " #" + issueForVariants.number}
+                    </a>
+                    &nbsp;werden bezogen aus der&nbsp;
+                    <a href="https://marvel.fandom.com" rel="noopener noreferrer nofollow" target="_blank">
+                      Marvel Database
+                    </a>
+                    &nbsp;und stehen unter der&nbsp;
+                    <a
+                      href="https://creativecommons.org/licenses/by/3.0/de/"
+                      rel="noopener noreferrer nofollow"
+                      target="_blank"
+                    >
+                      Creative Commons License 3.0
+                    </a>
+                    &nbsp;. Die Informationen wurden aufbereitet und unter Umständen ergänzt.&nbsp;
+                  </Typography>
+                ) : null}
               </Box>
             </Box>
+
+            {props.bottom ? (
+              <Box
+                sx={{
+                  minWidth: 0,
+                  gridColumn: { md: bottomGridColumn },
+                  gridRow: { md: 2 },
+                }}
+              >
+                {React.cloneElement(props.bottom, {
+                  navigate: props.navigate,
+                  selected: issueForVariants,
+                  issue: issueForVariants,
+                  us: us,
+                })}
+              </Box>
+            ) : null}
+
           </Box>
 
           {issueForVariants.addinfo && issueForVariants.addinfo !== "" ? (
@@ -190,20 +306,6 @@ function IssueDetails(props: IssueDetailsProps) {
             </Paper>
           ) : null}
 
-          {arcs.length > 0 ? (
-            <Box sx={{ mt: 2 }}>
-              <StoryArcChips arcs={arcs} us={us} navigate={props.navigate} />
-            </Box>
-          ) : null}
-
-          {props.bottom
-            ? React.cloneElement(props.bottom, {
-                navigate: props.navigate,
-                selected: issueForVariants,
-                issue: issueForVariants,
-                us: us,
-              })
-            : null}
         </CardContent>
       </React.Fragment>
     </Layout>

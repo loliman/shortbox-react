@@ -32,7 +32,14 @@ export function ContainsItem(props: Readonly<ContainsItemProps>) {
   }
 
   return (
-    <Accordion sx={{ borderRadius }} defaultExpanded={expanded(props.item, props.query)}>
+    <Accordion
+      sx={{
+        borderRadius,
+        width: "auto",
+        maxWidth: "100%",
+      }}
+      defaultExpanded={expanded(props.item, props.query)}
+    >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         sx={{

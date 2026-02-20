@@ -10,7 +10,7 @@ import EditButton from "../restricted/EditButton";
 import withContext from "../generic/withContext";
 import PaginatedQuery from "../generic/PaginatedQuery";
 import TitleLine from "../generic/TitleLine";
-import { FirstLastIssueSections, IssueHistoryList } from "./DetailsListingSections";
+import { IssueHistoryList } from "./DetailsListingSections";
 import { getListingDirection, getListingOrder, parseListingFilter } from "../../util/listingQuery";
 import { DetailsPagePlaceholder } from "../placeholders/DetailsPagePlaceholder";
 import { DetailsAddInfo } from "./DetailsAddInfo";
@@ -52,11 +52,15 @@ function PublisherDetails(props: Readonly<PublisherDetailsProps>) {
     };
   }, [props.query, props.selected.publisher.name, us]);
 
-  const { error: detailsError, data: detailsData, previousData: previousDetailsData, loading } =
-    useQuery(publisher, {
-      variables: selected,
-      notifyOnNetworkStatusChange: true,
-    });
+  const {
+    error: detailsError,
+    data: detailsData,
+    previousData: previousDetailsData,
+    loading,
+  } = useQuery(publisher, {
+    variables: selected,
+    notifyOnNetworkStatusChange: true,
+  });
   const details =
     detailsData?.publisherDetails ?? (loading ? previousDetailsData?.publisherDetails : null);
   const endYearLabel =
@@ -108,24 +112,12 @@ function PublisherDetails(props: Readonly<PublisherDetailsProps>) {
                       session={props.session}
                     />
                   }
-                  subheader={
-                    details.startyear + " - " + endYearLabel
-                  }
+                  subheader={details.startyear + " - " + endYearLabel}
                   action={<EditButton item={details} />}
                 />
 
                 <CardContent sx={{ pt: 1 }}>
                   <DetailsAddInfo addinfo={details.addinfo} />
-
-                  <FirstLastIssueSections
-                    query={props.query}
-                    us={us}
-                    issueCount={details.issueCount}
-                    active={details.active}
-                    firstIssue={details.firstIssue}
-                    lastIssue={details.lastIssue}
-                    previewProps={pageProps}
-                  />
 
                   <IssueHistoryList
                     query={props.query}

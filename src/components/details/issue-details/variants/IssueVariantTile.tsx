@@ -34,7 +34,7 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
         height: "100%",
         border: (theme) =>
           selected
-            ? `2px solid ${theme.palette.primary.main}`
+            ? `2px solid ${theme.palette.common.white}`
             : `1px solid ${theme.palette.divider}`,
         boxShadow: mainIssue ? 1 : 0,
       }}
@@ -65,8 +65,8 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
                 sx={{
                   minWidth: 0,
                   flex: 1,
-                  fontWeight: selected ? 700 : 500,
-                  color: selected ? "primary.light" : "inherit",
+                  fontWeight: selected ? 500 : 300,
+                  color: selected ? "common.white" : "inherit",
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",

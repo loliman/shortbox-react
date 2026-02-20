@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
-import Breadcrumbs from "@mui/material/Breadcrumbs";
 import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
 import FooterAuthLink from "./FooterAuthLink";
 
 type FooterLinksProps = {
@@ -27,17 +27,7 @@ export default function FooterLinks(props: Readonly<FooterLinksProps>) {
         color: "text.secondary",
       }}
     >
-      <Breadcrumbs
-        separator="|"
-        aria-label="Footer Navigation"
-        sx={{
-          "& .MuiBreadcrumbs-ol": {
-            alignItems: "center",
-            flexWrap: "wrap",
-            rowGap: 0.5,
-          },
-        }}
-      >
+      <Stack direction="row" spacing={0.5} useFlexGap flexWrap="wrap" alignItems="center">
         <Button
           type="button"
           size="small"
@@ -75,7 +65,7 @@ export default function FooterLinks(props: Readonly<FooterLinksProps>) {
           enqueueSnackbar={props.enqueueSnackbar}
           handleLogout={props.handleLogout}
         />
-      </Breadcrumbs>
+      </Stack>
     </Box>
   );
 }

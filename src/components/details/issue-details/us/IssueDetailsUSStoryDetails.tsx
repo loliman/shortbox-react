@@ -2,6 +2,7 @@ import React from "react";
 import Typography from "@mui/material/Typography";
 import List from "@mui/material/List";
 import Box from "@mui/material/Box";
+import { StoryArcChips } from "../StoryArcChips";
 import { StoryPeopleSection } from "../sections/StoryPeopleSection";
 import { StoryAppearanceSection } from "../sections/StoryAppearanceSection";
 import { StoryIssueListItem } from "../StoryIssueListItem";
@@ -56,13 +57,74 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
   const currentItem = props.item || {};
   const story = currentItem.parent ? currentItem.parent : currentItem;
   const us = Boolean(props.us);
+  const storyArcs = Array.isArray((currentItem as any)?.parent?.issue?.arcs)
+    ? (currentItem as any).parent.issue.arcs.filter(
+        (arc: unknown): arc is { title?: string | null; type?: string | null } =>
+          Boolean(arc && typeof arc === "object")
+      )
+    : Array.isArray((currentItem as any)?.issue?.arcs)
+      ? (currentItem as any).issue.arcs.filter(
+          (arc: unknown): arc is { title?: string | null; type?: string | null } =>
+            Boolean(arc && typeof arc === "object")
+        )
+      : [];
   const reprints = Array.isArray(story?.reprints) ? story.reprints : [];
   const children = Array.isArray(currentItem.children) ? currentItem.children : [];
   const reprintOf = currentItem.reprintOf;
 
   return (
     <Box>
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+      {storyArcs.length > 0 ? (
+        <Box sx={{ mt: 3, pt: 2, borderTop: 1, borderColor: "divider" }}>
+          <Typography variant="h6">enthalten in</Typography>
+          <Box sx={{ mt: 1, minWidth: 0 }}>
+            <StoryArcChips arcs={storyArcs} us={us} navigate={props.navigate} inline />
+          </Box>
+        </Box>
+      ) : null}
+
+      {children.length === 0 ? null : (
+        <Box sx={{ mt: 3 }}>
+          <Typography variant="h6">Auf deutsch erschienen in</Typography>
+
+          <List sx={{ p: 0 }}>
+            {children.map((child, idx) => {
+              if (!child.issue) return null;
+              const relation = toStoryIssueRelation(child);
+              const addinfoText = toChildAddinfo(relation);
+              const parentLink =
+                child.parent?.issue && !isSameIssue(child.parent.issue, props.issue)
+                  ? {
+                      issue: child.parent.issue,
+                      number: child.parent.number,
+                      prefix: "Als",
+                      routeUs: true,
+                      coverUs: true,
+                    }
+                  : null;
+
+              return (
+                <StoryIssueListItem
+                  key={toIssueRowKey(relation, idx)}
+                  issue={child.issue}
+                  number={child.number}
+                  subtitle={addinfoText !== "" ? addinfoText : null}
+                  titleSuffix={child.issue.title ? " - " + child.issue.title : ""}
+                  parentLink={parentLink}
+                  routeUs={false}
+                  coverUs={false}
+                  showCollected
+                  session={props.session}
+                  divider={children.length - 1 !== idx}
+                  navigate={props.navigate}
+                />
+              );
+            })}
+          </List>
+        </Box>
+      )}
+
+      <Box sx={children.length > 0 ? { mt: 3, pt: 2, borderTop: 1, borderColor: "divider" } : undefined}>
         <StoryPeopleSection
           item={(currentItem as Record<string, unknown>) || {}}
           us={us}
@@ -70,12 +132,13 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
           includeTranslator
           translatorOptional
         />
-        <StoryAppearanceSection
-          item={(currentItem as Record<string, unknown>) || {}}
-          us={us}
-          navigate={props.navigate}
-        />
       </Box>
+
+      <StoryAppearanceSection
+        item={(currentItem as Record<string, unknown>) || {}}
+        us={us}
+        navigate={props.navigate}
+      />
 
       {!reprintOf?.issue ? null : (
         <Box sx={{ mt: 2 }}>
@@ -120,46 +183,6 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
         </Box>
       )}
 
-      {children.length === 0 ? null : (
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="h6">Auf deutsch erschienen in</Typography>
-
-          <List sx={{ p: 0 }}>
-            {children.map((child, idx) => {
-              if (!child.issue) return null;
-              const relation = toStoryIssueRelation(child);
-              const addinfoText = toChildAddinfo(relation);
-              const parentLink =
-                child.parent?.issue && !isSameIssue(child.parent.issue, props.issue)
-                  ? {
-                      issue: child.parent.issue,
-                      number: child.parent.number,
-                      prefix: "Als",
-                      routeUs: true,
-                      coverUs: true,
-                    }
-                  : null;
-
-              return (
-                <StoryIssueListItem
-                  key={toIssueRowKey(relation, idx)}
-                  issue={child.issue}
-                  number={child.number}
-                  subtitle={addinfoText !== "" ? addinfoText : null}
-                  titleSuffix={child.issue.title ? " - " + child.issue.title : ""}
-                  parentLink={parentLink}
-                  routeUs={false}
-                  coverUs={false}
-                  showCollected
-                  session={props.session}
-                  divider={children.length - 1 !== idx}
-                  navigate={props.navigate}
-                />
-              );
-            })}
-          </List>
-        </Box>
-      )}
     </Box>
   );
 }

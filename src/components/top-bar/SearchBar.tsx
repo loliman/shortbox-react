@@ -3,6 +3,8 @@ import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
 import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+import SearchIcon from "@mui/icons-material/Search";
 import { useQuery } from "@apollo/client";
 import { search } from "../../graphql/queriesTyped";
 import type { NodesQuery } from "../../graphql/typed-documents.generated";
@@ -67,6 +69,7 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
       <Autocomplete
         size="small"
         disablePortal
+        forcePopupIcon={false}
         options={options}
         filterOptions={(x) => x}
         loading={loading}
@@ -100,6 +103,7 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
           width: "100%",
           "& .MuiOutlinedInput-root": {
             backgroundColor: "background.paper",
+            borderRadius: 2.5,
             "& fieldset": {
               borderColor: "divider",
             },
@@ -119,7 +123,7 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
           <TextField
             {...params}
             variant="outlined"
-            placeholder="Suchen"
+            placeholder="Nach Comic suchen..."
             inputProps={{
               ...params.inputProps,
               "aria-label": "Suche",
@@ -129,6 +133,9 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
               endAdornment: (
                 <>
                   {loading ? <CircularProgress color="inherit" size={18} /> : null}
+                  <InputAdornment position="end">
+                    <SearchIcon sx={{ fontSize: 20, color: "text.secondary" }} />
+                  </InputAdornment>
                   {params.InputProps.endAdornment}
                 </>
               ),

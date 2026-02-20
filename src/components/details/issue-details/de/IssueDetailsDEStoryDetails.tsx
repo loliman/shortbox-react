@@ -1,5 +1,4 @@
 import React from "react";
-import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import { StoryArcChips } from "../StoryArcChips";
 import { StoryPeopleSection } from "../sections/StoryPeopleSection";
@@ -40,14 +39,19 @@ export function IssueDetailsDEStoryDetails(props: Readonly<IssueDetailsDEStoryDe
             rowGap: 1,
           }}
         >
-          <Typography component="span" sx={{ fontWeight: 700, flexShrink: 0 }}>
-            Teil von
-          </Typography>
           <StoryArcChips arcs={storyArcs} us={props.us} navigate={props.navigate} inline />
         </Box>
       ) : null}
 
-      <StoryPeopleSection item={item} us={props.us} navigate={props.navigate} />
+      <Box
+        sx={
+          storyArcs.length > 0
+            ? { mt: 3, pt: 2, borderTop: 1, borderColor: "divider" }
+            : undefined
+        }
+      >
+        <StoryPeopleSection item={item} us={props.us} navigate={props.navigate} />
+      </Box>
       <StoryAppearanceSection item={item} us={props.us} navigate={props.navigate} />
     </Box>
   );

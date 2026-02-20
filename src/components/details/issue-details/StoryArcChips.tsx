@@ -19,7 +19,16 @@ export function StoryArcChips(props: Readonly<StoryArcChipsProps>) {
   if (arcs.length === 0) return null;
 
   return (
-    <Box sx={{ mt: props.inline ? 0 : 1, display: "flex", flexWrap: "wrap", gap: 1 }}>
+    <Box
+      sx={{
+        mt: props.inline ? 0 : 1,
+        width: "100%",
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "flex-start",
+        gap: 1,
+      }}
+    >
       {arcs.map((arc) => {
         const arcTitle = arc.title || "";
         const { color, type } = toArcMeta(arc.type || "");

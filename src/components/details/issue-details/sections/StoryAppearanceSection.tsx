@@ -15,7 +15,7 @@ export function StoryAppearanceSection(props: Readonly<StoryAppearanceSectionPro
   if (!appearances || appearances.length === 0) return null;
 
   return (
-    <Box sx={{ mt: 2 }}>
+    <Box sx={{ mt: 3, pt: 2, borderTop: 1, borderColor: "divider" }}>
       <Typography variant="h6">Auftritte</Typography>
 
       <AppearanceList
@@ -32,24 +32,6 @@ export function StoryAppearanceSection(props: Readonly<StoryAppearanceSectionPro
         navigate={props.navigate}
         label="Antagonisten"
         appRole="ANTAGONIST"
-        type="CHARACTER"
-        item={props.item}
-        hideIfEmpty={true}
-      />
-      <AppearanceList
-        us={props.us}
-        navigate={props.navigate}
-        label="Unterstützende Charaktere"
-        appRole="SUPPORTING"
-        type="CHARACTER"
-        item={props.item}
-        hideIfEmpty={true}
-      />
-      <AppearanceList
-        us={props.us}
-        navigate={props.navigate}
-        label="Andere Charaktere"
-        appRole="OTHER"
         type="CHARACTER"
         item={props.item}
         hideIfEmpty={true}
