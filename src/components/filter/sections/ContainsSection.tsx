@@ -30,6 +30,12 @@ function ContainsSection({
   isDesktop: _isDesktop,
   setFieldValue,
 }: ContainsSectionProps) {
+  const switchGridSx = {
+    display: "grid",
+    gap: 1,
+    gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", xl: "1fr 1fr 1fr" },
+  } as const;
+
   const [publisherInput, setPublisherInput] = React.useState("");
   const [seriesInput, setSeriesInput] = React.useState("");
 
@@ -60,7 +66,7 @@ function ContainsSection({
       <Typography variant="h6">{us ? "Enthalten in" : "Enthält"}</Typography>
 
       {!us ? (
-        <Stack spacing={1}>
+        <Box sx={switchGridSx}>
           <FilterSwitch
             checked={values.onlyPrint}
             label="Einzige Veröffentlichung"
@@ -86,9 +92,9 @@ function ContainsSection({
             label="Reiner Nachdruck"
             onToggle={() => setFieldValue("reprint", !values.reprint)}
           />
-        </Stack>
+        </Box>
       ) : (
-        <Stack spacing={1}>
+        <Box sx={switchGridSx}>
           <FilterSwitch
             checked={values.onlyTb}
             label="Nur in Taschenbuch"
@@ -104,7 +110,7 @@ function ContainsSection({
             label="Nicht auf deutsch erschienen"
             onToggle={() => setFieldValue("noPrint", !values.noPrint)}
           />
-        </Stack>
+        </Box>
       )}
 
       <AutocompleteBase

@@ -1,11 +1,11 @@
 import Toolbar from "@mui/material/Toolbar";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import React from "react";
+import { styled } from "@mui/material/styles";
 import { HierarchyLevel, type HierarchyLevelType } from "../../util/hierarchy";
-import MenuIcon from "@mui/icons-material/Menu";
 import { withContext } from "../generic";
 import IconButton from "@mui/material/IconButton";
 import ButtonBase from "@mui/material/ButtonBase";
@@ -16,6 +16,7 @@ import Tooltip from "@mui/material/Tooltip";
 
 interface TopBarProps {
   toggleDrawer?: () => void;
+  drawerOpen?: boolean;
   us?: boolean;
   isPhone?: boolean;
   isPhoneLandscape?: boolean;
@@ -30,9 +31,61 @@ interface TopBarProps {
 }
 
 const SEARCH_MAX_WIDTH = 520;
+const Android12Switch = styled(Switch)(({ theme }) => ({
+  padding: 8,
+  width: 62,
+  height: 34,
+  "& .MuiSwitch-track": {
+    borderRadius: 22 / 2,
+    opacity: 1,
+    backgroundColor: "rgba(255, 255, 255, 0.24)",
+    border: "1px solid rgba(255, 255, 255, 0.32)",
+    "&::before, &::after": {
+      content: '""',
+      position: "absolute",
+      top: "50%",
+      transform: "translateY(-50%)",
+      width: 16,
+      height: 16,
+    },
+    "&::before": {
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
+        theme.palette.getContrastText(theme.palette.primary.main)
+      )}" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>')`,
+      left: 12,
+    },
+    "&::after": {
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
+        theme.palette.getContrastText(theme.palette.primary.main)
+      )}" d="M19,13H5V11H19V13Z" /></svg>')`,
+      right: 12,
+    },
+  },
+  "& .MuiSwitch-switchBase": {
+    margin: 0,
+    padding: 7,
+    transitionDuration: "220ms",
+    "&.Mui-checked": {
+      transform: "translateX(28px)",
+      color: "#ffffff",
+      "& + .MuiSwitch-track": {
+        backgroundColor: "#22c55e",
+        borderColor: "#22c55e",
+        opacity: 1,
+      },
+    },
+  },
+  "& .MuiSwitch-thumb": {
+    boxShadow: "0 1px 4px rgba(0,0,0,0.35)",
+    backgroundColor: "#ffffff",
+    width: 20,
+    height: 20,
+    margin: 0,
+  },
+}));
 
 export function TopBar(props: TopBarProps) {
-  const { toggleDrawer, navigate } = props;
+  const { toggleDrawer, navigate, drawerOpen } = props;
   const us = Boolean(props.us);
   const selected = props.selected || { us };
   const phonePortrait = props.isPhonePortrait ?? Boolean(props.isPhone && !props.isPhoneLandscape);
@@ -65,7 +118,7 @@ export function TopBar(props: TopBarProps) {
             onClick={() => toggleDrawer?.()}
             sx={{ mr: 0.5 }}
           >
-            <MenuIcon />
+            <HamburgerIcon open={Boolean(drawerOpen)} />
           </IconButton>
 
           {phonePortrait &&
@@ -116,22 +169,21 @@ export function TopBar(props: TopBarProps) {
             navigate={navigate}
           />
 
-          <FormControlLabel
-            label={"US"}
-            sx={{ ml: 0.5, mr: 0 }}
-            control={
-              <Tooltip title={"Wechseln zu " + (us ? "Deutsch" : "US")}>
-                <Switch
-                  checked={us}
-                  color="secondary"
-                  inputProps={{ "aria-label": us ? "Zu Deutsch wechseln" : "Zu US wechseln" }}
-                  onChange={() => {
-                    navigate?.(null, us ? "/de" : "/us", { filter: null });
-                  }}
-                />
-              </Tooltip>
-            }
-          />
+          <Box sx={{ ml: 0.75, display: "inline-flex", alignItems: "center", gap: 0.75 }}>
+            <Typography sx={{ fontSize: "0.82rem", fontWeight: 600, letterSpacing: 0.2, opacity: 0.95 }}>
+              US
+            </Typography>
+            <Tooltip title={"Wechseln zu " + (us ? "Deutsch" : "US")}>
+              <Android12Switch
+                checked={us}
+                color="primary"
+                inputProps={{ "aria-label": us ? "Zu Deutsch wechseln" : "Zu US wechseln" }}
+                onChange={() => {
+                  navigate?.(null, us ? "/de" : "/us", { filter: null });
+                }}
+              />
+            </Tooltip>
+          </Box>
         </Box>
       </Toolbar>
     </AppBar>
@@ -139,3 +191,54 @@ export function TopBar(props: TopBarProps) {
 }
 
 export default withContext(TopBar);
+
+function HamburgerIcon(props: { open: boolean }) {
+  const barSx = {
+    position: "absolute" as const,
+    left: 0,
+    width: "100%",
+    height: 2,
+    borderRadius: 999,
+    backgroundColor: "currentColor",
+    transition: "transform 220ms ease, opacity 220ms ease, top 220ms ease",
+  };
+
+  return (
+    <Box
+      component="span"
+      sx={{
+        position: "relative",
+        display: "inline-block",
+        width: 18,
+        height: 14,
+      }}
+      aria-hidden
+    >
+      <Box
+        component="span"
+        sx={{
+          ...barSx,
+          top: props.open ? 6 : 0,
+          transform: props.open ? "rotate(45deg)" : "none",
+        }}
+      />
+      <Box
+        component="span"
+        sx={{
+          ...barSx,
+          top: 6,
+          opacity: props.open ? 0 : 1,
+          transform: props.open ? "scaleX(0.7)" : "none",
+        }}
+      />
+      <Box
+        component="span"
+        sx={{
+          ...barSx,
+          top: props.open ? 6 : 12,
+          transform: props.open ? "rotate(-45deg)" : "none",
+        }}
+      />
+    </Box>
+  );
+}

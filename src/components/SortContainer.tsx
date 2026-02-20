@@ -8,6 +8,8 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import React from "react";
 import Box from "@mui/material/Box";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import type { SelectedRoot } from "../types/domain";
 import {
   buildSortNavigationQuery,
@@ -79,10 +81,10 @@ function SortContainer(props: Readonly<SortContainerProps>) {
         }}
       >
         <ToggleButton value="ASC" aria-label="Aufsteigend">
-          ASC
+          <ArrowUpwardIcon fontSize="small" />
         </ToggleButton>
         <ToggleButton value="DESC" aria-label="Absteigend">
-          DESC
+          <ArrowDownwardIcon fontSize="small" />
         </ToggleButton>
       </ToggleButtonGroup>
     </Box>

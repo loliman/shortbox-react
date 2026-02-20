@@ -29,14 +29,14 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
   return (
     <Box
       sx={{
-        borderRadius: 1.5,
+        borderRadius: (theme) => `${Number(theme.shape.borderRadius) || 12}px`,
         overflow: "hidden",
         height: "100%",
         border: (theme) =>
           selected
             ? `2px solid ${theme.palette.common.white}`
             : `1px solid ${theme.palette.divider}`,
-        boxShadow: mainIssue ? 1 : 0,
+        boxShadow: mainIssue ? 2 : 1,
       }}
     >
       <ButtonBase

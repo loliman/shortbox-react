@@ -8,6 +8,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
+import Divider from "@mui/material/Divider";
 import Collapse from "@mui/material/Collapse";
 import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
@@ -204,6 +205,16 @@ function List(props: Readonly<ListProps>) {
 
       return (
         <Box key={publisherName || "publisher-empty"}>
+          <Divider
+            sx={{
+              mx: "5%",
+              width: "90%",
+              borderColor: (theme) => theme.palette.grey[300],
+              borderBottomWidth: 1,
+              opacity: 0.95,
+            }}
+          />
+
           <NestedRow
             rowKey={publisherName}
             depth={0}
@@ -471,9 +482,14 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
             data-selected-issue={selected ? "true" : undefined}
           >
             <ListItemButton
-              divider
+              divider={false}
               selected={selected}
-              sx={{ pl: getDepthPadding(2) }}
+              sx={{
+                pl: getDepthPadding(2) + 1.3,
+                py: 0.3,
+                "&.Mui-selected": { backgroundColor: "transparent" },
+                "&.Mui-selected:hover": { backgroundColor: "action.hover" },
+              }}
               onClick={(e) =>
                 props.navigateTo(
                   e,
@@ -495,7 +511,16 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
                   <ListItemText
                     primary={
                       <Box sx={{ display: "flex", alignItems: "center", gap: 1, minWidth: 0 }}>
-                        <Typography component="span" noWrap sx={{ minWidth: 0, flex: 1 }}>
+                        <Typography
+                          component="span"
+                          noWrap
+                          sx={{
+                            minWidth: 0,
+                            flex: 1,
+                            fontSize: "0.9rem",
+                            fontWeight: selected ? 700 : 400,
+                          }}
+                        >
                           {createIssueLabel(issueNode, us)}
                         </Typography>
                         {hasVariants ? (
@@ -546,13 +571,20 @@ const NestedRow = React.memo(function NestedRow(props: Readonly<NestedRowProps>)
 
   return (
     <ListItemButton
-      divider
+      divider={false}
       selected={props.selected ?? false}
       onClick={handleClick}
-      sx={{ pl: getDepthPadding(props.depth) }}
+      sx={{
+        pl: getDepthPadding(props.depth),
+        "&.Mui-selected": { backgroundColor: "transparent" },
+        "&.Mui-selected:hover": { backgroundColor: "action.hover" },
+      }}
     >
       <ExpandToggle expanded={props.expanded} onToggle={handleToggle} />
-      <ListItemText primary={props.label} primaryTypographyProps={{ noWrap: true }} />
+      <ListItemText
+        primary={props.label}
+        primaryTypographyProps={{ noWrap: true, sx: { fontWeight: props.selected ? 700 : 400 } }}
+      />
     </ListItemButton>
   );
 });

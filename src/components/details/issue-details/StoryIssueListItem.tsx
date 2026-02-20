@@ -46,51 +46,75 @@ export function StoryIssueListItem(props: Readonly<StoryIssueListItemProps>) {
     >
       <Box sx={{ minWidth: 0 }}>
         <Box>
-          <Typography sx={{ fontWeight: 600 }}>{issueTitle}</Typography>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "baseline",
+              justifyContent: "space-between",
+              gap: 1,
+              minWidth: 0,
+            }}
+          >
+            <Typography
+              noWrap
+              sx={{
+                fontWeight: 600,
+                minWidth: 0,
+                flex: 1,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {issueTitle}
+            </Typography>
+
+            {props.parentLink ? (
+              <CoverTooltip
+                issue={props.parentLink.issue}
+                us={Boolean(props.parentLink.coverUs)}
+                number={props.parentLink.number}
+              >
+                <Link
+                  component="button"
+                  type="button"
+                  underline="hover"
+                  color="text.secondary"
+                  sx={{
+                    p: 0,
+                    textAlign: "right",
+                    fontSize: "0.8rem",
+                    lineHeight: 1.3,
+                    whiteSpace: "nowrap",
+                    flexShrink: 0,
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    props.navigate?.(
+                      e,
+                      getIssueUrl(props.parentLink?.issue, Boolean(props.parentLink?.routeUs)),
+                      {
+                        expand: props.parentLink?.number,
+                        filter: null,
+                      }
+                    );
+                  }}
+                >
+                  {(props.parentLink.prefix || "als") + " "}
+                  <Box
+                    component="span"
+                    sx={{ textDecoration: "underline", textUnderlineOffset: "2px", color: "inherit" }}
+                  >
+                    {getIssueLabel(props.parentLink.issue)}
+                  </Box>
+                </Link>
+              </CoverTooltip>
+            ) : null}
+          </Box>
+
           <Typography variant="body2" color="text.secondary">
             {props.subtitle || null}
           </Typography>
         </Box>
-
-        {props.parentLink ? (
-          <CoverTooltip
-            issue={props.parentLink.issue}
-            us={Boolean(props.parentLink.coverUs)}
-            number={props.parentLink.number}
-          >
-            <Link
-              component="button"
-              type="button"
-              underline="hover"
-              color="text.secondary"
-              sx={{
-                p: 0,
-                textAlign: "left",
-                fontSize: "0.875rem",
-                lineHeight: 1.43,
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-                props.navigate?.(
-                  e,
-                  getIssueUrl(props.parentLink?.issue, Boolean(props.parentLink?.routeUs)),
-                  {
-                    expand: props.parentLink?.number,
-                    filter: null,
-                  }
-                );
-              }}
-            >
-              {(props.parentLink.prefix || "Als") + " "}
-              <Box
-                component="span"
-                sx={{ textDecoration: "underline", textUnderlineOffset: "2px", color: "inherit" }}
-              >
-                {getIssueLabel(props.parentLink.issue)}
-              </Box>
-            </Link>
-          </CoverTooltip>
-        ) : null}
 
         <Typography variant="body2" color="text.secondary">
           {publisherTitle}

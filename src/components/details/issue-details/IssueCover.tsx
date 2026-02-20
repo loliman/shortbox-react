@@ -25,9 +25,11 @@ export function IssueCover(props: Readonly<IssueCoverProps>) {
           width: "clamp(250px, 47.5vw, 740px)",
           maxWidth: "100%",
           aspectRatio: "2 / 3",
-          borderRadius: 1,
+          borderRadius: (theme) => `${Number(theme.shape.borderRadius) || 12}px`,
           overflow: "hidden",
           bgcolor: "grey.300",
+          border: (theme) => `1px solid ${theme.palette.divider}`,
+          boxShadow: 1,
           cursor: "zoom-in",
           display: "block",
         }}
@@ -47,7 +49,19 @@ export function IssueCover(props: Readonly<IssueCoverProps>) {
         />
       </ButtonBase>
 
-      <Dialog open={isOpen} onClose={() => setIsOpen(false)} maxWidth="md">
+      <Dialog
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        maxWidth="md"
+        slotProps={{
+          backdrop: {
+            sx: {
+              backgroundColor: "rgba(10, 14, 22, 0.36)",
+              backdropFilter: "blur(5px)",
+            },
+          },
+        }}
+      >
         <Box
           component="img"
           src={coverUrl}
