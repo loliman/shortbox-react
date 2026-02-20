@@ -2,6 +2,10 @@ import React from "react";
 import Typography from "@mui/material/Typography";
 import List from "@mui/material/List";
 import Box from "@mui/material/Box";
+import Collapse from "@mui/material/Collapse";
+import IconButton from "@mui/material/IconButton";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { StoryArcChips } from "../StoryArcChips";
 import { StoryPeopleSection } from "../sections/StoryPeopleSection";
 import { StoryAppearanceSection } from "../sections/StoryAppearanceSection";
 import { StoryIssueListItem } from "../StoryIssueListItem";
@@ -56,49 +60,57 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
   const currentItem = props.item || {};
   const story = currentItem.parent ? currentItem.parent : currentItem;
   const us = Boolean(props.us);
+  const storyArcs = Array.isArray((currentItem as any)?.parent?.issue?.arcs)
+    ? (currentItem as any).parent.issue.arcs.filter(
+        (arc: unknown): arc is { title?: string | null; type?: string | null } =>
+          Boolean(arc && typeof arc === "object")
+      )
+    : Array.isArray((currentItem as any)?.issue?.arcs)
+      ? (currentItem as any).issue.arcs.filter(
+          (arc: unknown): arc is { title?: string | null; type?: string | null } =>
+            Boolean(arc && typeof arc === "object")
+        )
+      : [];
   const reprints = Array.isArray(story?.reprints) ? story.reprints : [];
   const children = Array.isArray(currentItem.children) ? currentItem.children : [];
   const reprintOf = currentItem.reprintOf;
+  const [containsExpanded, setContainsExpanded] = React.useState(true);
+  const [germanPublishedExpanded, setGermanPublishedExpanded] = React.useState(true);
 
   return (
-    <div className="usStoryContainer">
-      <div className="usStoryDetails">
-        <StoryPeopleSection
-          item={(currentItem as Record<string, unknown>) || {}}
-          us={us}
-          navigate={props.navigate}
-          includeTranslator
-          translatorOptional
-        />
-        <StoryAppearanceSection
-          item={(currentItem as Record<string, unknown>) || {}}
-          us={us}
-          navigate={props.navigate}
-        />
-      </div>
-
-      {!reprintOf?.issue ? null : (
-        <Box sx={{ mt: 2 }}>
-          <Typography variant="h6">Nachdruck von</Typography>
-
-          <List className="issueStoryIssueList">
-            <StoryIssueListItem
-              issue={reprintOf.issue}
-              number={reprintOf.number}
-              subtitle={reprintOf.addinfo ? reprintOf.addinfo : null}
-              routeUs={true}
-              coverUs={true}
-              navigate={props.navigate}
-            />
-          </List>
+    <Box>
+      {storyArcs.length > 0 ? (
+        <Box sx={{ mt: 3, pt: 2, borderTop: 1, borderColor: "divider" }}>
+          <Box
+            sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.5 }}
+          >
+            <Typography variant="h6">enthalten in</Typography>
+            <IconButton
+              size="small"
+              aria-label={containsExpanded ? "Enthalten in einklappen" : "Enthalten in ausklappen"}
+              onClick={() => setContainsExpanded((prev) => !prev)}
+              sx={{
+                ml: 1,
+                transform: containsExpanded ? "rotate(0deg)" : "rotate(-90deg)",
+                transition: "transform 180ms ease",
+              }}
+            >
+              <ExpandMoreIcon fontSize="small" />
+            </IconButton>
+          </Box>
+          <Collapse in={containsExpanded}>
+            <Box sx={{ mt: 1, minWidth: 0 }}>
+              <StoryArcChips arcs={storyArcs} us={us} navigate={props.navigate} inline />
+            </Box>
+          </Collapse>
         </Box>
-      )}
+      ) : null}
 
       {reprints.length === 0 ? null : (
         <Box sx={{ mt: 2 }}>
           <Typography variant="h6">Nachgedruckt in</Typography>
 
-          <List className="issueStoryIssueList">
+          <List sx={{ p: 0 }}>
             {reprints.map((child, idx) => {
               if (!child.issue) return null;
               const relation = toStoryIssueRelation(child);
@@ -120,46 +132,105 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
         </Box>
       )}
 
-      {children.length === 0 ? null : (
+      {!reprintOf?.issue ? null : (
         <Box sx={{ mt: 2 }}>
-          <Typography variant="h6">Auf deutsch erschienen in</Typography>
+          <Typography variant="h6">Nachdruck von</Typography>
 
-          <List className="issueStoryIssueList">
-            {children.map((child, idx) => {
-              if (!child.issue) return null;
-              const relation = toStoryIssueRelation(child);
-              const addinfoText = toChildAddinfo(relation);
-              const parentLink =
-                child.parent?.issue && !isSameIssue(child.parent.issue, props.issue)
-                  ? {
-                      issue: child.parent.issue,
-                      number: child.parent.number,
-                      prefix: "Als",
-                      routeUs: true,
-                      coverUs: true,
-                    }
-                  : null;
-
-              return (
-                <StoryIssueListItem
-                  key={toIssueRowKey(relation, idx)}
-                  issue={child.issue}
-                  number={child.number}
-                  subtitle={addinfoText !== "" ? addinfoText : null}
-                  titleSuffix={child.issue.title ? " - " + child.issue.title : ""}
-                  parentLink={parentLink}
-                  routeUs={false}
-                  coverUs={false}
-                  showCollected
-                  session={props.session}
-                  divider={children.length - 1 !== idx}
-                  navigate={props.navigate}
-                />
-              );
-            })}
+          <List sx={{ p: 0 }}>
+            <StoryIssueListItem
+              issue={reprintOf.issue}
+              number={reprintOf.number}
+              subtitle={reprintOf.addinfo ? reprintOf.addinfo : null}
+              routeUs={true}
+              coverUs={true}
+              navigate={props.navigate}
+            />
           </List>
         </Box>
       )}
-    </div>
+
+      {children.length === 0 ? null : (
+        <Box sx={{ mt: 3 }}>
+          <Box
+            sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.5 }}
+          >
+            <Typography variant="h6">Erschienen in</Typography>
+            <IconButton
+              size="small"
+              aria-label={
+                germanPublishedExpanded
+                  ? "Auf deutsch erschienen in einklappen"
+                  : "Auf deutsch erschienen in ausklappen"
+              }
+              onClick={() => setGermanPublishedExpanded((prev) => !prev)}
+              sx={{
+                ml: 1,
+                transform: germanPublishedExpanded ? "rotate(0deg)" : "rotate(-90deg)",
+                transition: "transform 180ms ease",
+              }}
+            >
+              <ExpandMoreIcon fontSize="small" />
+            </IconButton>
+          </Box>
+
+          <Collapse in={germanPublishedExpanded}>
+            <List sx={{ p: 0 }}>
+              {children.map((child, idx) => {
+                if (!child.issue) return null;
+                const relation = toStoryIssueRelation(child);
+                const addinfoText = toChildAddinfo(relation);
+                const parentLink =
+                  child.parent?.issue && !isSameIssue(child.parent.issue, props.issue)
+                    ? {
+                        issue: child.parent.issue,
+                        number: child.parent.number,
+                        prefix: "als",
+                        routeUs: true,
+                        coverUs: true,
+                      }
+                    : null;
+
+                return (
+                  <StoryIssueListItem
+                    key={toIssueRowKey(relation, idx)}
+                    issue={child.issue}
+                    number={child.number}
+                    subtitle={addinfoText !== "" ? addinfoText : null}
+                    titleSuffix={child.issue.title ? " - " + child.issue.title : ""}
+                    parentLink={parentLink}
+                    routeUs={false}
+                    coverUs={false}
+                    showCollected
+                    session={props.session}
+                    divider={children.length - 1 !== idx}
+                    navigate={props.navigate}
+                  />
+                );
+              })}
+            </List>
+          </Collapse>
+        </Box>
+      )}
+
+      <Box
+        sx={
+          children.length > 0 ? { mt: 3, pt: 2, borderTop: 1, borderColor: "divider" } : undefined
+        }
+      >
+        <StoryPeopleSection
+          item={(currentItem as Record<string, unknown>) || {}}
+          us={us}
+          navigate={props.navigate}
+          includeTranslator
+          translatorOptional
+        />
+      </Box>
+
+      <StoryAppearanceSection
+        item={(currentItem as Record<string, unknown>) || {}}
+        us={us}
+        navigate={props.navigate}
+      />
+    </Box>
   );
 }

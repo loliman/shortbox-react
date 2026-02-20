@@ -9,8 +9,8 @@ export function IssueDetailsStoryPreview(props: { idx: number }) {
   const width = widths[props.idx % widths.length];
 
   return (
-    <Accordion className="story storiesPreview">
-      <AccordionSummary className="summary">
+    <Accordion>
+      <AccordionSummary>
         <Box sx={{ width: "100%" }}>
           <Skeleton variant="text" width={width} />
         </Box>

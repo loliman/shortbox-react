@@ -1,4 +1,5 @@
 import React from "react";
+import Grid from "@mui/material/Grid";
 import { FastField } from "formik";
 import AutocompleteBase from "../../../generic/AutocompleteBase";
 import { useAutocompleteQuery } from "../../../generic/useAutocompleteQuery";
@@ -47,75 +48,85 @@ function StoryFieldsNonExclusive(props: StoryFieldsNonExclusiveProps) {
     ) || (seriesPattern.trim().length > 0 ? seriesPattern : null);
 
   return (
-    <div className="storyAddInputContainer">
-      <AutocompleteBase
-        options={seriesQuery.options}
-        value={currentSeriesValue}
-        inputValue={seriesPattern}
-        label="Serie"
-        freeSolo
-        loading={seriesQuery.loading}
-        noOptionsText={
-          seriesQuery.isBelowMinLength
-            ? `Mindestens ${MIN_QUERY_LENGTH} Zeichen eingeben`
-            : seriesQuery.error
-              ? "Fehler!"
-              : "Keine Ergebnisse gefunden"
-        }
-        onListboxScroll={seriesQuery.onListboxScroll}
-        getOptionLabel={(option) => formatSeriesLabel(option)}
-        isOptionEqualToValue={(option, value) =>
-          normalizeText(getSeriesKey(option)) ===
-          normalizeText(typeof value === "string" ? value : getSeriesKey(value))
-        }
-        onInputChange={(_, inputValue, reason) => {
-          if (reason !== "input" && reason !== "clear") return;
-          setFieldValue(`stories[${index}].parent.issue.series.title`, inputValue);
-        }}
-        onChange={(_, option) => {
-          const selectedOption = Array.isArray(option) ? option[0] || null : option;
+    <Grid container spacing={2}>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <AutocompleteBase
+          options={seriesQuery.options}
+          value={currentSeriesValue}
+          inputValue={seriesPattern}
+          label="Serie"
+          freeSolo
+          loading={seriesQuery.loading}
+          noOptionsText={
+            seriesQuery.isBelowMinLength
+              ? `Mindestens ${MIN_QUERY_LENGTH} Zeichen eingeben`
+              : seriesQuery.error
+                ? "Fehler!"
+                : "Keine Ergebnisse gefunden"
+          }
+          onListboxScroll={seriesQuery.onListboxScroll}
+          getOptionLabel={(option) => formatSeriesLabel(option)}
+          isOptionEqualToValue={(option, value) =>
+            normalizeText(getSeriesKey(option)) ===
+            normalizeText(typeof value === "string" ? value : getSeriesKey(value))
+          }
+          onInputChange={(_, inputValue, reason) => {
+            if (reason !== "input" && reason !== "clear") return;
+            setFieldValue(`stories[${index}].parent.issue.series.title`, inputValue);
+          }}
+          onChange={(_, option) => {
+            const selectedOption = Array.isArray(option) ? option[0] || null : option;
 
-          const selected = isOptionLike(selectedOption)
-            ? { ...selectedOption, volume: selectedOption.volume || 0 }
-            : { title: "", volume: 0 };
+            const selected = isOptionLike(selectedOption)
+              ? { ...selectedOption, volume: selectedOption.volume || 0 }
+              : { title: "", volume: 0 };
 
-          setFieldValue(`stories[${index}].parent.issue.series`, selected);
-        }}
-      />
+            setFieldValue(`stories[${index}].parent.issue.series`, selected);
+          }}
+        />
+      </Grid>
 
-      <FastField
-        className={props.isDesktop ? "field field5" : "field field25"}
-        name={`stories[${index}].parent.issue.series.volume`}
-        label="Volume"
-        type="number"
-        component={TextField}
-      />
+      <Grid size={{ xs: 6, sm: 4, md: 2 }}>
+        <FastField
+          name={`stories[${index}].parent.issue.series.volume`}
+          label="Volume"
+          type="number"
+          component={TextField}
+          fullWidth
+        />
+      </Grid>
 
-      <FastField
-        className={props.isDesktop ? "field field5" : "field field60"}
-        name={`stories[${index}].parent.issue.number`}
-        label="Nummer"
-        component={TextField}
-      />
+      <Grid size={{ xs: 6, sm: 4, md: 2 }}>
+        <FastField
+          name={`stories[${index}].parent.issue.number`}
+          label="Nummer"
+          component={TextField}
+          fullWidth
+        />
+      </Grid>
 
-      <FastField
-        className={props.isDesktop ? "field field5" : "field field10"}
-        name={`stories[${index}].parent.number`}
-        label="#"
-        type="number"
-        component={TextField}
-      />
+      <Grid size={{ xs: 6, sm: 4, md: 2 }}>
+        <FastField
+          name={`stories[${index}].parent.number`}
+          label="#"
+          type="number"
+          component={TextField}
+          fullWidth
+        />
+      </Grid>
 
-      <TypedRoleAutocomplete
-        query={individuals}
-        field={`stories[${index}].individuals`}
-        label="Übersetzer"
-        type="TRANSLATOR"
-        values={(item.individuals as FieldItem[]) || []}
-        setFieldValue={setFieldValue}
-        disabled={props.disabled}
-      />
-    </div>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <TypedRoleAutocomplete
+          query={individuals}
+          field={`stories[${index}].individuals`}
+          label="Übersetzer"
+          type="TRANSLATOR"
+          values={(item.individuals as FieldItem[]) || []}
+          setFieldValue={setFieldValue}
+          disabled={props.disabled}
+        />
+      </Grid>
+    </Grid>
   );
 }
 

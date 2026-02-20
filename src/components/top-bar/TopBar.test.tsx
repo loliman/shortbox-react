@@ -1,5 +1,5 @@
 import React from "react";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { HierarchyLevel } from "../../util/hierarchy";
 import { TopBar } from "./TopBar";
@@ -30,11 +30,20 @@ describe("TopBar", () => {
   it("navigates to current locale home via logo button", async () => {
     const user = userEvent.setup();
     const navigate = vi.fn();
+    const resetNavigationState = vi.fn();
 
-    render(<TopBar us={true} selected={{ us: true }} navigate={navigate} />);
+    render(
+      <TopBar
+        us={true}
+        selected={{ us: true }}
+        navigate={navigate}
+        resetNavigationState={resetNavigationState}
+      />
+    );
 
     await user.click(screen.getByRole("button", { name: "Zur Startseite" }));
 
+    expect(resetNavigationState).toHaveBeenCalledTimes(1);
     expect(navigate).toHaveBeenCalledTimes(1);
     expect(navigate.mock.calls[0][1]).toBe("/us");
   });
@@ -42,11 +51,20 @@ describe("TopBar", () => {
   it("toggles locale switch and resets filter query", async () => {
     const user = userEvent.setup();
     const navigate = vi.fn();
+    const resetNavigationState = vi.fn();
 
-    render(<TopBar us={true} selected={{ us: true }} navigate={navigate} />);
+    render(
+      <TopBar
+        us={true}
+        selected={{ us: true }}
+        navigate={navigate}
+        resetNavigationState={resetNavigationState}
+      />
+    );
 
-    await user.click(screen.getByRole("switch", { name: /wechseln zu deutsch/i }));
+    await user.click(screen.getByRole("switch"));
 
+    expect(resetNavigationState).toHaveBeenCalledTimes(1);
     expect(navigate).toHaveBeenCalledTimes(1);
     expect(navigate.mock.calls[0][1]).toBe("/de");
     expect(navigate.mock.calls[0][2]).toEqual({ filter: null });
@@ -72,18 +90,14 @@ describe("TopBar", () => {
     expect(screen.queryByRole("button", { name: "Zur Startseite" })).toBeNull();
   });
 
-  it("calls drawer toggle and closes compact search overlay on click", async () => {
+  it("calls drawer toggle and keeps searchbar centered container mounted", async () => {
     const user = userEvent.setup();
     const toggleDrawer = vi.fn();
 
-    render(<TopBar compactLayout={true} toggleDrawer={toggleDrawer} navigate={vi.fn()} />);
+    render(<TopBar toggleDrawer={toggleDrawer} navigate={vi.fn()} />);
 
     await user.click(screen.getByRole("button", { name: "Navigation umschalten" }));
     expect(toggleDrawer).toHaveBeenCalledTimes(1);
-
-    await user.click(screen.getByTestId("searchbar-mock"));
-    const overlay = screen.getByTestId("topbar-search-overlay");
-    expect(overlay).not.toBeNull();
-    fireEvent.click(overlay);
+    expect(screen.getByTestId("topbar-search-center")).toBeTruthy();
   });
 });

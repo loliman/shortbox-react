@@ -1,0 +1,18 @@
+export const HEADER_HEIGHT_MOBILE = 56;
+export const HEADER_HEIGHT_DESKTOP = 64;
+export const NAV_DRAWER_WIDTH = 360;
+export const NAV_DRAWER_WIDTH_COMPACT = 320;
+
+export const drawerHeaderTopOffset = {
+  xs: `${HEADER_HEIGHT_MOBILE}px`,
+  sm: `${HEADER_HEIGHT_DESKTOP}px`,
+} as const;
+
+export const drawerHeaderAdjustedHeight = {
+  xs: `calc(100% - ${HEADER_HEIGHT_MOBILE}px)`,
+  sm: `calc(100% - ${HEADER_HEIGHT_DESKTOP}px)`,
+} as const;
+
+export function getNavDrawerWidth(compactLayout: boolean): number {
+  return compactLayout ? NAV_DRAWER_WIDTH_COMPACT : NAV_DRAWER_WIDTH;
+}

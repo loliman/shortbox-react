@@ -1,4 +1,5 @@
 import Tooltip from "@mui/material/Tooltip";
+import Box from "@mui/material/Box";
 import React from "react";
 
 type CoverTooltipIssue = {
@@ -28,14 +29,30 @@ function CoverTooltip(props: Readonly<CoverTooltipProps>) {
 
   return (
     <Tooltip
-      PopperProps={{
-        className: "tooltipCover",
+      slotProps={{
+        tooltip: {
+          sx: {
+            bgcolor: "transparent",
+            p: 0,
+            boxShadow: "none",
+            m: 0.5,
+            border: (theme) => `1px solid ${theme.palette.divider}`,
+            borderRadius: 1,
+            overflow: "hidden",
+          },
+        },
       }}
       title={
-        <img
-          className={blurCover ? "blurredImage" : ""}
+        <Box
+          component="img"
           src={coverUrl}
-          width="65px"
+          sx={{
+            width: 65,
+            display: "block",
+            filter: blurCover ? "blur(2px)" : "none",
+            boxShadow: 2,
+            backgroundColor: "background.paper",
+          }}
           alt="Zur Ausgabe"
         />
       }

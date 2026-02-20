@@ -1,5 +1,6 @@
 import React from "react";
-import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 import { FastField } from "formik";
 import { TextField } from "../../../generic/FormikTextField";
 import ExclusiveToggle from "./ExclusiveToggle";
@@ -23,54 +24,70 @@ function StoryFields(props: StoryFieldsProps) {
   const parentTitle = String(parent.title || "");
 
   return (
-    <React.Fragment>
-      <div className="storyAddInputContainer">
-        <Box component="span" sx={{ display: "block" }}>
-          {parentTitle}
-        </Box>
+    <Grid container spacing={2}>
+      {parentTitle ? (
+        <Grid size={12}>
+          <Typography variant="body2" color="text.secondary">
+            {parentTitle}
+          </Typography>
+        </Grid>
+      ) : null}
 
+      <Grid size={{ xs: 6, sm: 3, md: 2 }}>
         <FastField
-          className="field field3"
           name={`stories[${index}].number`}
           disabled={props.disabled}
           label="#"
           type="number"
           component={TextField}
+          fullWidth
         />
+      </Grid>
 
+      <Grid size={{ xs: 12, sm: 9, md: 4 }}>
         <FastField
-          className={props.isDesktop ? "field field35" : "field field95"}
           name={`stories[${index}].title`}
           disabled={props.disabled}
           label="Titel"
           component={TextField}
+          fullWidth
         />
+      </Grid>
 
+      <Grid size={{ xs: 12, md: 4 }}>
         <FastField
-          className={props.isDesktop ? "field field30" : "field field100"}
           name={`stories[${index}].addinfo`}
           disabled={props.disabled}
           label="Weitere Informationen"
           component={TextField}
+          fullWidth
         />
+      </Grid>
 
+      <Grid size={{ xs: 6, sm: 3, md: 2 }}>
         <FastField
-          className={props.isDesktop ? "field field10" : "field field100"}
           name={`stories[${index}].part`}
           disabled={props.disabled}
           label="Teil"
           component={TextField}
+          fullWidth
         />
+      </Grid>
 
-        {!props.us ? <ExclusiveToggle {...props} type="stories" index={index} /> : null}
-      </div>
+      {!props.us ? (
+        <Grid size={12}>
+          <ExclusiveToggle {...props} type="stories" index={index} />
+        </Grid>
+      ) : null}
 
-      {isExclusive ? (
-        <StoryFieldsExclusive {...props} index={index} />
-      ) : (
-        <StoryFieldsNonExclusive {...props} index={index} />
-      )}
-    </React.Fragment>
+      <Grid size={12}>
+        {isExclusive ? (
+          <StoryFieldsExclusive {...props} index={index} />
+        ) : (
+          <StoryFieldsNonExclusive {...props} index={index} />
+        )}
+      </Grid>
+    </Grid>
   );
 }
 

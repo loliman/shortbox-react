@@ -1,6 +1,8 @@
 import React from "react";
 import CardMedia from "@mui/material/CardMedia";
 import Dialog from "@mui/material/Dialog";
+import Box from "@mui/material/Box";
+import ButtonBase from "@mui/material/ButtonBase";
 import type { PreviewIssue } from "../../issue-preview/utils/issuePreviewUtils";
 import { getIssueLabel } from "../../../util/issuePresentation";
 
@@ -16,23 +18,64 @@ export function IssueCover(props: Readonly<IssueCoverProps>) {
 
   return (
     <React.Fragment>
-      <CardMedia
-        component="img"
-        image={coverUrl}
-        alt={issueLabel}
-        title={issueLabel}
-        onClick={() => setIsOpen((value) => !value)}
+      <ButtonBase
+        onClick={() => setIsOpen(true)}
+        aria-label={`${issueLabel} Cover vergrößern`}
         sx={{
-          width: "100%",
-          height: "auto",
-          borderRadius: 1,
+          width: "clamp(250px, 47.5vw, 740px)",
+          maxWidth: "100%",
+          aspectRatio: "2 / 3",
+          borderRadius: (theme) => `${Number(theme.shape.borderRadius) || 12}px`,
+          overflow: "hidden",
+          bgcolor: "grey.300",
+          border: (theme) => `1px solid ${theme.palette.divider}`,
+          boxShadow: 1,
           cursor: "zoom-in",
-          filter: blurCover ? "blur(2px)" : "none",
+          display: "block",
         }}
-      />
+      >
+        <CardMedia
+          component="img"
+          image={coverUrl}
+          alt={issueLabel}
+          title={issueLabel}
+          sx={{
+            width: "100%",
+            height: "100%",
+            objectFit: "contain",
+            objectPosition: "center",
+            filter: blurCover ? "blur(2px)" : "none",
+          }}
+        />
+      </ButtonBase>
 
-      <Dialog open={isOpen} onClose={() => setIsOpen((value) => !value)} maxWidth="md">
-        <img src={coverUrl} alt={issueLabel} />
+      <Dialog
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        maxWidth="md"
+        slotProps={{
+          backdrop: {
+            sx: {
+              backgroundColor: "rgba(10, 14, 22, 0.36)",
+              backdropFilter: "blur(5px)",
+            },
+          },
+        }}
+      >
+        <Box
+          component="img"
+          src={coverUrl}
+          alt={issueLabel}
+          sx={{
+            display: "block",
+            maxWidth: "min(90vw, 960px)",
+            maxHeight: "85vh",
+            width: "auto",
+            height: "auto",
+            objectFit: "contain",
+            bgcolor: "grey.200",
+          }}
+        />
       </Dialog>
     </React.Fragment>
   );

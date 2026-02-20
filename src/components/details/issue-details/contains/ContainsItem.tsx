@@ -18,22 +18,36 @@ interface ContainsItemProps {
 }
 
 export function ContainsItem(props: Readonly<ContainsItemProps>) {
-  let style;
+  let borderRadius: string;
   if (props.idx === 0) {
     if (props.isLast) {
-      style = { borderRadius: "8px 8px 8px 8px" };
+      borderRadius = "8px";
     } else {
-      style = { borderRadius: "8px 8px 0 0" };
+      borderRadius = "8px 8px 0 0";
     }
   } else if (props.isLast) {
-    style = { borderRadius: "0 0 8px 8px" };
+    borderRadius = "0 0 8px 8px";
   } else {
-    style = { borderRadius: "0 0 0 0" };
+    borderRadius = "0";
   }
 
   return (
-    <Accordion style={style} className="story" defaultExpanded={expanded(props.item, props.query)}>
-      <AccordionSummary className="summary" expandIcon={<ExpandMoreIcon />}>
+    <Accordion
+      sx={{
+        borderRadius,
+        width: "auto",
+        maxWidth: "100%",
+      }}
+      defaultExpanded={expanded(props.item, props.query)}
+    >
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon />}
+        sx={{
+          "& .MuiAccordionSummary-content": {
+            width: "100%",
+          },
+        }}
+      >
         {React.cloneElement(props.itemTitle, {
           navigate: props.navigate,
           item: props.item,

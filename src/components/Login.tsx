@@ -8,6 +8,7 @@ import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 import { withContext } from "./generic";
 import { LoginSchema } from "../util/yupSchema";
 import { isMockMode } from "../app/mockMode";
@@ -71,36 +72,53 @@ function Login(props: Readonly<LoginProps>) {
       }}
     >
       {({ submitForm, isSubmitting }) => (
-        <Form id="loginForm">
-          <Card>
-            <CardHeader title="Login" subheader="Bitte Benutzername und Passwort eingeben" />
+        <Box
+          sx={{
+            minHeight: "100dvh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            p: 2,
+          }}
+        >
+          <Form id="loginForm" style={{ width: "100%", maxWidth: 520 }}>
+            <Card>
+              <CardHeader title="Login" subheader="Bitte Benutzername und Passwort eingeben" />
 
-            <CardContent>
-              <Field className="field field100" name="name" label="Name" component={TextField} />
-              <Box sx={{ mt: 2 }}>
-                <Field
-                  className="field field100"
-                  name="password"
-                  type="password"
-                  label="Passwort"
-                  component={TextField}
-                />
-              </Box>
-              <div id="loginButtons">
-                <Button
-                  disabled={isSubmitting}
-                  onClick={(e) => props.navigate(e, fallbackPath)}
-                  color="secondary"
-                >
-                  Abbrechen
-                </Button>
-                <Button disabled={isSubmitting} onClick={submitForm} color="primary">
-                  Login
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </Form>
+              <CardContent sx={{ pt: 1 }}>
+                <Stack spacing={2}>
+                  <Field name="name" label="Name" component={TextField} fullWidth />
+                  <Field
+                    name="password"
+                    type="password"
+                    label="Passwort"
+                    component={TextField}
+                    fullWidth
+                  />
+                </Stack>
+
+                <Box sx={{ mt: 3, display: "flex", justifyContent: "flex-end", gap: 1 }}>
+                  <Button
+                    disabled={isSubmitting}
+                    onClick={(e) => props.navigate(e, fallbackPath)}
+                    variant="outlined"
+                    color="inherit"
+                  >
+                    Abbrechen
+                  </Button>
+                  <Button
+                    disabled={isSubmitting}
+                    onClick={submitForm}
+                    variant="contained"
+                    color="primary"
+                  >
+                    Login
+                  </Button>
+                </Box>
+              </CardContent>
+            </Card>
+          </Form>
+        </Box>
       )}
     </Formik>
   );

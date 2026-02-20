@@ -1,13 +1,15 @@
 import { withContext } from "./generic";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
-import { Divider, Select } from "@mui/material";
+import Select from "@mui/material/Select";
 import { generateUrl } from "../util/hierarchy";
 import MenuItem from "@mui/material/MenuItem";
-import IconButton from "@mui/material/IconButton";
-import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import React from "react";
 import Box from "@mui/material/Box";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
 import type { SelectedRoot } from "../types/domain";
 import {
   buildSortNavigationQuery,
@@ -30,63 +32,61 @@ type SortContainerProps = {
 
 function SortContainer(props: Readonly<SortContainerProps>) {
   const currentOrder = toValidSortOption(getListingOrder(props.query));
-  const currentDirection = getListingDirection(props.query);
-  const isDescending = currentDirection === "DESC";
+  const currentDirection = toDirection(getListingDirection(props.query));
 
   const target = props.selected || { us: Boolean(props.us) };
 
   return (
-    <Box>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-        <FormControl sx={{ minWidth: 220 }}>
-          <InputLabel id={SORT_LABEL_ID}>Sortieren</InputLabel>
-          <Select
-            id={SORT_SELECT_ID}
-            labelId={SORT_LABEL_ID}
-            value={currentOrder}
-            label="Sortieren"
-            sx={{
-              "& .MuiSelect-select": { py: 0.625 },
-              "& .Mui-focused": {
-                borderRadius: "15px",
-                backgroundColor: "rgba(0, 0, 0, 0.08)",
-              },
-            }}
-            onChange={(e) =>
-              props.navigate?.(
-                e,
-                generateUrl(target, Boolean(props.us)),
-                buildSortNavigationQuery(props.query, {
-                  order: toValidSortOption(String(e.target.value)),
-                })
-              )
-            }
-          >
-            <MenuItem value={"updatedat"}>Änderungsdatum</MenuItem>
-            <MenuItem value={"createdat"}>Erfassungsdatum</MenuItem>
-            <MenuItem value={"releasedate"}>Erscheinungsdatum</MenuItem>
-            <MenuItem value={"series"}>Serie</MenuItem>
-            <MenuItem value={"publisher"}>Verlag</MenuItem>
-          </Select>
-        </FormControl>
-
-        <Divider orientation="vertical" flexItem />
-
-        <IconButton
-          aria-label="Reihenfolge"
-          onClick={(e) =>
+    <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 1.5 }}>
+      <FormControl size="small" sx={{ minWidth: 240 }}>
+        <InputLabel id={SORT_LABEL_ID}>Sortieren nach</InputLabel>
+        <Select
+          id={SORT_SELECT_ID}
+          labelId={SORT_LABEL_ID}
+          value={currentOrder}
+          label="Sortieren nach"
+          onChange={(e) =>
             props.navigate?.(
               e,
               generateUrl(target, Boolean(props.us)),
               buildSortNavigationQuery(props.query, {
-                direction: isDescending ? "ASC" : "DESC",
+                order: toValidSortOption(String(e.target.value)),
               })
             )
           }
         >
-          {isDescending ? <ExpandMore /> : <ExpandLess />}
-        </IconButton>
-      </Box>
+          <MenuItem value={"updatedat"}>Änderungsdatum</MenuItem>
+          <MenuItem value={"createdat"}>Erfassungsdatum</MenuItem>
+          <MenuItem value={"releasedate"}>Erscheinungsdatum</MenuItem>
+          <MenuItem value={"series"}>Serie</MenuItem>
+          <MenuItem value={"publisher"}>Verlag</MenuItem>
+        </Select>
+      </FormControl>
+
+      <ToggleButtonGroup
+        size="small"
+        color="primary"
+        exclusive
+        value={currentDirection}
+        aria-label="Sortierreihenfolge"
+        onChange={(e, value: "ASC" | "DESC" | null) => {
+          if (!value) return;
+          props.navigate?.(
+            e,
+            generateUrl(target, Boolean(props.us)),
+            buildSortNavigationQuery(props.query, {
+              direction: value,
+            })
+          );
+        }}
+      >
+        <ToggleButton value="ASC" aria-label="Aufsteigend">
+          <ArrowUpwardIcon fontSize="small" />
+        </ToggleButton>
+        <ToggleButton value="DESC" aria-label="Absteigend">
+          <ArrowDownwardIcon fontSize="small" />
+        </ToggleButton>
+      </ToggleButtonGroup>
     </Box>
   );
 }
@@ -98,4 +98,8 @@ function toValidSortOption(value: string): SortOption {
     return value as SortOption;
   }
   return "updatedat";
+}
+
+function toDirection(value: string): "ASC" | "DESC" {
+  return value === "ASC" ? "ASC" : "DESC";
 }

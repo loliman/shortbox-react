@@ -3,6 +3,7 @@ import { useQuery } from "@apollo/client";
 import { issue } from "../../graphql/queriesTyped";
 import QueryResult from "../generic/QueryResult";
 import React from "react";
+import Box from "@mui/material/Box";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import Paper from "@mui/material/Paper";
@@ -10,6 +11,7 @@ import { withContext } from "../generic";
 import { generateIssueSubHeader } from "../../util/issues";
 import Typography from "@mui/material/Typography";
 import { generateLabel } from "../../util/hierarchy";
+import { isMockMode } from "../../app/mockMode";
 import EditButton from "../restricted/EditButton";
 import SnackbarContent from "@mui/material/SnackbarContent";
 import TitleLine from "../generic/TitleLine";
@@ -23,6 +25,7 @@ import { IssueDetailsPreview } from "./issue-details/preview/IssueDetailsPreview
 import { DetailsTable } from "./issue-details/DetailsTable";
 import type { PreviewIssue } from "../issue-preview/utils/issuePreviewUtils";
 import { collectIssueArcs, getTodayLocalDate } from "./issue-details/utils/issueDetailsUtils";
+import { generateComicGuideUrl, generateMarvelDbUrl } from "./issue-details/utils/externalLinks";
 
 export {
   AppearanceList,
@@ -65,19 +68,20 @@ function IssueDetails(props: IssueDetailsProps) {
         },
       }
     : undefined;
-  const { networkStatus, error, data } = useQuery(issue, {
+  const { networkStatus, error, data, previousData, loading } = useQuery(issue, {
     variables: issueVariables,
     skip: !issueVariables,
     notifyOnNetworkStatusChange: true,
   });
+  const resolvedIssue = data?.issueDetails ?? (loading ? previousData?.issueDetails : null);
 
-  if (props.appIsLoading || error || !data?.issueDetails || networkStatus < 7) {
+  if (error || !resolvedIssue) {
     return (
       <Layout>
         <QueryResult
           error={error}
-          data={data ? data.issueDetails : null}
-          loading={networkStatus < 7}
+          data={resolvedIssue}
+          loading={loading || networkStatus < 7}
           selected={selected}
           placeholder={<IssueDetailsPreview />}
           placeholderCount={1}
@@ -86,11 +90,22 @@ function IssueDetails(props: IssueDetailsProps) {
     );
   }
 
-  const loadedIssue = data.issueDetails as unknown as Issue;
+  const loadedIssue = resolvedIssue as unknown as Issue;
+  const issueForVariants = toIssueWithMockVariants(loadedIssue);
 
-  const arcs = collectIssueArcs(loadedIssue, us);
+  const arcs = collectIssueArcs(issueForVariants, us);
   const today = getTodayLocalDate();
-  const releaseDate = loadedIssue.releasedate ? new Date(loadedIssue.releasedate) : null;
+  const releaseDate = issueForVariants.releasedate ? new Date(issueForVariants.releasedate) : null;
+  const gridTemplateColumns = arcs.length
+    ? { xs: "1fr", md: "minmax(0, 1.1fr) minmax(180px, 20vw) auto" }
+    : { xs: "1fr", md: "minmax(0, 1fr) auto" };
+  const coverGridColumn = arcs.length ? "3 / 4" : "2 / 3";
+  const bottomGridColumn = arcs.length ? "1 / 3" : "1 / 2";
+  const coverWidth = {
+    xs: "min(85.3vw, 717px)",
+    md: "46.03vw",
+    lg: "clamp(262px, 27.64vw, 478px)",
+  };
 
   return (
     <Layout>
@@ -113,81 +128,220 @@ function IssueDetails(props: IssueDetailsProps) {
           }
           subheader={props.subheader ? generateIssueSubHeader(loadedIssue) : ""}
           action={
-            <div>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               {loadedIssue.verified ? (
-                <img
-                  className="verifiedBadge"
+                <Box
+                  component="img"
                   src="/verified_badge.png"
                   alt="verifiziert"
-                  height="35"
+                  sx={{ height: 35, width: "auto" }}
                 />
               ) : null}
               {loadedIssue.collected && props.session ? (
-                <img
-                  className="verifiedBadge"
+                <Box
+                  component="img"
                   src="/collected_badge.png"
                   alt="gesammelt"
-                  height="35"
+                  sx={{ height: 35, width: "auto" }}
                 />
               ) : null}
               <EditButton item={loadedIssue} />
-            </div>
+            </Box>
           }
         />
 
-        <CardContent className="cardContent">
+        <CardContent sx={{ pt: 1 }}>
           <IssueVariants
             us={us}
-            issue={loadedIssue as unknown as VariantIssue}
+            issue={issueForVariants as unknown as VariantIssue}
             session={props.session}
             navigate={props.navigate}
           />
 
-          <div
-            className={"detailsWrapper"}
-            style={{
-              display: "flex",
-              gap: "16px",
-              alignItems: "flex-start",
-              flexWrap: "wrap",
+          <Box
+            sx={{
+              mt: 5,
+              display: "grid",
+              gridTemplateColumns,
+              gridTemplateRows: { xs: "auto", md: props.bottom ? "auto 1fr" : "auto" },
+              gap: 2,
+              alignItems: "start",
+              width: "100%",
             }}
           >
-            <div className="details" style={{ flex: "1 1 420px", minWidth: 0 }}>
+            <Box sx={{ minWidth: 0, width: "100%", display: "flex", alignItems: "flex-start" }}>
               <DetailsTable
-                issue={loadedIssue}
+                issue={issueForVariants}
                 details={details}
                 navigate={props.navigate}
                 us={us}
               />
-            </div>
-            <div style={{ width: "220px", maxWidth: "100%", flex: "0 0 220px" }}>
-              <IssueCover us={us} issue={loadedIssue as unknown as PreviewIssue} />
-            </div>
+            </Box>
 
-            {loadedIssue.addinfo && loadedIssue.addinfo !== "" ? (
-              <Paper className="addinfo">
-                <Typography
-                  dangerouslySetInnerHTML={{
-                    __html: sanitizeHtml(loadedIssue.addinfo),
-                  }}
-                />
-              </Paper>
+            {arcs.length > 0 ? (
+              <Box
+                sx={{
+                  minWidth: 0,
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-start",
+                  justifyContent: "flex-end",
+                  gap: 1,
+                  alignSelf: { md: "end" },
+                  justifySelf: "start",
+                  pb: { md: 0.5 },
+                }}
+              >
+                <Typography variant="subtitle2" sx={{ fontWeight: 500, whiteSpace: "nowrap" }}>
+                  Enthält Teile von
+                </Typography>
+                <StoryArcChips arcs={arcs} us={us} navigate={props.navigate} inline />
+              </Box>
             ) : null}
-          </div>
-          <StoryArcChips arcs={arcs} us={us} navigate={props.navigate} />
 
-          {props.bottom
-            ? React.cloneElement(props.bottom, {
-                navigate: props.navigate,
-                selected: loadedIssue,
-                issue: loadedIssue,
-                us: us,
-              })
-            : null}
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "flex-start",
+                justifyContent: "flex-end",
+                minWidth: 0,
+                justifySelf: "end",
+                gridColumn: { md: coverGridColumn },
+                gridRow: { md: props.bottom ? "1 / span 2" : "1" },
+              }}
+            >
+              <Box
+                sx={{
+                  width: coverWidth,
+                  maxWidth: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "flex-start",
+                  alignItems: "stretch",
+                }}
+              >
+                <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-start" }}>
+                  <IssueCover us={us} issue={issueForVariants as unknown as PreviewIssue} />
+                </Box>
+                {!us && issueForVariants.comicguideid ? (
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ mt: 1, opacity: 0.82, textAlign: "left" }}
+                  >
+                    Das Cover für&nbsp;
+                    <a
+                      href={generateComicGuideUrl(issueForVariants as any)}
+                      rel="noopener noreferrer nofollow"
+                      target="_blank"
+                    >
+                      {generateLabel(issueForVariants.series as any) +
+                        " #" +
+                        issueForVariants.number}
+                    </a>
+                    &nbsp;wird bereitgestellt vom&nbsp;
+                    <a
+                      href="https://www.comicguide.de"
+                      rel="noopener noreferrer nofollow"
+                      target="_blank"
+                    >
+                      deutschen ComicGuide
+                    </a>
+                    &nbsp;und darf nicht ohne Genehmigung weiterverbreitet werden.
+                  </Typography>
+                ) : null}
+                {us ? (
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    sx={{ mt: 1, opacity: 0.82, textAlign: "left" }}
+                  >
+                    Informationen über&nbsp;
+                    <a
+                      href={generateMarvelDbUrl(issueForVariants as any)}
+                      rel="noopener noreferrer nofollow"
+                      target="_blank"
+                    >
+                      {generateLabel(issueForVariants.series as any) +
+                        " #" +
+                        issueForVariants.number}
+                    </a>
+                    &nbsp;werden bezogen aus der&nbsp;
+                    <a
+                      href="https://marvel.fandom.com"
+                      rel="noopener noreferrer nofollow"
+                      target="_blank"
+                    >
+                      Marvel Database
+                    </a>
+                    &nbsp;und stehen unter der&nbsp;
+                    <a
+                      href="https://creativecommons.org/licenses/by/3.0/de/"
+                      rel="noopener noreferrer nofollow"
+                      target="_blank"
+                    >
+                      Creative Commons License 3.0
+                    </a>
+                    &nbsp;. Die Informationen wurden aufbereitet und unter Umständen ergänzt.&nbsp;
+                  </Typography>
+                ) : null}
+              </Box>
+            </Box>
+
+            {props.bottom ? (
+              <Box
+                sx={{
+                  minWidth: 0,
+                  gridColumn: { md: bottomGridColumn },
+                  gridRow: { md: 2 },
+                }}
+              >
+                {React.cloneElement(props.bottom, {
+                  navigate: props.navigate,
+                  selected: issueForVariants,
+                  issue: issueForVariants,
+                  us: us,
+                })}
+              </Box>
+            ) : null}
+          </Box>
+
+          {issueForVariants.addinfo && issueForVariants.addinfo !== "" ? (
+            <Paper variant="outlined" sx={{ mt: 2, p: 2 }}>
+              <Typography
+                dangerouslySetInnerHTML={{
+                  __html: sanitizeHtml(issueForVariants.addinfo),
+                }}
+              />
+            </Paper>
+          ) : null}
         </CardContent>
       </React.Fragment>
     </Layout>
   );
+}
+
+function toIssueWithMockVariants(issue: Issue): Issue {
+  if (!isMockMode) return issue;
+
+  const cover = issue.cover?.url ? issue.cover : { url: "/nocover_simple.jpg" };
+  const primaryVariant: Issue = {
+    ...issue,
+    cover,
+    variants: null,
+  };
+  const secondaryVariant: Issue = {
+    ...issue,
+    variant: issue.variant && issue.variant !== "" ? `${issue.variant}-2` : "B",
+    cover,
+    variants: null,
+  };
+
+  return {
+    ...issue,
+    variants: [primaryVariant, secondaryVariant],
+  };
 }
 
 export default withContext(IssueDetails);

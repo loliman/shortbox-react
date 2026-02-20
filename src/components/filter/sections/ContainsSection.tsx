@@ -5,6 +5,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
 import { FastField } from "formik";
 import AutocompleteBase from "../../generic/AutocompleteBase";
 import { useAutocompleteQuery } from "../../generic/useAutocompleteQuery";
@@ -24,7 +25,18 @@ interface ContainsSectionProps {
   setFieldValue: (field: string, value: unknown) => void;
 }
 
-function ContainsSection({ values, us, isDesktop, setFieldValue }: ContainsSectionProps) {
+function ContainsSection({
+  values,
+  us,
+  isDesktop: _isDesktop,
+  setFieldValue,
+}: ContainsSectionProps) {
+  const switchGridSx = {
+    display: "grid",
+    gap: 1,
+    gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", xl: "1fr 1fr 1fr" },
+  } as const;
+
   const [publisherInput, setPublisherInput] = React.useState("");
   const [seriesInput, setSeriesInput] = React.useState("");
 
@@ -55,7 +67,7 @@ function ContainsSection({ values, us, isDesktop, setFieldValue }: ContainsSecti
       <Typography variant="h6">{us ? "Enthalten in" : "Enthält"}</Typography>
 
       {!us ? (
-        <Stack spacing={1}>
+        <Box sx={switchGridSx}>
           <FilterSwitch
             checked={values.onlyPrint}
             label="Einzige Veröffentlichung"
@@ -81,9 +93,9 @@ function ContainsSection({ values, us, isDesktop, setFieldValue }: ContainsSecti
             label="Reiner Nachdruck"
             onToggle={() => setFieldValue("reprint", !values.reprint)}
           />
-        </Stack>
+        </Box>
       ) : (
-        <Stack spacing={1}>
+        <Box sx={switchGridSx}>
           <FilterSwitch
             checked={values.onlyTb}
             label="Nur in Taschenbuch"
@@ -99,7 +111,7 @@ function ContainsSection({ values, us, isDesktop, setFieldValue }: ContainsSecti
             label="Nicht auf deutsch erschienen"
             onToggle={() => setFieldValue("noPrint", !values.noPrint)}
           />
-        </Stack>
+        </Box>
       )}
 
       <AutocompleteBase
@@ -166,12 +178,32 @@ function ContainsSection({ values, us, isDesktop, setFieldValue }: ContainsSecti
         {values.numbers.map((entry, index) => {
           const key = `${entry.number || "empty"}-${entry.compare}-${entry.variant || "base"}-${index}`;
           return (
-            <Box key={key}>
+            <Box
+              key={key}
+              sx={{
+                display: "grid",
+                alignItems: "end",
+                gap: 1,
+                px: 1,
+                py: 0.9,
+                borderRadius: 1.75,
+                border: "1px solid",
+                borderColor: "divider",
+                bgcolor: "rgba(255,255,255,0.78)",
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  sm: "minmax(220px, 1fr) minmax(120px, 170px) auto",
+                },
+              }}
+            >
               <FastField
-                className={isDesktop ? "field field352" : "field field90"}
                 name={`numbers[${index}].number`}
                 label="Nummer"
                 component={TextField}
+                sx={{
+                  width: "100%",
+                  "& .MuiOutlinedInput-root": { borderRadius: 1.5, bgcolor: "background.paper" },
+                }}
               />
 
               <FastField
@@ -180,8 +212,11 @@ function ContainsSection({ values, us, isDesktop, setFieldValue }: ContainsSecti
                 label="ist"
                 select
                 component={TextField}
-                className={"field field5"}
                 InputLabelProps={{ shrink: true }}
+                sx={{
+                  width: "100%",
+                  "& .MuiOutlinedInput-root": { borderRadius: 1.5, bgcolor: "background.paper" },
+                }}
               >
                 {COMPARE_OPTIONS.map((option) => (
                   <MenuItem key={option} value={option}>
@@ -190,24 +225,67 @@ function ContainsSection({ values, us, isDesktop, setFieldValue }: ContainsSecti
                 ))}
               </FastField>
 
-              {index === values.numbers.length - 1 ? (
-                <IconButton
-                  className="addBtnFilter"
-                  aria-label="Hinzufügen"
-                  onClick={() =>
-                    setFieldValue("numbers", [
-                      ...values.numbers,
-                      {
-                        number: "",
-                        compare: ">",
-                        variant: "",
+              <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+                {values.numbers.length > 1 ? (
+                  <IconButton
+                    aria-label="Entfernen"
+                    color="inherit"
+                    size="small"
+                    onClick={() =>
+                      setFieldValue(
+                        "numbers",
+                        values.numbers.filter((_, entryIndex) => entryIndex !== index)
+                      )
+                    }
+                    sx={{
+                      width: 34,
+                      height: 34,
+                      border: "1px solid",
+                      borderColor: "divider",
+                      bgcolor: "background.paper",
+                      boxShadow: "0 1px 2px rgba(0,0,0,0.07)",
+                      "&:hover": {
+                        bgcolor: "rgba(239,68,68,0.09)",
+                        borderColor: "rgba(239,68,68,0.52)",
                       },
-                    ])
-                  }
-                >
-                  <AddIcon />
-                </IconButton>
-              ) : null}
+                    }}
+                  >
+                    <RemoveIcon fontSize="small" />
+                  </IconButton>
+                ) : null}
+
+                {index === values.numbers.length - 1 ? (
+                  <IconButton
+                    aria-label="Hinzufügen"
+                    color="primary"
+                    size="small"
+                    onClick={() =>
+                      setFieldValue("numbers", [
+                        ...values.numbers,
+                        {
+                          number: "",
+                          compare: ">",
+                          variant: "",
+                        },
+                      ])
+                    }
+                    sx={{
+                      width: 34,
+                      height: 34,
+                      border: "1px solid",
+                      borderColor: "divider",
+                      bgcolor: "background.paper",
+                      boxShadow: "0 1px 2px rgba(0,0,0,0.07)",
+                      "&:hover": {
+                        bgcolor: "rgba(34,197,94,0.10)",
+                        borderColor: "rgba(34,197,94,0.55)",
+                      },
+                    }}
+                  >
+                    <AddIcon />
+                  </IconButton>
+                ) : null}
+              </Box>
             </Box>
           );
         })}

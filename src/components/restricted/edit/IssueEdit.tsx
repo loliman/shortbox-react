@@ -8,6 +8,7 @@ import QueryResult from "../../generic/QueryResult";
 import IssueEditor from "../editor/IssueEditor";
 import { mapIssueToEditorDefaultValues } from "../editor/issue-editor/defaultValues";
 import type { SelectedRoot } from "../../../types/domain";
+import { EditorPagePlaceholder } from "../../placeholders/EditorPagePlaceholder";
 
 interface IssueEditProps {
   selected: SelectedRoot;
@@ -28,6 +29,8 @@ function IssueEdit(props: Readonly<IssueEditProps>) {
               error={error}
               data={data ? data.issueDetails : null}
               selected={selected}
+              placeholder={<EditorPagePlaceholder />}
+              placeholderCount={1}
             />
           );
 

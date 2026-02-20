@@ -1,7 +1,9 @@
 import React from "react";
 import ListItem from "@mui/material/ListItem";
 import Typography from "@mui/material/Typography";
+import Link from "@mui/material/Link";
 import IconButton from "@mui/material/IconButton";
+import Box from "@mui/material/Box";
 import SearchIcon from "@mui/icons-material/Search";
 import CoverTooltip from "../../nav-bar/CoverTooltip";
 import type { StoryIssue } from "./utils/storyIssueUtils";
@@ -38,62 +40,103 @@ export function StoryIssueListItem(props: Readonly<StoryIssueListItemProps>) {
   const coverUs = props.coverUs === undefined ? routeUs : props.coverUs;
 
   return (
-    <ListItem className="issueStoryIssueItem" divider={props.divider}>
-      <div>
-        <div className="headingContainer">
-          <Typography className="issueStoryIssue">{issueTitle}</Typography>
-          <Typography className="parentTitle">{props.subtitle || null}</Typography>
-        </div>
-
-        {props.parentLink ? (
-          <CoverTooltip
-            issue={props.parentLink.issue}
-            us={Boolean(props.parentLink.coverUs)}
-            number={props.parentLink.number}
+    <ListItem
+      divider={props.divider}
+      sx={{ px: 0, py: 1.25, alignItems: "flex-start", justifyContent: "space-between", gap: 1 }}
+    >
+      <Box sx={{ minWidth: 0 }}>
+        <Box>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "baseline",
+              justifyContent: "space-between",
+              gap: 1,
+              minWidth: 0,
+            }}
           >
             <Typography
-              className="parentTitle"
-              component="button"
-              type="button"
+              noWrap
               sx={{
-                border: 0,
-                p: 0,
-                background: "transparent",
-                cursor: "pointer",
-                font: "inherit",
-                textAlign: "left",
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-                props.navigate?.(
-                  e,
-                  getIssueUrl(props.parentLink?.issue, Boolean(props.parentLink?.routeUs)),
-                  {
-                    expand: props.parentLink?.number,
-                    filter: null,
-                  }
-                );
+                fontWeight: 600,
+                minWidth: 0,
+                flex: 1,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
               }}
             >
-              {(props.parentLink.prefix || "Als") + " "}
-              <span className="asLink">{getIssueLabel(props.parentLink.issue)}</span>
+              {issueTitle}
             </Typography>
-          </CoverTooltip>
-        ) : null}
 
-        <Typography className="issueStoryIssue issueStoryIssuePublisher">
+            {props.parentLink ? (
+              <CoverTooltip
+                issue={props.parentLink.issue}
+                us={Boolean(props.parentLink.coverUs)}
+                number={props.parentLink.number}
+              >
+                <Link
+                  component="button"
+                  type="button"
+                  underline="hover"
+                  color="text.secondary"
+                  sx={{
+                    p: 0,
+                    textAlign: "right",
+                    fontSize: "0.8rem",
+                    lineHeight: 1.3,
+                    whiteSpace: "nowrap",
+                    flexShrink: 0,
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    props.navigate?.(
+                      e,
+                      getIssueUrl(props.parentLink?.issue, Boolean(props.parentLink?.routeUs)),
+                      {
+                        expand: props.parentLink?.number,
+                        filter: null,
+                      }
+                    );
+                  }}
+                >
+                  {(props.parentLink.prefix || "als") + " "}
+                  <Box
+                    component="span"
+                    sx={{
+                      textDecoration: "underline",
+                      textUnderlineOffset: "2px",
+                      color: "inherit",
+                    }}
+                  >
+                    {getIssueLabel(props.parentLink.issue)}
+                  </Box>
+                </Link>
+              </CoverTooltip>
+            ) : null}
+          </Box>
+
+          <Typography variant="body2" color="text.secondary">
+            {props.subtitle || null}
+          </Typography>
+        </Box>
+
+        <Typography variant="body2" color="text.secondary">
           {publisherTitle}
         </Typography>
-      </div>
+      </Box>
 
-      <div>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, flexShrink: 0 }}>
         {props.showCollected && props.issue.collected && props.session ? (
-          <img src="/collected_badge.png" height={25} alt="gesammelt" />
+          <Box
+            component="img"
+            src="/collected_badge.png"
+            sx={{ height: 25, width: "auto" }}
+            alt="gesammelt"
+          />
         ) : null}
 
         <CoverTooltip issue={props.issue} us={coverUs} number={props.number}>
           <IconButton
-            className="detailsIcon issueStoryIssueButton"
             onClick={(e) =>
               props.navigate?.(e, getIssueUrl(props.issue, routeUs), {
                 expand: props.number,
@@ -105,7 +148,7 @@ export function StoryIssueListItem(props: Readonly<StoryIssueListItemProps>) {
             <SearchIcon fontSize="small" />
           </IconButton>
         </CoverTooltip>
-      </div>
+      </Box>
     </ListItem>
   );
 }

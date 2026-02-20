@@ -1,5 +1,7 @@
 import React from "react";
 import Button from "@mui/material/Button";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
 
 interface FormActionsProps {
   isSubmitting: boolean;
@@ -10,19 +12,26 @@ interface FormActionsProps {
 
 function FormActions({ isSubmitting, onReset, onCancel, onSubmit }: FormActionsProps) {
   return (
-    <div className="formButtons">
-      <Button disabled={isSubmitting} onClick={onReset} color="secondary">
+    <Stack
+      direction={{ xs: "column", sm: "row" }}
+      spacing={1}
+      justifyContent="flex-end"
+      sx={{ pt: 1 }}
+    >
+      <Button disabled={isSubmitting} onClick={onReset} variant="text" color="inherit">
         Zurücksetzen
       </Button>
 
-      <Button disabled={isSubmitting} onClick={onCancel} color="primary">
+      <Button disabled={isSubmitting} onClick={onCancel} variant="outlined" color="inherit">
         Abbrechen
       </Button>
 
-      <Button className="createButton" disabled={isSubmitting} onClick={onSubmit} color="primary">
-        Filtern
-      </Button>
-    </div>
+      <Box>
+        <Button disabled={isSubmitting} onClick={onSubmit} variant="contained" color="primary">
+          Filtern
+        </Button>
+      </Box>
+    </Stack>
   );
 }
 

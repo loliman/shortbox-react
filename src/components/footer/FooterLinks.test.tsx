@@ -12,11 +12,11 @@ describe("FooterLinks", () => {
     render(<FooterLinks navigate={navigate} isPhonePortrait={false} />);
 
     expect(screen.getByText("AuthLink")).toBeTruthy();
-    expect(screen.getByText("Kontakt/Fehler melden/Unterstützen")).toBeTruthy();
+    expect(screen.getByText("Kontakt / Fehler melden / Unterstützen")).toBeTruthy();
     expect(screen.getByText("Impressum")).toBeTruthy();
     expect(screen.getByText("Datenschutz")).toBeTruthy();
 
-    fireEvent.click(screen.getByRole("button", { name: "Kontakt/Fehler melden/Unterstützen" }));
+    fireEvent.click(screen.getByRole("button", { name: "Kontakt / Fehler melden / Unterstützen" }));
     fireEvent.click(screen.getByRole("button", { name: "Impressum" }));
     fireEvent.click(screen.getByRole("button", { name: "Datenschutz" }));
 

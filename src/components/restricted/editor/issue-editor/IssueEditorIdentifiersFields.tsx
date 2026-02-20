@@ -1,5 +1,5 @@
 import React from "react";
-import Stack from "@mui/material/Stack";
+import Grid from "@mui/material/Grid";
 import { FastField } from "formik";
 import { TextField } from "../../../generic/FormikTextField";
 import type { IssueEditorFormValues } from "./types";
@@ -9,38 +9,41 @@ interface IssueEditorIdentifiersFieldsProps {
   isDesktop?: boolean;
 }
 
-function IssueEditorIdentifiersFields({ values, isDesktop }: IssueEditorIdentifiersFieldsProps) {
+function IssueEditorIdentifiersFields({
+  values,
+  isDesktop: _isDesktop,
+}: IssueEditorIdentifiersFieldsProps) {
   return (
-    <Stack spacing={2}>
+    <Grid container spacing={2}>
       {!values.series.publisher.us ? (
-        <FastField
-          className={isDesktop ? "field field35" : "field field100"}
-          name="comicguideid"
-          label="Comicguide ID"
-          type="number"
-          component={TextField}
-        />
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+          <FastField
+            name="comicguideid"
+            label="Comicguide ID"
+            type="number"
+            component={TextField}
+            fullWidth
+          />
+        </Grid>
       ) : null}
 
       {!values.series.publisher.us ? (
-        <FastField
-          className={isDesktop ? "field field35" : "field field100"}
-          name="isbn"
-          label="ISBN"
-          type="string"
-          component={TextField}
-        />
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+          <FastField name="isbn" label="ISBN" type="string" component={TextField} fullWidth />
+        </Grid>
       ) : null}
 
-      <FastField
-        className={isDesktop ? "field field35" : "field field100"}
-        name="addinfo"
-        label="Weitere Informationen"
-        multiline
-        rows={10}
-        component={TextField}
-      />
-    </Stack>
+      <Grid size={12}>
+        <FastField
+          name="addinfo"
+          label="Weitere Informationen"
+          multiline
+          rows={8}
+          component={TextField}
+          fullWidth
+        />
+      </Grid>
+    </Grid>
   );
 }
 

@@ -35,7 +35,7 @@ function ExportDialog(props: Readonly<ExportDialogProps>) {
           aria-labelledby="form-delete-dialog-title"
         >
           <DialogTitle id="form-delete-dialog-title">
-            <CloudDownloadIcon className="exportTitleIcon" />
+            <CloudDownloadIcon sx={{ mr: 1, verticalAlign: "middle" }} />
             Format auswählen
           </DialogTitle>
           <DialogContent>

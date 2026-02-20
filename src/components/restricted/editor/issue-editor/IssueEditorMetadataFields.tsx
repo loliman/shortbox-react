@@ -1,6 +1,6 @@
 import React from "react";
+import Grid from "@mui/material/Grid";
 import MenuItem from "@mui/material/MenuItem";
-import Stack from "@mui/material/Stack";
 import type {
   AutocompleteChangeReason,
   AutocompleteInputChangeReason,
@@ -48,137 +48,143 @@ interface TypedMetadataAutocompleteProps {
 
 function IssueEditorMetadataFields({
   values,
-  isDesktop,
+  isDesktop: _isDesktop,
   setFieldValue,
 }: IssueEditorMetadataFieldsProps) {
   const us = values.series.publisher.us;
 
   return (
-    <Stack spacing={2}>
+    <Grid container spacing={2}>
       {!us ? (
-        <FastField
-          type="text"
-          name="format"
-          label="Format"
-          select
-          component={TextField}
-          className={isDesktop ? "field field35" : "field field100"}
-          InputLabelProps={{ shrink: true }}
-        >
-          {formats.map((formatValue) => (
-            <MenuItem key={formatValue} value={formatValue}>
-              {formatValue}
-            </MenuItem>
-          ))}
-        </FastField>
-      ) : null}
-
-      <FastField
-        className={isDesktop ? "field field35" : "field field100"}
-        name="variant"
-        label="Variante"
-        component={TextField}
-      />
-
-      {!us ? (
-        <React.Fragment>
-          <FastField
-            className={isDesktop ? "field field35" : "field field100"}
-            name="limitation"
-            label="Limitierung"
-            type="text"
-            component={TextField}
-          />
-
-          <FastField
-            className={isDesktop ? "field field35" : "field field100"}
-            name="pages"
-            label="Seiten"
-            type="number"
-            component={TextField}
-          />
-
-          <FastField
-            className={isDesktop ? "field field30" : "field field75"}
-            name="price"
-            label="Preis"
-            component={TextField}
-          />
-
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <FastField
             type="text"
-            name="currency"
-            label="Währung"
+            name="format"
+            label="Format"
             select
             component={TextField}
-            className={isDesktop ? "field field10" : "field field25"}
             InputLabelProps={{ shrink: true }}
+            fullWidth
           >
-            {currencies.map((currency) => (
-              <MenuItem key={currency} value={currency}>
-                {currency}
+            {formats.map((formatValue) => (
+              <MenuItem key={formatValue} value={formatValue}>
+                {formatValue}
               </MenuItem>
             ))}
           </FastField>
+        </Grid>
+      ) : null}
+
+      <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+        <FastField name="variant" label="Variante" component={TextField} fullWidth />
+      </Grid>
+
+      {!us ? (
+        <React.Fragment>
+          <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+            <FastField
+              name="limitation"
+              label="Limitierung"
+              type="text"
+              component={TextField}
+              fullWidth
+            />
+          </Grid>
+
+          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+            <FastField name="pages" label="Seiten" type="number" component={TextField} fullWidth />
+          </Grid>
+
+          <Grid size={{ xs: 8, sm: 4, md: 3 }}>
+            <FastField name="price" label="Preis" component={TextField} fullWidth />
+          </Grid>
+
+          <Grid size={{ xs: 4, sm: 2, md: 2 }}>
+            <FastField
+              type="text"
+              name="currency"
+              label="Währung"
+              select
+              component={TextField}
+              InputLabelProps={{ shrink: true }}
+              fullWidth
+            >
+              {currencies.map((currency) => (
+                <MenuItem key={currency} value={currency}>
+                  {currency}
+                </MenuItem>
+              ))}
+            </FastField>
+          </Grid>
         </React.Fragment>
       ) : null}
 
-      <FastField
-        className={isDesktop ? "field field35" : "field field100"}
-        name="releasedate"
-        label="Erscheinungsdatum"
-        type="date"
-        InputLabelProps={{ shrink: true }}
-        component={TextField}
-      />
+      <Grid size={{ xs: 12, sm: 6, md: 4 }}>
+        <FastField
+          name="releasedate"
+          label="Erscheinungsdatum"
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          component={TextField}
+          fullWidth
+        />
+      </Grid>
 
       {us ? (
         <React.Fragment>
-          <TypedMetadataAutocomplete
-            query={individuals}
-            field="individuals"
-            type="EDITOR"
-            entryKey="name"
-            label="Verleger"
-            values={asEntryList(values.individuals)}
-            setFieldValue={setFieldValue}
-          />
+          <Grid size={{ xs: 12, md: 6 }}>
+            <TypedMetadataAutocomplete
+              query={individuals}
+              field="individuals"
+              type="EDITOR"
+              entryKey="name"
+              label="Verleger"
+              values={asEntryList(values.individuals)}
+              setFieldValue={setFieldValue}
+            />
+          </Grid>
 
-          <TypedMetadataAutocomplete
-            query={arcs}
-            field="arcs"
-            type="EVENT"
-            entryKey="title"
-            label="Event"
-            values={asEntryList(values.arcs)}
-            setFieldValue={setFieldValue}
-            variables={{ type: "EVENT" }}
-          />
+          <Grid size={{ xs: 12, md: 6 }}>
+            <TypedMetadataAutocomplete
+              query={arcs}
+              field="arcs"
+              type="EVENT"
+              entryKey="title"
+              label="Event"
+              values={asEntryList(values.arcs)}
+              setFieldValue={setFieldValue}
+              variables={{ type: "EVENT" }}
+            />
+          </Grid>
 
-          <TypedMetadataAutocomplete
-            query={arcs}
-            field="arcs"
-            type="STORYARC"
-            entryKey="title"
-            label="Arc"
-            values={asEntryList(values.arcs)}
-            setFieldValue={setFieldValue}
-            variables={{ type: "STORYARC" }}
-          />
+          <Grid size={{ xs: 12, md: 6 }}>
+            <TypedMetadataAutocomplete
+              query={arcs}
+              field="arcs"
+              type="STORYARC"
+              entryKey="title"
+              label="Arc"
+              values={asEntryList(values.arcs)}
+              setFieldValue={setFieldValue}
+              variables={{ type: "STORYARC" }}
+            />
+          </Grid>
 
-          <TypedMetadataAutocomplete
-            query={arcs}
-            field="arcs"
-            type="STORYLINE"
-            entryKey="title"
-            label="Storyline"
-            values={asEntryList(values.arcs)}
-            setFieldValue={setFieldValue}
-            variables={{ type: "STORYLINE" }}
-          />
+          <Grid size={{ xs: 12, md: 6 }}>
+            <TypedMetadataAutocomplete
+              query={arcs}
+              field="arcs"
+              type="STORYLINE"
+              entryKey="title"
+              label="Storyline"
+              values={asEntryList(values.arcs)}
+              setFieldValue={setFieldValue}
+              variables={{ type: "STORYLINE" }}
+            />
+          </Grid>
         </React.Fragment>
       ) : null}
-    </Stack>
+    </Grid>
   );
 }
 

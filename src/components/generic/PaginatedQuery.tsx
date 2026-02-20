@@ -65,19 +65,22 @@ function PaginatedQuery(props: Readonly<PaginatedQueryProps>) {
     setHasMore(true);
   }, [inputKey]);
 
-  const { loading, error, data, fetchMore, networkStatus } = useQuery<
+  const { loading, error, data, previousData, fetchMore, networkStatus } = useQuery<
     QueryResultMap,
     QueryVariables
   >(query, {
     variables,
     notifyOnNetworkStatusChange,
   });
+  const resolvedData = data ?? (loading ? previousData : undefined);
 
   React.useEffect(() => {
-    if ((data || error) && onCompletedRef.current) onCompletedRef.current();
-  }, [data, error]);
+    if ((resolvedData || error) && onCompletedRef.current) onCompletedRef.current();
+  }, [resolvedData, error]);
 
-  const rawResult = data ? (data as Record<string, QueryCollection<unknown>>)[queryName] : null;
+  const rawResult = resolvedData
+    ? (resolvedData as Record<string, QueryCollection<unknown>>)[queryName]
+    : null;
   const normalized = normalizeResult(rawResult);
   const offset = normalized ? normalized.length : 0;
   const endCursor =
@@ -86,10 +89,10 @@ function PaginatedQuery(props: Readonly<PaginatedQueryProps>) {
     isConnection(rawResult) && rawResult.pageInfo ? Boolean(rawResult.pageInfo.hasNextPage) : false;
 
   React.useEffect(() => {
-    if (!offsetMode && data) {
+    if (!offsetMode && resolvedData) {
       setHasMore(remoteHasNextPage);
     }
-  }, [offsetMode, data, remoteHasNextPage]);
+  }, [offsetMode, resolvedData, remoteHasNextPage]);
 
   const fetchMoreVars = React.useMemo(() => {
     const next = { ...parsedInputVariables };
@@ -120,7 +123,7 @@ function PaginatedQuery(props: Readonly<PaginatedQueryProps>) {
     variables,
     loading,
     error,
-    data: { ...(data || {}), [queryName]: normalized } as Record<string, any>,
+    data: { ...(resolvedData || {}), [queryName]: normalized } as Record<string, any>,
     fetching,
     networkStatus,
     hasMore,

@@ -1,7 +1,8 @@
 import React from "react";
-import CardContent from "@mui/material/CardContent";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
-import { Cover } from "../IssueEditorSections";
+import Typography from "@mui/material/Typography";
 import IssueEditorActions from "./IssueEditorActions";
 import IssueEditorHeader from "./IssueEditorHeader";
 import IssueEditorIdentifiersFields from "./IssueEditorIdentifiersFields";
@@ -29,7 +30,7 @@ function IssueEditorFormContent(props: IssueEditorFormContentProps) {
   } = props;
 
   return (
-    <React.Fragment>
+    <Box sx={{ width: "100%", maxWidth: 1280, mx: "auto" }}>
       <IssueEditorHeader
         header={header}
         id={id}
@@ -42,43 +43,65 @@ function IssueEditorFormContent(props: IssueEditorFormContentProps) {
         }}
       />
 
-      <CardContent className="cardContent">
+      <Box sx={{ mt: 2 }}>
         <Stack spacing={2.5}>
-          {isDesktop ? <Cover isDesktop={isDesktop} cover={values.cover} /> : null}
+          <IssueEditorSection title="Basisdaten">
+            <IssueEditorSeriesFields
+              values={values}
+              isDesktop={isDesktop}
+              setFieldValue={setFieldValue}
+            />
+          </IssueEditorSection>
 
-          <IssueEditorSeriesFields
-            values={values}
-            isDesktop={isDesktop}
-            setFieldValue={setFieldValue}
-          />
+          <IssueEditorSection title="Metadaten">
+            <IssueEditorMetadataFields
+              values={values}
+              isDesktop={isDesktop}
+              setFieldValue={setFieldValue}
+            />
+          </IssueEditorSection>
 
-          {!isDesktop ? <Cover isDesktop={isDesktop} cover={values.cover} /> : null}
+          <IssueEditorSection title="Kennungen und Beschreibung">
+            <IssueEditorIdentifiersFields values={values} isDesktop={isDesktop} />
+          </IssueEditorSection>
 
-          <IssueEditorMetadataFields
-            values={values}
-            isDesktop={isDesktop}
-            setFieldValue={setFieldValue}
-          />
+          <IssueEditorSection title="Geschichten">
+            <IssueEditorRelations
+              values={values}
+              isDesktop={isDesktop}
+              setFieldValue={setFieldValue}
+            />
+          </IssueEditorSection>
 
-          <IssueEditorIdentifiersFields values={values} isDesktop={isDesktop} />
-
-          <IssueEditorRelations
-            values={values}
-            isDesktop={isDesktop}
-            setFieldValue={setFieldValue}
-          />
-
-          <IssueEditorActions
-            isSubmitting={isSubmitting}
-            submitLabel={submitLabel}
-            submitAndCopyLabel={submitAndCopyLabel}
-            resetForm={resetForm}
-            onCancel={onCancel}
-            onSubmitMode={onSubmitMode}
-          />
+          <Paper variant="outlined" sx={{ p: { xs: 2, sm: 2.5 } }}>
+            <IssueEditorActions
+              isSubmitting={isSubmitting}
+              submitLabel={submitLabel}
+              submitAndCopyLabel={submitAndCopyLabel}
+              resetForm={resetForm}
+              onCancel={onCancel}
+              onSubmitMode={onSubmitMode}
+            />
+          </Paper>
         </Stack>
-      </CardContent>
-    </React.Fragment>
+      </Box>
+    </Box>
+  );
+}
+
+interface IssueEditorSectionProps {
+  title: string;
+  children: React.ReactNode;
+}
+
+function IssueEditorSection({ title, children }: Readonly<IssueEditorSectionProps>) {
+  return (
+    <Paper variant="outlined" sx={{ p: { xs: 2, sm: 2.5 } }}>
+      <Stack spacing={2}>
+        <Typography variant="subtitle1">{title}</Typography>
+        {children}
+      </Stack>
+    </Paper>
   );
 }
 

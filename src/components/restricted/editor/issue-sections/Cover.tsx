@@ -2,6 +2,7 @@ import React from "react";
 import CardMedia from "@mui/material/CardMedia";
 import Dialog from "@mui/material/Dialog";
 import IconButton from "@mui/material/IconButton";
+import Box from "@mui/material/Box";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 type CoverInput = { __typename?: string; url?: string } | string | null | undefined;
@@ -30,11 +31,17 @@ class Cover extends React.Component<CoverProps, CoverState> {
     const previewSrc = this.createPreview(this.props.cover);
 
     return (
-      <div className={this.props.isDesktop ? "right field50" : "mobileCover"}>
+      <Box sx={{ width: this.props.isDesktop ? "50%" : "100%", position: "relative" }}>
         <CardMedia
           image={previewSrc}
           title="Cover Vorschau"
-          className="media field100"
+          sx={{
+            width: "100%",
+            aspectRatio: "1 / 1",
+            borderRadius: 1,
+            cursor: "pointer",
+            backgroundSize: "cover",
+          }}
           onClick={() => this.toggleCoverIsOpen()}
         />
 
@@ -43,19 +50,25 @@ class Cover extends React.Component<CoverProps, CoverState> {
           onClose={() => this.toggleCoverIsOpen()}
           maxWidth="md"
         >
-          <img src={previewSrc} alt="Cover Vorschau" />
+          <Box component="img" src={previewSrc} alt="Cover Vorschau" sx={{ maxWidth: "100%" }} />
         </Dialog>
 
         {this.props.onDelete ? (
           <IconButton
-            className="removeBtnCover"
             aria-label="Entfernen"
+            sx={{
+              position: "absolute",
+              top: 8,
+              right: 8,
+              bgcolor: "rgba(255,255,255,0.82)",
+              "&:hover": { bgcolor: "rgba(255,255,255,0.95)" },
+            }}
             onClick={this.props.onDelete}
           >
             <DeleteIcon />
           </IconButton>
         ) : null}
-      </div>
+      </Box>
     );
   }
 

@@ -25,7 +25,7 @@ export function DetailsPagePlaceholder(props: Readonly<DetailsPagePlaceholderPro
         }
       />
 
-      <CardContent className="cardContent">
+      <CardContent sx={{ pt: 1 }}>
         <IssueHistoryPlaceholder query={props.query} />
       </CardContent>
     </React.Fragment>

@@ -11,7 +11,7 @@ function Contact() {
     <Layout>
       <CardHeader title="Kontakt" />
 
-      <CardContent className="cardContent">
+      <CardContent sx={{ pt: 1 }}>
         <Stack spacing={3}>
           <Typography>
             Shortbox.de ist eine Eigenentwicklung von mir und wird ausschließlich von mir
@@ -28,21 +28,23 @@ function Contact() {
             <Link href="mailto:christian.riese@gmail.com">christian.riese@gmail.com</Link>.
           </Typography>
 
-          <Typography variant="h6">Unterstützen</Typography>
-          <Typography>
-            Shortbox.de ist und bleibt eine kostenlose Datenbank, die von jedem jederzeit kostenlos
-            genutzt werden kann. Dennoch verursacht Shortbox.de laufend Kosten, die ich privat
-            trage. Wenn ihr das Projekt unterstützen wollt, so bin ich für jede kleine finanzielle
-            Unterstützung über{" "}
-            <Link
-              href="https://paypal.me/ChristianRiese"
-              rel="noopener noreferrer nofollow"
-              target="_blank"
-            >
-              paypal.me/ChristianRiese
-            </Link>{" "}
-            dankbar.
-          </Typography>
+          <Stack spacing={1}>
+            <Typography variant="h6">Verantwortlicher</Typography>
+            <Typography>
+              Shortbox.de ist und bleibt eine kostenlose Datenbank, die von jedem jederzeit
+              kostenlos genutzt werden kann. Dennoch verursacht Shortbox.de laufend Kosten, die ich
+              privat trage. Wenn ihr das Projekt unterstützen wollt, so bin ich für jede kleine
+              finanzielle Unterstützung über{" "}
+              <Link
+                href="https://paypal.me/ChristianRiese"
+                rel="noopener noreferrer nofollow"
+                target="_blank"
+              >
+                paypal.me/ChristianRiese
+              </Link>{" "}
+              dankbar.
+            </Typography>
+          </Stack>
         </Stack>
       </CardContent>
     </Layout>

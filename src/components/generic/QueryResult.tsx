@@ -3,14 +3,16 @@ import ErrorIcon from "@mui/icons-material/Error";
 import SearchIcon from "@mui/icons-material/Search";
 import Typography from "@mui/material/Typography";
 import { generateLabel } from "../../util/hierarchy";
-import CircularProgress from "@mui/material/CircularProgress";
 import withContext from "./withContext";
 import Box from "@mui/material/Box";
 import type { SelectedRoot } from "../../types/domain";
+import { AppInlineLoader, AppPageLoader } from "./loading";
 
 interface QueryResultProps {
   appIsLoading?: boolean;
   loading?: boolean;
+  loadingVariant?: "page" | "inline" | "none";
+  loadingLabel?: string;
   error?: unknown;
   data?: Record<string, any> | null;
   selected?: SelectedRoot | null;
@@ -21,40 +23,60 @@ interface QueryResultProps {
 function QueryResult(props: Readonly<QueryResultProps>) {
   let { appIsLoading, loading, error, data, selected } = props;
 
-  if (appIsLoading || loading) {
-    if (props.placeholder && props.placeholderCount) {
-      const placeholder: React.ReactElement[] = [];
+  const renderPlaceholder = () => {
+    if (!props.placeholder) return null;
 
-      for (let i = 0; i < props.placeholderCount; i++)
-        placeholder.push(
-          React.cloneElement(props.placeholder, {
-            key: i,
-          })
-        );
+    const placeholder: React.ReactElement[] = [];
+    const placeholderCount = props.placeholderCount || 1;
 
-      return placeholder;
-    } else
-      return (
-        <Box sx={{ p: "15px", display: "flex" }}>
-          <CircularProgress />
-          <Typography sx={{ pl: "10px", alignSelf: "center" }}>Lade...</Typography>
-        </Box>
+    for (let i = 0; i < placeholderCount; i++)
+      placeholder.push(
+        React.cloneElement(props.placeholder, {
+          key: i,
+        })
       );
+
+    return placeholder;
+  };
+
+  if (appIsLoading || loading) {
+    const placeholder = renderPlaceholder();
+    if (placeholder) return placeholder;
+
+    if (props.loadingVariant === "none") return null;
+    if (props.loadingVariant === "inline") {
+      return <AppInlineLoader label={props.loadingLabel || "Lade..."} centered={false} />;
+    }
+
+    return <AppPageLoader label={props.loadingLabel} />;
   }
 
   if (error || (data && data.errors))
     return (
-      <Box sx={{ p: "15px", display: "flex" }}>
+      <Box sx={{ p: 2, display: "flex" }}>
         <ErrorIcon fontSize="large" />
-        <Typography sx={{ pl: "10px", alignSelf: "center" }}>Fehler</Typography>
+        <Typography sx={{ pl: 1.25, alignSelf: "center" }}>Fehler</Typography>
       </Box>
     );
 
-  if (!data)
+  // `undefined` means "not resolved yet" (e.g. query transition/race), while
+  // explicit `null` means "resolved, but not found".
+  if (typeof data === "undefined") {
+    const placeholder = renderPlaceholder();
+    if (placeholder) return placeholder;
+
+    if (props.loadingVariant === "none") return null;
+    if (props.loadingVariant === "inline") {
+      return <AppInlineLoader label={props.loadingLabel || "Lade..."} centered={false} />;
+    }
+    return <AppPageLoader label={props.loadingLabel} />;
+  }
+
+  if (data === null)
     return (
-      <Box sx={{ p: "15px", display: "flex" }}>
+      <Box sx={{ p: 2, display: "flex" }}>
         <SearchIcon fontSize="large" />
-        <Typography sx={{ pl: "10px", alignSelf: "center" }}>
+        <Typography sx={{ pl: 1.25, alignSelf: "center" }}>
           {generateLabel(selected)} nicht gefunden
         </Typography>
       </Box>

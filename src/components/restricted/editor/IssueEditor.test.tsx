@@ -1,4 +1,5 @@
-import { describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   createEmptyIssueValuesMock: vi.fn(() => ({
@@ -22,11 +23,26 @@ const mocks = vi.hoisted(() => ({
     errorMessage: "Fehler",
     copy: false,
   })),
-  buildIssueMutationVariablesMock: vi.fn(() => ({ item: { title: "Issue" } })),
+  buildIssueMutationVariablesMock: vi.fn((_values: any, _defaultValues: any, _edit?: boolean) => ({
+    item: { title: "Issue" },
+  })),
   updateIssueEditorCacheMock: vi.fn(),
   formContentSpy: vi.fn(),
   generateLabelMock: vi.fn(() => "Issue #1"),
   generateUrlMock: vi.fn(() => "/de/marvel/spider-man/1"),
+  runMutationMock: vi.fn(() => Promise.resolve({})),
+  mutationOptions: null as null | {
+    update?: (cache: unknown, result: { data?: Record<string, unknown> }) => void;
+    onCompleted?: (data: Record<string, unknown>) => void;
+    onError?: (error: { graphQLErrors?: Array<{ message?: string }> }) => void;
+  },
+}));
+
+vi.mock("@apollo/client", () => ({
+  useMutation: (_doc: unknown, options: unknown) => {
+    mocks.mutationOptions = options as typeof mocks.mutationOptions;
+    return [mocks.runMutationMock];
+  },
 }));
 
 vi.mock("../../generic/withContext", () => ({
@@ -40,6 +56,10 @@ vi.mock("../../../util/hierarchy", () => ({
 
 vi.mock("../../../util/util", () => ({
   decapitalize: (value: string) => value.slice(0, 1).toLowerCase() + value.slice(1),
+}));
+
+vi.mock("../../../util/yupSchema", () => ({
+  IssueSchema: undefined,
 }));
 
 vi.mock("./issue-editor/constants", () => ({
@@ -61,34 +81,72 @@ vi.mock("./issue-editor/cache", () => ({
 }));
 
 vi.mock("./issue-editor/IssueEditorFormContent", () => ({
-  default: (props: unknown) => {
+  default: (props: any) => {
     mocks.formContentSpy(props);
-    return <div>IssueEditorFormContent</div>;
+    return (
+      <div>
+        <button type="button" onClick={() => props.onSubmitMode(false)}>
+          submit
+        </button>
+        <button type="button" onClick={() => props.onSubmitMode(true)}>
+          submit-copy
+        </button>
+        <button type="button" onClick={props.onToggleUs}>
+          toggle-us
+        </button>
+        <button type="button" onClick={(e) => props.onCancel(e)}>
+          cancel
+        </button>
+      </div>
+    );
   },
 }));
 
 import IssueEditor from "./IssueEditor";
 
 describe("IssueEditor", () => {
+  beforeEach(() => {
+    mocks.createEmptyIssueValuesMock.mockClear();
+    mocks.buildIssueEditorStateMock.mockClear();
+    mocks.buildIssueMutationVariablesMock.mockClear();
+    mocks.updateIssueEditorCacheMock.mockReset();
+    mocks.formContentSpy.mockClear();
+    mocks.generateLabelMock.mockClear();
+    mocks.generateUrlMock.mockClear();
+    mocks.runMutationMock.mockClear();
+    mocks.runMutationMock.mockImplementation(() => Promise.resolve({}));
+    mocks.mutationOptions = null;
+  });
+
   it("wires mutation callbacks and submit pipeline", async () => {
     const navigate = vi.fn();
     const enqueueSnackbar = vi.fn();
-    const instance = new (IssueEditor as any)({
-      edit: true,
-      mutation: { definitions: [{ name: { value: "EditIssue" } }] },
-      navigate,
-      enqueueSnackbar,
-      selected: { issue: { number: "1", series: { title: "Spider-Man", volume: 1 } } },
-    });
 
-    const mutationElement = instance.render();
-    mutationElement.props.update(
+    render(
+      <IssueEditor
+        edit={true}
+        mutation={{ definitions: [{ name: { value: "EditIssue" } }] } as any}
+        navigate={navigate}
+        enqueueSnackbar={enqueueSnackbar}
+        selected={{ issue: { number: "1", series: { title: "Spider-Man", volume: 1 } } } as any}
+      />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "submit" }));
+
+    await waitFor(() => {
+      expect(mocks.runMutationMock).toHaveBeenCalledTimes(1);
+    });
+    expect(mocks.buildIssueMutationVariablesMock).toHaveBeenCalledTimes(1);
+    expect(mocks.runMutationMock).toHaveBeenCalledWith({ variables: { item: { title: "Issue" } } });
+
+    mocks.mutationOptions?.update?.(
       {},
       { data: { editIssue: { number: "1", series: { publisher: {} } } } }
     );
     expect(mocks.updateIssueEditorCacheMock).toHaveBeenCalledTimes(1);
 
-    mutationElement.props.onCompleted({
+    mocks.mutationOptions?.onCompleted?.({
       editIssue: { number: "1", series: { publisher: { us: false } } },
     });
     expect(enqueueSnackbar).toHaveBeenCalledWith("Issue #1 erfolgreich gespeichert", {
@@ -96,45 +154,46 @@ describe("IssueEditor", () => {
     });
     expect(navigate).toHaveBeenCalledWith(null, "/de/marvel/spider-man/1");
 
-    mutationElement.props.onError({ graphQLErrors: [{ message: "denied" }] });
+    mocks.mutationOptions?.onError?.({ graphQLErrors: [{ message: "denied" }] });
     expect(enqueueSnackbar).toHaveBeenCalledWith("Fehler [denied]", { variant: "error" });
-
-    const runMutation = vi.fn(() => Promise.resolve());
-    const formikElement = mutationElement.props.children(runMutation);
-    const actions = { setSubmitting: vi.fn() };
-    await formikElement.props.onSubmit({ title: "Issue" }, actions);
-    expect(mocks.buildIssueMutationVariablesMock).toHaveBeenCalled();
-    expect(runMutation).toHaveBeenCalledWith({ variables: { item: { title: "Issue" } } });
-    expect(actions.setSubmitting).toHaveBeenCalledTimes(2);
   });
 
-  it("supports copy navigation and form content actions", () => {
+  it("supports copy navigation and form content actions", async () => {
     const navigate = vi.fn();
-    const instance = new (IssueEditor as any)({
-      edit: false,
-      mutation: { definitions: [{ name: { value: "CreateIssue" } }] },
-      navigate,
-      enqueueSnackbar: vi.fn(),
-      selected: {
-        us: true,
-        issue: {
-          number: "1",
-          series: { title: "Spider-Man", volume: 1, publisher: { us: true } },
-        },
-      },
-      lastLocation: { pathname: "/de" },
+
+    render(
+      <IssueEditor
+        edit={false}
+        mutation={{ definitions: [{ name: { value: "CreateIssue" } }] } as any}
+        navigate={navigate}
+        enqueueSnackbar={vi.fn()}
+        selected={
+          {
+            us: true,
+            issue: {
+              number: "1",
+              series: { title: "Spider-Man", volume: 1, publisher: { us: true } },
+            },
+          } as any
+        }
+        lastLocation={{ pathname: "/de" }}
+      />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "toggle-us" }));
+    fireEvent.click(screen.getByRole("button", { name: "submit-copy" }));
+
+    await waitFor(() => {
+      expect(mocks.runMutationMock).toHaveBeenCalledTimes(1);
     });
+    const mutationArgs = mocks.buildIssueMutationVariablesMock.mock.calls[0];
+    expect(mutationArgs).toBeDefined();
+    const initialValues = mutationArgs?.[1] as
+      | { series: { publisher: { us: boolean } } }
+      | undefined;
+    expect(initialValues?.series.publisher.us).toBe(true);
 
-    instance.setState = (updater: any, callback?: () => void) => {
-      const next = typeof updater === "function" ? updater(instance.state) : updater;
-      instance.state = { ...instance.state, ...next };
-      if (callback) callback();
-    };
-
-    const mutationElement = instance.render();
-
-    instance.state.copy = true;
-    mutationElement.props.onCompleted({
+    mocks.mutationOptions?.onCompleted?.({
       createIssue: {
         number: "2",
         format: "A",
@@ -144,20 +203,7 @@ describe("IssueEditor", () => {
     });
     expect(navigate).toHaveBeenCalledWith(null, "/copy/issue/de/marvel/spider-man/1");
 
-    const runMutation = vi.fn(() => Promise.resolve());
-    const formikElement = mutationElement.props.children(runMutation);
-    const formElement = formikElement.props.children({
-      values: instance.state.defaultValues,
-      resetForm: vi.fn(),
-      submitForm: vi.fn(),
-      isSubmitting: false,
-      setFieldValue: vi.fn(),
-    });
-    const formContentProps = formElement.props.children.props as Record<string, any>;
-    formContentProps.onToggleUs();
-    expect(instance.state.defaultValues.series.publisher.us).toBe(true);
-
-    formContentProps.onCancel({ type: "click" });
-    expect(navigate).toHaveBeenCalledWith({ type: "click" }, "/de/marvel/spider-man/1");
+    fireEvent.click(screen.getByRole("button", { name: "cancel" }));
+    expect(navigate).toHaveBeenCalledWith(expect.anything(), "/de/marvel/spider-man/1");
   });
 });

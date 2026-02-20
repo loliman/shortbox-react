@@ -1,6 +1,7 @@
 import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import React from "react";
+import Box from "@mui/material/Box";
 import { withContext } from "../generic";
 import Dropdown from "./Dropdown";
 
@@ -40,9 +41,8 @@ function EditButton(props: Readonly<EditButtonProps>) {
   if (!props.session) return null;
 
   return (
-    <div className="editButton">
+    <Box sx={{ display: "inline-flex" }}>
       <IconButton
-        className="itemMenuButton"
         aria-label="Mehr"
         aria-controls={editDropdown.anchorEl ? "edit-item-menu" : undefined}
         aria-expanded={editDropdown.anchorEl ? "true" : undefined}
@@ -53,7 +53,7 @@ function EditButton(props: Readonly<EditButtonProps>) {
       </IconButton>
 
       <Dropdown EditDropdown={editDropdown} handleClose={handleEditDropdownClose} />
-    </div>
+    </Box>
   );
 }
 

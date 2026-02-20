@@ -10,7 +10,7 @@ import EditButton from "../restricted/EditButton";
 import withContext from "../generic/withContext";
 import PaginatedQuery from "../generic/PaginatedQuery";
 import TitleLine from "../generic/TitleLine";
-import { FirstLastIssueSections, IssueHistoryList } from "./DetailsListingSections";
+import { IssueHistoryList } from "./DetailsListingSections";
 import { getListingDirection, getListingOrder, parseListingFilter } from "../../util/listingQuery";
 import { DetailsPagePlaceholder } from "../placeholders/DetailsPagePlaceholder";
 import { DetailsAddInfo } from "./DetailsAddInfo";
@@ -68,16 +68,25 @@ function SeriesDetails(props: Readonly<SeriesDetailsProps>) {
     us,
   ]);
 
-  const { error: detailsError, data: detailsData } = useQuery(seriesd, {
+  const {
+    error: detailsError,
+    data: detailsData,
+    previousData: previousDetailsData,
+    loading,
+  } = useQuery(seriesd, {
     variables: props.selected,
     notifyOnNetworkStatusChange: true,
   });
+  const details =
+    detailsData?.seriesDetails ?? (loading ? previousDetailsData?.seriesDetails : null);
+  const endYearLabel =
+    details && (details.active || details.endyear === 0) ? "heute" : details?.endyear;
 
   React.useEffect(() => {
-    if (detailsData || detailsError) {
+    if (details || detailsError) {
       markDetailsLoaded();
     }
-  }, [detailsData, detailsError, markDetailsLoaded]);
+  }, [details, detailsError, markDetailsLoaded]);
 
   return (
     <PaginatedQuery
@@ -91,12 +100,11 @@ function SeriesDetails(props: Readonly<SeriesDetailsProps>) {
     >
       {({ error, data, fetchMore, hasMore, fetching }) => {
         const issues = data ? data.lastEdited : [];
-        const details = detailsData?.seriesDetails;
         const combinedError = detailsError || error;
 
         return (
           <Layout handleScroll={fetchMore}>
-            {props.appIsLoading || combinedError || !details ? (
+            {combinedError || !details ? (
               <QueryResult
                 error={combinedError}
                 data={details || null}
@@ -120,24 +128,12 @@ function SeriesDetails(props: Readonly<SeriesDetailsProps>) {
                       session={props.session}
                     />
                   }
-                  subheader={
-                    details.startyear + " - " + (details.active ? "heute" : details.endyear)
-                  }
+                  subheader={details.startyear + " - " + endYearLabel}
                   action={<EditButton item={details} />}
                 />
 
-                <CardContent className="cardContent">
+                <CardContent sx={{ pt: 1 }}>
                   <DetailsAddInfo addinfo={details.addinfo} />
-
-                  <FirstLastIssueSections
-                    query={props.query}
-                    us={us}
-                    issueCount={details.issueCount}
-                    active={details.active}
-                    firstIssue={details.firstIssue}
-                    lastIssue={details.lastIssue}
-                    previewProps={pageProps}
-                  />
 
                   <IssueHistoryList
                     query={props.query}

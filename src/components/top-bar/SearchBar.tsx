@@ -1,23 +1,32 @@
 import React, { useEffect, useMemo, useState } from "react";
 import Autocomplete from "@mui/material/Autocomplete";
 import Box from "@mui/material/Box";
+import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import SearchIcon from "@mui/icons-material/Search";
 import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+import Typography from "@mui/material/Typography";
+import SearchIcon from "@mui/icons-material/Search";
 import { useQuery } from "@apollo/client";
+import { alpha } from "@mui/material/styles";
 import { search } from "../../graphql/queriesTyped";
 import type { NodesQuery } from "../../graphql/typed-documents.generated";
 import { withContext } from "../generic";
 
 type SearchNode = NonNullable<NonNullable<NodesQuery["nodes"]>[number]>;
 const MIN_QUERY_LENGTH = 2;
+const RESULT_ROW_HEIGHT = 44;
+const RESULT_PANEL_MAX_HEIGHT = 911;
+const RESULT_PANEL_BOTTOM_BUFFER = 12;
+const HINT_FONTS = [
+  { family: "HintAvengeance", file: "Avengeance-YolO.ttf" },
+  { family: "HintBlackWidow", file: "BlackWidowMovie-d95Rg.ttf" },
+  { family: "HintCombackHome", file: "CombackHomeRegular-jEMd9.ttf" },
+  { family: "HintMarvelRegular", file: "MarvelRegular-Dj83.ttf" },
+  { family: "HintMightySpidey", file: "Mightyspidey-pmaa.ttf" },
+] as const;
 
 interface SearchBarProps {
-  focus?: boolean;
-  isPhone?: boolean;
-  isTablet?: boolean;
-  isTabletLandscape?: boolean;
-  compactLayout?: boolean;
   us?: boolean;
   navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
   onFocus?: (
@@ -29,9 +38,9 @@ interface SearchBarProps {
 export function SearchBar(props: Readonly<SearchBarProps>) {
   const [pattern, setPattern] = useState("");
   const [debouncedPattern, setDebouncedPattern] = useState("");
-  const isFocused = Boolean(props.focus);
-  const mobileHeader =
-    props.compactLayout ?? Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
+  const [focused, setFocused] = useState(false);
+  const [hintFontIndex, setHintFontIndex] = useState(0);
+  const [hintAnimTick, setHintAnimTick] = useState(0);
   const queryPattern = debouncedPattern;
   const us = Boolean(props.us);
 
@@ -44,6 +53,23 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
       window.clearTimeout(handle);
     };
   }, [pattern]);
+
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof document === "undefined") return;
+    if (!("fonts" in document)) return;
+
+    HINT_FONTS.forEach((font) => {
+      const fontFace = new FontFace(font.family, `url(/fonts/${font.file})`);
+      fontFace
+        .load()
+        .then((loaded) => {
+          document.fonts.add(loaded);
+        })
+        .catch(() => {
+          // Ignore failed custom font loads and fallback to default font.
+        });
+    });
+  }, []);
 
   const { data, loading, error } = useQuery(search, {
     variables: { pattern: queryPattern, us },
@@ -63,34 +89,164 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
             .slice(0, 50),
     [data?.nodes, queryPattern.length]
   );
+  const resultRows = Math.max(1, options.length);
+  const resultsPanelHeight = Math.min(
+    RESULT_PANEL_MAX_HEIGHT,
+    resultRows * RESULT_ROW_HEIGHT + RESULT_PANEL_BOTTOM_BUFFER
+  );
 
   const handleFocus = (
     e: React.FocusEvent<HTMLElement> | React.MouseEvent<HTMLElement> | null,
     focus: boolean
   ) => {
+    setFocused(focus);
     props.onFocus?.(e, focus);
+  };
+
+  const closeSearch = (e: React.FocusEvent<HTMLElement> | React.MouseEvent<HTMLElement> | null) => {
+    const activeElement = document.activeElement as HTMLElement | null;
+    activeElement?.blur();
+    handleFocus(e, false);
+  };
+
+  const rotateFontAndTriggerHintWave = () => {
+    setHintFontIndex((prev) => {
+      if (HINT_FONTS.length <= 1) return prev;
+      let next = prev;
+      while (next === prev) {
+        next = Math.floor(Math.random() * HINT_FONTS.length);
+      }
+      return next;
+    });
+    setHintAnimTick((prev) => prev + 1);
   };
 
   return (
     <Box
       sx={{
-        width: isFocused ? "100%" : mobileHeader ? "58px" : "300px",
-        ml: "auto",
-        transition: "all 0.2s ease-in-out",
-        maxWidth: isFocused ? "100%" : undefined,
+        width: "100%",
       }}
     >
+      <Backdrop
+        open={focused}
+        onClick={(e) => closeSearch(e as unknown as React.MouseEvent<HTMLElement>)}
+        sx={{
+          zIndex: (theme) => theme.zIndex.appBar + 1,
+          backgroundColor: "rgba(10, 14, 22, 0.36)",
+          backdropFilter: "blur(5px)",
+        }}
+      />
       <Autocomplete
+        size="small"
+        disablePortal
+        forcePopupIcon={false}
+        open={focused}
+        slotProps={{
+          popper: {
+            sx: {
+              position: "fixed !important",
+              top: { xs: "86px !important", sm: "94px !important" },
+              left: "50% !important",
+              transform: "translateX(-50%) !important",
+              width: "min(96vw, 770px) !important",
+              maxWidth: "96vw !important",
+              minWidth: "min(96vw, 770px) !important",
+              zIndex: (theme) => theme.zIndex.appBar + 3,
+            },
+          },
+          paper: {
+            sx: {
+              borderRadius: 2,
+              border: "2px solid",
+              borderColor: "rgba(15, 23, 42, 0.22)",
+              boxShadow: "0 18px 44px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255,255,255,0.65) inset",
+              backdropFilter: "blur(10px)",
+              backgroundColor: "rgba(255, 255, 255, 0.98)",
+              width: "100%",
+              height: `${resultsPanelHeight}px`,
+              minHeight: `${resultsPanelHeight}px`,
+              maxHeight: `${RESULT_PANEL_MAX_HEIGHT}px`,
+              transform: focused ? "scale(1.02)" : "scale(1)",
+              transformOrigin: "top center",
+              transition: "transform 220ms ease",
+              overflow: "hidden",
+              "& .MuiAutocomplete-noOptions": {
+                height: `${resultsPanelHeight}px`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                width: "100%",
+                fontSize: "1.35rem",
+                py: 0,
+              },
+            },
+          },
+          listbox: {
+            sx: {
+              height: `${resultsPanelHeight}px`,
+              minHeight: `${resultsPanelHeight}px`,
+              maxHeight: `${RESULT_PANEL_MAX_HEIGHT}px`,
+              overflowY: "auto",
+              py: 0.5,
+              "& .MuiAutocomplete-option": {
+                minHeight: 44,
+                borderBottom: "1px solid",
+                borderColor: "rgba(255,255,255,0.07)",
+              },
+              "& .MuiAutocomplete-option:last-of-type": {
+                borderBottom: "none",
+              },
+            },
+          },
+        }}
         options={options}
         filterOptions={(x) => x}
         loading={loading}
         inputValue={pattern}
         noOptionsText={
-          queryPattern.length < MIN_QUERY_LENGTH
-            ? `Mindestens ${MIN_QUERY_LENGTH} Zeichen eingeben`
-            : error
-              ? "Fehler!"
-              : "Keine Ergebnisse gefunden"
+          queryPattern.length < MIN_QUERY_LENGTH ? (
+            <Box
+              key={`hint-${hintAnimTick}`}
+              sx={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontFamily: `${HINT_FONTS[hintFontIndex].family}, "Segoe UI", sans-serif`,
+                fontSize: "1.35rem",
+                lineHeight: 1.1,
+                letterSpacing: 0.4,
+                "@keyframes searchHintWaveOnce": {
+                  "0%": { transform: "translateY(0)" },
+                  "32%": { transform: "translateY(-5px)" },
+                  "64%": { transform: "translateY(2px)" },
+                  "100%": { transform: "translateY(0)" },
+                },
+              }}
+            >
+              {"Tippen zum Suchen...".split("").map((char, idx) => (
+                <Box
+                  key={`${char}-${idx}`}
+                  component="span"
+                  sx={{
+                    display: "inline-block",
+                    whiteSpace: char === " " ? "pre" : "normal",
+                    animationName: "searchHintWaveOnce",
+                    animationDuration: "480ms",
+                    animationTimingFunction: "ease-out",
+                    animationIterationCount: 1,
+                    animationDelay: `${idx * 28}ms`,
+                  }}
+                >
+                  {char === " " ? "\u00A0" : char}
+                </Box>
+              ))}
+            </Box>
+          ) : error ? (
+            "Fehler!"
+          ) : (
+            "Keine Ergebnisse gefunden"
+          )
         }
         getOptionLabel={(option) =>
           typeof option === "string" ? option : `${getNodeType(option.type)} ${option.label || ""}`
@@ -103,41 +259,79 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
           if (!value || typeof value === "string" || !value.url) return;
 
           setPattern("");
-          const activeElement = document.activeElement as HTMLElement | null;
-          activeElement?.blur();
-          handleFocus(null, false);
+          closeSearch(null);
           props.navigate?.(null, value.url);
         }}
-        onFocus={(e) => handleFocus(e, true)}
-        onBlur={(e) => (mobileHeader ? undefined : handleFocus(e, false))}
-        popupIcon={<SearchIcon />}
+        onClose={(_, reason) => {
+          if (reason === "escape") closeSearch(null);
+        }}
+        onFocus={(e) => {
+          rotateFontAndTriggerHintWave();
+          handleFocus(e, true);
+        }}
+        onBlur={(e) => handleFocus(e, false)}
+        renderOption={(optionProps, option) => (
+          <li {...optionProps}>
+            <Box
+              sx={{ width: "100%", display: "flex", alignItems: "center", gap: 1.25, minWidth: 0 }}
+            >
+              <Typography component="span" noWrap sx={{ minWidth: 0, flex: 1 }}>
+                {option.label || ""}
+              </Typography>
+              <Typography
+                component="span"
+                variant="caption"
+                sx={{
+                  px: 0.75,
+                  py: 0.2,
+                  borderRadius: 1,
+                  fontWeight: 700,
+                  flexShrink: 0,
+                  ...getNodeTypeBadgeSx(option.type),
+                }}
+              >
+                {getNodeType(option.type)}
+              </Typography>
+            </Box>
+          </li>
+        )}
         sx={{
+          width: "100%",
+          position: "relative",
+          zIndex: (theme) => theme.zIndex.appBar + 2,
+          transform: focused ? "scale(1.1)" : "scale(1)",
+          transformOrigin: "center",
+          transition: "transform 220ms ease",
           "& .MuiOutlinedInput-root": {
-            color: "white",
-            backgroundColor: "rgba(255, 255, 255, 0.14)",
+            backgroundColor: "background.paper",
+            borderRadius: 2.5,
+            transition:
+              "box-shadow 180ms ease, border-color 180ms ease, background-color 180ms ease",
             "& fieldset": {
-              borderColor: "rgba(255, 255, 255, 0.55)",
+              borderColor: "divider",
             },
             "&:hover fieldset": {
-              borderColor: "rgba(255, 255, 255, 0.8)",
+              borderColor: "text.secondary",
             },
             "&.Mui-focused fieldset": {
-              borderColor: "white",
+              borderColor: "primary.light",
+            },
+            "&.Mui-focused": {
+              boxShadow: (theme) =>
+                `0 0 0 3px ${theme.palette.primary.main}33, 0 10px 26px #00000033`,
+              backgroundColor: "background.paper",
             },
           },
           "& .MuiInputBase-input::placeholder": {
-            color: "rgba(255, 255, 255, 0.85)",
+            color: "text.secondary",
             opacity: 1,
-          },
-          "& .MuiSvgIcon-root": {
-            color: "white",
           },
         }}
         renderInput={(params) => (
           <TextField
             {...params}
             variant="outlined"
-            placeholder={mobileHeader ? " " : "Suchen"}
+            placeholder="Nach Comic suchen..."
             inputProps={{
               ...params.inputProps,
               "aria-label": "Suche",
@@ -147,6 +341,9 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
               endAdornment: (
                 <>
                   {loading ? <CircularProgress color="inherit" size={18} /> : null}
+                  <InputAdornment position="end">
+                    <SearchIcon sx={{ fontSize: 20, color: "text.secondary" }} />
+                  </InputAdornment>
                   {params.InputProps.endAdornment}
                 </>
               ),
@@ -166,6 +363,32 @@ export function getNodeType(type?: string | null) {
       return "Serie";
     default:
       return "Ausgabe";
+  }
+}
+
+function getNodeTypeBadgeSx(type?: string | null) {
+  switch (type) {
+    case "publisher":
+      return {
+        bgcolor: (theme: any) => alpha(theme.palette.warning.main, 0.16),
+        color: (theme: any) => theme.palette.warning.dark,
+        border: "1px solid",
+        borderColor: (theme: any) => alpha(theme.palette.warning.main, 0.35),
+      };
+    case "series":
+      return {
+        bgcolor: (theme: any) => alpha(theme.palette.info.main, 0.14),
+        color: (theme: any) => theme.palette.info.dark,
+        border: "1px solid",
+        borderColor: (theme: any) => alpha(theme.palette.info.main, 0.3),
+      };
+    default:
+      return {
+        bgcolor: (theme: any) => alpha(theme.palette.primary.main, 0.12),
+        color: (theme: any) => theme.palette.primary.dark,
+        border: "1px solid",
+        borderColor: (theme: any) => alpha(theme.palette.primary.main, 0.28),
+      };
   }
 }
 

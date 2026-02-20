@@ -1,6 +1,7 @@
 import React from "react";
-import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
+import Box from "@mui/material/Box";
+import ButtonBase from "@mui/material/ButtonBase";
 import { getIssueUrl } from "../../../../util/issuePresentation";
 import type { VariantIssue } from "./types";
 
@@ -19,44 +20,81 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
   const selected =
     props.issue.format === props.variant.format && props.issue.variant === props.variant.variant;
   const mainIssue = Boolean(props.session) && (props.variant.stories?.length || 0) > 0;
+  const variantLabel =
+    (props.variant.format || "") +
+    " (" +
+    (props.variant.variant ? props.variant.variant + " Variant" : "Reguläre Ausgabe") +
+    ")";
 
   return (
-    <ImageListItem
-      onClick={(e) => props.navigate?.(e, getIssueUrl(props.variant, props.us))}
-      className={"tile " + (mainIssue ? "mainIssue" : "")}
+    <Box
+      sx={{
+        borderRadius: (theme) => `${Number(theme.shape.borderRadius) || 12}px`,
+        overflow: "hidden",
+        height: "100%",
+        border: (theme) =>
+          selected
+            ? `2px solid ${theme.palette.common.white}`
+            : `1px solid ${theme.palette.divider}`,
+        boxShadow: mainIssue ? 2 : 1,
+      }}
     >
-      <img
-        src={coverUrl}
-        className={blurCover ? "blurredImage" : ""}
-        alt={(props.variant.variant || "") + " (" + (props.variant.format || "") + ")"}
-      />
+      <ButtonBase
+        onClick={(e) => props.navigate?.(e, getIssueUrl(props.variant, props.us))}
+        aria-label={`Zu ${variantLabel}`}
+        sx={{ width: "100%", height: "100%", display: "block", textAlign: "left" }}
+      >
+        <Box
+          component="img"
+          src={coverUrl}
+          alt={variantLabel}
+          sx={{
+            display: "block",
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "center",
+            filter: blurCover ? "blur(2px)" : "none",
+          }}
+        />
 
-      <ImageListItemBar
-        title={
-          <div>
-            <div className={selected ? "selectedVariant" : ""}>
-              {(props.variant.format || "") +
-                " (" +
-                (props.variant.variant ? props.variant.variant + " Variant" : "Reguläre Ausgabe") +
-                ")"}
-            </div>
-            {props.variant.collected && props.session ? (
-              <img
-                className="verifiedBadge"
-                src="/collected_badge.png"
-                alt="gesammelt"
-                height="25"
-              />
-            ) : null}
-          </div>
-        }
-        classes={{
-          root: "titleBar",
-          title: "title",
-          titleWrap: "titleWrap",
-        }}
-      />
-    </ImageListItem>
+        <ImageListItemBar
+          title={
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Box
+                sx={{
+                  minWidth: 0,
+                  flex: 1,
+                  fontWeight: selected ? 500 : 300,
+                  color: selected ? "common.white" : "inherit",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {variantLabel}
+              </Box>
+              {props.variant.collected && props.session ? (
+                <Box
+                  component="img"
+                  src="/collected_badge.png"
+                  alt="gesammelt"
+                  sx={{ height: 20, width: "auto", flexShrink: 0 }}
+                />
+              ) : null}
+            </Box>
+          }
+          sx={{
+            background:
+              "linear-gradient(to top, rgba(11, 23, 45, 0.88), rgba(11, 23, 45, 0.4) 65%, transparent)",
+            "& .MuiImageListItemBar-titleWrap": {
+              px: 1,
+              py: 0.5,
+            },
+          }}
+        />
+      </ButtonBase>
+    </Box>
   );
 }
 

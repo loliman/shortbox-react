@@ -1,5 +1,5 @@
 import React from "react";
-import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button";
 import AddIcon from "@mui/icons-material/Add";
 import { cloneFieldItem } from "./defaults";
 import type { ContainsProps, FieldItem } from "./types";
@@ -11,10 +11,11 @@ interface AddContainsButtonProps extends ContainsProps {
 
 function AddContainsButton(props: AddContainsButtonProps) {
   return (
-    <IconButton
+    <Button
       disabled={props.disabled}
-      className="addBtn"
-      aria-label="Hinzufügen"
+      variant="outlined"
+      size="small"
+      startIcon={<AddIcon />}
       onClick={() => {
         if (!props.setFieldValue) return;
 
@@ -25,8 +26,8 @@ function AddContainsButton(props: AddContainsButtonProps) {
         props.setFieldValue(props.type, [...items, nextItem], true);
       }}
     >
-      <AddIcon />
-    </IconButton>
+      Geschichte
+    </Button>
   );
 }
 

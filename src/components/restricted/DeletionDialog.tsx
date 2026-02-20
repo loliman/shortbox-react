@@ -154,17 +154,18 @@ function DeletionDialog(props: Readonly<DeletionDialogProps>) {
   return (
     <Dialog open={Boolean(open)} onClose={handleClose} aria-labelledby="form-delete-dialog-title">
       <DialogTitle id="form-delete-dialog-title">
-        <WarningIcon className="deleteTitleIcon" />
+        <WarningIcon sx={{ mr: 1, verticalAlign: "middle" }} />
         Löschen bestätigen
       </DialogTitle>
       <DialogContent>{getDeleteConfimText(level, item)}</DialogContent>
       <DialogActions>
-        <Button onClick={() => handleClose?.()} color="primary">
+        <Button onClick={() => handleClose?.()} variant="text" color="inherit">
           Abbrechen
         </Button>
 
         <Button
-          color="secondary"
+          color="error"
+          variant="contained"
           onClick={() => {
             runDeleteMutation({
               variables: {

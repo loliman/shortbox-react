@@ -1,7 +1,11 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
-import ImageList from "@mui/material/ImageList";
 import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { getVariantKey } from "../utils/issueDetailsUtils";
 import { IssueVariantTile } from "./IssueVariantTile";
 import type { VariantIssue } from "./types";
@@ -22,45 +26,87 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
   if (variants.length <= 1) return null;
 
   return (
-    <React.Fragment>
-      <Typography className="coverGalleryHeader" component="p">
-        Erhältlich in {variants.length} Varianten
-      </Typography>
-
-      <Box
-        className="coverGallery"
+    <Accordion
+      disableGutters
+      elevation={1}
+      defaultExpanded={false}
+      slotProps={{
+        transition: {
+          collapsedSize: "20px",
+        },
+      }}
+      sx={{
+        backgroundColor: "transparent",
+        border: (theme) => `1px solid ${theme.palette.divider}`,
+        borderRadius: 1.5,
+        overflow: "hidden",
+        "&::before": { display: "none" },
+      }}
+    >
+      <AccordionSummary
+        expandIcon={<ExpandMoreIcon sx={{ fontSize: 24 }} />}
+        aria-label="Varianten anzeigen"
         sx={{
-          overflowX: "auto",
-          overflowY: "hidden",
-          WebkitOverflowScrolling: "touch",
-          pb: 1,
+          minHeight: 48,
+          px: 1.5,
+          py: 0,
+          backgroundColor: (theme) => theme.palette.background.paper,
+          "& .MuiAccordionSummary-content": { my: 0, alignItems: "center" },
+          "& .MuiAccordionSummary-expandIconWrapper": {
+            alignSelf: "center",
+            mr: 0.25,
+          },
         }}
       >
-        <ImageList
-          className="gridList"
+        <Typography component="p" variant="body2" sx={{ fontWeight: 700 }}>
+          Erhältlich in {variants.length} Varianten
+        </Typography>
+      </AccordionSummary>
+
+      <AccordionDetails sx={{ px: 1.25, pb: 1.25, pt: 0.5 }}>
+        <Box
           sx={{
-            m: 0,
-            gridAutoFlow: "column",
-            gridTemplateRows: "1fr",
-            gridTemplateColumns: "none !important",
-            gridAutoColumns: { xs: "150px", sm: "170px", md: "190px" },
-            width: "max-content",
-            overflow: "visible",
-            gap: 8,
+            overflowX: "auto",
+            overflowY: "hidden",
+            WebkitOverflowScrolling: "touch",
+            pb: 1,
           }}
         >
-          {variants.map((variant, idx) => (
-            <IssueVariantTile
-              issue={props.issue}
-              variant={variant}
-              session={props.session}
-              navigate={props.navigate}
-              us={Boolean(props.us)}
-              key={getVariantKey(variant, idx)}
-            />
-          ))}
-        </ImageList>
-      </Box>
-    </React.Fragment>
+          <Stack
+            component="ul"
+            direction="row"
+            spacing={0.35}
+            sx={{
+              m: 0,
+              p: 0,
+              listStyle: "none",
+              width: "max-content",
+            }}
+          >
+            {variants.map((variant, idx) => (
+              <Box
+                component="li"
+                key={getVariantKey(variant, idx)}
+                sx={{
+                  p: 0,
+                  m: 0,
+                  width: { xs: "330px", sm: "375px", md: "430px" },
+                  height: { xs: "132px", sm: "144px", md: "156px" },
+                  flex: "0 0 auto",
+                }}
+              >
+                <IssueVariantTile
+                  issue={props.issue}
+                  variant={variant}
+                  session={props.session}
+                  navigate={props.navigate}
+                  us={Boolean(props.us)}
+                />
+              </Box>
+            ))}
+          </Stack>
+        </Box>
+      </AccordionDetails>
+    </Accordion>
   );
 }
