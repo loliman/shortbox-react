@@ -385,6 +385,19 @@ const SeriesBranch = React.memo(function SeriesBranch(props: Readonly<SeriesBran
     );
   }, [props.activeSeriesKey]);
 
+  React.useEffect(() => {
+    if (!props.selectedIssue?.series) return;
+    const matchingSeriesNode = seriesNodes.find((seriesNode) =>
+      doesSeriesNodeMatchIssueSeries(seriesNode, props.selectedIssue?.series)
+    );
+    if (!matchingSeriesNode) return;
+
+    const matchingSeriesKey = getSeriesKey(matchingSeriesNode);
+    setExpandedSeries((prev) =>
+      prev[matchingSeriesKey] ? prev : { ...prev, [matchingSeriesKey]: true }
+    );
+  }, [props.selectedIssue, seriesNodes]);
+
   const handleToggleSeries = React.useCallback((seriesKey: string) => {
     setExpandedSeries((prev) => ({ ...prev, [seriesKey]: !prev[seriesKey] }));
   }, []);
@@ -411,7 +424,7 @@ const SeriesBranch = React.memo(function SeriesBranch(props: Readonly<SeriesBran
     <MuiList disablePadding>
       {seriesNodes.map((seriesNode) => {
         const seriesKey = getSeriesKey(seriesNode);
-        const selected = Boolean(props.activeSeriesKey && props.activeSeriesKey === seriesKey);
+        const selected = isSeriesNodeSelected(seriesNode, props.activeSeriesKey, props.selectedIssue);
         const expanded = Boolean(expandedSeries[seriesKey]);
 
         return (
@@ -431,7 +444,7 @@ const SeriesBranch = React.memo(function SeriesBranch(props: Readonly<SeriesBran
                 us={us}
                 filter={filter as IssuesQueryVariables["filter"]}
                 series={seriesNode}
-                selectedIssue={selected ? props.selectedIssue : undefined}
+                selectedIssue={props.selectedIssue}
                 session={props.session}
                 navigateTo={props.navigateTo}
                 listRef={props.listRef}
@@ -461,10 +474,12 @@ type IssuesBranchProps = {
 const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBranchProps>) {
   const { series, us, filter } = props;
   const seriesInput = toSeriesInput(series, us);
-  const selectedIssueNumber = normalizeIssuePart(props.selectedIssue?.number);
-  const selectedIssueVariantKey = getIssueVariantSelectionKey(props.selectedIssue);
+  const selectedSeries = doesSeriesNodeMatchIssueSeries(series, props.selectedIssue?.series);
+  const selectedIssueNumber = selectedSeries ? normalizeIssuePart(props.selectedIssue?.number) : "";
+  const selectedIssueVariantKey = selectedSeries ? getIssueVariantSelectionKey(props.selectedIssue) : "";
   const previousIssueSelectionRef = React.useRef({ issueNumber: "", variantKey: "" });
   const skipVariantTransitionAutoScrollRef = React.useRef(false);
+  const issueListRef = React.useRef<HTMLUListElement | null>(null);
 
   const {
     data: issuesData,
@@ -508,7 +523,7 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
       return;
     }
 
-    const listElement = props.listRef.current;
+    const listElement = issueListRef.current;
     const scrollContainer = props.navScrollContainerRef.current;
     if (!listElement || !scrollContainer) return;
 
@@ -525,7 +540,6 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
   }, [
     issueNodes,
     selectedIssueNumber,
-    props.listRef,
     props.navScrollContainerRef,
     props.suppressAutoScrollRef,
   ]);
@@ -535,9 +549,9 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
   if (issueNodes.length === 0) return <NestedEmptyRow depth={2} />;
 
   return (
-    <MuiList disablePadding>
+    <MuiList disablePadding ref={issueListRef}>
       {issueNodes.map((issueNode, idx) => {
-        const selected = isSelectedIssue(issueNode, props.selectedIssue);
+        const selected = isSelectedIssue(issueNode, props.selectedIssue, series);
         const issueNumber = issueNode.number || "";
         const issueSeries = toIssueSeriesSelected(issueNode, series, us);
         const variantCount = getVariantCount(issueNode);
@@ -793,7 +807,7 @@ function getSelectedPublisherName(selected: SelectedRoot): string {
 }
 
 function getSeriesKey(seriesNode: SeriesNode): string {
-  return [seriesNode.publisher?.name || "", seriesNode.title || "", seriesNode.volume || ""].join(
+  return [seriesNode.publisher?.name || "", seriesNode.title || "", normalizeSeriesVolume(seriesNode.volume)].join(
     "|"
   );
 }
@@ -804,7 +818,7 @@ function getSelectedSeriesKey(selected: SelectedRoot): string | null {
   return [
     seriesNode.publisher?.name || "",
     seriesNode.title,
-    seriesNode.volume === null || seriesNode.volume === undefined ? "" : seriesNode.volume,
+    normalizeSeriesVolume(seriesNode.volume),
   ].join("|");
 }
 
@@ -845,10 +859,11 @@ function toIssueSeriesSelected(
   };
 }
 
-function isSelectedIssue(issueNode: IssueNode, selectedIssue?: Issue): boolean {
+function isSelectedIssue(issueNode: IssueNode, selectedIssue: Issue | undefined, seriesNode: SeriesNode): boolean {
   const selectedNumber = normalizeIssuePart(selectedIssue?.number);
   if (selectedNumber === "") return false;
-  return normalizeIssuePart(issueNode.number) === selectedNumber;
+  if (normalizeIssuePart(issueNode.number) !== selectedNumber) return false;
+  return doesSeriesNodeMatchIssueSeries(seriesNode, selectedIssue?.series);
 }
 
 function normalizeIssuePart(value: unknown): string {
@@ -858,6 +873,43 @@ function normalizeIssuePart(value: unknown): string {
 
 function getIssueVariantSelectionKey(issue?: Issue): string {
   return [normalizeIssuePart(issue?.format), normalizeIssuePart(issue?.variant)].join("|");
+}
+
+function normalizeSeriesVolume(value: unknown): string {
+  if (value === null || value === undefined) return "";
+  const numericValue = Number(value);
+  return Number.isFinite(numericValue) ? String(numericValue) : "";
+}
+
+function doesSeriesNodeMatchIssueSeries(
+  seriesNode: { title?: unknown; volume?: unknown; publisher?: { name?: unknown } | null },
+  selectedSeries?: Issue["series"]
+): boolean {
+  if (!selectedSeries) return false;
+
+  const nodePublisher = normalizeIssuePart(seriesNode.publisher?.name);
+  const selectedPublisher = normalizeIssuePart(selectedSeries.publisher?.name);
+  if (!nodePublisher || !selectedPublisher || nodePublisher !== selectedPublisher) return false;
+
+  const nodeTitle = normalizeIssuePart(seriesNode.title);
+  const selectedTitle = normalizeIssuePart(selectedSeries.title);
+  if (!nodeTitle || !selectedTitle || nodeTitle !== selectedTitle) return false;
+
+  const nodeVolume = normalizeSeriesVolume(seriesNode.volume);
+  const selectedVolume = normalizeSeriesVolume(selectedSeries.volume);
+  if (nodeVolume && selectedVolume && nodeVolume !== selectedVolume) return false;
+
+  return true;
+}
+
+function isSeriesNodeSelected(
+  seriesNode: SeriesNode,
+  activeSeriesKey: string | null,
+  selectedIssue?: Issue
+): boolean {
+  const seriesKey = getSeriesKey(seriesNode);
+  if (activeSeriesKey && activeSeriesKey === seriesKey) return true;
+  return doesSeriesNodeMatchIssueSeries(seriesNode, selectedIssue?.series);
 }
 
 function isElementVisibleInContainer(element: HTMLElement, container: HTMLElement): boolean {

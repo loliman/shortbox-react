@@ -104,7 +104,8 @@ export function getSelected(params: RouteParams, us: boolean): SelectedRoot {
       : hasLegacySeparator
         ? seriesValue.substring(legacySeparatorIndex + 1)
         : "1";
-    const volume = Number.parseInt(volumeText, 10);
+    const parsedVolume = Number.parseInt(volumeText, 10);
+    const volume = Number.isFinite(parsedVolume) ? parsedVolume : undefined;
 
     selected.series = {
       title,
