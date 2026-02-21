@@ -137,13 +137,27 @@ function IssueDetails(props: IssueDetailsProps) {
     return getIssueVariantKey(issueForVariants as unknown as any);
   }, [issueForVariants]);
 
+  if (isIssueTransitioning && !error) {
+    return (
+      <Layout>
+        <QueryResult
+          data={undefined}
+          loading={true}
+          selected={selected}
+          placeholder={<IssueDetailsPreview />}
+          placeholderCount={1}
+        />
+      </Layout>
+    );
+  }
+
   if (error || isIssueMissing || !issueForVariants || !loadedIssue) {
     return (
       <Layout>
         <QueryResult
           error={error}
           data={isIssueMissing ? null : resolvedIssue}
-          loading={isIssueTransitioning || loading || networkStatus < 7}
+          loading={loading || networkStatus < 7}
           selected={selected}
           placeholder={<IssueDetailsPreview />}
           placeholderCount={1}
