@@ -522,16 +522,10 @@ export type Story = {
 export type StoryInput = {
   addinfo?: InputMaybe<Scalars['String']['input']>;
   appearances?: InputMaybe<Array<InputMaybe<AppearanceInput>>>;
-  collected?: InputMaybe<Scalars['Boolean']['input']>;
   exclusive?: InputMaybe<Scalars['Boolean']['input']>;
-  firstapp?: InputMaybe<Scalars['Boolean']['input']>;
   individuals?: InputMaybe<Array<InputMaybe<IndividualInput>>>;
   issue?: InputMaybe<IssueInput>;
   number: Scalars['Int']['input'];
-  onlyapp?: InputMaybe<Scalars['Boolean']['input']>;
-  onlyoneprint?: InputMaybe<Scalars['Boolean']['input']>;
-  onlytb?: InputMaybe<Scalars['Boolean']['input']>;
-  otheronlytb?: InputMaybe<Scalars['Boolean']['input']>;
   parent?: InputMaybe<StoryInput>;
   part?: InputMaybe<Scalars['String']['input']>;
   reprintOf?: InputMaybe<StoryInput>;
