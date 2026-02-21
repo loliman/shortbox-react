@@ -461,9 +461,9 @@ type IssuesBranchProps = {
 const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBranchProps>) {
   const { series, us, filter } = props;
   const seriesInput = toSeriesInput(series, us);
-  const selectedIssueBaseKey = getIssueBaseKey(props.selectedIssue);
+  const selectedIssueNumber = normalizeIssuePart(props.selectedIssue?.number);
   const selectedIssueVariantKey = getIssueVariantSelectionKey(props.selectedIssue);
-  const previousIssueSelectionRef = React.useRef({ baseKey: "", variantKey: "" });
+  const previousIssueSelectionRef = React.useRef({ issueNumber: "", variantKey: "" });
   const skipVariantTransitionAutoScrollRef = React.useRef(false);
 
   const {
@@ -484,19 +484,19 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
   React.useEffect(() => {
     const previousSelection = previousIssueSelectionRef.current;
     skipVariantTransitionAutoScrollRef.current = Boolean(
-      previousSelection.baseKey &&
-        selectedIssueBaseKey &&
-        previousSelection.baseKey === selectedIssueBaseKey &&
+      previousSelection.issueNumber &&
+        selectedIssueNumber &&
+        previousSelection.issueNumber === selectedIssueNumber &&
         previousSelection.variantKey !== selectedIssueVariantKey
     );
     previousIssueSelectionRef.current = {
-      baseKey: selectedIssueBaseKey,
+      issueNumber: selectedIssueNumber,
       variantKey: selectedIssueVariantKey,
     };
-  }, [selectedIssueBaseKey, selectedIssueVariantKey]);
+  }, [selectedIssueNumber, selectedIssueVariantKey]);
 
   React.useEffect(() => {
-    if (!selectedIssueBaseKey) return;
+    if (!selectedIssueNumber) return;
 
     if (props.suppressAutoScrollRef.current) {
       props.suppressAutoScrollRef.current = false;
@@ -513,8 +513,8 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
     if (!listElement || !scrollContainer) return;
 
     const selectedItem = Array.from(
-      listElement.querySelectorAll<HTMLElement>("[data-nav-issue-base-key]")
-    ).find((element) => element.dataset.navIssueBaseKey === selectedIssueBaseKey);
+      listElement.querySelectorAll<HTMLElement>("[data-nav-issue-number]")
+    ).find((element) => element.dataset.navIssueNumber === selectedIssueNumber);
     if (!selectedItem) return;
     if (isElementVisibleInContainer(selectedItem, scrollContainer)) return;
 
@@ -524,7 +524,7 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
     });
   }, [
     issueNodes,
-    selectedIssueBaseKey,
+    selectedIssueNumber,
     props.listRef,
     props.navScrollContainerRef,
     props.suppressAutoScrollRef,
@@ -540,10 +540,6 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
         const selected = isSelectedIssue(issueNode, props.selectedIssue);
         const issueNumber = issueNode.number || "";
         const issueSeries = toIssueSeriesSelected(issueNode, series, us);
-        const issueBaseKey = getIssueBaseKey({
-          number: issueNumber,
-          series: issueSeries,
-        } as Issue);
         const variantCount = getVariantCount(issueNode);
         const hasVariants = variantCount > 0;
 
@@ -561,7 +557,7 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
             <ListItemButton
               divider={false}
               selected={selected}
-              data-nav-issue-base-key={issueBaseKey}
+              data-nav-issue-number={issueNumber}
               sx={{
                 pl: getDepthPadding(2) + 1.3,
                 py: 0.3,
@@ -850,17 +846,9 @@ function toIssueSeriesSelected(
 }
 
 function isSelectedIssue(issueNode: IssueNode, selectedIssue?: Issue): boolean {
-  if (!selectedIssue?.number) return false;
-  if ((issueNode.number || "") !== selectedIssue.number) return false;
-
-  const selectedVariant = normalizeIssuePart(selectedIssue.variant);
-  if (selectedVariant !== "") return true;
-
-  const selectedFormat = normalizeIssuePart(selectedIssue.format);
-  const nodeFormat = normalizeIssuePart(issueNode.format);
-  if (selectedFormat && nodeFormat && selectedFormat !== nodeFormat) return false;
-
-  return true;
+  const selectedNumber = normalizeIssuePart(selectedIssue?.number);
+  if (selectedNumber === "") return false;
+  return normalizeIssuePart(issueNode.number) === selectedNumber;
 }
 
 function normalizeIssuePart(value: unknown): string {
@@ -870,16 +858,6 @@ function normalizeIssuePart(value: unknown): string {
 
 function getIssueVariantSelectionKey(issue?: Issue): string {
   return [normalizeIssuePart(issue?.format), normalizeIssuePart(issue?.variant)].join("|");
-}
-
-function getIssueBaseKey(issue?: Issue): string {
-  if (!issue?.number) return "";
-  return [
-    issue.series?.publisher?.name || "",
-    issue.series?.title || "",
-    issue.series?.volume ?? "",
-    issue.number,
-  ].join("|");
 }
 
 function isElementVisibleInContainer(element: HTMLElement, container: HTMLElement): boolean {
