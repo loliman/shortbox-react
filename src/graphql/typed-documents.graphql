@@ -84,6 +84,7 @@ query Issues(
           }
         }
         format
+        variant
         variants {
           collected
           variant
