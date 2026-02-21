@@ -74,7 +74,11 @@ function FilterPage(props: FilterPageProps) {
                 </Paper>
 
                 <Paper elevation={0} sx={sectionSx}>
-                  <ContentSection isDesktop={isDesktop} />
+                  <ContentSection
+                    values={values}
+                    isDesktop={isDesktop}
+                    setFieldValue={setFieldValue}
+                  />
                 </Paper>
 
                 <FormActions

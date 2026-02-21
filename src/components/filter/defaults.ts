@@ -1,4 +1,5 @@
 import type { FieldItem } from "../../util/filterFieldHelpers";
+import { FILTER_MULTI_VALUE_SEPARATOR } from "./constants";
 import { FilterFormatOption, FilterValues } from "./types";
 
 const DEFAULT_RELEASE_DATE = { date: "1900-01-01", compare: ">" };
@@ -41,6 +42,57 @@ function normalizeSeries(rawSeries: unknown): FieldItem[] {
     .map((entry) => ({ ...entry, __typename: "Series" }));
 }
 
+function splitMultiValueString(value: string): string[] {
+  return value
+    .split(FILTER_MULTI_VALUE_SEPARATOR)
+    .map((entry) => entry.trim())
+    .filter((entry) => entry.length > 0);
+}
+
+function normalizeArcFilters(rawArcs: unknown): FilterValues["arcs"] {
+  if (Array.isArray(rawArcs)) {
+    return rawArcs
+      .map((entry) => {
+        if (!entry || typeof entry !== "object" || Array.isArray(entry)) return null;
+        const title = String((entry as { title?: unknown }).title || "").trim();
+        if (!title) return null;
+        const typeValue = (entry as { type?: unknown }).type;
+        return typeof typeValue === "string" && typeValue.trim()
+          ? { title, type: typeValue.trim() }
+          : { title };
+      })
+      .filter((entry): entry is { title: string; type?: string } => Boolean(entry));
+  }
+
+  if (typeof rawArcs === "string") {
+    return splitMultiValueString(rawArcs).map((title) => ({ title }));
+  }
+
+  return [];
+}
+
+function normalizeAppearanceFilters(rawAppearances: unknown): FilterValues["appearances"] {
+  if (Array.isArray(rawAppearances)) {
+    return rawAppearances
+      .map((entry) => {
+        if (!entry || typeof entry !== "object" || Array.isArray(entry)) return null;
+        const name = String((entry as { name?: unknown }).name || "").trim();
+        if (!name) return null;
+        const typeValue = (entry as { type?: unknown }).type;
+        return typeof typeValue === "string" && typeValue.trim()
+          ? { name, type: typeValue.trim() }
+          : { name };
+      })
+      .filter((entry): entry is { name: string; type?: string } => Boolean(entry));
+  }
+
+  if (typeof rawAppearances === "string") {
+    return splitMultiValueString(rawAppearances).map((name) => ({ name }));
+  }
+
+  return [];
+}
+
 export function createDefaultFilterValues(): FilterValues {
   return {
     formats: [],
@@ -49,9 +101,9 @@ export function createDefaultFilterValues(): FilterValues {
     publishers: [],
     series: [],
     numbers: [{ ...DEFAULT_NUMBER_FILTER }],
-    arcs: "",
+    arcs: [],
     individuals: [],
-    appearances: "",
+    appearances: [],
     firstPrint: false,
     onlyPrint: false,
     onlyTb: false,
@@ -94,9 +146,8 @@ export function parseFilterValues(queryFilter?: string): FilterValues {
           ? parsed.numbers
           : defaults.numbers,
       individuals: Array.isArray(parsed.individuals) ? parsed.individuals : defaults.individuals,
-      arcs: typeof parsed.arcs === "string" ? parsed.arcs : defaults.arcs,
-      appearances:
-        typeof parsed.appearances === "string" ? parsed.appearances : defaults.appearances,
+      arcs: normalizeArcFilters(parsed.arcs),
+      appearances: normalizeAppearanceFilters(parsed.appearances),
       withVariants: Boolean(parsed.withVariants),
       firstPrint: Boolean(parsed.firstPrint),
       onlyPrint: Boolean(parsed.onlyPrint),

@@ -24,7 +24,6 @@ type TopBarFilterMenuProps = {
 
 export default function TopBarFilterMenu(props: Readonly<TopBarFilterMenuProps>) {
   const { us, selected, isFilterActive, navigate } = props;
-  const isLoggedIn = Boolean(props.session && props.session.loggedIn);
   const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const [exportOpen, setExportOpen] = React.useState(false);
   const menuOpen = Boolean(anchorEl);
@@ -36,29 +35,6 @@ export default function TopBarFilterMenu(props: Readonly<TopBarFilterMenuProps>)
   const handleFilterMenuClose = () => {
     setAnchorEl(null);
   };
-
-  if (!isLoggedIn) {
-    return (
-      <Box>
-        <Tooltip title="Filtern ist aufgrund von Neuentwicklung des Features aktuell nicht möglich. Stay tuned...">
-          <span data-testid="filter-disabled-wrapper">
-            <IconButton
-              disabled
-              color="inherit"
-              aria-label="Filter aktuell deaktiviert"
-              sx={{
-                "&.Mui-disabled": {
-                  color: "rgba(255,255,255,0.55)",
-                },
-              }}
-            >
-              <FilterListIcon />
-            </IconButton>
-          </span>
-        </Tooltip>
-      </Box>
-    );
-  }
 
   return (
     <Box>

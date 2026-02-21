@@ -85,6 +85,7 @@ async function triggerExport(
   const { data, error } = await client.query({
     query: exportQuery,
     variables: { filter, type: type },
+    fetchPolicy: "no-cache",
   });
 
   if (error || !data?.export) {

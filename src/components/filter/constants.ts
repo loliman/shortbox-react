@@ -22,3 +22,5 @@ export const CONTRIBUTOR_FIELDS = [
 ] as const;
 
 export const TRANSLATOR_FIELD = { type: "TRANSLATOR", label: "Übersetzer" } as const;
+
+export const FILTER_MULTI_VALUE_SEPARATOR = " || ";

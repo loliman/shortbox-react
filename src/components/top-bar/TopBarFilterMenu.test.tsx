@@ -10,20 +10,22 @@ vi.mock("./ExportDialog", () => ({
 }));
 
 describe("TopBarFilterMenu", () => {
-  it("renders disabled filter button for logged-out users", () => {
+  it("renders active filter button for logged-out users", () => {
     render(<TopBarFilterMenu us={false} selected={{ us: false }} navigate={vi.fn()} session={null} />);
 
-    const button = screen.getByRole("button", { name: "Filter aktuell deaktiviert" });
-    expect(button.getAttribute("disabled")).toBe("");
+    const button = screen.getByRole("button", { name: "Filter öffnen" });
+    expect(button.hasAttribute("disabled")).toBe(false);
   });
 
-  it("shows disabled tooltip on hover for logged-out users", async () => {
+  it("navigates to filter page for logged-out users", async () => {
     const user = userEvent.setup();
-    render(<TopBarFilterMenu us={false} selected={{ us: false }} navigate={vi.fn()} session={null} />);
+    const navigate = vi.fn();
+    render(<TopBarFilterMenu us={false} selected={{ us: false }} navigate={navigate} session={null} />);
 
-    await user.hover(screen.getByTestId("filter-disabled-wrapper"));
+    await user.click(screen.getByRole("button", { name: "Filter öffnen" }));
 
-    expect(await screen.findByText("Aktuell deaktiviert")).toBeTruthy();
+    expect(navigate).toHaveBeenCalledTimes(1);
+    expect(navigate.mock.calls[0][1]).toBe("/filter/de");
   });
 
   it("opens menu for active filters and supports edit/reset/export actions for logged-in users", async () => {

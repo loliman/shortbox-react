@@ -9,9 +9,9 @@ function createBaseValues(): FilterValues {
     publishers: [],
     series: [],
     numbers: [],
-    arcs: "",
+    arcs: [],
     individuals: [],
-    appearances: "",
+    appearances: [],
     firstPrint: false,
     onlyPrint: false,
     onlyTb: false,
@@ -58,11 +58,11 @@ describe("serializeFilterValues", () => {
       { compare: "=", number: "", variant: "" },
       { compare: ">=", number: "10", variant: "" },
     ];
-    values.arcs = "Maximum Carnage";
+    values.arcs = [{ title: "Maximum Carnage" }, { title: "Civil War" }];
     values.individuals = [
       { __typename: "Individual", name: "Peter Parker", type: ["WRITER"], role: ["Writer"] },
     ];
-    values.appearances = "Spider-Man";
+    values.appearances = [{ name: "Spider-Man" }, { name: "Venom" }];
     values.firstPrint = true;
     values.onlyPrint = true;
     values.otherOnlyTb = true;
@@ -76,8 +76,8 @@ describe("serializeFilterValues", () => {
       withVariants: true,
       releasedates: [{ compare: ">=", date: "2020-01-01" }],
       numbers: [{ compare: ">=", number: "10", variant: "" }],
-      arcs: "Maximum Carnage",
-      appearances: "Spider-Man",
+      arcs: "Maximum Carnage || Civil War",
+      appearances: "Spider-Man || Venom",
       firstPrint: true,
       onlyPrint: true,
       otherOnlyTb: true,

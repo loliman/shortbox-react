@@ -7,6 +7,8 @@ describe("filter defaults", () => {
     expect(defaults.formats).toEqual([]);
     expect(defaults.releasedates).toEqual([{ date: "1900-01-01", compare: ">" }]);
     expect(defaults.numbers).toEqual([{ number: "", compare: ">", variant: "" }]);
+    expect(defaults.arcs).toEqual([]);
+    expect(defaults.appearances).toEqual([]);
     expect(defaults.withVariants).toBe(false);
   });
 
@@ -19,8 +21,8 @@ describe("filter defaults", () => {
         series: [{ title: "Spider-Man" }, null, 42],
         numbers: [],
         individuals: [{ name: "Peter" }],
-        arcs: "Civil War",
-        appearances: "Venom",
+        arcs: "Civil War || Secret Invasion",
+        appearances: "Venom || Symbiote",
         withVariants: 1,
         firstPrint: true,
       })
@@ -31,6 +33,8 @@ describe("filter defaults", () => {
     expect(parsed.publishers).toEqual([{ name: "Marvel" }]);
     expect(parsed.releasedates).toEqual([{ date: "1900-01-01", compare: ">" }]);
     expect(parsed.numbers).toEqual([{ number: "", compare: ">", variant: "" }]);
+    expect(parsed.arcs).toEqual([{ title: "Civil War" }, { title: "Secret Invasion" }]);
+    expect(parsed.appearances).toEqual([{ name: "Venom" }, { name: "Symbiote" }]);
     expect(parsed.withVariants).toBe(true);
     expect(parsed.firstPrint).toBe(true);
   });

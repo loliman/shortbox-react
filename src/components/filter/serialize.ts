@@ -1,8 +1,15 @@
 import { stripItem } from "../../util/util";
+import { FILTER_MULTI_VALUE_SEPARATOR } from "./constants";
 import { FilterSubmitValues, FilterValues } from "./types";
 
 function hasPayload(payload: FilterSubmitValues): boolean {
   return Object.keys(payload).length > 0;
+}
+
+function joinMultiValues(values: string[]): string | undefined {
+  const normalized = values.map((entry) => entry.trim()).filter((entry) => entry.length > 0);
+  if (normalized.length === 0) return undefined;
+  return normalized.join(FILTER_MULTI_VALUE_SEPARATOR);
 }
 
 export function serializeFilterValues(
@@ -41,9 +48,8 @@ export function serializeFilterValues(
     payload.numbers = numbers;
   }
 
-  if (values.arcs) {
-    payload.arcs = values.arcs;
-  }
+  const arcsValue = joinMultiValues(values.arcs.map((entry) => String(entry.title || "")));
+  if (arcsValue) payload.arcs = arcsValue;
 
   if (values.individuals.length > 0) {
     payload.individuals = values.individuals.map((entry) => {
@@ -53,9 +59,10 @@ export function serializeFilterValues(
     });
   }
 
-  if (values.appearances) {
-    payload.appearances = values.appearances;
-  }
+  const appearancesValue = joinMultiValues(
+    values.appearances.map((entry) => String(entry.name || ""))
+  );
+  if (appearancesValue) payload.appearances = appearancesValue;
 
   if (values.firstPrint) payload.firstPrint = true;
   if (values.onlyPrint) payload.onlyPrint = true;
