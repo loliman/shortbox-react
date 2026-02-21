@@ -179,11 +179,15 @@ function List(props: Readonly<ListProps>) {
 
   React.useEffect(() => {
     if (!selectedPublisherName) return;
+    const resolvedPublisherName =
+      visiblePublisherNodes.find((publisherNode) =>
+        isSameEntityName(publisherNode.name, selectedPublisherName)
+      )?.name || selectedPublisherName;
 
     setExpandedPublishers((prev) =>
-      prev[selectedPublisherName] ? prev : { ...prev, [selectedPublisherName]: true }
+      prev[resolvedPublisherName] ? prev : { ...prev, [resolvedPublisherName]: true }
     );
-  }, [selectedPublisherName]);
+  }, [selectedPublisherName, visiblePublisherNodes]);
 
   const navigateTo = React.useCallback(
     (event: unknown, item: SelectedRoot, closeOnPhone = false) => {
@@ -225,7 +229,7 @@ function List(props: Readonly<ListProps>) {
     content = visiblePublisherNodes.map((publisherNode) => {
       const publisherName = publisherNode.name || "";
       const expanded = Boolean(expandedPublishers[publisherName]);
-      const selected = Boolean(selectedPublisherName && selectedPublisherName === publisherName);
+      const selected = isSameEntityName(selectedPublisherName, publisherName);
 
       return (
         <Box key={publisherName || "publisher-empty"}>
@@ -256,7 +260,7 @@ function List(props: Readonly<ListProps>) {
               publisher={publisherNode}
               navStateKey={navStateKey}
               activeSeriesKey={selected ? selectedSeriesKey : null}
-              selectedIssue={selected ? selectedIssue : undefined}
+              selectedIssue={selectedIssue}
               session={props.session}
               navigateTo={navigateTo}
               listRef={listRef}
@@ -887,12 +891,12 @@ function doesSeriesNodeMatchIssueSeries(
 ): boolean {
   if (!selectedSeries) return false;
 
-  const nodePublisher = normalizeIssuePart(seriesNode.publisher?.name);
-  const selectedPublisher = normalizeIssuePart(selectedSeries.publisher?.name);
+  const nodePublisher = normalizeMatchText(seriesNode.publisher?.name);
+  const selectedPublisher = normalizeMatchText(selectedSeries.publisher?.name);
   if (!nodePublisher || !selectedPublisher || nodePublisher !== selectedPublisher) return false;
 
-  const nodeTitle = normalizeIssuePart(seriesNode.title);
-  const selectedTitle = normalizeIssuePart(selectedSeries.title);
+  const nodeTitle = normalizeMatchText(seriesNode.title);
+  const selectedTitle = normalizeMatchText(selectedSeries.title);
   if (!nodeTitle || !selectedTitle || nodeTitle !== selectedTitle) return false;
 
   const nodeVolume = normalizeSeriesVolume(seriesNode.volume);
@@ -900,6 +904,17 @@ function doesSeriesNodeMatchIssueSeries(
   if (nodeVolume && selectedVolume && nodeVolume !== selectedVolume) return false;
 
   return true;
+}
+
+function normalizeMatchText(value: unknown): string {
+  return normalizeIssuePart(value).replace(/\s+/g, " ").toLowerCase();
+}
+
+function isSameEntityName(left: unknown, right: unknown): boolean {
+  const normalizedLeft = normalizeMatchText(left);
+  const normalizedRight = normalizeMatchText(right);
+  if (!normalizedLeft || !normalizedRight) return false;
+  return normalizedLeft === normalizedRight;
 }
 
 function isSeriesNodeSelected(
