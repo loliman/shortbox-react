@@ -93,6 +93,7 @@ function List(props: Readonly<ListProps>) {
   const phonePortrait = props.isPhonePortrait ?? Boolean(props.isPhone && !props.isPhoneLandscape);
   const listRef = React.useRef<HTMLUListElement | null>(null);
   const navScrollContainerRef = React.useRef<HTMLDivElement | null>(null);
+  const suppressIssueAutoScrollRef = React.useRef(false);
   const storeScrollTop = React.useCallback(() => {
     const container = navScrollContainerRef.current;
     if (container) {
@@ -172,6 +173,11 @@ function List(props: Readonly<ListProps>) {
   const isInitialLoading = publisherNetworkStatus === 1 && visiblePublisherNodes.length === 0;
 
   React.useEffect(() => {
+    if (selectedIssue?.number) return;
+    suppressIssueAutoScrollRef.current = false;
+  }, [selectedIssue?.number]);
+
+  React.useEffect(() => {
     if (!selectedPublisherName) return;
 
     setExpandedPublishers((prev) =>
@@ -182,6 +188,7 @@ function List(props: Readonly<ListProps>) {
   const navigateTo = React.useCallback(
     (event: unknown, item: SelectedRoot, closeOnPhone = false) => {
       storeScrollTop();
+      suppressIssueAutoScrollRef.current = true;
       if (closeOnPhone && phonePortrait) toggleDrawer?.();
 
       props.navigate?.(event, generateUrl(item, us), {
@@ -253,6 +260,8 @@ function List(props: Readonly<ListProps>) {
               session={props.session}
               navigateTo={navigateTo}
               listRef={listRef}
+              navScrollContainerRef={navScrollContainerRef}
+              suppressAutoScrollRef={suppressIssueAutoScrollRef}
             />
           </Collapse>
         </Box>
@@ -324,6 +333,8 @@ type SeriesBranchProps = {
   session?: unknown;
   navigateTo: (event: unknown, item: SelectedRoot, closeOnPhone?: boolean) => void;
   listRef: React.RefObject<HTMLUListElement | null>;
+  navScrollContainerRef: React.RefObject<HTMLDivElement | null>;
+  suppressAutoScrollRef: React.MutableRefObject<boolean>;
 };
 
 const SeriesBranch = React.memo(function SeriesBranch(props: Readonly<SeriesBranchProps>) {
@@ -424,6 +435,8 @@ const SeriesBranch = React.memo(function SeriesBranch(props: Readonly<SeriesBran
                 session={props.session}
                 navigateTo={props.navigateTo}
                 listRef={props.listRef}
+                navScrollContainerRef={props.navScrollContainerRef}
+                suppressAutoScrollRef={props.suppressAutoScrollRef}
               />
             </Collapse>
           </Box>
@@ -441,11 +454,17 @@ type IssuesBranchProps = {
   session?: unknown;
   navigateTo: (event: unknown, item: SelectedRoot, closeOnPhone?: boolean) => void;
   listRef: React.RefObject<HTMLUListElement | null>;
+  navScrollContainerRef: React.RefObject<HTMLDivElement | null>;
+  suppressAutoScrollRef: React.MutableRefObject<boolean>;
 };
 
 const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBranchProps>) {
   const { series, us, filter } = props;
   const seriesInput = toSeriesInput(series, us);
+  const selectedIssueBaseKey = getIssueBaseKey(props.selectedIssue);
+  const selectedIssueVariantKey = getIssueVariantSelectionKey(props.selectedIssue);
+  const previousIssueSelectionRef = React.useRef({ baseKey: "", variantKey: "" });
+  const skipVariantTransitionAutoScrollRef = React.useRef(false);
 
   const {
     data: issuesData,
@@ -462,6 +481,55 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
 
   const issueNodes = React.useMemo(() => toIssueNodes(issuesData), [issuesData]);
 
+  React.useEffect(() => {
+    const previousSelection = previousIssueSelectionRef.current;
+    skipVariantTransitionAutoScrollRef.current = Boolean(
+      previousSelection.baseKey &&
+        selectedIssueBaseKey &&
+        previousSelection.baseKey === selectedIssueBaseKey &&
+        previousSelection.variantKey !== selectedIssueVariantKey
+    );
+    previousIssueSelectionRef.current = {
+      baseKey: selectedIssueBaseKey,
+      variantKey: selectedIssueVariantKey,
+    };
+  }, [selectedIssueBaseKey, selectedIssueVariantKey]);
+
+  React.useEffect(() => {
+    if (!selectedIssueBaseKey) return;
+
+    if (props.suppressAutoScrollRef.current) {
+      props.suppressAutoScrollRef.current = false;
+      return;
+    }
+
+    if (skipVariantTransitionAutoScrollRef.current) {
+      skipVariantTransitionAutoScrollRef.current = false;
+      return;
+    }
+
+    const listElement = props.listRef.current;
+    const scrollContainer = props.navScrollContainerRef.current;
+    if (!listElement || !scrollContainer) return;
+
+    const selectedItem = Array.from(
+      listElement.querySelectorAll<HTMLElement>("[data-nav-issue-base-key]")
+    ).find((element) => element.dataset.navIssueBaseKey === selectedIssueBaseKey);
+    if (!selectedItem) return;
+    if (isElementVisibleInContainer(selectedItem, scrollContainer)) return;
+
+    selectedItem.scrollIntoView({
+      block: "center",
+      inline: "nearest",
+    });
+  }, [
+    issueNodes,
+    selectedIssueBaseKey,
+    props.listRef,
+    props.navScrollContainerRef,
+    props.suppressAutoScrollRef,
+  ]);
+
   if (issuesLoading && issueNodes.length === 0) return <NestedLoadingRow depth={2} />;
   if (issuesError) return <NestedErrorRow depth={2} />;
   if (issueNodes.length === 0) return <NestedEmptyRow depth={2} />;
@@ -472,6 +540,10 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
         const selected = isSelectedIssue(issueNode, props.selectedIssue);
         const issueNumber = issueNode.number || "";
         const issueSeries = toIssueSeriesSelected(issueNode, series, us);
+        const issueBaseKey = getIssueBaseKey({
+          number: issueNumber,
+          series: issueSeries,
+        } as Issue);
         const variantCount = getVariantCount(issueNode);
         const hasVariants = variantCount > 0;
 
@@ -489,6 +561,7 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
             <ListItemButton
               divider={false}
               selected={selected}
+              data-nav-issue-base-key={issueBaseKey}
               sx={{
                 pl: getDepthPadding(2) + 1.3,
                 py: 0.3,
@@ -793,6 +866,26 @@ function isSelectedIssue(issueNode: IssueNode, selectedIssue?: Issue): boolean {
 function normalizeIssuePart(value: unknown): string {
   if (value === null || value === undefined) return "";
   return String(value).trim();
+}
+
+function getIssueVariantSelectionKey(issue?: Issue): string {
+  return [normalizeIssuePart(issue?.format), normalizeIssuePart(issue?.variant)].join("|");
+}
+
+function getIssueBaseKey(issue?: Issue): string {
+  if (!issue?.number) return "";
+  return [
+    issue.series?.publisher?.name || "",
+    issue.series?.title || "",
+    issue.series?.volume ?? "",
+    issue.number,
+  ].join("|");
+}
+
+function isElementVisibleInContainer(element: HTMLElement, container: HTMLElement): boolean {
+  const elementRect = element.getBoundingClientRect();
+  const containerRect = container.getBoundingClientRect();
+  return elementRect.bottom > containerRect.top && elementRect.top < containerRect.bottom;
 }
 
 function getIssueNodeVariant(issueNode: IssueNode): string | undefined {
