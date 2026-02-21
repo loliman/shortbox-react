@@ -171,12 +171,9 @@ describe("nav-bar List", () => {
     });
   });
 
-  it.each([
-    [KIOSK_URL, KIOSK_VARIANT, COMICSHOP_VARIANT],
-    [COMICSHOP_URL, COMICSHOP_VARIANT, KIOSK_VARIANT],
-  ])(
-    "highlights and auto-scrolls the selected variant for %s",
-    async (issueUrl, selectedVariant, otherVariant) => {
+  it.each([KIOSK_URL, COMICSHOP_URL])(
+    "highlights and auto-scrolls the selected issue number for %s",
+    async (issueUrl) => {
       const scrollIntoViewMock = vi.fn();
       mockVariantOnlyIssueList();
 
@@ -184,8 +181,8 @@ describe("nav-bar List", () => {
         .spyOn(HTMLElement.prototype, "getBoundingClientRect")
         .mockImplementation(function (this: HTMLElement) {
           if (this.classList.contains("MuiDrawer-paper")) return toRect(0, 220);
-          if (this.textContent?.includes(`[${selectedVariant}]`)) return toRect(620, 32);
-          if (this.textContent?.includes(`[${otherVariant}]`)) return toRect(40, 32);
+          if (this.textContent?.includes("[Comicshop Ausgabe]")) return toRect(620, 32);
+          if (this.textContent?.includes("[Kiosk Ausgabe]")) return toRect(40, 32);
           return toRect(0, 32);
         });
 
@@ -208,24 +205,24 @@ describe("nav-bar List", () => {
         />
       );
 
-      const selectedLabel = await screen.findByText(`#126 Star Wars [${selectedVariant}]`);
-      const otherLabel = await screen.findByText(`#126 Star Wars [${otherVariant}]`);
-      const selectedButton = selectedLabel.closest("[role='button']") as HTMLElement | null;
-      const otherButton = otherLabel.closest("[role='button']") as HTMLElement | null;
+      const comicshopLabel = await screen.findByText("#126 Star Wars [Comicshop Ausgabe]");
+      const kioskLabel = await screen.findByText("#126 Star Wars [Kiosk Ausgabe]");
+      const comicshopButton = comicshopLabel.closest("[role='button']") as HTMLElement | null;
+      const kioskButton = kioskLabel.closest("[role='button']") as HTMLElement | null;
 
-      expect(selectedButton).not.toBeNull();
-      expect(otherButton).not.toBeNull();
+      expect(comicshopButton).not.toBeNull();
+      expect(kioskButton).not.toBeNull();
 
       await waitFor(() => {
-        expect(selectedButton?.classList.contains("Mui-selected")).toBe(true);
-        expect(otherButton?.classList.contains("Mui-selected")).toBe(false);
+        expect(comicshopButton?.classList.contains("Mui-selected")).toBe(true);
+        expect(kioskButton?.classList.contains("Mui-selected")).toBe(true);
       });
 
       await waitFor(() => {
         expect(scrollIntoViewMock).toHaveBeenCalledTimes(1);
       });
       const scrolledNode = scrollIntoViewMock.mock.instances[0] as HTMLElement;
-      expect(scrolledNode.textContent).toContain(`[${selectedVariant}]`);
+      expect(scrolledNode.textContent).toContain("[Comicshop Ausgabe]");
 
       getBoundingClientRectSpy.mockRestore();
     }
@@ -247,16 +244,16 @@ describe("nav-bar List", () => {
       />
     );
 
-    const issueLabel = await screen.findByText("#126A Star Wars [Kiosk Ausgabe]");
-    const issueButton = issueLabel.closest("[role='button']") as HTMLElement | null;
-    const otherLabel = await screen.findByText("#126A Star Wars [Comicshop Ausgabe]");
-    const otherButton = otherLabel.closest("[role='button']") as HTMLElement | null;
+    const kioskLabel = await screen.findByText("#126A Star Wars [Kiosk Ausgabe]");
+    const kioskButton = kioskLabel.closest("[role='button']") as HTMLElement | null;
+    const comicshopLabel = await screen.findByText("#126A Star Wars [Comicshop Ausgabe]");
+    const comicshopButton = comicshopLabel.closest("[role='button']") as HTMLElement | null;
 
-    expect(issueButton).not.toBeNull();
-    expect(otherButton).not.toBeNull();
+    expect(kioskButton).not.toBeNull();
+    expect(comicshopButton).not.toBeNull();
     await waitFor(() => {
-      expect(issueButton?.classList.contains("Mui-selected")).toBe(true);
-      expect(otherButton?.classList.contains("Mui-selected")).toBe(false);
+      expect(kioskButton?.classList.contains("Mui-selected")).toBe(true);
+      expect(comicshopButton?.classList.contains("Mui-selected")).toBe(true);
     });
   });
 });

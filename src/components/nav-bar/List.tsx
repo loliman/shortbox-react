@@ -480,9 +480,8 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
   const seriesInput = toSeriesInput(series, us);
   const selectedSeries = doesSeriesNodeMatchIssueSeries(series, props.selectedIssue?.series);
   const selectedIssueNumber = selectedSeries ? normalizeIssueNumber(props.selectedIssue?.number) : "";
-  const selectedIssueVariantKey = selectedSeries ? getIssueVariantSelectionKey(props.selectedIssue) : "";
-  const previousIssueSelectionRef = React.useRef({ issueNumber: "", variantKey: "" });
-  const skipVariantTransitionAutoScrollRef = React.useRef(false);
+  const previousIssueNumberRef = React.useRef("");
+  const skipSameIssueAutoScrollRef = React.useRef(false);
   const issueListRef = React.useRef<HTMLUListElement | null>(null);
 
   const {
@@ -501,18 +500,13 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
   const issueNodes = React.useMemo(() => toIssueNodes(issuesData), [issuesData]);
 
   React.useEffect(() => {
-    const previousSelection = previousIssueSelectionRef.current;
-    skipVariantTransitionAutoScrollRef.current = Boolean(
-      previousSelection.issueNumber &&
+    skipSameIssueAutoScrollRef.current = Boolean(
+      previousIssueNumberRef.current &&
         selectedIssueNumber &&
-        previousSelection.issueNumber === selectedIssueNumber &&
-        previousSelection.variantKey !== selectedIssueVariantKey
+        previousIssueNumberRef.current === selectedIssueNumber
     );
-    previousIssueSelectionRef.current = {
-      issueNumber: selectedIssueNumber,
-      variantKey: selectedIssueVariantKey,
-    };
-  }, [selectedIssueNumber, selectedIssueVariantKey]);
+    previousIssueNumberRef.current = selectedIssueNumber;
+  }, [selectedIssueNumber]);
 
   React.useEffect(() => {
     if (!selectedIssueNumber) return;
@@ -522,8 +516,8 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
       return;
     }
 
-    if (skipVariantTransitionAutoScrollRef.current) {
-      skipVariantTransitionAutoScrollRef.current = false;
+    if (skipSameIssueAutoScrollRef.current) {
+      skipSameIssueAutoScrollRef.current = false;
       return;
     }
 
@@ -533,17 +527,7 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
 
     const selectedItem = Array.from(
       listElement.querySelectorAll<HTMLElement>("[data-nav-issue-number]")
-    ).find((element) =>
-      isSelectedIssueIdentity(
-        {
-          number: element.dataset.navIssueNumber,
-          format: element.dataset.navIssueFormat,
-          variant: element.dataset.navIssueVariant,
-        },
-        props.selectedIssue,
-        selectedIssueNumber
-      )
-    );
+    ).find((element) => isIssueNumberMatch(element.dataset.navIssueNumber, selectedIssueNumber));
     if (!selectedItem) return;
     if (isElementVisibleInContainer(selectedItem, scrollContainer)) return;
 
@@ -568,7 +552,6 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
       {issueNodes.map((issueNode, idx) => {
         const selected = isSelectedIssue(issueNode, props.selectedIssue, series);
         const issueNumber = issueNode.number || "";
-        const issueVariant = getIssueNodeVariant(issueNode) || "";
         const issueSeries = toIssueSeriesSelected(issueNode, series, us);
         const variantCount = getVariantCount(issueNode);
         const hasVariants = variantCount > 0;
@@ -588,8 +571,6 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
               divider={false}
               selected={selected}
               data-nav-issue-number={issueNumber}
-              data-nav-issue-format={issueNode.format || ""}
-              data-nav-issue-variant={issueVariant}
               sx={{
                 pl: getDepthPadding(2) + 1.3,
                 py: 0.3,
@@ -604,7 +585,7 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
                       number: issueNumber,
                       title: issueNode.title,
                       format: issueNode.format,
-                      variant: issueVariant || undefined,
+                      variant: getIssueNodeVariant(issueNode),
                       series: issueSeries,
                     },
                   },
@@ -884,36 +865,8 @@ function isSelectedIssue(
 ): boolean {
   const selectedNumber = normalizeIssueNumber(selectedIssue?.number);
   if (selectedNumber === "") return false;
-  if (!isSelectedIssueIdentity(issueNode, selectedIssue, selectedNumber)) return false;
+  if (!isIssueNumberMatch(issueNode.number, selectedNumber)) return false;
   return doesSeriesNodeMatchIssueSeries(seriesNode, selectedIssue?.series);
-}
-
-function isSelectedIssueIdentity(
-  issueNode: { number?: unknown; format?: unknown; variant?: unknown },
-  selectedIssue: Pick<Issue, "number" | "format" | "variant"> | undefined,
-  selectedNumber?: string
-): boolean {
-  const normalizedSelectedNumber = selectedNumber || normalizeIssueNumber(selectedIssue?.number);
-  if (normalizedSelectedNumber === "") return false;
-  if (!isIssueNumberMatch(issueNode.number, normalizedSelectedNumber)) return false;
-  return isIssueVariantMatch(issueNode, selectedIssue);
-}
-
-function isIssueVariantMatch(
-  issueNode: { format?: unknown; variant?: unknown },
-  selectedIssue: Pick<Issue, "format" | "variant"> | undefined
-): boolean {
-  const selectedFormat = normalizeMatchText(selectedIssue?.format);
-  const selectedVariant = normalizeMatchText(selectedIssue?.variant);
-  if (!selectedFormat && !selectedVariant) return true;
-
-  const nodeFormat = normalizeMatchText(issueNode.format);
-  const nodeVariant = normalizeMatchText(issueNode.variant);
-
-  if (selectedFormat && nodeFormat && selectedFormat !== nodeFormat) return false;
-  if (selectedVariant && nodeVariant && selectedVariant !== nodeVariant) return false;
-
-  return true;
 }
 
 function normalizeIssuePart(value: unknown): string {
@@ -941,10 +894,6 @@ function isIssueNumberMatch(nodeNumberRaw: unknown, selectedNumberRaw: unknown):
   if (nodePrefix && selectedPrefix && nodePrefix === selectedPrefix) return true;
 
   return false;
-}
-
-function getIssueVariantSelectionKey(issue?: Issue): string {
-  return [normalizeIssuePart(issue?.format), normalizeIssuePart(issue?.variant)].join("|");
 }
 
 function normalizeSeriesVolume(value: unknown): string {
