@@ -166,7 +166,7 @@ function List(props: Readonly<ListProps>) {
 
   const selectedPublisherName = getSelectedPublisherName(props.selected);
   const selectedSeriesKey = getSelectedSeriesKey(props.selected);
-  const selectedIssueMatchKey = getIssueMatchKey(props.selected?.issue);
+  const selectedIssue = props.selected?.issue;
   // Keep nav loading isolated from content-area loading to avoid full-nav skeleton flashes
   // when switching detail routes from the list.
   const isInitialLoading = publisherNetworkStatus === 1 && visiblePublisherNodes.length === 0;
@@ -249,7 +249,7 @@ function List(props: Readonly<ListProps>) {
               publisher={publisherNode}
               navStateKey={navStateKey}
               activeSeriesKey={selected ? selectedSeriesKey : null}
-              selectedIssueMatchKey={selected ? selectedIssueMatchKey : null}
+              selectedIssue={selected ? selectedIssue : undefined}
               session={props.session}
               navigateTo={navigateTo}
               listRef={listRef}
@@ -320,7 +320,7 @@ type SeriesBranchProps = {
   publisher: PublisherNode;
   navStateKey: string;
   activeSeriesKey: string | null;
-  selectedIssueMatchKey: string | null;
+  selectedIssue?: Issue;
   session?: unknown;
   navigateTo: (event: unknown, item: SelectedRoot, closeOnPhone?: boolean) => void;
   listRef: React.RefObject<HTMLUListElement | null>;
@@ -420,7 +420,7 @@ const SeriesBranch = React.memo(function SeriesBranch(props: Readonly<SeriesBran
                 us={us}
                 filter={filter as IssuesQueryVariables["filter"]}
                 series={seriesNode}
-                selectedIssueMatchKey={selected ? props.selectedIssueMatchKey : null}
+                selectedIssue={selected ? props.selectedIssue : undefined}
                 session={props.session}
                 navigateTo={props.navigateTo}
                 listRef={props.listRef}
@@ -437,7 +437,7 @@ type IssuesBranchProps = {
   us: boolean;
   filter: IssuesQueryVariables["filter"];
   series: SeriesNode;
-  selectedIssueMatchKey: string | null;
+  selectedIssue?: Issue;
   session?: unknown;
   navigateTo: (event: unknown, item: SelectedRoot, closeOnPhone?: boolean) => void;
   listRef: React.RefObject<HTMLUListElement | null>;
@@ -469,7 +469,7 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
   return (
     <MuiList disablePadding>
       {issueNodes.map((issueNode, idx) => {
-        const selected = getIssueNodeMatchKey(issueNode) === props.selectedIssueMatchKey;
+        const selected = isSelectedIssue(issueNode, props.selectedIssue);
         const issueNumber = issueNode.number || "";
         const issueSeries = toIssueSeriesSelected(issueNode, series, us);
         const variantCount = getVariantCount(issueNode);
@@ -776,13 +776,23 @@ function toIssueSeriesSelected(
   };
 }
 
-function getIssueMatchKey(selectedIssue?: Issue): string | null {
-  if (!selectedIssue?.number) return null;
-  return [selectedIssue.number, selectedIssue.format || "", selectedIssue.variant || ""].join("|");
+function isSelectedIssue(issueNode: IssueNode, selectedIssue?: Issue): boolean {
+  if (!selectedIssue?.number) return false;
+  if ((issueNode.number || "") !== selectedIssue.number) return false;
+
+  const selectedVariant = normalizeIssuePart(selectedIssue.variant);
+  if (selectedVariant !== "") return true;
+
+  const selectedFormat = normalizeIssuePart(selectedIssue.format);
+  const nodeFormat = normalizeIssuePart(issueNode.format);
+  if (selectedFormat && nodeFormat && selectedFormat !== nodeFormat) return false;
+
+  return true;
 }
 
-function getIssueNodeMatchKey(issueNode: IssueNode): string {
-  return [issueNode.number || "", issueNode.format || "", getIssueNodeVariant(issueNode) || ""].join("|");
+function normalizeIssuePart(value: unknown): string {
+  if (value === null || value === undefined) return "";
+  return String(value).trim();
 }
 
 function getIssueNodeVariant(issueNode: IssueNode): string | undefined {
