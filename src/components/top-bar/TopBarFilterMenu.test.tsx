@@ -11,7 +11,9 @@ vi.mock("./ExportDialog", () => ({
 
 describe("TopBarFilterMenu", () => {
   it("renders active filter button for logged-out users", () => {
-    render(<TopBarFilterMenu us={false} selected={{ us: false }} navigate={vi.fn()} session={null} />);
+    render(
+      <TopBarFilterMenu us={false} selected={{ us: false }} navigate={vi.fn()} session={null} />
+    );
 
     const button = screen.getByRole("button", { name: "Filter öffnen" });
     expect(button.hasAttribute("disabled")).toBe(false);
@@ -20,7 +22,9 @@ describe("TopBarFilterMenu", () => {
   it("navigates to filter page for logged-out users", async () => {
     const user = userEvent.setup();
     const navigate = vi.fn();
-    render(<TopBarFilterMenu us={false} selected={{ us: false }} navigate={navigate} session={null} />);
+    render(
+      <TopBarFilterMenu us={false} selected={{ us: false }} navigate={navigate} session={null} />
+    );
 
     await user.click(screen.getByRole("button", { name: "Filter öffnen" }));
 

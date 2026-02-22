@@ -58,46 +58,83 @@ function toRouteParams(issueUrl: string): RouteParams {
 }
 
 function mockVariantOnlyIssueList(issueNumbers: string[] = ["126", "126"]) {
-  useQueryMock.mockImplementation((_query: unknown, options?: { variables?: Record<string, unknown> }) => {
-    const variables = options?.variables || {};
+  useQueryMock.mockImplementation(
+    (_query: unknown, options?: { variables?: Record<string, unknown> }) => {
+      const variables = options?.variables || {};
 
-    if (variables.series) {
-      const [comicshopNumber, kioskNumber] = issueNumbers;
+      if (variables.series) {
+        const [comicshopNumber, kioskNumber] = issueNumbers;
+        return {
+          data: {
+            issueList: {
+              edges: [
+                {
+                  node: {
+                    title: "",
+                    number: comicshopNumber,
+                    format: "Heft",
+                    variant: COMICSHOP_VARIANT,
+                    collected: false,
+                    series: {
+                      title: SERIES_TITLE,
+                      volume: SERIES_VOLUME,
+                      publisher: { name: PUBLISHER, us: false },
+                    },
+                    variants: [{ variant: COMICSHOP_VARIANT }, { variant: KIOSK_VARIANT }],
+                  },
+                },
+                {
+                  node: {
+                    title: "",
+                    number: kioskNumber,
+                    format: "Heft",
+                    variant: KIOSK_VARIANT,
+                    collected: false,
+                    series: {
+                      title: SERIES_TITLE,
+                      volume: SERIES_VOLUME,
+                      publisher: { name: PUBLISHER, us: false },
+                    },
+                    variants: [{ variant: COMICSHOP_VARIANT }, { variant: KIOSK_VARIANT }],
+                  },
+                },
+              ],
+              pageInfo: { hasNextPage: false, endCursor: null },
+            },
+          },
+          error: null,
+          loading: false,
+          networkStatus: 7,
+        };
+      }
+
+      if (variables.publisher) {
+        return {
+          data: {
+            seriesList: {
+              edges: [
+                {
+                  node: {
+                    title: SERIES_TITLE,
+                    volume: SERIES_VOLUME,
+                    startyear: 2021,
+                    publisher: { name: PUBLISHER, us: false },
+                  },
+                },
+              ],
+              pageInfo: { hasNextPage: false, endCursor: null },
+            },
+          },
+          error: null,
+          loading: false,
+          networkStatus: 7,
+        };
+      }
+
       return {
         data: {
-          issueList: {
-            edges: [
-              {
-                node: {
-                  title: "",
-                  number: comicshopNumber,
-                  format: "Heft",
-                  variant: COMICSHOP_VARIANT,
-                  collected: false,
-                  series: {
-                    title: SERIES_TITLE,
-                    volume: SERIES_VOLUME,
-                    publisher: { name: PUBLISHER, us: false },
-                  },
-                  variants: [{ variant: COMICSHOP_VARIANT }, { variant: KIOSK_VARIANT }],
-                },
-              },
-              {
-                node: {
-                  title: "",
-                  number: kioskNumber,
-                  format: "Heft",
-                  variant: KIOSK_VARIANT,
-                  collected: false,
-                  series: {
-                    title: SERIES_TITLE,
-                    volume: SERIES_VOLUME,
-                    publisher: { name: PUBLISHER, us: false },
-                  },
-                  variants: [{ variant: COMICSHOP_VARIANT }, { variant: KIOSK_VARIANT }],
-                },
-              },
-            ],
+          publisherList: {
+            edges: [{ node: { name: PUBLISHER, us: false } }],
             pageInfo: { hasNextPage: false, endCursor: null },
           },
         },
@@ -106,42 +143,7 @@ function mockVariantOnlyIssueList(issueNumbers: string[] = ["126", "126"]) {
         networkStatus: 7,
       };
     }
-
-    if (variables.publisher) {
-      return {
-        data: {
-          seriesList: {
-            edges: [
-              {
-                node: {
-                  title: SERIES_TITLE,
-                  volume: SERIES_VOLUME,
-                  startyear: 2021,
-                  publisher: { name: PUBLISHER, us: false },
-                },
-              },
-            ],
-            pageInfo: { hasNextPage: false, endCursor: null },
-          },
-        },
-        error: null,
-        loading: false,
-        networkStatus: 7,
-      };
-    }
-
-    return {
-      data: {
-        publisherList: {
-          edges: [{ node: { name: PUBLISHER, us: false } }],
-          pageInfo: { hasNextPage: false, endCursor: null },
-        },
-      },
-      error: null,
-      loading: false,
-      networkStatus: 7,
-    };
-  });
+  );
 }
 
 describe("nav-bar List", () => {
