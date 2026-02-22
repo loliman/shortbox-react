@@ -73,17 +73,19 @@ function FilterPage(props: FilterPageProps) {
                   <ContributorsSection values={values} us={us} setFieldValue={setFieldValue} />
                 </Paper>
 
-                <FormActions
-                  isSubmitting={isSubmitting}
-                  onReset={() => resetForm({ values: createDefaultFilterValues() })}
-                  onCancel={() => {
-                    const url = lastLocation?.pathname
-                      ? lastLocation.pathname
-                      : `/${us ? "us" : "de"}`;
-                    navigate(null, url);
-                  }}
-                  onSubmit={() => submitForm()}
-                />
+                <Paper elevation={0} sx={sectionSx}>
+                  <FormActions
+                    isSubmitting={isSubmitting}
+                    onReset={() => resetForm({ values: createDefaultFilterValues() })}
+                    onCancel={() => {
+                      const url = lastLocation?.pathname
+                        ? lastLocation.pathname
+                        : `/${us ? "us" : "de"}`;
+                      navigate(null, url);
+                    }}
+                    onSubmit={() => submitForm()}
+                  />
+                </Paper>
               </Stack>
             </CardContent>
           </Form>

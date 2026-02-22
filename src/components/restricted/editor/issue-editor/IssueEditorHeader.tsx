@@ -7,6 +7,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import Tooltip from "@mui/material/Tooltip";
 import TitleLine from "../../../generic/TitleLine";
+import { editorSectionSx } from "../editorLayout";
 
 interface IssueEditorHeaderProps {
   header: string;
@@ -19,7 +20,7 @@ interface IssueEditorHeaderProps {
 
 function IssueEditorHeader({ header, id, session, edit, us, onToggle }: IssueEditorHeaderProps) {
   return (
-    <Paper variant="outlined" sx={{ p: { xs: 2, sm: 2.5 } }}>
+    <Paper elevation={0} sx={editorSectionSx}>
       <Stack
         direction={{ xs: "column", sm: "row" }}
         spacing={1.5}

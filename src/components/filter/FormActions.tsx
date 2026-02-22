@@ -13,20 +13,22 @@ interface FormActionsProps {
 function FormActions({ isSubmitting, onReset, onCancel, onSubmit }: FormActionsProps) {
   return (
     <Stack
-      direction={{ xs: "column", sm: "row" }}
-      spacing={1}
-      justifyContent="flex-end"
-      sx={{ pt: 1 }}
+      direction={{ xs: "column", md: "row" }}
+      spacing={1.5}
+      justifyContent="space-between"
+      alignItems={{ xs: "stretch", md: "center" }}
     >
-      <Button disabled={isSubmitting} onClick={onReset} variant="text" color="inherit">
-        Zurücksetzen
-      </Button>
+      <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+        <Button disabled={isSubmitting} onClick={onReset} variant="text" color="inherit">
+          Zurücksetzen
+        </Button>
 
-      <Button disabled={isSubmitting} onClick={onCancel} variant="outlined" color="inherit">
-        Abbrechen
-      </Button>
+        <Button disabled={isSubmitting} onClick={onCancel} variant="outlined" color="inherit">
+          Abbrechen
+        </Button>
+      </Box>
 
-      <Box>
+      <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", justifyContent: "flex-end" }}>
         <Button disabled={isSubmitting} onClick={onSubmit} variant="contained" color="primary">
           Filtern
         </Button>
