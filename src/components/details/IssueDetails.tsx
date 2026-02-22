@@ -7,12 +7,15 @@ import Box from "@mui/material/Box";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
 import Paper from "@mui/material/Paper";
+import Collapse from "@mui/material/Collapse";
 import { generateIssueSubHeader } from "../../util/issues";
 import Typography from "@mui/material/Typography";
 import { generateLabel } from "../../util/hierarchy";
 import { isMockMode } from "../../app/mockMode";
 import EditButton from "../restricted/EditButton";
 import SnackbarContent from "@mui/material/SnackbarContent";
+import IconButton from "@mui/material/IconButton";
+import AddIcon from "@mui/icons-material/Add";
 import TitleLine from "../generic/TitleLine";
 import type { Issue, SelectedRoot } from "../../types/domain";
 import { sanitizeHtml } from "../../util/sanitizeHtml";
@@ -78,6 +81,7 @@ function IssueDetails(props: IssueDetailsProps) {
   const selected = props.selected || { us: Boolean(props.us) };
   const us = Boolean(props.us);
   const details = props.details || <React.Fragment />;
+  const [coverExpanded, setCoverExpanded] = React.useState(true);
   const issueVariables = React.useMemo(
     () =>
       selected.issue
@@ -174,7 +178,7 @@ function IssueDetails(props: IssueDetailsProps) {
   const gridTemplateColumns = { xs: "1fr", md: "minmax(0, 1fr) auto" };
   const coverWidth = {
     xs: "100%",
-    md: "clamp(220px, 24vw, 320px)",
+    md: "clamp(320px, 36vw, 480px)",
   };
 
   return (
@@ -265,7 +269,7 @@ function IssueDetails(props: IssueDetailsProps) {
               </Box>
 
               {arcs.length > 0 ? (
-                <Box sx={{ minWidth: 0, flex: "0 1 220px" }}>
+                <Box sx={{ minWidth: 0, flex: "0 1 220px", alignSelf: { xs: "flex-start", md: "flex-end" } }}>
                   <Typography variant="subtitle2" sx={{ fontWeight: 500, mb: 0.75, whiteSpace: "nowrap" }}>
                     Enthält Teile von
                   </Typography>
@@ -286,81 +290,131 @@ function IssueDetails(props: IssueDetailsProps) {
                 order: { xs: 1, md: 3 },
               }}
             >
-              <Box
-                sx={{
-                  width: coverWidth,
-                  maxWidth: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "flex-start",
-                  alignItems: "stretch",
-                }}
-              >
-                <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-start" }}>
-                  <IssueCover us={us} issue={issueForVariants as unknown as PreviewIssue} />
+              <Box sx={{ display: { xs: "none", md: "block" } }}>
+                <Box
+                  sx={{
+                    width: coverWidth,
+                    maxWidth: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "flex-start",
+                    alignItems: "stretch",
+                  }}
+                >
+                  <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-start" }}>
+                    <IssueCover us={us} issue={issueForVariants as unknown as PreviewIssue} />
+                  </Box>
+                  {!us && issueForVariants.comicguideid ? (
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ mt: 1, opacity: 0.82, textAlign: "left", display: { xs: "none", md: "block" } }}
+                    >
+                      Das Cover für&nbsp;
+                      <a
+                        href={generateComicGuideUrl(issueForVariants as any)}
+                        rel="noopener noreferrer nofollow"
+                        target="_blank"
+                      >
+                        {generateLabel(issueForVariants.series as any) +
+                          " #" +
+                          issueForVariants.number}
+                      </a>
+                      &nbsp;wird bereitgestellt vom&nbsp;
+                      <a
+                        href="https://www.comicguide.de"
+                        rel="noopener noreferrer nofollow"
+                        target="_blank"
+                      >
+                        deutschen ComicGuide
+                      </a>
+                      &nbsp;und darf nicht ohne Genehmigung weiterverbreitet werden.
+                    </Typography>
+                  ) : null}
+                  {us ? (
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ mt: 1, opacity: 0.82, textAlign: "left", display: { xs: "none", md: "block" } }}
+                    >
+                      Informationen über&nbsp;
+                      <a
+                        href={generateMarvelDbUrl(issueForVariants as any)}
+                        rel="noopener noreferrer nofollow"
+                        target="_blank"
+                      >
+                        {generateLabel(issueForVariants.series as any) +
+                          " #" +
+                          issueForVariants.number}
+                      </a>
+                      &nbsp;werden bezogen aus der&nbsp;
+                      <a
+                        href="https://marvel.fandom.com"
+                        rel="noopener noreferrer nofollow"
+                        target="_blank"
+                      >
+                        Marvel Database
+                      </a>
+                      &nbsp;und stehen unter der&nbsp;
+                      <a
+                        href="https://creativecommons.org/licenses/by/3.0/de/"
+                        rel="noopener noreferrer nofollow"
+                        target="_blank"
+                      >
+                        Creative Commons License 3.0
+                      </a>
+                      &nbsp;. Die Informationen wurden aufbereitet und unter Umständen ergänzt.&nbsp;
+                    </Typography>
+                  ) : null}
                 </Box>
-                {!us && issueForVariants.comicguideid ? (
-                  <Typography
-                    variant="caption"
-                    color="text.secondary"
-                    sx={{ mt: 1, opacity: 0.82, textAlign: "left", display: { xs: "none", md: "block" } }}
+              </Box>
+
+              <Box sx={{ display: { xs: "block", md: "none" }, width: "100%" }}>
+                <Box sx={{ width: coverWidth, maxWidth: "100%", mx: "auto", position: "relative" }}>
+                  <IconButton
+                    size="small"
+                    aria-label={coverExpanded ? "Cover einklappen" : "Cover ausklappen"}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      setCoverExpanded((prev) => !prev);
+                    }}
+                    sx={{
+                      position: "absolute",
+                      top: 1,
+                      right: 2,
+                      zIndex: 2,
+                      color: "common.white",
+                      p: 0.25,
+                      "&:hover": { bgcolor: "transparent" },
+                      transform: coverExpanded ? "rotate(45deg)" : "rotate(0deg)",
+                      transition: "transform 180ms ease",
+                    }}
                   >
-                    Das Cover für&nbsp;
-                    <a
-                      href={generateComicGuideUrl(issueForVariants as any)}
-                      rel="noopener noreferrer nofollow"
-                      target="_blank"
-                    >
-                      {generateLabel(issueForVariants.series as any) +
-                        " #" +
-                        issueForVariants.number}
-                    </a>
-                    &nbsp;wird bereitgestellt vom&nbsp;
-                    <a
-                      href="https://www.comicguide.de"
-                      rel="noopener noreferrer nofollow"
-                      target="_blank"
-                    >
-                      deutschen ComicGuide
-                    </a>
-                    &nbsp;und darf nicht ohne Genehmigung weiterverbreitet werden.
-                  </Typography>
-                ) : null}
-                {us ? (
-                  <Typography
-                    variant="caption"
-                    color="text.secondary"
-                    sx={{ mt: 1, opacity: 0.82, textAlign: "left", display: { xs: "none", md: "block" } }}
+                    <AddIcon sx={{ fontSize: 20 }} />
+                  </IconButton>
+                  <Collapse
+                    in={coverExpanded}
+                    collapsedSize="25px"
+                    sx={{
+                      borderRadius: (theme) => `${Number(theme.shape.borderRadius) || 12}px`,
+                      overflow: "hidden",
+                    }}
                   >
-                    Informationen über&nbsp;
-                    <a
-                      href={generateMarvelDbUrl(issueForVariants as any)}
-                      rel="noopener noreferrer nofollow"
-                      target="_blank"
+                    <Box
+                      sx={{
+                        width: "100%",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "flex-start",
+                        alignItems: "stretch",
+                      }}
                     >
-                      {generateLabel(issueForVariants.series as any) +
-                        " #" +
-                        issueForVariants.number}
-                    </a>
-                    &nbsp;werden bezogen aus der&nbsp;
-                    <a
-                      href="https://marvel.fandom.com"
-                      rel="noopener noreferrer nofollow"
-                      target="_blank"
-                    >
-                      Marvel Database
-                    </a>
-                    &nbsp;und stehen unter der&nbsp;
-                    <a
-                      href="https://creativecommons.org/licenses/by/3.0/de/"
-                      rel="noopener noreferrer nofollow"
-                      target="_blank"
-                    >
-                      Creative Commons License 3.0
-                    </a>
-                    &nbsp;. Die Informationen wurden aufbereitet und unter Umständen ergänzt.&nbsp;
-                  </Typography>
-                ) : null}
+                      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "flex-start" }}>
+                        <IssueCover us={us} issue={issueForVariants as unknown as PreviewIssue} />
+                      </Box>
+                    </Box>
+                  </Collapse>
+                </Box>
               </Box>
             </Box>
 
