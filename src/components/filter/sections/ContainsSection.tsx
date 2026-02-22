@@ -2,13 +2,15 @@ import React from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
+import Divider from "@mui/material/Divider";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { FastField } from "formik";
 import AutocompleteBase from "../../generic/AutocompleteBase";
 import { useAutocompleteQuery } from "../../generic/useAutocompleteQuery";
 import { TextField } from "../../generic/FormikTextField";
-import FilterSwitch from "../FilterSwitch";
 import { FilterValues } from "../types";
-import { publishers, series } from "../../../graphql/queriesTyped";
+import { apps, arcs, publishers, series } from "../../../graphql/queriesTyped";
 import type { FieldItem } from "../../../util/filterFieldHelpers";
 
 const MIN_QUERY_LENGTH = 2;
@@ -29,11 +31,13 @@ function ContainsSection({
   const switchGridSx = {
     display: "grid",
     gap: 1,
-    gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", xl: "1fr 1fr 1fr" },
+    gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr", xl: "1fr 1fr 1fr 1fr" },
   } as const;
 
   const [publisherInput, setPublisherInput] = React.useState("");
   const [seriesInput, setSeriesInput] = React.useState("");
+  const [arcInput, setArcInput] = React.useState("");
+  const [appearanceInput, setAppearanceInput] = React.useState("");
 
   const publisherQuery = useAutocompleteQuery<FieldItem>({
     query: publishers,
@@ -53,66 +57,141 @@ function ContainsSection({
     minQueryLength: MIN_QUERY_LENGTH,
     debounceMs: 250,
   });
+  const arcQuery = useAutocompleteQuery<{ title?: string; type?: string }>({
+    query: arcs,
+    variables: { pattern: arcInput },
+    searchText: arcInput,
+    minQueryLength: MIN_QUERY_LENGTH,
+    debounceMs: 250,
+  });
+  const appearanceQuery = useAutocompleteQuery<{ name?: string; type?: string }>({
+    query: apps,
+    variables: { pattern: appearanceInput },
+    searchText: appearanceInput,
+    minQueryLength: MIN_QUERY_LENGTH,
+    debounceMs: 250,
+  });
 
   const selectedPublishers = sanitizeNameList(values.publishers);
   const selectedSeries = sanitizeTitleList(values.series);
-  const triStateSwitch = (field: keyof FilterValues, negatedField: keyof FilterValues, label: string) => {
-    const isPositive = Boolean(values[field]);
-    const isNegated = Boolean(values[negatedField]);
-    const checked = isPositive || isNegated;
-    const effectiveLabel = isNegated ? `Nicht ${label}` : label;
+
+  const renderContainsToggle = (
+    label: string,
+    field: keyof FilterValues,
+    negatedField: keyof FilterValues
+  ) => {
+    const mode: "any" | "include" | "exclude" = values[field]
+      ? "include"
+      : values[negatedField]
+        ? "exclude"
+        : "any";
 
     return (
-      <FilterSwitch
-        checked={checked}
-        label={effectiveLabel}
-        sx={
-          isNegated
-            ? {
-                "& > div": {
-                  borderColor: "rgba(239,68,68,0.5)",
-                  boxShadow: "0 2px 9px rgba(239,68,68,0.14)",
-                },
-              }
-            : undefined
-        }
-        onToggle={() => {
-          if (!isPositive && !isNegated) {
-            setFieldValue(field, true);
-            setFieldValue(negatedField, false);
-            return;
-          }
-          if (isPositive) {
-            setFieldValue(field, false);
-            setFieldValue(negatedField, true);
-            return;
-          }
-          setFieldValue(field, false);
-          setFieldValue(negatedField, false);
+      <Box
+        sx={{
+          display: "grid",
+          gap: 0.75,
+          px: 1.15,
+          py: 0.8,
+          borderRadius: 1.75,
+          border: "1px solid",
+          borderColor: "divider",
+          bgcolor: "rgba(255,255,255,0.9)",
+          boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
         }}
-      />
+      >
+        <Typography
+          sx={{
+            fontSize: "0.88rem",
+            fontWeight: 500,
+            color: "text.primary",
+            minWidth: 0,
+            lineHeight: 1.25,
+          }}
+        >
+          {label}
+        </Typography>
+        <ToggleButtonGroup
+          size="small"
+          exclusive
+          value={mode}
+          onChange={(_, nextMode: "any" | "include" | "exclude" | null) => {
+            const targetMode = nextMode || "any";
+            setFieldValue(field, targetMode === "include");
+            setFieldValue(negatedField, targetMode === "exclude");
+          }}
+          sx={{
+            "& .MuiToggleButton-root": {
+              px: 1,
+              py: 0.4,
+              textTransform: "none",
+              borderColor: "rgba(100, 116, 139, 0.35)",
+              fontSize: "0.78rem",
+              fontWeight: 500,
+              lineHeight: 1.2,
+            },
+            "& .MuiToggleButton-root[value='any']": {
+              color: "rgba(161,98,7,1)",
+            },
+            "& .MuiToggleButton-root[value='include']": {
+              color: "rgba(21,128,61,1)",
+            },
+            "& .MuiToggleButton-root[value='exclude']": {
+              color: "rgba(185,28,28,1)",
+            },
+            "& .MuiToggleButton-root.Mui-selected": {
+              borderWidth: 1,
+            },
+            "& .MuiToggleButton-root[value='any'].Mui-selected": {
+              bgcolor: "rgba(250,204,21,0.2)",
+              borderColor: "rgba(202,138,4,0.65)",
+              color: "rgba(133,77,14,1)",
+            },
+            "& .MuiToggleButton-root[value='include'].Mui-selected": {
+              bgcolor: "rgba(34,197,94,0.16)",
+              borderColor: "rgba(22,163,74,0.65)",
+              color: "rgba(21,128,61,1)",
+            },
+            "& .MuiToggleButton-root[value='exclude'].Mui-selected": {
+              bgcolor: "rgba(239,68,68,0.12)",
+              borderColor: "rgba(220,38,38,0.55)",
+              color: "rgba(185,28,28,1)",
+            },
+          }}
+        >
+          <ToggleButton value="any">Egal</ToggleButton>
+          <ToggleButton value="include">Ja</ToggleButton>
+          <ToggleButton value="exclude">Nein</ToggleButton>
+        </ToggleButtonGroup>
+      </Box>
     );
   };
 
   return (
-    <Stack spacing={2}>
-      <Typography variant="h6">{us ? "Enthalten in" : "Enthält"}</Typography>
+    <Stack spacing={1.5}>
+      <Typography variant="h6">Inhalt</Typography>
 
       {!us ? (
         <Box sx={switchGridSx}>
-          {triStateSwitch("onlyPrint", "notOnlyPrint", "Einzige Veröffentlichung")}
-          {triStateSwitch("firstPrint", "notFirstPrint", "Erstveröffentlichung")}
-          {triStateSwitch("otherOnlyTb", "notOtherOnlyTb", "Sonst nur in Taschenbuch")}
-          {triStateSwitch("exclusive", "notExclusive", "Exklusiver Inhalt")}
-          {triStateSwitch("reprint", "notReprint", "Reiner Nachdruck")}
+          {renderContainsToggle("Einzige Veröffentlichung", "onlyPrint", "notOnlyPrint")}
+          {renderContainsToggle("Erstveröffentlichung", "firstPrint", "notFirstPrint")}
+          {renderContainsToggle("Sonst nur in Taschenbuch", "otherOnlyTb", "notOtherOnlyTb")}
+          {renderContainsToggle("Exklusiver Inhalt", "exclusive", "notExclusive")}
+          {renderContainsToggle("Reiner Nachdruck", "reprint", "notReprint")}
         </Box>
       ) : (
         <Box sx={switchGridSx}>
-          {triStateSwitch("onlyTb", "notOnlyTb", "Nur in Taschenbuch")}
-          {triStateSwitch("onlyOnePrint", "notOnlyOnePrint", "Nur einfach auf deutsch erschienen")}
-          {triStateSwitch("noPrint", "notNoPrint", "Nicht auf deutsch erschienen")}
+          {renderContainsToggle("Nur in Taschenbuch", "onlyTb", "notOnlyTb")}
+          {renderContainsToggle(
+            "Nur einfach auf deutsch erschienen",
+            "onlyOnePrint",
+            "notOnlyOnePrint"
+          )}
+          {renderContainsToggle("Nicht auf deutsch erschienen", "noPrint", "notNoPrint")}
         </Box>
       )}
+
+      <Divider sx={{ my: 0.25 }} />
 
       <AutocompleteBase
         options={publisherQuery.options}
@@ -179,12 +258,6 @@ function ContainsSection({
           display: "grid",
           alignItems: "end",
           gap: 1,
-          px: 1,
-          py: 0.9,
-          borderRadius: 1.75,
-          border: "1px solid",
-          borderColor: "divider",
-          bgcolor: "rgba(255,255,255,0.78)",
           gridTemplateColumns: {
             xs: "1fr",
             sm: "repeat(2, minmax(170px, 1fr))",
@@ -223,17 +296,76 @@ function ContainsSection({
             gridColumn: { xs: "1", sm: "1 / span 2" },
           }}
         />
-        <FastField
-          name="numberVariant"
-          label="Variante (optional)"
-          component={TextField}
-          sx={{
-            width: "100%",
-            "& .MuiOutlinedInput-root": { borderRadius: 1.5, bgcolor: "background.paper" },
-            gridColumn: { xs: "1", sm: "1 / span 2" },
-          }}
-        />
       </Box>
+
+      <Divider sx={{ my: 0.25 }} />
+
+      <AutocompleteBase
+        options={arcQuery.options}
+        value={values.arcs}
+        inputValue={arcInput}
+        label="Teil von (Event, Story Arc, Story Line)"
+        multiple
+        loading={arcQuery.loading}
+        textFieldSx={{ width: "100%" }}
+        noOptionsText={
+          arcQuery.isBelowMinLength
+            ? `Mindestens ${MIN_QUERY_LENGTH} Zeichen eingeben`
+            : arcQuery.error
+              ? "Fehler!"
+              : "Keine Ergebnisse gefunden"
+        }
+        onListboxScroll={arcQuery.onListboxScroll}
+        getOptionLabel={(option) => formatArcLabel(option)}
+        isOptionEqualToValue={(option, value) =>
+          normalizeText((option as { title?: unknown }).title) ===
+            normalizeText((value as { title?: unknown })?.title) &&
+          normalizeText((option as { type?: unknown }).type) ===
+            normalizeText((value as { type?: unknown })?.type)
+        }
+        onInputChange={(_, nextInput, reason) => {
+          if (reason !== "input" && reason !== "clear" && reason !== "reset") return;
+          setArcInput(nextInput);
+        }}
+        onChange={(_, nextValue) => {
+          setFieldValue("arcs", sanitizeArcList(asOptionArray(nextValue)));
+          setArcInput("");
+        }}
+      />
+
+      <AutocompleteBase
+        options={appearanceQuery.options}
+        value={values.appearances}
+        inputValue={appearanceInput}
+        label="Auftritte (Personen, Gegenstände, Orte, ...)"
+        multiple
+        loading={appearanceQuery.loading}
+        textFieldSx={{ width: "100%" }}
+        noOptionsText={
+          appearanceQuery.isBelowMinLength
+            ? `Mindestens ${MIN_QUERY_LENGTH} Zeichen eingeben`
+            : appearanceQuery.error
+              ? "Fehler!"
+              : "Keine Ergebnisse gefunden"
+        }
+        onListboxScroll={appearanceQuery.onListboxScroll}
+        getOptionLabel={(option) => formatAppearanceLabel(option)}
+        isOptionEqualToValue={(option, value) =>
+          normalizeText((option as { name?: unknown }).name) ===
+            normalizeText((value as { name?: unknown })?.name) &&
+          normalizeText((option as { type?: unknown }).type) ===
+            normalizeText((value as { type?: unknown })?.type)
+        }
+        onInputChange={(_, nextInput, reason) => {
+          if (reason !== "input" && reason !== "clear" && reason !== "reset") return;
+          setAppearanceInput(nextInput);
+        }}
+        onChange={(_, nextValue) => {
+          setFieldValue("appearances", sanitizeAppearanceList(asOptionArray(nextValue)));
+          setAppearanceInput("");
+        }}
+      />
+
     </Stack>
   );
 }
@@ -259,6 +391,28 @@ function sanitizeTitleList(values: FieldItem[]) {
   );
 }
 
+function sanitizeArcList(values: FieldItem[]) {
+  return values
+    .map((entry) => {
+      const title = String(entry.title || "").trim();
+      const type = String(entry.type || "").trim();
+      if (!title) return null;
+      return type ? { title, type } : { title };
+    })
+    .filter((entry): entry is { title: string; type?: string } => Boolean(entry));
+}
+
+function sanitizeAppearanceList(values: FieldItem[]) {
+  return values
+    .map((entry) => {
+      const name = String(entry.name || "").trim();
+      const type = String(entry.type || "").trim();
+      if (!name) return null;
+      return type ? { name, type } : { name };
+    })
+    .filter((entry): entry is { name: string; type?: string } => Boolean(entry));
+}
+
 function normalizeText(value: unknown) {
   return String(value || "")
     .trim()
@@ -272,6 +426,22 @@ function formatSeriesLabel(entry: unknown) {
     option?.volume === undefined || option?.volume === null ? "" : String(option.volume);
   if (!volume) return title;
   return `${title} (Vol. ${volume})`;
+}
+
+function formatArcLabel(option: unknown) {
+  const entry = option as { title?: unknown; type?: unknown };
+  const title = String(entry.title || "").trim();
+  const type = String(entry.type || "").trim();
+  if (!title) return "";
+  return type ? `${title} (${type})` : title;
+}
+
+function formatAppearanceLabel(option: unknown) {
+  const entry = option as { name?: unknown; type?: unknown };
+  const name = String(entry.name || "").trim();
+  const type = String(entry.type || "").trim();
+  if (!name) return "";
+  return type ? `${name} (${type})` : name;
 }
 
 export default ContainsSection;

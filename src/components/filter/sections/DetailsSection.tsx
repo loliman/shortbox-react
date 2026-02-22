@@ -2,6 +2,9 @@ import React from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
+import Divider from "@mui/material/Divider";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { FastField } from "formik";
 import AutocompleteBase from "../../generic/AutocompleteBase";
 import { TextField } from "../../generic/FormikTextField";
@@ -22,15 +25,22 @@ function DetailsSection({
   setFieldValue,
   hasSession,
 }: DetailsSectionProps) {
+  const [activeDatePreset, setActiveDatePreset] = React.useState("");
   const switchGridSx = {
     display: "grid",
     gap: 1,
-    gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", xl: "1fr 1fr 1fr" },
+    gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr", xl: "1fr 1fr 1fr 1fr" },
   } as const;
 
+  React.useEffect(() => {
+    if (values.releasedateExact || (!values.releasedateFrom && !values.releasedateTo)) {
+      setActiveDatePreset("");
+    }
+  }, [values.releasedateExact, values.releasedateFrom, values.releasedateTo]);
+
   return (
-    <Stack spacing={2}>
-      <Typography variant="h6">Details</Typography>
+    <Stack spacing={1.5}>
+      <Typography variant="h6">Allgemein</Typography>
 
       <AutocompleteBase
         options={FORMAT_OPTIONS}
@@ -46,31 +56,61 @@ function DetailsSection({
         }}
       />
 
-      <Box sx={switchGridSx}>
-        <FilterSwitch
-          checked={values.withVariants}
-          label="Mit Varianten"
-          onToggle={() => setFieldValue("withVariants", !values.withVariants)}
-        />
-      </Box>
+      <Divider sx={{ my: 0.25 }} />
 
       <Box
         sx={{
           display: "grid",
           alignItems: "end",
           gap: 1,
-          px: 1,
-          py: 0.9,
-          borderRadius: 1.75,
-          border: "1px solid",
-          borderColor: "divider",
-          bgcolor: "rgba(255,255,255,0.78)",
           gridTemplateColumns: {
             xs: "1fr",
             sm: "repeat(3, minmax(160px, 1fr))",
           },
         }}
       >
+        <ToggleButtonGroup
+          exclusive
+          value={activeDatePreset}
+          onChange={(_, preset: string | null) => {
+            if (!preset) {
+              setActiveDatePreset("");
+              return;
+            }
+
+            const range = getPresetDateRange(preset);
+            if (!range) return;
+
+            setActiveDatePreset(preset);
+            setFieldValue("releasedateExact", "");
+            setFieldValue("releasedateFrom", range.from);
+            setFieldValue("releasedateTo", range.to);
+          }}
+          size="small"
+          sx={{
+            gridColumn: { xs: "1", sm: "1 / span 3" },
+            flexWrap: "wrap",
+            mb: 1.1,
+            "& .MuiToggleButton-root": {
+              textTransform: "none",
+              px: 1,
+              py: 0.35,
+              fontSize: "0.75rem",
+              borderColor: "rgba(100, 116, 139, 0.35)",
+            },
+          }}
+        >
+          <ToggleButton value="thisYear">Dieses Jahr</ToggleButton>
+          <ToggleButton value="thisMonth">Dieser Monat</ToggleButton>
+          <ToggleButton value="thisWeek">Diese Woche</ToggleButton>
+          <ToggleButton value="lastYear">Letztes Jahr</ToggleButton>
+          <ToggleButton value="lastMonth">Letzter Monat</ToggleButton>
+          <ToggleButton value="lastWeek">Letzte Woche</ToggleButton>
+          <ToggleButton value="nextYear">Nächstes Jahr</ToggleButton>
+          <ToggleButton value="nextMonth">Nächster Monat</ToggleButton>
+          <ToggleButton value="nextWeek">Nächste Woche</ToggleButton>
+        </ToggleButtonGroup>
+
         <FastField
           name="releasedateFrom"
           label="Erscheinungsdatum von"
@@ -109,8 +149,15 @@ function DetailsSection({
         />
       </Box>
 
+      <Divider sx={{ my: 0.25 }} />
+
       {hasSession ? (
         <Box sx={switchGridSx}>
+          <FilterSwitch
+            checked={values.withVariants}
+            label="Mit Varianten"
+            onToggle={() => setFieldValue("withVariants", !values.withVariants)}
+          />
           <FilterSwitch
             checked={values.noComicguideId}
             label="Ohne Comicguide ID"
@@ -149,7 +196,7 @@ function DetailsSection({
           />
           <FilterSwitch
             checked={values.onlyNotCollectedNoOwnedVariants}
-            label="Nicht in Sammlung (ohne besessene Varianten)"
+            label="Nur nicht in Sammlung (ohne Variants)"
             disabled={values.onlyCollected || values.onlyNotCollected}
             onToggle={() => {
               const next = !values.onlyNotCollectedNoOwnedVariants;
@@ -185,3 +232,93 @@ function normalizeText(value: unknown) {
 }
 
 export default DetailsSection;
+
+function getPresetDateRange(preset: string): { from: string; to: string } | null {
+  const now = new Date();
+
+  if (preset === "thisYear") {
+    return {
+      from: formatDateInput(new Date(now.getFullYear(), 0, 1)),
+      to: formatDateInput(new Date(now.getFullYear(), 11, 31)),
+    };
+  }
+
+  if (preset === "thisMonth") {
+    return {
+      from: formatDateInput(new Date(now.getFullYear(), now.getMonth(), 1)),
+      to: formatDateInput(new Date(now.getFullYear(), now.getMonth() + 1, 0)),
+    };
+  }
+
+  if (preset === "thisWeek") {
+    const { from, to } = getWeekRange(now);
+    return { from: formatDateInput(from), to: formatDateInput(to) };
+  }
+
+  if (preset === "lastYear") {
+    const year = now.getFullYear() - 1;
+    return {
+      from: formatDateInput(new Date(year, 0, 1)),
+      to: formatDateInput(new Date(year, 11, 31)),
+    };
+  }
+
+  if (preset === "lastMonth") {
+    return {
+      from: formatDateInput(new Date(now.getFullYear(), now.getMonth() - 1, 1)),
+      to: formatDateInput(new Date(now.getFullYear(), now.getMonth(), 0)),
+    };
+  }
+
+  if (preset === "lastWeek") {
+    const oneWeekEarlier = new Date(now);
+    oneWeekEarlier.setDate(oneWeekEarlier.getDate() - 7);
+    const { from, to } = getWeekRange(oneWeekEarlier);
+    return { from: formatDateInput(from), to: formatDateInput(to) };
+  }
+
+  if (preset === "nextYear") {
+    const year = now.getFullYear() + 1;
+    return {
+      from: formatDateInput(new Date(year, 0, 1)),
+      to: formatDateInput(new Date(year, 11, 31)),
+    };
+  }
+
+  if (preset === "nextMonth") {
+    return {
+      from: formatDateInput(new Date(now.getFullYear(), now.getMonth() + 1, 1)),
+      to: formatDateInput(new Date(now.getFullYear(), now.getMonth() + 2, 0)),
+    };
+  }
+
+  if (preset === "nextWeek") {
+    const oneWeekLater = new Date(now);
+    oneWeekLater.setDate(oneWeekLater.getDate() + 7);
+    const { from, to } = getWeekRange(oneWeekLater);
+    return { from: formatDateInput(from), to: formatDateInput(to) };
+  }
+
+  return null;
+}
+
+function getWeekRange(date: Date): { from: Date; to: Date } {
+  const from = new Date(date);
+  const day = from.getDay();
+  const diffToMonday = day === 0 ? -6 : 1 - day;
+  from.setDate(from.getDate() + diffToMonday);
+  from.setHours(0, 0, 0, 0);
+
+  const to = new Date(from);
+  to.setDate(to.getDate() + 6);
+  to.setHours(23, 59, 59, 999);
+
+  return { from, to };
+}
+
+function formatDateInput(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}

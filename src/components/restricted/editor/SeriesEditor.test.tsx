@@ -173,4 +173,48 @@ describe("SeriesEditor", () => {
       }
     );
   });
+
+  it("submits changed publisher in edit mode", async () => {
+    const enqueueSnackbar = vi.fn();
+    const navigate = vi.fn();
+
+    const defaultValues = {
+      title: "Spider-Man",
+      publisher: { name: "Marvel", us: false },
+      volume: 1,
+      startyear: 1963,
+      endyear: 1998,
+      addinfo: "",
+    };
+
+    render(
+      <SeriesEditor
+        edit={true}
+        defaultValues={defaultValues}
+        mutation={{ definitions: [{ name: { value: "EditSeries" } }] } as any}
+        navigate={navigate}
+        enqueueSnackbar={enqueueSnackbar}
+      />
+    );
+
+    fireEvent.change(screen.getByLabelText("Verlag"), {
+      target: { value: "Panini - Marvel UK" },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Speichern" }));
+
+    await waitFor(() => {
+      expect(mocks.runMutationMock).toHaveBeenCalledTimes(1);
+    });
+
+    expect(mocks.runMutationMock).toHaveBeenCalledWith({
+      variables: {
+        item: {
+          ...defaultValues,
+          publisher: { name: "Panini - Marvel UK", us: false },
+        },
+        old: defaultValues,
+      },
+    });
+  });
 });

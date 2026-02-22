@@ -172,8 +172,8 @@ function SeriesEditor(props: Readonly<SeriesEditorProps>) {
 
         try {
           const variables: Record<string, unknown> = {};
-          variables.item = stripItem(values);
-          if (edit) variables.old = stripItem(defaultValues);
+          variables.item = normalizeSeriesPayload(values);
+          if (edit) variables.old = normalizeSeriesPayload(defaultValues);
 
           await runMutation({ variables });
         } finally {
@@ -228,7 +228,7 @@ function SeriesEditor(props: Readonly<SeriesEditorProps>) {
 
                       <SeriesPublisherAutocomplete
                         publisherName={values.publisher.name}
-                        publisherUs={Boolean(defaultValues.publisher.us)}
+                        publisherUs={Boolean(values.publisher.us)}
                         setFieldValue={setFieldValue}
                         textFieldSx={editorFieldSx}
                       />
@@ -380,13 +380,15 @@ function SeriesPublisherAutocomplete({
       }}
       onChange={(_, option) => {
         const selectedOption = Array.isArray(option) ? option[0] || null : option;
-
+        const selectedName = isOptionLike(selectedOption)
+          ? String(selectedOption.name || "")
+          : typeof selectedOption === "string"
+            ? selectedOption
+            : "";
         setFieldValue("publisher", {
-          name: "",
+          name: selectedName,
           us: publisherUs,
         });
-
-        if (isOptionLike(selectedOption)) setFieldValue("publisher", selectedOption);
       }}
     />
   );
@@ -403,3 +405,17 @@ function normalizeText(value: unknown) {
 }
 
 export default withContext(SeriesEditor);
+
+function normalizeSeriesPayload(values: SeriesFormValues) {
+  const stripped = stripItem(values) as SeriesFormValues & Record<string, unknown>;
+  const publisherName = String(values.publisher?.name || "").trim();
+  const publisherUs = Boolean(values.publisher?.us);
+
+  return {
+    ...stripped,
+    publisher: {
+      name: publisherName,
+      us: publisherUs,
+    },
+  };
+}

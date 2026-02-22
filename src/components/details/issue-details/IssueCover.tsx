@@ -16,7 +16,7 @@ export function IssueCover(props: Readonly<IssueCoverProps>) {
   const { coverUrl, blurCover } = getIssueCoverSource(props.issue, props.us);
   const [displayUrl, setDisplayUrl] = React.useState(coverUrl);
   const issueLabel = getIssueLabel(props.issue);
-  const fallbackUrl = "/nocover.jpg";
+  const fallbackUrl = "/nocover.png";
 
   React.useEffect(() => {
     setDisplayUrl(coverUrl);
@@ -100,5 +100,5 @@ function getIssueCoverSource(
   const directCover = issue.cover?.url?.trim();
   if (directCover) return { coverUrl: directCover, blurCover: false };
 
-  return { coverUrl: "/nocover.jpg", blurCover: false };
+  return { coverUrl: "/nocover.png", blurCover: false };
 }

@@ -69,6 +69,18 @@ function AutocompleteBase({
   onInputChange,
   onChange,
 }: Readonly<AutocompleteBaseProps>) {
+  const mergedTextFieldSx: SxProps<Theme> = React.useMemo(
+    () => [
+      {
+        "& .MuiOutlinedInput-root": {
+          bgcolor: "background.paper",
+        },
+      },
+      ...(Array.isArray(textFieldSx) ? textFieldSx : textFieldSx ? [textFieldSx] : []),
+    ],
+    [textFieldSx]
+  );
+
   return (
     <Autocomplete<OptionValue, boolean, false, boolean>
       multiple={Boolean(multiple)}
@@ -110,7 +122,7 @@ function AutocompleteBase({
         <TextField
           {...params}
           variant={variant}
-          sx={textFieldSx}
+          sx={mergedTextFieldSx}
           label={label}
           placeholder={placeholder ? placeholder.trim() : "Bitte wählen..."}
           inputProps={{

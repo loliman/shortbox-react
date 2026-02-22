@@ -77,7 +77,7 @@ class Cover extends React.Component<CoverProps, CoverState> {
   }
 
   private createPreview(file: CoverInput) {
-    if (!file || file === "") return "/nocover.jpg";
+    if (!file || file === "") return "/nocover.png";
 
     if (
       typeof file === "object" &&
@@ -90,7 +90,7 @@ class Cover extends React.Component<CoverProps, CoverState> {
 
     if (typeof file === "string") return file;
 
-    return "/nocover.jpg";
+    return "/nocover.png";
   }
 }
 

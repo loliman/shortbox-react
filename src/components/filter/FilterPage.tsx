@@ -8,7 +8,6 @@ import Layout from "../Layout";
 import FormActions from "./FormActions";
 import { createDefaultFilterValues, parseFilterValues } from "./defaults";
 import { serializeFilterValues } from "./serialize";
-import ContentSection from "./sections/ContentSection";
 import ContainsSection from "./sections/ContainsSection";
 import ContributorsSection from "./sections/ContributorsSection";
 import DetailsSection from "./sections/DetailsSection";
@@ -71,14 +70,6 @@ function FilterPage(props: FilterPageProps) {
 
                 <Paper elevation={0} sx={sectionSx}>
                   <ContributorsSection values={values} us={us} setFieldValue={setFieldValue} />
-                </Paper>
-
-                <Paper elevation={0} sx={sectionSx}>
-                  <ContentSection
-                    values={values}
-                    isDesktop={isDesktop}
-                    setFieldValue={setFieldValue}
-                  />
                 </Paper>
 
                 <FormActions

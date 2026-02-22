@@ -78,7 +78,7 @@ export function serializeFilterValues(
   }
 
   const numbers = [];
-  const numberVariant = values.numberVariant.trim();
+  const numberVariant = "";
   const numberExact = splitExactNumbers(values.numberExact);
   const numberFrom = values.numberFrom.trim();
   const numberTo = values.numberTo.trim();

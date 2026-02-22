@@ -14,9 +14,9 @@ interface FilterSwitchProps {
 }
 
 const FilterToggleSwitch = styled(Switch)(({ theme }) => ({
-  padding: 8,
-  width: 62,
-  height: 34,
+  padding: 6,
+  width: 58,
+  height: 32,
   "& .MuiSwitch-track": {
     borderRadius: 22 / 2,
     opacity: 1,
@@ -34,21 +34,21 @@ const FilterToggleSwitch = styled(Switch)(({ theme }) => ({
       backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
         theme.palette.getContrastText(theme.palette.primary.main)
       )}" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>')`,
-      left: 12,
+      left: 10,
     },
     "&::after": {
       backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
         theme.palette.getContrastText(theme.palette.primary.main)
       )}" d="M19,13H5V11H19V13Z" /></svg>')`,
-      right: 12,
+      right: 10,
     },
   },
   "& .MuiSwitch-switchBase": {
     margin: 0,
-    padding: 7,
+    padding: 6,
     transitionDuration: "220ms",
     "&.Mui-checked": {
-      transform: "translateX(28px)",
+      transform: "translateX(26px)",
       color: "#ffffff",
       "& + .MuiSwitch-track": {
         backgroundColor: "#22c55e",
@@ -60,8 +60,8 @@ const FilterToggleSwitch = styled(Switch)(({ theme }) => ({
   "& .MuiSwitch-thumb": {
     boxShadow: "0 1px 4px rgba(0,0,0,0.35)",
     backgroundColor: "#ffffff",
-    width: 20,
-    height: 20,
+    width: 18,
+    height: 18,
     margin: 0,
   },
 }));
@@ -75,9 +75,9 @@ function FilterSwitch({ checked, label, onToggle, disabled = false, sx }: Filter
           alignItems: "center",
           justifyContent: "space-between",
           gap: 1.25,
-          px: 1.15,
-          py: 0.5,
-          minHeight: 48,
+          px: 0.9,
+          py: 0.35,
+          minHeight: 42,
           borderRadius: 1.75,
           border: "1px solid",
           borderColor: "divider",
@@ -94,7 +94,7 @@ function FilterSwitch({ checked, label, onToggle, disabled = false, sx }: Filter
       >
         <Typography
           sx={{
-            fontSize: "0.9rem",
+            fontSize: "0.84rem",
             fontWeight: 500,
             color: "text.primary",
             minWidth: 0,

@@ -103,16 +103,15 @@ describe("serializeFilterValues", () => {
     const values = createBaseValues();
     values.releasedateExact = "2024-11-10";
     values.numberExact = "1, 1A, Annual 1";
-    values.numberVariant = "B";
 
     const payload = serializeFilterValues(values, true);
 
     expect(payload).toMatchObject({
       releasedates: [{ compare: "=", date: "2024-11-10" }],
       numbers: [
-        { compare: "=", number: "1", variant: "B" },
-        { compare: "=", number: "1A", variant: "B" },
-        { compare: "=", number: "Annual 1", variant: "B" },
+        { compare: "=", number: "1", variant: "" },
+        { compare: "=", number: "1A", variant: "" },
+        { compare: "=", number: "Annual 1", variant: "" },
       ],
       us: true,
     });
