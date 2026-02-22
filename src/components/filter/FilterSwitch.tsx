@@ -9,6 +9,7 @@ interface FilterSwitchProps {
   checked: boolean;
   label: string;
   onToggle: () => void;
+  disabled?: boolean;
   sx?: SxProps<Theme>;
 }
 
@@ -65,7 +66,7 @@ const FilterToggleSwitch = styled(Switch)(({ theme }) => ({
   },
 }));
 
-function FilterSwitch({ checked, label, onToggle, sx }: FilterSwitchProps) {
+function FilterSwitch({ checked, label, onToggle, disabled = false, sx }: FilterSwitchProps) {
   return (
     <Box sx={sx}>
       <Box
@@ -83,6 +84,7 @@ function FilterSwitch({ checked, label, onToggle, sx }: FilterSwitchProps) {
           bgcolor: "rgba(255,255,255,0.9)",
           boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
           transition: "border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease",
+          opacity: disabled ? 0.6 : 1,
           "&:hover": {
             borderColor: "rgba(34,197,94,0.55)",
             boxShadow: "0 2px 9px rgba(34,197,94,0.16)",
@@ -105,6 +107,7 @@ function FilterSwitch({ checked, label, onToggle, sx }: FilterSwitchProps) {
           checked={checked}
           onChange={onToggle}
           color="primary"
+          disabled={disabled}
           inputProps={{ "aria-label": label }}
         />
       </Box>

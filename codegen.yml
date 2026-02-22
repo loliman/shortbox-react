@@ -1,6 +1,6 @@
 overwrite: true
 schema:
-  - ./node_modules/@loliman/shortbox-contract/schema/shortbox.graphql
+  - ../shortbox-contract/schema/shortbox.graphql
 documents:
   - src/graphql/typed-documents.graphql
 generates:

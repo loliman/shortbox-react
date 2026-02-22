@@ -5,27 +5,39 @@ function createBaseValues(): FilterValues {
   return {
     formats: [],
     withVariants: false,
-    releasedates: [],
+    releasedateFrom: "",
+    releasedateTo: "",
+    releasedateExact: "",
     publishers: [],
     series: [],
-    numbers: [],
+    numberFrom: "",
+    numberTo: "",
+    numberExact: "",
+    numberVariant: "",
     arcs: [],
     individuals: [],
     appearances: [],
     firstPrint: false,
+    notFirstPrint: false,
     onlyPrint: false,
+    notOnlyPrint: false,
     onlyTb: false,
+    notOnlyTb: false,
     exclusive: false,
+    notExclusive: false,
     reprint: false,
+    notReprint: false,
     otherOnlyTb: false,
+    notOtherOnlyTb: false,
     onlyOnePrint: false,
+    notOnlyOnePrint: false,
     noPrint: false,
+    notNoPrint: false,
     onlyCollected: false,
     onlyNotCollected: false,
-    sellable: false,
-    noCover: false,
+    onlyNotCollectedNoOwnedVariants: false,
+    noComicguideId: false,
     noContent: false,
-    and: false,
   };
 }
 
@@ -38,10 +50,7 @@ describe("serializeFilterValues", () => {
     const values = createBaseValues();
     values.formats = [{ name: "HC" }];
     values.withVariants = true;
-    values.releasedates = [
-      { compare: ">=", date: "1900-01-01" },
-      { compare: ">=", date: "2020-01-01" },
-    ];
+    values.releasedateFrom = "2020-01-01";
     values.publishers = [
       { __typename: "Publisher", id: 1, us: true, name: "Marvel", __resolveType: "Publisher" },
     ];
@@ -54,10 +63,7 @@ describe("serializeFilterValues", () => {
         publisher: { __typename: "Publisher", id: 3, name: "Marvel", us: true },
       },
     ];
-    values.numbers = [
-      { compare: "=", number: "", variant: "" },
-      { compare: ">=", number: "10", variant: "" },
-    ];
+    values.numberFrom = "10";
     values.arcs = [{ title: "Maximum Carnage" }, { title: "Civil War" }];
     values.individuals = [
       { __typename: "Individual", name: "Peter Parker", type: ["WRITER"], role: ["Writer"] },
@@ -66,7 +72,6 @@ describe("serializeFilterValues", () => {
     values.firstPrint = true;
     values.onlyPrint = true;
     values.otherOnlyTb = true;
-    values.and = true;
 
     const payload = serializeFilterValues(values, false);
 
@@ -76,12 +81,11 @@ describe("serializeFilterValues", () => {
       withVariants: true,
       releasedates: [{ compare: ">=", date: "2020-01-01" }],
       numbers: [{ compare: ">=", number: "10", variant: "" }],
-      arcs: "Maximum Carnage || Civil War",
-      appearances: "Spider-Man || Venom",
+      arcs: [{ title: "Maximum Carnage" }, { title: "Civil War" }],
+      appearances: [{ name: "Spider-Man" }, { name: "Venom" }],
       firstPrint: true,
       onlyPrint: true,
       otherOnlyTb: true,
-      and: true,
       us: false,
     });
 
@@ -95,17 +99,47 @@ describe("serializeFilterValues", () => {
     expect(individual.role).toBeUndefined();
   });
 
-  it("serializes all optional boolean filter flags when enabled", () => {
+  it("serializes exact date and exact numbers", () => {
+    const values = createBaseValues();
+    values.releasedateExact = "2024-11-10";
+    values.numberExact = "1, 1A, Annual 1";
+    values.numberVariant = "B";
+
+    const payload = serializeFilterValues(values, true);
+
+    expect(payload).toMatchObject({
+      releasedates: [{ compare: "=", date: "2024-11-10" }],
+      numbers: [
+        { compare: "=", number: "1", variant: "B" },
+        { compare: "=", number: "1A", variant: "B" },
+        { compare: "=", number: "Annual 1", variant: "B" },
+      ],
+      us: true,
+    });
+  });
+
+  it("serializes optional boolean flags and prioritizes positive over negated conflicts", () => {
     const values = createBaseValues();
     values.onlyTb = true;
+    values.notOnlyTb = true;
     values.exclusive = true;
+    values.notExclusive = true;
     values.reprint = true;
+    values.notReprint = true;
     values.noPrint = true;
+    values.notNoPrint = true;
     values.onlyOnePrint = true;
+    values.notOnlyOnePrint = true;
+    values.firstPrint = true;
+    values.notFirstPrint = true;
+    values.onlyPrint = true;
+    values.notOnlyPrint = true;
+    values.otherOnlyTb = true;
+    values.notOtherOnlyTb = true;
     values.onlyCollected = true;
     values.onlyNotCollected = true;
-    values.sellable = true;
-    values.noCover = true;
+    values.onlyNotCollectedNoOwnedVariants = true;
+    values.noComicguideId = true;
     values.noContent = true;
 
     const payload = serializeFilterValues(values, true);
@@ -116,12 +150,35 @@ describe("serializeFilterValues", () => {
       reprint: true,
       noPrint: true,
       onlyOnePrint: true,
+      firstPrint: true,
+      onlyPrint: true,
+      otherOnlyTb: true,
       onlyCollected: true,
-      onlyNotCollected: true,
-      sellable: true,
-      noCover: true,
+      noComicguideId: true,
       noContent: true,
       us: true,
     });
+    expect(payload).not.toHaveProperty("notOnlyTb");
+    expect(payload).not.toHaveProperty("notExclusive");
+    expect(payload).not.toHaveProperty("notReprint");
+    expect(payload).not.toHaveProperty("notNoPrint");
+    expect(payload).not.toHaveProperty("notOnlyOnePrint");
+    expect(payload).not.toHaveProperty("notFirstPrint");
+    expect(payload).not.toHaveProperty("notOnlyPrint");
+    expect(payload).not.toHaveProperty("notOtherOnlyTb");
+  });
+
+  it("prioritizes variant-free not-collected mode over plain not-collected", () => {
+    const values = createBaseValues();
+    values.onlyNotCollected = true;
+    values.onlyNotCollectedNoOwnedVariants = true;
+
+    const payload = serializeFilterValues(values, true);
+
+    expect(payload).toMatchObject({
+      onlyNotCollectedNoOwnedVariants: true,
+      us: true,
+    });
+    expect(payload).not.toHaveProperty("onlyNotCollected");
   });
 });

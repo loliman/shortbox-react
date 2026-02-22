@@ -66,9 +66,9 @@ describe("expanded helper", () => {
 
   it("expands story items for arcs, individuals and appearances", () => {
     const filter = {
-      arcs: "Maximum Carnage",
+      arcs: [{ title: "Maximum Carnage" }],
       individuals: [{ name: "Peter Parker", type: "WRITER" }],
-      appearances: "Spider-Man",
+      appearances: [{ name: "Spider-Man" }],
     };
 
     expect(expanded(baseStoryItem, { filter: JSON.stringify(filter) })).toBe(true);
@@ -114,7 +114,7 @@ describe("expanded helper", () => {
   it("returns false when none of the conditions match", () => {
     const filter = {
       individuals: [{ name: "Tony Stark", type: "WRITER" }],
-      arcs: "Civil War",
+      arcs: [{ title: "Civil War" }],
       numbers: [{ compare: ">", number: "99" }],
     };
 

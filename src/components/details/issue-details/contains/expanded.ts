@@ -48,10 +48,36 @@ type ExpandedFilter = {
   publishers?: Array<{ name?: string }>;
   publisher?: { name?: string };
   numbers?: Array<{ compare?: "=" | ">" | "<" | ">=" | "<="; number?: string | number }>;
-  arcs?: string;
+  arcs?: Array<{ title?: string }>;
   individuals?: PersonLike[];
-  appearances?: string;
+  appearances?: Array<{ name?: string }>;
 };
+
+function readTitles(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value
+      .map((entry) => String((entry as { title?: unknown })?.title || "").trim())
+      .filter((entry) => entry.length > 0);
+  }
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    return trimmed ? [trimmed] : [];
+  }
+  return [];
+}
+
+function readNames(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value
+      .map((entry) => String((entry as { name?: unknown })?.name || "").trim())
+      .filter((entry) => entry.length > 0);
+  }
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    return trimmed ? [trimmed] : [];
+  }
+  return [];
+}
 
 export function expanded(item: ItemLike, query?: QueryParams): boolean {
   if (query?.expand && String(query.expand) === String(item?.number ?? "")) {
@@ -136,7 +162,11 @@ export function expanded(item: ItemLike, query?: QueryParams): boolean {
   }
 
   if (item?.__typename === "Story") {
-    if (currentFilter.arcs && compareArcs.some((arc) => currentFilter?.arcs === arc?.title)) {
+    const selectedArcs = readTitles((currentFilter as { arcs?: unknown }).arcs);
+    if (
+      selectedArcs.length > 0 &&
+      compareArcs.some((arc) => selectedArcs.includes(String(arc?.title || "")))
+    ) {
       isExpanded = true;
     }
 
@@ -144,9 +174,12 @@ export function expanded(item: ItemLike, query?: QueryParams): boolean {
       isExpanded = true;
     }
 
+    const selectedAppearances = readNames((currentFilter as { appearances?: unknown }).appearances);
     if (
-      currentFilter.appearances &&
-      compareAppearances.some((appearance) => currentFilter?.appearances === appearance?.name)
+      selectedAppearances.length > 0 &&
+      compareAppearances.some((appearance) =>
+        selectedAppearances.includes(String(appearance?.name || ""))
+      )
     ) {
       isExpanded = true;
     }

@@ -36,9 +36,9 @@ export function toChipList(
         const label = item.name || item.title || "Unbekannt";
 
         if (typename === "Appearance") {
-          filter[filterType] = item.name || "";
+          filter[filterType] = [{ name: item.name || "" }];
         } else if (typename === "Arc") {
-          filter[filterType] = item.title || item.name || "";
+          filter[filterType] = [{ title: item.title || item.name || "" }];
         } else {
           const typed = { name: item.name || "", type };
           (filter[filterType] as Array<{ name: string; type: string }>).push(typed);

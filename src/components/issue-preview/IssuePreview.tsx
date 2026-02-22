@@ -77,6 +77,18 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
               {flags.collectedMultipleTimes ? (
                 <Chip size="small" label="Mehrfach gesammelt" color="success" variant="outlined" />
               ) : null}
+              {!us && flags.hasOnlyApp ? (
+                <Chip size="small" label="Einzige Veröffentlichung" color="secondary" />
+              ) : null}
+              {!us && !flags.hasOnlyApp && flags.hasFirstApp ? (
+                <Chip size="small" label="Erstveröffentlichung" color="secondary" variant="outlined" />
+              ) : null}
+              {!us && flags.hasExclusive ? (
+                <Chip size="small" label="Exklusiver Inhalt" color="secondary" />
+              ) : null}
+              {!us && flags.hasOtherOnlyTb ? (
+                <Chip size="small" label="Sonst nur in Taschenbuch" variant="outlined" />
+              ) : null}
               {!us && flags.isPureReprintDe ? (
                 <Chip size="small" label="Nachdruck" variant="outlined" />
               ) : null}

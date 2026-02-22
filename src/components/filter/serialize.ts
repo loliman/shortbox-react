@@ -1,15 +1,32 @@
 import { stripItem } from "../../util/util";
-import { FILTER_MULTI_VALUE_SEPARATOR } from "./constants";
 import { FilterSubmitValues, FilterValues } from "./types";
 
 function hasPayload(payload: FilterSubmitValues): boolean {
   return Object.keys(payload).length > 0;
 }
 
-function joinMultiValues(values: string[]): string | undefined {
-  const normalized = values.map((entry) => entry.trim()).filter((entry) => entry.length > 0);
-  if (normalized.length === 0) return undefined;
-  return normalized.join(FILTER_MULTI_VALUE_SEPARATOR);
+function applyNegatableFlag(
+  payload: FilterSubmitValues,
+  positive: boolean,
+  negative: boolean,
+  positiveKey: string,
+  negativeKey: string
+) {
+  const mutablePayload = payload as Record<string, unknown>;
+  if (positive) {
+    mutablePayload[positiveKey] = true;
+    return;
+  }
+  if (negative) {
+    mutablePayload[negativeKey] = true;
+  }
+}
+
+function splitExactNumbers(value: string): string[] {
+  return value
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter((entry, index, arr) => entry.length > 0 && arr.indexOf(entry) === index);
 }
 
 export function serializeFilterValues(
@@ -26,7 +43,16 @@ export function serializeFilterValues(
     payload.withVariants = true;
   }
 
-  const releasedates = values.releasedates.filter((entry) => entry.date.trim() !== "1900-01-01");
+  const releasedateExact = values.releasedateExact.trim();
+  const releasedateFrom = values.releasedateFrom.trim();
+  const releasedateTo = values.releasedateTo.trim();
+  const releasedates = [];
+  if (releasedateExact) {
+    releasedates.push({ compare: "=", date: releasedateExact });
+  } else {
+    if (releasedateFrom) releasedates.push({ compare: ">=", date: releasedateFrom });
+    if (releasedateTo) releasedates.push({ compare: "<=", date: releasedateTo });
+  }
   if (releasedates.length > 0) {
     payload.releasedates = releasedates;
   }
@@ -40,16 +66,37 @@ export function serializeFilterValues(
   }
 
   if (values.series.length > 0) {
-    payload.series = values.series.map((entry) => stripItem(entry));
+    payload.series = values.series
+      .map((entry) => {
+        const normalized = stripItem(entry);
+        const volume = Number(normalized.volume);
+        if (!Number.isFinite(volume)) return null;
+        normalized.volume = volume;
+        return normalized;
+      })
+      .filter((entry): entry is Record<string, unknown> => Boolean(entry));
   }
 
-  const numbers = values.numbers.filter((entry) => entry.number.trim() !== "");
+  const numbers = [];
+  const numberVariant = values.numberVariant.trim();
+  const numberExact = splitExactNumbers(values.numberExact);
+  const numberFrom = values.numberFrom.trim();
+  const numberTo = values.numberTo.trim();
+  if (numberExact.length > 0) {
+    numberExact.forEach((number) => {
+      numbers.push({ compare: "=", number, variant: numberVariant });
+    });
+  } else {
+    if (numberFrom) numbers.push({ compare: ">=", number: numberFrom, variant: numberVariant });
+    if (numberTo) numbers.push({ compare: "<=", number: numberTo, variant: numberVariant });
+  }
   if (numbers.length > 0) {
     payload.numbers = numbers;
   }
 
-  const arcsValue = joinMultiValues(values.arcs.map((entry) => String(entry.title || "")));
-  if (arcsValue) payload.arcs = arcsValue;
+  if (values.arcs.length > 0) {
+    payload.arcs = values.arcs.map((entry) => ({ title: String(entry.title || "").trim() }));
+  }
 
   if (values.individuals.length > 0) {
     payload.individuals = values.individuals.map((entry) => {
@@ -59,25 +106,26 @@ export function serializeFilterValues(
     });
   }
 
-  const appearancesValue = joinMultiValues(
-    values.appearances.map((entry) => String(entry.name || ""))
-  );
-  if (appearancesValue) payload.appearances = appearancesValue;
+  if (values.appearances.length > 0) {
+    payload.appearances = values.appearances.map((entry) => ({ name: String(entry.name || "").trim() }));
+  }
 
-  if (values.firstPrint) payload.firstPrint = true;
-  if (values.onlyPrint) payload.onlyPrint = true;
-  if (values.onlyTb) payload.onlyTb = true;
-  if (values.exclusive) payload.exclusive = true;
-  if (values.reprint) payload.reprint = true;
-  if (values.otherOnlyTb) payload.otherOnlyTb = true;
-  if (values.noPrint) payload.noPrint = true;
-  if (values.onlyOnePrint) payload.onlyOnePrint = true;
+  applyNegatableFlag(payload, values.firstPrint, values.notFirstPrint, "firstPrint", "notFirstPrint");
+  applyNegatableFlag(payload, values.onlyPrint, values.notOnlyPrint, "onlyPrint", "notOnlyPrint");
+  applyNegatableFlag(payload, values.onlyTb, values.notOnlyTb, "onlyTb", "notOnlyTb");
+  applyNegatableFlag(payload, values.exclusive, values.notExclusive, "exclusive", "notExclusive");
+  applyNegatableFlag(payload, values.reprint, values.notReprint, "reprint", "notReprint");
+  applyNegatableFlag(payload, values.otherOnlyTb, values.notOtherOnlyTb, "otherOnlyTb", "notOtherOnlyTb");
+  applyNegatableFlag(payload, values.noPrint, values.notNoPrint, "noPrint", "notNoPrint");
+  applyNegatableFlag(payload, values.onlyOnePrint, values.notOnlyOnePrint, "onlyOnePrint", "notOnlyOnePrint");
   if (values.onlyCollected) payload.onlyCollected = true;
-  if (values.onlyNotCollected) payload.onlyNotCollected = true;
-  if (values.sellable) payload.sellable = true;
-  if (values.noCover) payload.noCover = true;
+  if (!values.onlyCollected && values.onlyNotCollectedNoOwnedVariants) {
+    payload.onlyNotCollectedNoOwnedVariants = true;
+  } else if (!values.onlyCollected && values.onlyNotCollected) {
+    payload.onlyNotCollected = true;
+  }
+  if (values.noComicguideId) payload.noComicguideId = true;
   if (values.noContent) payload.noContent = true;
-  if (values.and) payload.and = true;
 
   if (!hasPayload(payload)) {
     return null;

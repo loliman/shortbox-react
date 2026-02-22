@@ -40,7 +40,7 @@ export function StoryArcChips(props: Readonly<StoryArcChipsProps>) {
             color={color}
             onClick={(e) =>
               props.navigate?.(e, props.us ? "/us" : "/de", {
-                filter: JSON.stringify({ arcs: arcTitle, us: props.us }),
+                filter: JSON.stringify({ arcs: [{ title: arcTitle }], us: props.us }),
               })
             }
           />

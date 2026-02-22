@@ -100,15 +100,14 @@ export type DateFilter = {
 };
 
 export type Filter = {
-  and?: InputMaybe<Scalars['Boolean']['input']>;
-  appearances?: InputMaybe<Scalars['String']['input']>;
-  arcs?: InputMaybe<Scalars['String']['input']>;
+  appearances?: InputMaybe<Array<InputMaybe<AppearanceInput>>>;
+  arcs?: InputMaybe<Array<InputMaybe<ArcInput>>>;
   exclusive?: InputMaybe<Scalars['Boolean']['input']>;
   firstPrint?: InputMaybe<Scalars['Boolean']['input']>;
   formats?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   individuals?: InputMaybe<Array<InputMaybe<IndividualInput>>>;
+  noComicguideId?: InputMaybe<Scalars['Boolean']['input']>;
   noContent?: InputMaybe<Scalars['Boolean']['input']>;
-  noCover?: InputMaybe<Scalars['Boolean']['input']>;
   noPrint?: InputMaybe<Scalars['Boolean']['input']>;
   numbers?: InputMaybe<Array<InputMaybe<NumberFilter>>>;
   onlyCollected?: InputMaybe<Scalars['Boolean']['input']>;
@@ -120,7 +119,6 @@ export type Filter = {
   publishers?: InputMaybe<Array<InputMaybe<PublisherInput>>>;
   releasedates?: InputMaybe<Array<InputMaybe<DateFilter>>>;
   reprint?: InputMaybe<Scalars['Boolean']['input']>;
-  sellable?: InputMaybe<Scalars['Boolean']['input']>;
   series?: InputMaybe<Array<InputMaybe<SeriesInput>>>;
   us: Scalars['Boolean']['input'];
   withVariants?: InputMaybe<Scalars['Boolean']['input']>;

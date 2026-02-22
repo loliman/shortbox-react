@@ -1,16 +1,12 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
-import MenuItem from "@mui/material/MenuItem";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
 import { FastField } from "formik";
 import AutocompleteBase from "../../generic/AutocompleteBase";
 import { TextField } from "../../generic/FormikTextField";
 import FilterSwitch from "../FilterSwitch";
-import { COMPARE_OPTIONS, FORMAT_OPTIONS } from "../constants";
+import { FORMAT_OPTIONS } from "../constants";
 import { FilterValues } from "../types";
 
 interface DetailsSectionProps {
@@ -58,157 +54,111 @@ function DetailsSection({
         />
       </Box>
 
-      <Stack spacing={1.5}>
-        {values.releasedates.map((entry, index) => {
-          const key = `${entry.date}-${entry.compare}-${index}`;
-          return (
-            <Box
-              key={key}
-              sx={{
-                display: "grid",
-                alignItems: "end",
-                gap: 1,
-                px: 1,
-                py: 0.9,
-                borderRadius: 1.75,
-                border: "1px solid",
-                borderColor: "divider",
-                bgcolor: "rgba(255,255,255,0.78)",
-                gridTemplateColumns: {
-                  xs: "1fr",
-                  sm: "minmax(220px, 1fr) minmax(120px, 170px) auto",
-                },
-              }}
-            >
-              <FastField
-                name={`releasedates[${index}].date`}
-                label="Erscheinungsdatum"
-                type="date"
-                InputLabelProps={{ shrink: true }}
-                component={TextField}
-                sx={{
-                  width: "100%",
-                  "& .MuiOutlinedInput-root": { borderRadius: 1.5, bgcolor: "background.paper" },
-                }}
-              />
-
-              <FastField
-                type="text"
-                name={`releasedates[${index}].compare`}
-                label="ist"
-                select
-                component={TextField}
-                InputLabelProps={{ shrink: true }}
-                sx={{
-                  width: "100%",
-                  "& .MuiOutlinedInput-root": { borderRadius: 1.5, bgcolor: "background.paper" },
-                }}
-              >
-                {COMPARE_OPTIONS.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
-              </FastField>
-
-              <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
-                {values.releasedates.length > 1 ? (
-                  <IconButton
-                    aria-label="Entfernen"
-                    color="inherit"
-                    size="small"
-                    onClick={() =>
-                      setFieldValue(
-                        "releasedates",
-                        values.releasedates.filter((_, entryIndex) => entryIndex !== index)
-                      )
-                    }
-                    sx={{
-                      width: 34,
-                      height: 34,
-                      border: "1px solid",
-                      borderColor: "divider",
-                      bgcolor: "background.paper",
-                      boxShadow: "0 1px 2px rgba(0,0,0,0.07)",
-                      "&:hover": {
-                        bgcolor: "rgba(239,68,68,0.09)",
-                        borderColor: "rgba(239,68,68,0.52)",
-                      },
-                    }}
-                  >
-                    <RemoveIcon fontSize="small" />
-                  </IconButton>
-                ) : null}
-
-                {index === values.releasedates.length - 1 ? (
-                  <IconButton
-                    aria-label="Hinzufügen"
-                    color="primary"
-                    size="small"
-                    onClick={() =>
-                      setFieldValue("releasedates", [
-                        ...values.releasedates,
-                        { date: "1900-01-01", compare: ">" },
-                      ])
-                    }
-                    sx={{
-                      width: 34,
-                      height: 34,
-                      border: "1px solid",
-                      borderColor: "divider",
-                      bgcolor: "background.paper",
-                      boxShadow: "0 1px 2px rgba(0,0,0,0.07)",
-                      "&:hover": {
-                        bgcolor: "rgba(34,197,94,0.10)",
-                        borderColor: "rgba(34,197,94,0.55)",
-                      },
-                    }}
-                  >
-                    <AddIcon />
-                  </IconButton>
-                ) : null}
-              </Box>
-            </Box>
-          );
-        })}
-      </Stack>
-
-      <Box sx={switchGridSx}>
-        <FilterSwitch
-          checked={values.and}
-          label="Alle Kriterien müssen erfüllt sein"
-          onToggle={() => setFieldValue("and", !values.and)}
+      <Box
+        sx={{
+          display: "grid",
+          alignItems: "end",
+          gap: 1,
+          px: 1,
+          py: 0.9,
+          borderRadius: 1.75,
+          border: "1px solid",
+          borderColor: "divider",
+          bgcolor: "rgba(255,255,255,0.78)",
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "repeat(3, minmax(160px, 1fr))",
+          },
+        }}
+      >
+        <FastField
+          name="releasedateFrom"
+          label="Erscheinungsdatum von"
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          component={TextField}
+          disabled={Boolean(values.releasedateExact)}
+          sx={{
+            width: "100%",
+            "& .MuiOutlinedInput-root": { borderRadius: 1.5, bgcolor: "background.paper" },
+          }}
         />
-
-        <FilterSwitch
-          checked={values.noCover}
-          label="Ohne Cover"
-          onToggle={() => setFieldValue("noCover", !values.noCover)}
+        <FastField
+          name="releasedateTo"
+          label="Erscheinungsdatum bis"
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          component={TextField}
+          disabled={Boolean(values.releasedateExact)}
+          sx={{
+            width: "100%",
+            "& .MuiOutlinedInput-root": { borderRadius: 1.5, bgcolor: "background.paper" },
+          }}
         />
-
-        <FilterSwitch
-          checked={values.noContent}
-          label="Ohne Inhalt"
-          onToggle={() => setFieldValue("noContent", !values.noContent)}
+        <FastField
+          name="releasedateExact"
+          label="Exaktes Erscheinungsdatum"
+          type="date"
+          InputLabelProps={{ shrink: true }}
+          component={TextField}
+          disabled={Boolean(values.releasedateFrom) || Boolean(values.releasedateTo)}
+          sx={{
+            width: "100%",
+            "& .MuiOutlinedInput-root": { borderRadius: 1.5, bgcolor: "background.paper" },
+          }}
         />
       </Box>
 
       {hasSession ? (
         <Box sx={switchGridSx}>
           <FilterSwitch
+            checked={values.noComicguideId}
+            label="Ohne Comicguide ID"
+            onToggle={() => setFieldValue("noComicguideId", !values.noComicguideId)}
+          />
+          <FilterSwitch
+            checked={values.noContent}
+            label="Ohne Inhalt"
+            onToggle={() => setFieldValue("noContent", !values.noContent)}
+          />
+          <FilterSwitch
             checked={values.onlyCollected}
             label="Nur in Sammlung"
-            onToggle={() => setFieldValue("onlyCollected", !values.onlyCollected)}
+            disabled={values.onlyNotCollected || values.onlyNotCollectedNoOwnedVariants}
+            onToggle={() => {
+              const next = !values.onlyCollected;
+              setFieldValue("onlyCollected", next);
+              if (next) {
+                setFieldValue("onlyNotCollected", false);
+                setFieldValue("onlyNotCollectedNoOwnedVariants", false);
+              }
+            }}
           />
           <FilterSwitch
             checked={values.onlyNotCollected}
             label="Nur nicht in Sammlung"
-            onToggle={() => setFieldValue("onlyNotCollected", !values.onlyNotCollected)}
+            disabled={values.onlyCollected || values.onlyNotCollectedNoOwnedVariants}
+            onToggle={() => {
+              const next = !values.onlyNotCollected;
+              setFieldValue("onlyNotCollected", next);
+              if (next) {
+                setFieldValue("onlyCollected", false);
+                setFieldValue("onlyNotCollectedNoOwnedVariants", false);
+              }
+            }}
           />
           <FilterSwitch
-            checked={values.sellable}
-            label="Verkaufbar"
-            onToggle={() => setFieldValue("sellable", !values.sellable)}
+            checked={values.onlyNotCollectedNoOwnedVariants}
+            label="Nicht in Sammlung (ohne besessene Varianten)"
+            disabled={values.onlyCollected || values.onlyNotCollected}
+            onToggle={() => {
+              const next = !values.onlyNotCollectedNoOwnedVariants;
+              setFieldValue("onlyNotCollectedNoOwnedVariants", next);
+              if (next) {
+                setFieldValue("onlyCollected", false);
+                setFieldValue("onlyNotCollected", false);
+              }
+            }}
           />
         </Box>
       ) : null}

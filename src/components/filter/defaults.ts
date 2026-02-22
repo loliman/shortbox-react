@@ -1,9 +1,6 @@
 import type { FieldItem } from "../../util/filterFieldHelpers";
 import { FILTER_MULTI_VALUE_SEPARATOR } from "./constants";
-import { FilterFormatOption, FilterValues } from "./types";
-
-const DEFAULT_RELEASE_DATE = { date: "1900-01-01", compare: ">" };
-const DEFAULT_NUMBER_FILTER = { number: "", compare: ">", variant: "" };
+import { FilterDateOption, FilterFormatOption, FilterNumberOption, FilterValues } from "./types";
 
 function isFormatNameObject(value: unknown): value is FilterFormatOption {
   return Boolean(value && typeof value === "object" && "name" in value);
@@ -97,28 +94,125 @@ export function createDefaultFilterValues(): FilterValues {
   return {
     formats: [],
     withVariants: false,
-    releasedates: [{ ...DEFAULT_RELEASE_DATE }],
+    releasedateFrom: "",
+    releasedateTo: "",
+    releasedateExact: "",
     publishers: [],
     series: [],
-    numbers: [{ ...DEFAULT_NUMBER_FILTER }],
+    numberFrom: "",
+    numberTo: "",
+    numberExact: "",
+    numberVariant: "",
     arcs: [],
     individuals: [],
     appearances: [],
     firstPrint: false,
+    notFirstPrint: false,
     onlyPrint: false,
+    notOnlyPrint: false,
     onlyTb: false,
+    notOnlyTb: false,
     exclusive: false,
+    notExclusive: false,
     reprint: false,
+    notReprint: false,
     otherOnlyTb: false,
+    notOtherOnlyTb: false,
     onlyOnePrint: false,
+    notOnlyOnePrint: false,
     noPrint: false,
+    notNoPrint: false,
     onlyCollected: false,
     onlyNotCollected: false,
-    sellable: false,
-    noCover: false,
+    onlyNotCollectedNoOwnedVariants: false,
+    noComicguideId: false,
     noContent: false,
-    and: false,
   };
+}
+
+function normalizeReleaseDateInputs(
+  rawReleasedates: unknown
+): Pick<FilterValues, "releasedateFrom" | "releasedateTo" | "releasedateExact"> {
+  const result = {
+    releasedateFrom: "",
+    releasedateTo: "",
+    releasedateExact: "",
+  };
+  if (!Array.isArray(rawReleasedates)) return result;
+
+  const values = rawReleasedates.filter(Boolean) as Array<FilterDateOption>;
+  const exact = values.find((entry) => entry.compare === "=" && String(entry.date || "").trim() !== "");
+  if (exact) {
+    result.releasedateExact = String(exact.date || "").trim();
+    return result;
+  }
+
+  const from = values.find(
+    (entry) =>
+      (entry.compare === ">=" || entry.compare === ">") &&
+      String(entry.date || "").trim() !== ""
+  );
+  const to = values.find(
+    (entry) =>
+      (entry.compare === "<=" || entry.compare === "<") &&
+      String(entry.date || "").trim() !== ""
+  );
+
+  result.releasedateFrom = from ? String(from.date || "").trim() : "";
+  result.releasedateTo = to ? String(to.date || "").trim() : "";
+  return result;
+}
+
+function normalizeNumberInputs(
+  rawNumbers: unknown
+): Pick<FilterValues, "numberFrom" | "numberTo" | "numberExact" | "numberVariant"> {
+  const result = {
+    numberFrom: "",
+    numberTo: "",
+    numberExact: "",
+    numberVariant: "",
+  };
+  if (!Array.isArray(rawNumbers)) return result;
+
+  const values = rawNumbers.filter(Boolean) as Array<FilterNumberOption>;
+  const exactValues = values
+    .filter((entry) => entry.compare === "=" && String(entry.number || "").trim() !== "")
+    .map((entry) => String(entry.number || "").trim());
+  if (exactValues.length > 0) {
+    result.numberExact = exactValues.join(", ");
+    const exactWithVariant = values.find(
+      (entry) =>
+        entry.compare === "=" &&
+        String(entry.number || "").trim() !== "" &&
+        String(entry.variant || "").trim() !== ""
+    );
+    if (exactWithVariant) result.numberVariant = String(exactWithVariant.variant || "").trim();
+    return result;
+  }
+
+  const from = values.find(
+    (entry) =>
+      (entry.compare === ">=" || entry.compare === ">") &&
+      String(entry.number || "").trim() !== ""
+  );
+  const to = values.find(
+    (entry) =>
+      (entry.compare === "<=" || entry.compare === "<") &&
+      String(entry.number || "").trim() !== ""
+  );
+
+  result.numberFrom = from ? String(from.number || "").trim() : "";
+  result.numberTo = to ? String(to.number || "").trim() : "";
+  const rangeWithVariant = values.find(
+    (entry) =>
+      (entry.compare === ">=" ||
+        entry.compare === ">" ||
+        entry.compare === "<=" ||
+        entry.compare === "<") &&
+      String(entry.variant || "").trim() !== ""
+  );
+  if (rangeWithVariant) result.numberVariant = String(rangeWithVariant.variant || "").trim();
+  return result;
 }
 
 export function parseFilterValues(queryFilter?: string): FilterValues {
@@ -129,40 +223,73 @@ export function parseFilterValues(queryFilter?: string): FilterValues {
   }
 
   try {
-    const parsed = JSON.parse(queryFilter) as Partial<FilterValues>;
+    const parsed = JSON.parse(queryFilter) as Partial<FilterValues> & {
+      releasedates?: unknown;
+      numbers?: unknown;
+    };
+    const normalizedReleasedateInputs = normalizeReleaseDateInputs(parsed.releasedates);
+    const normalizedNumberInputs = normalizeNumberInputs(parsed.numbers);
+
+    const onlyCollected = Boolean(parsed.onlyCollected);
+    const onlyNotCollectedNoOwnedVariants =
+      !onlyCollected &&
+      Boolean((parsed as { onlyNotCollectedNoOwnedVariants?: unknown }).onlyNotCollectedNoOwnedVariants);
+    const onlyNotCollected =
+      !onlyCollected && !onlyNotCollectedNoOwnedVariants && Boolean(parsed.onlyNotCollected);
+
+    const parseNegatablePair = (
+      positiveValue: unknown,
+      negativeValue: unknown
+    ): [boolean, boolean] => {
+      const positive = Boolean(positiveValue);
+      const negative = !positive && Boolean(negativeValue);
+      return [positive, negative];
+    };
+
+    const [firstPrint, notFirstPrint] = parseNegatablePair(parsed.firstPrint, parsed.notFirstPrint);
+    const [onlyPrint, notOnlyPrint] = parseNegatablePair(parsed.onlyPrint, parsed.notOnlyPrint);
+    const [onlyTb, notOnlyTb] = parseNegatablePair(parsed.onlyTb, parsed.notOnlyTb);
+    const [exclusive, notExclusive] = parseNegatablePair(parsed.exclusive, parsed.notExclusive);
+    const [reprint, notReprint] = parseNegatablePair(parsed.reprint, parsed.notReprint);
+    const [otherOnlyTb, notOtherOnlyTb] = parseNegatablePair(parsed.otherOnlyTb, parsed.notOtherOnlyTb);
+    const [onlyOnePrint, notOnlyOnePrint] = parseNegatablePair(parsed.onlyOnePrint, parsed.notOnlyOnePrint);
+    const [noPrint, notNoPrint] = parseNegatablePair(parsed.noPrint, parsed.notNoPrint);
 
     return {
       ...defaults,
       ...parsed,
       formats: normalizeFormats(parsed.formats),
-      releasedates:
-        Array.isArray(parsed.releasedates) && parsed.releasedates.length > 0
-          ? parsed.releasedates
-          : defaults.releasedates,
+      ...normalizedReleasedateInputs,
       publishers: Array.isArray(parsed.publishers) ? parsed.publishers : defaults.publishers,
       series: normalizeSeries(parsed.series),
-      numbers:
-        Array.isArray(parsed.numbers) && parsed.numbers.length > 0
-          ? parsed.numbers
-          : defaults.numbers,
+      ...normalizedNumberInputs,
       individuals: Array.isArray(parsed.individuals) ? parsed.individuals : defaults.individuals,
       arcs: normalizeArcFilters(parsed.arcs),
       appearances: normalizeAppearanceFilters(parsed.appearances),
       withVariants: Boolean(parsed.withVariants),
-      firstPrint: Boolean(parsed.firstPrint),
-      onlyPrint: Boolean(parsed.onlyPrint),
-      onlyTb: Boolean(parsed.onlyTb),
-      exclusive: Boolean(parsed.exclusive),
-      reprint: Boolean(parsed.reprint),
-      otherOnlyTb: Boolean(parsed.otherOnlyTb),
-      onlyOnePrint: Boolean(parsed.onlyOnePrint),
-      noPrint: Boolean(parsed.noPrint),
-      onlyCollected: Boolean(parsed.onlyCollected),
-      onlyNotCollected: Boolean(parsed.onlyNotCollected),
-      sellable: Boolean(parsed.sellable),
-      noCover: Boolean(parsed.noCover),
+      firstPrint,
+      notFirstPrint,
+      onlyPrint,
+      notOnlyPrint,
+      onlyTb,
+      notOnlyTb,
+      exclusive,
+      notExclusive,
+      reprint,
+      notReprint,
+      otherOnlyTb,
+      notOtherOnlyTb,
+      onlyOnePrint,
+      notOnlyOnePrint,
+      noPrint,
+      notNoPrint,
+      onlyCollected,
+      onlyNotCollected,
+      onlyNotCollectedNoOwnedVariants,
+      noComicguideId:
+        Boolean((parsed as { noComicguideId?: unknown }).noComicguideId) ||
+        Boolean((parsed as { noCover?: unknown }).noCover),
       noContent: Boolean(parsed.noContent),
-      and: Boolean(parsed.and),
     };
   } catch {
     return defaults;

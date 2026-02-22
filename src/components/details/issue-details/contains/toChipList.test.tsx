@@ -27,7 +27,7 @@ describe("toChipList", () => {
     expect(query).toEqual({
       filter: JSON.stringify({
         us: false,
-        appearances: "Spider-Man",
+        appearances: [{ name: "Spider-Man" }],
       }),
     });
   });
@@ -47,7 +47,7 @@ describe("toChipList", () => {
     expect(navigate.mock.calls[0][2]).toEqual({
       filter: JSON.stringify({
         us: true,
-        arcs: "Maximum Carnage",
+        arcs: [{ title: "Maximum Carnage" }],
       }),
     });
 

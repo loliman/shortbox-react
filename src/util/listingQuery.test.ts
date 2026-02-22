@@ -24,6 +24,8 @@ describe("listingQuery util", () => {
 
     expect(result).toEqual({
       formats: ["HC"],
+      arcs: [],
+      appearances: [],
       us: true,
     });
   });

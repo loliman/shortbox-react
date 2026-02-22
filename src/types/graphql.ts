@@ -12,13 +12,15 @@ export interface NumberFilter {
 
 export interface Filter {
   us?: boolean;
-  and?: boolean;
   withVariants?: boolean;
   publishers?: Array<{ name?: string | null } | null>;
   series?: Array<{ title?: string | null; volume?: number | null } | null>;
   numbers?: Array<NumberFilter | null>;
   releasedates?: Array<DateFilter | null>;
   formats?: Array<string | null>;
+  arcs?: Array<{ title?: string | null } | null>;
+  appearances?: Array<{ name?: string | null } | null>;
+  noComicguideId?: boolean;
   [key: string]: unknown;
 }
 

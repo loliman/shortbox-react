@@ -1,17 +1,12 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
-import IconButton from "@mui/material/IconButton";
-import MenuItem from "@mui/material/MenuItem";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
 import { FastField } from "formik";
 import AutocompleteBase from "../../generic/AutocompleteBase";
 import { useAutocompleteQuery } from "../../generic/useAutocompleteQuery";
 import { TextField } from "../../generic/FormikTextField";
 import FilterSwitch from "../FilterSwitch";
-import { COMPARE_OPTIONS } from "../constants";
 import { FilterValues } from "../types";
 import { publishers, series } from "../../../graphql/queriesTyped";
 import type { FieldItem } from "../../../util/filterFieldHelpers";
@@ -61,6 +56,43 @@ function ContainsSection({
 
   const selectedPublishers = sanitizeNameList(values.publishers);
   const selectedSeries = sanitizeTitleList(values.series);
+  const triStateSwitch = (field: keyof FilterValues, negatedField: keyof FilterValues, label: string) => {
+    const isPositive = Boolean(values[field]);
+    const isNegated = Boolean(values[negatedField]);
+    const checked = isPositive || isNegated;
+    const effectiveLabel = isNegated ? `Nicht ${label}` : label;
+
+    return (
+      <FilterSwitch
+        checked={checked}
+        label={effectiveLabel}
+        sx={
+          isNegated
+            ? {
+                "& > div": {
+                  borderColor: "rgba(239,68,68,0.5)",
+                  boxShadow: "0 2px 9px rgba(239,68,68,0.14)",
+                },
+              }
+            : undefined
+        }
+        onToggle={() => {
+          if (!isPositive && !isNegated) {
+            setFieldValue(field, true);
+            setFieldValue(negatedField, false);
+            return;
+          }
+          if (isPositive) {
+            setFieldValue(field, false);
+            setFieldValue(negatedField, true);
+            return;
+          }
+          setFieldValue(field, false);
+          setFieldValue(negatedField, false);
+        }}
+      />
+    );
+  };
 
   return (
     <Stack spacing={2}>
@@ -68,49 +100,17 @@ function ContainsSection({
 
       {!us ? (
         <Box sx={switchGridSx}>
-          <FilterSwitch
-            checked={values.onlyPrint}
-            label="Einzige Veröffentlichung"
-            onToggle={() => setFieldValue("onlyPrint", !values.onlyPrint)}
-          />
-          <FilterSwitch
-            checked={values.firstPrint}
-            label="Erstveröffentlichung"
-            onToggle={() => setFieldValue("firstPrint", !values.firstPrint)}
-          />
-          <FilterSwitch
-            checked={values.otherOnlyTb}
-            label="Sonst nur in Taschenbuch"
-            onToggle={() => setFieldValue("otherOnlyTb", !values.otherOnlyTb)}
-          />
-          <FilterSwitch
-            checked={values.exclusive}
-            label="Exklusiver Inhalt"
-            onToggle={() => setFieldValue("exclusive", !values.exclusive)}
-          />
-          <FilterSwitch
-            checked={values.reprint}
-            label="Reiner Nachdruck"
-            onToggle={() => setFieldValue("reprint", !values.reprint)}
-          />
+          {triStateSwitch("onlyPrint", "notOnlyPrint", "Einzige Veröffentlichung")}
+          {triStateSwitch("firstPrint", "notFirstPrint", "Erstveröffentlichung")}
+          {triStateSwitch("otherOnlyTb", "notOtherOnlyTb", "Sonst nur in Taschenbuch")}
+          {triStateSwitch("exclusive", "notExclusive", "Exklusiver Inhalt")}
+          {triStateSwitch("reprint", "notReprint", "Reiner Nachdruck")}
         </Box>
       ) : (
         <Box sx={switchGridSx}>
-          <FilterSwitch
-            checked={values.onlyTb}
-            label="Nur in Taschenbuch"
-            onToggle={() => setFieldValue("onlyTb", !values.onlyTb)}
-          />
-          <FilterSwitch
-            checked={values.onlyOnePrint}
-            label="Nur einfach auf deutsch erschienen"
-            onToggle={() => setFieldValue("onlyOnePrint", !values.onlyOnePrint)}
-          />
-          <FilterSwitch
-            checked={values.noPrint}
-            label="Nicht auf deutsch erschienen"
-            onToggle={() => setFieldValue("noPrint", !values.noPrint)}
-          />
+          {triStateSwitch("onlyTb", "notOnlyTb", "Nur in Taschenbuch")}
+          {triStateSwitch("onlyOnePrint", "notOnlyOnePrint", "Nur einfach auf deutsch erschienen")}
+          {triStateSwitch("noPrint", "notNoPrint", "Nicht auf deutsch erschienen")}
         </Box>
       )}
 
@@ -174,122 +174,66 @@ function ContainsSection({
         }}
       />
 
-      <Stack spacing={1.5}>
-        {values.numbers.map((entry, index) => {
-          const key = `${entry.number || "empty"}-${entry.compare}-${entry.variant || "base"}-${index}`;
-          return (
-            <Box
-              key={key}
-              sx={{
-                display: "grid",
-                alignItems: "end",
-                gap: 1,
-                px: 1,
-                py: 0.9,
-                borderRadius: 1.75,
-                border: "1px solid",
-                borderColor: "divider",
-                bgcolor: "rgba(255,255,255,0.78)",
-                gridTemplateColumns: {
-                  xs: "1fr",
-                  sm: "minmax(220px, 1fr) minmax(120px, 170px) auto",
-                },
-              }}
-            >
-              <FastField
-                name={`numbers[${index}].number`}
-                label="Nummer"
-                component={TextField}
-                sx={{
-                  width: "100%",
-                  "& .MuiOutlinedInput-root": { borderRadius: 1.5, bgcolor: "background.paper" },
-                }}
-              />
-
-              <FastField
-                type="text"
-                name={`numbers[${index}].compare`}
-                label="ist"
-                select
-                component={TextField}
-                InputLabelProps={{ shrink: true }}
-                sx={{
-                  width: "100%",
-                  "& .MuiOutlinedInput-root": { borderRadius: 1.5, bgcolor: "background.paper" },
-                }}
-              >
-                {COMPARE_OPTIONS.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
-              </FastField>
-
-              <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
-                {values.numbers.length > 1 ? (
-                  <IconButton
-                    aria-label="Entfernen"
-                    color="inherit"
-                    size="small"
-                    onClick={() =>
-                      setFieldValue(
-                        "numbers",
-                        values.numbers.filter((_, entryIndex) => entryIndex !== index)
-                      )
-                    }
-                    sx={{
-                      width: 34,
-                      height: 34,
-                      border: "1px solid",
-                      borderColor: "divider",
-                      bgcolor: "background.paper",
-                      boxShadow: "0 1px 2px rgba(0,0,0,0.07)",
-                      "&:hover": {
-                        bgcolor: "rgba(239,68,68,0.09)",
-                        borderColor: "rgba(239,68,68,0.52)",
-                      },
-                    }}
-                  >
-                    <RemoveIcon fontSize="small" />
-                  </IconButton>
-                ) : null}
-
-                {index === values.numbers.length - 1 ? (
-                  <IconButton
-                    aria-label="Hinzufügen"
-                    color="primary"
-                    size="small"
-                    onClick={() =>
-                      setFieldValue("numbers", [
-                        ...values.numbers,
-                        {
-                          number: "",
-                          compare: ">",
-                          variant: "",
-                        },
-                      ])
-                    }
-                    sx={{
-                      width: 34,
-                      height: 34,
-                      border: "1px solid",
-                      borderColor: "divider",
-                      bgcolor: "background.paper",
-                      boxShadow: "0 1px 2px rgba(0,0,0,0.07)",
-                      "&:hover": {
-                        bgcolor: "rgba(34,197,94,0.10)",
-                        borderColor: "rgba(34,197,94,0.55)",
-                      },
-                    }}
-                  >
-                    <AddIcon />
-                  </IconButton>
-                ) : null}
-              </Box>
-            </Box>
-          );
-        })}
-      </Stack>
+      <Box
+        sx={{
+          display: "grid",
+          alignItems: "end",
+          gap: 1,
+          px: 1,
+          py: 0.9,
+          borderRadius: 1.75,
+          border: "1px solid",
+          borderColor: "divider",
+          bgcolor: "rgba(255,255,255,0.78)",
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "repeat(2, minmax(170px, 1fr))",
+          },
+        }}
+      >
+        <FastField
+          name="numberFrom"
+          label="Nummer von"
+          component={TextField}
+          disabled={Boolean(values.numberExact)}
+          sx={{
+            width: "100%",
+            "& .MuiOutlinedInput-root": { borderRadius: 1.5, bgcolor: "background.paper" },
+          }}
+        />
+        <FastField
+          name="numberTo"
+          label="Nummer bis"
+          component={TextField}
+          disabled={Boolean(values.numberExact)}
+          sx={{
+            width: "100%",
+            "& .MuiOutlinedInput-root": { borderRadius: 1.5, bgcolor: "background.paper" },
+          }}
+        />
+        <FastField
+          name="numberExact"
+          label="Exakte Nummer(n)"
+          helperText="Mehrere Werte mit Komma trennen, z.B. 1, 1A, Annual 1"
+          component={TextField}
+          disabled={Boolean(values.numberFrom) || Boolean(values.numberTo)}
+          sx={{
+            width: "100%",
+            "& .MuiOutlinedInput-root": { borderRadius: 1.5, bgcolor: "background.paper" },
+            gridColumn: { xs: "1", sm: "1 / span 2" },
+          }}
+        />
+        <FastField
+          name="numberVariant"
+          label="Variante (optional)"
+          component={TextField}
+          sx={{
+            width: "100%",
+            "& .MuiOutlinedInput-root": { borderRadius: 1.5, bgcolor: "background.paper" },
+            gridColumn: { xs: "1", sm: "1 / span 2" },
+          }}
+        />
+      </Box>
     </Stack>
   );
 }
@@ -307,7 +251,12 @@ function sanitizeNameList(values: FieldItem[]) {
 }
 
 function sanitizeTitleList(values: FieldItem[]) {
-  return values.filter((entry) => !entry.pattern && normalizeText(entry.title).length > 0);
+  return values.filter(
+    (entry) =>
+      !entry.pattern &&
+      normalizeText(entry.title).length > 0 &&
+      Number.isFinite(Number(entry.volume))
+  );
 }
 
 function normalizeText(value: unknown) {
