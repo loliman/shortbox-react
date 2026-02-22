@@ -241,7 +241,6 @@ function IssueDetails(props: IssueDetailsProps) {
             sx={{
               display: "grid",
               gridTemplateColumns,
-              gridTemplateRows: { xs: "auto", md: props.bottom ? "auto auto" : "auto" },
               gap: 2,
               alignItems: "start",
               width: "100%",
@@ -276,6 +275,17 @@ function IssueDetails(props: IssueDetailsProps) {
                   <StoryArcChips arcs={arcs} us={us} navigate={props.navigate} inline />
                 </Box>
               ) : null}
+
+              {props.bottom ? (
+                <Box sx={{ minWidth: 0, width: "100%", mt: 0.5 }}>
+                  {React.cloneElement(props.bottom, {
+                    navigate: props.navigate,
+                    selected: issueForVariants,
+                    issue: issueForVariants,
+                    us: us,
+                  })}
+                </Box>
+              ) : null}
             </Box>
 
             <Box
@@ -286,7 +296,7 @@ function IssueDetails(props: IssueDetailsProps) {
                 minWidth: 0,
                 justifySelf: { xs: "stretch", md: "end" },
                 gridColumn: { md: "2 / 3" },
-                gridRow: { md: props.bottom ? "1 / span 2" : "1" },
+                gridRow: { md: "1" },
                 order: { xs: 1, md: 3 },
               }}
             >
@@ -417,24 +427,6 @@ function IssueDetails(props: IssueDetailsProps) {
                 </Box>
               </Box>
             </Box>
-
-            {props.bottom ? (
-              <Box
-                sx={{
-                  minWidth: 0,
-                  gridColumn: { md: "1 / 2" },
-                  gridRow: { md: 2 },
-                  order: { xs: 4, md: 4 },
-                }}
-              >
-                {React.cloneElement(props.bottom, {
-                  navigate: props.navigate,
-                  selected: issueForVariants,
-                  issue: issueForVariants,
-                  us: us,
-                })}
-              </Box>
-            ) : null}
 
           </Box>
 

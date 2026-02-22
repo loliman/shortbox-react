@@ -26,6 +26,12 @@ function getCoverSource(
 
 function CoverTooltip(props: Readonly<CoverTooltipProps>) {
   const { coverUrl, blurCover } = getCoverSource(props.issue, props.us);
+  const fallbackUrl = "/nocover.jpg";
+  const [displayUrl, setDisplayUrl] = React.useState(coverUrl);
+
+  React.useEffect(() => {
+    setDisplayUrl(coverUrl);
+  }, [coverUrl]);
 
   return (
     <Tooltip
@@ -45,7 +51,10 @@ function CoverTooltip(props: Readonly<CoverTooltipProps>) {
       title={
         <Box
           component="img"
-          src={coverUrl}
+          src={displayUrl}
+          onError={() => {
+            setDisplayUrl((prev) => (prev === fallbackUrl ? prev : fallbackUrl));
+          }}
           sx={{
             width: 65,
             display: "block",

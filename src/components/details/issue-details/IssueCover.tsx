@@ -14,7 +14,13 @@ type IssueCoverProps = {
 export function IssueCover(props: Readonly<IssueCoverProps>) {
   const [isOpen, setIsOpen] = React.useState(false);
   const { coverUrl, blurCover } = getIssueCoverSource(props.issue, props.us);
+  const [displayUrl, setDisplayUrl] = React.useState(coverUrl);
   const issueLabel = getIssueLabel(props.issue);
+  const fallbackUrl = "/nocover.jpg";
+
+  React.useEffect(() => {
+    setDisplayUrl(coverUrl);
+  }, [coverUrl]);
 
   return (
     <React.Fragment>
@@ -36,9 +42,12 @@ export function IssueCover(props: Readonly<IssueCoverProps>) {
       >
         <CardMedia
           component="img"
-          image={coverUrl}
+          image={displayUrl}
           alt={issueLabel}
           title={issueLabel}
+          onError={() => {
+            setDisplayUrl((prev) => (prev === fallbackUrl ? prev : fallbackUrl));
+          }}
           sx={{
             width: "100%",
             height: "100%",
@@ -64,8 +73,11 @@ export function IssueCover(props: Readonly<IssueCoverProps>) {
       >
         <Box
           component="img"
-          src={coverUrl}
+          src={displayUrl}
           alt={issueLabel}
+          onError={() => {
+            setDisplayUrl((prev) => (prev === fallbackUrl ? prev : fallbackUrl));
+          }}
           sx={{
             display: "block",
             maxWidth: "min(90vw, 960px)",

@@ -20,6 +20,8 @@ type IssueVariantTileProps = {
 
 export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
   const { coverUrl, blurCover } = getVariantCoverSource(props.variant, props.us);
+  const fallbackUrl = "/nocover_simple.jpg";
+  const [displayUrl, setDisplayUrl] = React.useState(coverUrl);
   const selected =
     props.selected ??
     (props.issue.format === props.variant.format && props.issue.variant === props.variant.variant);
@@ -29,6 +31,10 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
     " (" +
     (props.variant.variant ? props.variant.variant + " Variant" : "Reguläre Ausgabe") +
     ")";
+
+  React.useEffect(() => {
+    setDisplayUrl(coverUrl);
+  }, [coverUrl]);
 
   return (
     <Box
@@ -72,8 +78,11 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
       >
         <Box
           component="img"
-          src={coverUrl}
+          src={displayUrl}
           alt={variantLabel}
+          onError={() => {
+            setDisplayUrl((prev) => (prev === fallbackUrl ? prev : fallbackUrl));
+          }}
           sx={{
             display: "block",
             width: "100%",
