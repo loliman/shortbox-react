@@ -171,15 +171,10 @@ function IssueDetails(props: IssueDetailsProps) {
   const arcs = collectIssueArcs(issueForVariants, us);
   const today = getTodayLocalDate();
   const releaseDate = issueForVariants.releasedate ? new Date(issueForVariants.releasedate) : null;
-  const gridTemplateColumns = arcs.length
-    ? { xs: "1fr", md: "minmax(0, 1.1fr) minmax(180px, 20vw) auto" }
-    : { xs: "1fr", md: "minmax(0, 1fr) auto" };
-  const coverGridColumn = arcs.length ? "3 / 4" : "2 / 3";
-  const bottomGridColumn = arcs.length ? "1 / 3" : "1 / 2";
+  const gridTemplateColumns = { xs: "1fr", md: "minmax(0, 1fr) auto" };
   const coverWidth = {
     xs: "100%",
-    md: "46.03vw",
-    lg: "clamp(262px, 27.64vw, 478px)",
+    md: "clamp(220px, 24vw, 320px)",
   };
 
   return (
@@ -242,7 +237,7 @@ function IssueDetails(props: IssueDetailsProps) {
             sx={{
               display: "grid",
               gridTemplateColumns,
-              gridTemplateRows: { xs: "auto", md: props.bottom ? "auto 1fr" : "auto" },
+              gridTemplateRows: { xs: "auto", md: props.bottom ? "auto auto" : "auto" },
               gap: 2,
               alignItems: "start",
               width: "100%",
@@ -253,40 +248,31 @@ function IssueDetails(props: IssueDetailsProps) {
                 minWidth: 0,
                 width: "100%",
                 display: "flex",
+                flexWrap: "wrap",
                 alignItems: "flex-start",
+                columnGap: 2,
+                rowGap: 1.5,
                 order: { xs: 2, md: 1 },
               }}
             >
-              <DetailsTable
-                issue={issueForVariants}
-                details={details}
-                navigate={props.navigate}
-                us={us}
-              />
-            </Box>
-
-            {arcs.length > 0 ? (
-              <Box
-                sx={{
-                  minWidth: 0,
-                  width: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                  justifyContent: "flex-end",
-                  gap: 1,
-                  alignSelf: { md: "end" },
-                  justifySelf: "start",
-                  pb: { md: 0.5 },
-                  order: { xs: 3, md: 2 },
-                }}
-              >
-                <Typography variant="subtitle2" sx={{ fontWeight: 500, whiteSpace: "nowrap" }}>
-                  Enthält Teile von
-                </Typography>
-                <StoryArcChips arcs={arcs} us={us} navigate={props.navigate} inline />
+              <Box sx={{ minWidth: 0, flex: "1 1 300px", width: "100%" }}>
+                <DetailsTable
+                  issue={issueForVariants}
+                  details={details}
+                  navigate={props.navigate}
+                  us={us}
+                />
               </Box>
-            ) : null}
+
+              {arcs.length > 0 ? (
+                <Box sx={{ minWidth: 0, flex: "0 1 220px" }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 500, mb: 0.75, whiteSpace: "nowrap" }}>
+                    Enthält Teile von
+                  </Typography>
+                  <StoryArcChips arcs={arcs} us={us} navigate={props.navigate} inline />
+                </Box>
+              ) : null}
+            </Box>
 
             <Box
               sx={{
@@ -295,7 +281,7 @@ function IssueDetails(props: IssueDetailsProps) {
                 justifyContent: { xs: "center", md: "flex-end" },
                 minWidth: 0,
                 justifySelf: { xs: "stretch", md: "end" },
-                gridColumn: { md: coverGridColumn },
+                gridColumn: { md: "2 / 3" },
                 gridRow: { md: props.bottom ? "1 / span 2" : "1" },
                 order: { xs: 1, md: 3 },
               }}
@@ -382,7 +368,7 @@ function IssueDetails(props: IssueDetailsProps) {
               <Box
                 sx={{
                   minWidth: 0,
-                  gridColumn: { md: bottomGridColumn },
+                  gridColumn: { md: "1 / 2" },
                   gridRow: { md: 2 },
                   order: { xs: 4, md: 4 },
                 }}

@@ -7,8 +7,7 @@ import Box from "@mui/material/Box";
 export function IssueDetailsPreview() {
   const coverWidth = {
     xs: "min(85.3vw, 717px)",
-    md: "46.03vw",
-    lg: "clamp(262px, 27.64vw, 478px)",
+    md: "clamp(220px, 24vw, 320px)",
   };
 
   return (
@@ -28,33 +27,34 @@ export function IssueDetailsPreview() {
             display: "grid",
             gridTemplateColumns: {
               xs: "1fr",
-              md: "minmax(0, 1.1fr) minmax(160px, 20vw) minmax(240px, 33%)",
+              md: "minmax(0, 1fr) auto",
             },
-            gridTemplateRows: { xs: "auto", md: "auto 1fr" },
+            gridTemplateRows: { xs: "auto", md: "auto auto" },
             gap: 2,
             alignItems: "start",
           }}
         >
           <Box sx={{ minWidth: 0, gridColumn: { md: "1 / 2" }, gridRow: { md: "1 / 2" } }}>
-            <Skeleton variant="rounded" width="100%" height={200} />
-          </Box>
+            <Box
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                alignItems: "flex-start",
+                columnGap: 2,
+                rowGap: 1.5,
+              }}
+            >
+              <Box sx={{ minWidth: 0, flex: "1 1 300px", width: "100%" }}>
+                <Skeleton variant="rounded" width="100%" height={200} />
+              </Box>
 
-          <Box
-            sx={{
-              minWidth: 0,
-              gridColumn: { md: "2 / 3" },
-              gridRow: { md: "1 / 2" },
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "flex-end",
-              alignSelf: { md: "end" },
-              pb: { md: 0.5 },
-            }}
-          >
-            <Skeleton variant="text" width={95} height={24} />
-            <Box sx={{ mt: 1, display: "flex", gap: 1, flexWrap: "wrap" }}>
-              <Skeleton variant="rounded" width={130} height={28} />
-              <Skeleton variant="rounded" width={115} height={28} />
+              <Box sx={{ minWidth: 0, flex: "0 1 220px" }}>
+                <Skeleton variant="text" width={110} height={24} />
+                <Box sx={{ mt: 0.75, display: "flex", gap: 1, flexWrap: "wrap" }}>
+                  <Skeleton variant="rounded" width={130} height={28} />
+                  <Skeleton variant="rounded" width={115} height={28} />
+                </Box>
+              </Box>
             </Box>
           </Box>
 
@@ -64,7 +64,7 @@ export function IssueDetailsPreview() {
               justifyContent: "flex-end",
               alignItems: { xs: "center", md: "flex-end" },
               minWidth: 0,
-              gridColumn: { md: "3 / 4" },
+              gridColumn: { md: "2 / 3" },
               gridRow: { md: "1 / span 2" },
             }}
           >
@@ -80,7 +80,7 @@ export function IssueDetailsPreview() {
             </Box>
           </Box>
 
-          <Box sx={{ minWidth: 0, gridColumn: { md: "1 / 3" }, gridRow: { md: "2 / 3" }, mt: 1 }}>
+          <Box sx={{ minWidth: 0, gridColumn: { md: "1 / 2" }, gridRow: { md: "2 / 3" }, mt: 1 }}>
             <Skeleton variant="rounded" width="100%" height={52} sx={{ mb: 1 }} />
             <Skeleton variant="rounded" width="100%" height={52} sx={{ mb: 1 }} />
             <Skeleton variant="rounded" width="100%" height={52} sx={{ mb: 1 }} />
