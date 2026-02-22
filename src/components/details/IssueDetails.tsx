@@ -49,16 +49,18 @@ interface IssueDetailsProps {
   [key: string]: unknown;
 }
 
-function getIssueSelectionKey(issueLike?: {
-  number?: string | null;
-  format?: string | null;
-  variant?: string | null;
-  series?: {
-    title?: string | null;
-    volume?: number | null;
-    publisher?: { name?: string | null };
-  } | null;
-} | null) {
+function getIssueSelectionKey(
+  issueLike?: {
+    number?: string | null;
+    format?: string | null;
+    variant?: string | null;
+    series?: {
+      title?: string | null;
+      volume?: number | null;
+      publisher?: { name?: string | null };
+    } | null;
+  } | null
+) {
   if (!issueLike) return "";
   return [
     String(issueLike.series?.publisher?.name || ""),
@@ -70,8 +72,12 @@ function getIssueSelectionKey(issueLike?: {
   ].join("|");
 }
 
-function getIssueVariantKey(issueLike?: { format?: string | null; variant?: string | null } | null) {
-  return [String(issueLike?.format || "").trim(), String(issueLike?.variant || "").trim()].join("|");
+function getIssueVariantKey(
+  issueLike?: { format?: string | null; variant?: string | null } | null
+) {
+  return [String(issueLike?.format || "").trim(), String(issueLike?.variant || "").trim()].join(
+    "|"
+  );
 }
 
 function IssueDetails(props: IssueDetailsProps) {
@@ -119,9 +125,9 @@ function IssueDetails(props: IssueDetailsProps) {
   const previousIssue = previousData?.issueDetails ?? null;
   const currentIssueKey = getIssueSelectionKey(currentIssue as unknown as any);
   const hasRequestedIssueData = currentIssueKey === requestedIssueKey;
-  const resolvedIssue = (currentIssue && hasRequestedIssueData ? currentIssue : null) as
-    | Issue
-    | null;
+  const resolvedIssue = (
+    currentIssue && hasRequestedIssueData ? currentIssue : null
+  ) as Issue | null;
   const fallbackIssue = (currentIssue || previousIssue || null) as Issue | null;
   const loadedIssue = (resolvedIssue || fallbackIssue) as Issue | null;
   const issueForVariants = loadedIssue ? toIssueWithMockVariants(loadedIssue) : null;
@@ -131,8 +137,11 @@ function IssueDetails(props: IssueDetailsProps) {
   const storyOwnerVariantKey = React.useMemo(() => {
     if (!issueForVariants) return "";
     const storyOwner = (issueForVariants as { storyOwner?: unknown }).storyOwner;
-    if (storyOwner) return getIssueVariantKey(storyOwner as { format?: string | null; variant?: string | null });
-    const inheritsStories = Boolean((issueForVariants as { inheritsStories?: unknown }).inheritsStories);
+    if (storyOwner)
+      return getIssueVariantKey(storyOwner as { format?: string | null; variant?: string | null });
+    const inheritsStories = Boolean(
+      (issueForVariants as { inheritsStories?: unknown }).inheritsStories
+    );
     if (inheritsStories) return "";
     return getIssueVariantKey(issueForVariants as unknown as any);
   }, [issueForVariants]);
@@ -317,7 +326,12 @@ function IssueDetails(props: IssueDetailsProps) {
                   <Typography
                     variant="caption"
                     color="text.secondary"
-                    sx={{ mt: 1, opacity: 0.82, textAlign: "left", display: { xs: "none", md: "block" } }}
+                    sx={{
+                      mt: 1,
+                      opacity: 0.82,
+                      textAlign: "left",
+                      display: { xs: "none", md: "block" },
+                    }}
                   >
                     Das Cover für&nbsp;
                     <a
@@ -344,7 +358,12 @@ function IssueDetails(props: IssueDetailsProps) {
                   <Typography
                     variant="caption"
                     color="text.secondary"
-                    sx={{ mt: 1, opacity: 0.82, textAlign: "left", display: { xs: "none", md: "block" } }}
+                    sx={{
+                      mt: 1,
+                      opacity: 0.82,
+                      textAlign: "left",
+                      display: { xs: "none", md: "block" },
+                    }}
                   >
                     Informationen über&nbsp;
                     <a
@@ -395,7 +414,6 @@ function IssueDetails(props: IssueDetailsProps) {
                 })}
               </Box>
             ) : null}
-
           </Box>
 
           {!us && issueForVariants.comicguideid ? (
@@ -413,7 +431,11 @@ function IssueDetails(props: IssueDetailsProps) {
                 {generateLabel(issueForVariants.series as any) + " #" + issueForVariants.number}
               </a>
               &nbsp;wird bereitgestellt vom&nbsp;
-              <a href="https://www.comicguide.de" rel="noopener noreferrer nofollow" target="_blank">
+              <a
+                href="https://www.comicguide.de"
+                rel="noopener noreferrer nofollow"
+                target="_blank"
+              >
                 deutschen ComicGuide
               </a>
               &nbsp;und darf nicht ohne Genehmigung weiterverbreitet werden.
@@ -434,7 +456,11 @@ function IssueDetails(props: IssueDetailsProps) {
                 {generateLabel(issueForVariants.series as any) + " #" + issueForVariants.number}
               </a>
               &nbsp;werden bezogen aus der&nbsp;
-              <a href="https://marvel.fandom.com" rel="noopener noreferrer nofollow" target="_blank">
+              <a
+                href="https://marvel.fandom.com"
+                rel="noopener noreferrer nofollow"
+                target="_blank"
+              >
                 Marvel Database
               </a>
               &nbsp;und stehen unter der&nbsp;
