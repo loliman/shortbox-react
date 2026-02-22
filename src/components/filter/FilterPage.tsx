@@ -3,6 +3,7 @@ import Paper from "@mui/material/Paper";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import Stack from "@mui/material/Stack";
+import { alpha, type Theme } from "@mui/material/styles";
 import { Form, Formik } from "formik";
 import Layout from "../Layout";
 import FormActions from "./FormActions";
@@ -22,8 +23,13 @@ function FilterPage(props: FilterPageProps) {
     borderRadius: 2,
     border: "1px solid",
     borderColor: "divider",
-    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.08)",
-    background: "linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(248,249,252,0.96) 100%)",
+    boxShadow: (theme: Theme) =>
+      theme.palette.mode === "dark" ? "0 2px 8px rgba(0, 0, 0, 0.45)" : "0 1px 3px rgba(0, 0, 0, 0.08)",
+    background: (theme: Theme) =>
+      `linear-gradient(180deg, ${alpha(
+        theme.palette.background.paper,
+        theme.palette.mode === "dark" ? 0.96 : 0.96
+      )} 0%, ${alpha(theme.palette.background.default, theme.palette.mode === "dark" ? 0.96 : 0.96)} 100%)`,
   } as const;
 
   return (

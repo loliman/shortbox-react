@@ -7,6 +7,7 @@ import Chip from "@mui/material/Chip";
 import Skeleton from "@mui/material/Skeleton";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
+import { alpha } from "@mui/material/styles";
 import { withContext } from "../generic";
 import { getIssueLabel, getIssueUrl } from "../../util/issuePresentation";
 import {
@@ -34,15 +35,18 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
   const flags = getIssuePreviewFlags(props.issue, us, hasSession);
   const url = getIssueUrl(props.issue, us);
   const issueLabel = getIssueLabel(props.issue);
-  const cardBackground = coverUrl
-    ? `linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 6%, rgba(255, 255, 255, 0.08) 100%), url(${coverUrl})`
-    : "none";
 
   return (
     <Card
       sx={{
         backgroundColor: "background.paper",
-        backgroundImage: cardBackground,
+        backgroundImage: coverUrl
+          ? (theme) =>
+              `linear-gradient(90deg, ${alpha(theme.palette.background.paper, 1)} 0%, ${alpha(
+                theme.palette.background.paper,
+                1
+              )} 6%, ${alpha(theme.palette.background.paper, theme.palette.mode === "dark" ? 0.18 : 0.08)} 100%), url(${coverUrl})`
+          : "none",
         backgroundRepeat: coverUrl ? "no-repeat, no-repeat" : "no-repeat",
         backgroundPosition: coverUrl ? "0 0, 100% 50%" : "0 0",
         backgroundSize: coverUrl ? "100% 100%, cover" : "auto",

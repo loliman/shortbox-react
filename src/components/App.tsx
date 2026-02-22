@@ -1,21 +1,76 @@
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useApolloClient } from "@apollo/client";
 import AppContextProvider from "./generic/AppContext";
 import { AppRoutes } from "../app/AppRoutes";
-import { appTheme } from "../app/theme";
+import { createAppTheme, type AppThemeMode } from "../app/theme";
 import { type SessionData } from "../app/session";
 import { isMockMode } from "../app/mockMode";
 import { subscribeSessionInvalid } from "../app/authEvents";
 import { me } from "../graphql/queriesTyped";
 import { AppPageLoader } from "./generic/loading";
 
+const THEME_MODE_STORAGE_KEY = "shortbox_theme_mode";
+
+const prefersDarkScheme = (): AppThemeMode => {
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") return "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+};
+
+const readStoredThemeMode = (): AppThemeMode | null => {
+  if (typeof window === "undefined") return null;
+  const value = window.localStorage.getItem(THEME_MODE_STORAGE_KEY);
+  return value === "light" || value === "dark" ? value : null;
+};
+
 export default function App() {
   const client = useApolloClient();
   const [session, setSession] = useState<SessionData | null>(null);
   const loggedIn = Boolean(session?.loggedIn);
   const [authReady, setAuthReady] = useState(false);
+  const [systemThemeMode, setSystemThemeMode] = useState<AppThemeMode>(() => prefersDarkScheme());
+  const [themeMode, setThemeMode] = useState<AppThemeMode>(() => readStoredThemeMode() || prefersDarkScheme());
+  const [themeLockedByUser, setThemeLockedByUser] = useState<boolean>(() => Boolean(readStoredThemeMode()));
+
+  const toggleTheme = () => {
+    setThemeMode((prev) => {
+      const next = prev === "dark" ? "light" : "dark";
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem(THEME_MODE_STORAGE_KEY, next);
+      }
+      return next;
+    });
+    setThemeLockedByUser(true);
+  };
+
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") return;
+
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const handleChange = (event: MediaQueryListEvent) => {
+      const nextSystemMode = event.matches ? "dark" : "light";
+      setSystemThemeMode(nextSystemMode);
+      if (!themeLockedByUser) {
+        setThemeMode(nextSystemMode);
+      }
+    };
+
+    if (typeof media.addEventListener === "function") {
+      media.addEventListener("change", handleChange);
+      return () => media.removeEventListener("change", handleChange);
+    }
+
+    media.addListener(handleChange);
+    return () => media.removeListener(handleChange);
+  }, [themeLockedByUser]);
+
+  useEffect(() => {
+    if (themeLockedByUser) return;
+    setThemeMode(systemThemeMode);
+  }, [systemThemeMode, themeLockedByUser]);
+
+  const theme = useMemo(() => createAppTheme(themeMode), [themeMode]);
 
   useEffect(() => {
     if (isMockMode) {
@@ -62,8 +117,13 @@ export default function App() {
   }, [client]);
 
   return (
-    <ThemeProvider theme={appTheme}>
-      <AppContextProvider session={session} setSession={setSession}>
+    <ThemeProvider theme={theme}>
+      <AppContextProvider
+        session={session}
+        setSession={setSession}
+        themeMode={themeMode}
+        toggleTheme={toggleTheme}
+      >
         <CssBaseline />
         <Suspense fallback={<AppPageLoader />}>
           <AppRoutes session={session || undefined} authReady={authReady} />
