@@ -182,6 +182,7 @@ export function TopBar(props: TopBarProps) {
             us={us}
             selected={selected}
             isFilterActive={isFilter}
+            query={props.query}
             session={props.session}
             navigate={navigate}
           />

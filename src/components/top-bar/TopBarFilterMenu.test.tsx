@@ -3,6 +3,11 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import TopBarFilterMenu from "./TopBarFilterMenu";
 
+vi.mock("@apollo/client", () => ({
+  gql: (value: TemplateStringsArray) => value.join(""),
+  useQuery: () => ({ data: { filterCount: 42 }, loading: false }),
+}));
+
 vi.mock("./ExportDialog", () => ({
   default: function MockExportDialog(props: { open?: boolean }) {
     return props.open ? <div data-testid="export-dialog-open">Export dialog open</div> : null;
@@ -41,10 +46,13 @@ describe("TopBarFilterMenu", () => {
         us={true}
         selected={selected as never}
         isFilterActive={true}
+        query={{ filter: JSON.stringify({ onlyCollected: true, us: true }) }}
         session={{ loggedIn: true }}
         navigate={navigate}
       />
     );
+
+    expect(screen.getByText("42")).toBeTruthy();
 
     await user.click(screen.getByRole("button", { name: "Filteroptionen" }));
     await user.click(await screen.findByRole("menuitem", { name: "Bearbeiten" }));
