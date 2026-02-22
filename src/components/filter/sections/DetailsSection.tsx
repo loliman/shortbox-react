@@ -129,15 +129,17 @@ function DetailsSection({
             },
           }}
         >
-          <ToggleButton value="thisYear">Dieses Jahr</ToggleButton>
-          <ToggleButton value="thisMonth">Dieser Monat</ToggleButton>
-          <ToggleButton value="thisWeek">Diese Woche</ToggleButton>
-          <ToggleButton value="lastYear">Letztes Jahr</ToggleButton>
-          <ToggleButton value="lastMonth">Letzter Monat</ToggleButton>
-          <ToggleButton value="lastWeek">Letzte Woche</ToggleButton>
           <ToggleButton value="nextYear">Nächstes Jahr</ToggleButton>
           <ToggleButton value="nextMonth">Nächster Monat</ToggleButton>
           <ToggleButton value="nextWeek">Nächste Woche</ToggleButton>
+          <ToggleButton value="afterToday">Erscheint noch</ToggleButton>
+          <ToggleButton value="untilToday">Bis Heute</ToggleButton>
+          <ToggleButton value="thisWeek">Diese Woche</ToggleButton>
+          <ToggleButton value="thisMonth">Dieser Monat</ToggleButton>
+          <ToggleButton value="thisYear">Dieses Jahr</ToggleButton>
+          <ToggleButton value="lastWeek">Letzte Woche</ToggleButton>
+          <ToggleButton value="lastMonth">Letzter Monat</ToggleButton>
+          <ToggleButton value="lastYear">Letztes Jahr</ToggleButton>
         </ToggleButtonGroup>
 
         <FastField
@@ -441,6 +443,22 @@ function getPresetDateRange(preset: string): { from: string; to: string } | null
     oneWeekEarlier.setDate(oneWeekEarlier.getDate() - 7);
     const { from, to } = getWeekRange(oneWeekEarlier);
     return { from: formatDateInput(from), to: formatDateInput(to) };
+  }
+
+  if (preset === "untilToday") {
+    return {
+      from: "",
+      to: formatDateInput(now),
+    };
+  }
+
+  if (preset === "afterToday") {
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return {
+      from: formatDateInput(tomorrow),
+      to: "",
+    };
   }
 
   if (preset === "nextYear") {
