@@ -428,7 +428,11 @@ const SeriesBranch = React.memo(function SeriesBranch(props: Readonly<SeriesBran
     <MuiList disablePadding>
       {seriesNodes.map((seriesNode) => {
         const seriesKey = getSeriesKey(seriesNode);
-        const selected = isSeriesNodeSelected(seriesNode, props.activeSeriesKey, props.selectedIssue);
+        const selected = isSeriesNodeSelected(
+          seriesNode,
+          props.activeSeriesKey,
+          props.selectedIssue
+        );
         const expanded = Boolean(expandedSeries[seriesKey]);
 
         return (
@@ -479,7 +483,9 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
   const { series, us, filter } = props;
   const seriesInput = toSeriesInput(series, us);
   const selectedSeries = doesSeriesNodeMatchIssueSeries(series, props.selectedIssue?.series);
-  const selectedIssueNumber = selectedSeries ? normalizeIssueNumber(props.selectedIssue?.number) : "";
+  const selectedIssueNumber = selectedSeries
+    ? normalizeIssueNumber(props.selectedIssue?.number)
+    : "";
   const previousIssueNumberRef = React.useRef("");
   const skipSameIssueAutoScrollRef = React.useRef(false);
   const issueListRef = React.useRef<HTMLUListElement | null>(null);
@@ -502,8 +508,8 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
   React.useEffect(() => {
     skipSameIssueAutoScrollRef.current = Boolean(
       previousIssueNumberRef.current &&
-        selectedIssueNumber &&
-        previousIssueNumberRef.current === selectedIssueNumber
+      selectedIssueNumber &&
+      previousIssueNumberRef.current === selectedIssueNumber
     );
     previousIssueNumberRef.current = selectedIssueNumber;
   }, [selectedIssueNumber]);
@@ -806,9 +812,11 @@ function getSelectedPublisherName(selected: SelectedRoot): string {
 }
 
 function getSeriesKey(seriesNode: SeriesNode): string {
-  return [seriesNode.publisher?.name || "", seriesNode.title || "", normalizeSeriesVolume(seriesNode.volume)].join(
-    "|"
-  );
+  return [
+    seriesNode.publisher?.name || "",
+    seriesNode.title || "",
+    normalizeSeriesVolume(seriesNode.volume),
+  ].join("|");
 }
 
 function getSelectedSeriesKey(selected: SelectedRoot): string | null {
