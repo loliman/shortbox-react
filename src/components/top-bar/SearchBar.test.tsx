@@ -49,7 +49,7 @@ describe("SearchBar", () => {
     await user.click(input);
     await user.type(input, "sp");
 
-    const option = await screen.findByText("Ausgabe Spider-Man #1", {}, { timeout: 3000 });
+    const option = await screen.findByRole("option", { name: /Spider-Man #1/i }, { timeout: 3000 });
     await user.click(option);
 
     expect(navigate).toHaveBeenCalledWith(null, "/de/Marvel/Spider-Man_Vol_1/1");

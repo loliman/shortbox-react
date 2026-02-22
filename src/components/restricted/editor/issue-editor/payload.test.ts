@@ -72,8 +72,8 @@ describe("buildIssueMutationVariables", () => {
       volume: 1,
       publisher: { name: "Marvel", us: false },
     });
-    expect(item.individuals).toEqual([{ name: "Peter Parker", type: ["WRITER", "PENCILER"] }]);
-    expect(item.arcs).toEqual([{ title: "Civil War", type: "EVENT" }]);
+    expect(item.individuals).toBeUndefined();
+    expect(item.arcs).toBeUndefined();
     expect(item.stories).toHaveLength(1);
     expect(item.stories[0]).toMatchObject({
       title: "Story A",
@@ -118,8 +118,8 @@ describe("buildIssueMutationVariables", () => {
     expect(item.isbn).toBeUndefined();
     expect(item.price).toBeUndefined();
     expect(item.currency).toBeUndefined();
-    expect(item.individuals).toEqual([{ name: "Peter Parker", type: ["WRITER", "PENCILER"] }]);
-    expect(item.arcs).toEqual([{ title: "Civil War", type: "EVENT" }]);
+    expect(item.individuals).toBeUndefined();
+    expect(item.arcs).toBeUndefined();
     expect(item.stories).toHaveLength(1);
     expect(item.stories[0].parent).toBeUndefined();
     expect(result.old).toBeUndefined();

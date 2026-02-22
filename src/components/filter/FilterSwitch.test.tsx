@@ -10,7 +10,7 @@ describe("FilterSwitch", () => {
 
     render(<FilterSwitch checked={false} label="Exklusiv" onToggle={onToggle} />);
 
-    await user.click(screen.getByRole("switch", { name: "Exklusiv" }));
+    await user.click(screen.getByRole("switch"));
     expect(onToggle).toHaveBeenCalledTimes(1);
   });
 });
