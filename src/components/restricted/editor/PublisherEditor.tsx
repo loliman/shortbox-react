@@ -253,7 +253,9 @@ function PublisherEditor(props: Readonly<PublisherEditorProps>) {
 
                       <Button
                         disabled={isSubmitting}
-                        onClick={(e) => props.navigate(e, lastLocation ? lastLocation.pathname : "/")}
+                        onClick={(e) =>
+                          props.navigate(e, lastLocation ? lastLocation.pathname : "/")
+                        }
                         variant="outlined"
                         color="inherit"
                       >
@@ -261,7 +263,9 @@ function PublisherEditor(props: Readonly<PublisherEditorProps>) {
                       </Button>
                     </Box>
 
-                    <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", justifyContent: "flex-end" }}>
+                    <Box
+                      sx={{ display: "flex", gap: 1, flexWrap: "wrap", justifyContent: "flex-end" }}
+                    >
                       <Button
                         disabled={isSubmitting}
                         onClick={submitForm}
