@@ -7,13 +7,19 @@ import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { FastField } from "formik";
 import AutocompleteBase from "../../generic/AutocompleteBase";
+import { useAutocompleteQuery } from "../../generic/useAutocompleteQuery";
 import { TextField } from "../../generic/FormikTextField";
 import FilterSwitch from "../FilterSwitch";
 import { FORMAT_OPTIONS } from "../constants";
 import { FilterValues } from "../types";
+import { publishers, series } from "../../../graphql/queriesTyped";
+import type { FieldItem } from "../../../util/filterFieldHelpers";
+
+const MIN_QUERY_LENGTH = 2;
 
 interface DetailsSectionProps {
   values: FilterValues;
+  us: boolean;
   isDesktop: boolean;
   setFieldValue: (field: string, value: unknown) => void;
   hasSession: boolean;
@@ -21,16 +27,39 @@ interface DetailsSectionProps {
 
 function DetailsSection({
   values,
+  us,
   isDesktop: _isDesktop,
   setFieldValue,
   hasSession,
 }: DetailsSectionProps) {
   const [activeDatePreset, setActiveDatePreset] = React.useState("");
+  const [publisherInput, setPublisherInput] = React.useState("");
+  const [seriesInput, setSeriesInput] = React.useState("");
+
   const switchGridSx = {
     display: "grid",
     gap: 1,
     gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr", xl: "1fr 1fr 1fr 1fr" },
   } as const;
+
+  const publisherQuery = useAutocompleteQuery<FieldItem>({
+    query: publishers,
+    variables: { pattern: publisherInput, us },
+    searchText: publisherInput,
+    minQueryLength: MIN_QUERY_LENGTH,
+    debounceMs: 250,
+  });
+
+  const seriesQuery = useAutocompleteQuery<FieldItem>({
+    query: series,
+    variables: {
+      pattern: seriesInput,
+      publisher: { name: "*", us },
+    },
+    searchText: seriesInput,
+    minQueryLength: MIN_QUERY_LENGTH,
+    debounceMs: 250,
+  });
 
   React.useEffect(() => {
     if (values.releasedateExact || (!values.releasedateFrom && !values.releasedateTo)) {
@@ -151,6 +180,113 @@ function DetailsSection({
 
       <Divider sx={{ my: 0.25 }} />
 
+      <AutocompleteBase
+        options={publisherQuery.options}
+        value={sanitizeNameList(values.publishers)}
+        inputValue={publisherInput}
+        multiple
+        label="Verlag"
+        loading={publisherQuery.loading}
+        noOptionsText={
+          publisherQuery.isBelowMinLength
+            ? `Mindestens ${MIN_QUERY_LENGTH} Zeichen eingeben`
+            : publisherQuery.error
+              ? "Fehler!"
+              : "Keine Ergebnisse gefunden"
+        }
+        onListboxScroll={publisherQuery.onListboxScroll}
+        getOptionLabel={(option) => String((option as { name?: unknown })?.name || "")}
+        isOptionEqualToValue={(option, value) =>
+          normalizeText(option.name) === normalizeText((value as { name?: unknown })?.name)
+        }
+        onInputChange={(_, nextInput, reason) => {
+          if (reason !== "input" && reason !== "clear" && reason !== "reset") return;
+          setPublisherInput(nextInput);
+        }}
+        onChange={(_, nextValue) => {
+          setFieldValue("publishers", sanitizeNameList(asOptionArray(nextValue)));
+          setPublisherInput("");
+        }}
+      />
+
+      <AutocompleteBase
+        options={seriesQuery.options}
+        value={sanitizeTitleList(values.series)}
+        inputValue={seriesInput}
+        multiple
+        label="Serie"
+        loading={seriesQuery.loading}
+        noOptionsText={
+          seriesQuery.isBelowMinLength
+            ? `Mindestens ${MIN_QUERY_LENGTH} Zeichen eingeben`
+            : seriesQuery.error
+              ? "Fehler!"
+              : "Keine Ergebnisse gefunden"
+        }
+        onListboxScroll={seriesQuery.onListboxScroll}
+        getOptionLabel={(option) => formatSeriesLabel(option)}
+        isOptionEqualToValue={(option, value) =>
+          normalizeText(option.title) === normalizeText((value as { title?: unknown })?.title) &&
+          normalizeText(String(option.volume || "")) ===
+            normalizeText(String((value as { volume?: unknown })?.volume || ""))
+        }
+        onInputChange={(_, nextInput, reason) => {
+          if (reason !== "input" && reason !== "clear" && reason !== "reset") return;
+          setSeriesInput(nextInput);
+        }}
+        onChange={(_, nextValue) => {
+          setFieldValue("series", sanitizeTitleList(asOptionArray(nextValue)));
+          setSeriesInput("");
+        }}
+      />
+
+      <Box
+        sx={{
+          display: "grid",
+          alignItems: "end",
+          gap: 1,
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "repeat(2, minmax(170px, 1fr))",
+          },
+        }}
+      >
+        <FastField
+          name="numberFrom"
+          label="Nummer von"
+          component={TextField}
+          disabled={Boolean(values.numberExact)}
+          sx={{
+            width: "100%",
+            "& .MuiOutlinedInput-root": { borderRadius: 1.5, bgcolor: "background.paper" },
+          }}
+        />
+        <FastField
+          name="numberTo"
+          label="Nummer bis"
+          component={TextField}
+          disabled={Boolean(values.numberExact)}
+          sx={{
+            width: "100%",
+            "& .MuiOutlinedInput-root": { borderRadius: 1.5, bgcolor: "background.paper" },
+          }}
+        />
+        <FastField
+          name="numberExact"
+          label="Exakte Nummer(n)"
+          helperText="Mehrere Werte mit Komma trennen, z.B. 1, 1A, Annual 1"
+          component={TextField}
+          disabled={Boolean(values.numberFrom) || Boolean(values.numberTo)}
+          sx={{
+            width: "100%",
+            "& .MuiOutlinedInput-root": { borderRadius: 1.5, bgcolor: "background.paper" },
+            gridColumn: { xs: "1", sm: "1 / span 2" },
+          }}
+        />
+      </Box>
+
+      <Divider sx={{ my: 0.25 }} />
+
       {hasSession ? (
         <Box sx={switchGridSx}>
           <FilterSwitch
@@ -213,6 +349,14 @@ function DetailsSection({
   );
 }
 
+function asOptionArray(value: unknown): FieldItem[] {
+  if (!Array.isArray(value)) return [];
+  return value.filter(
+    (entry): entry is FieldItem =>
+      Boolean(entry) && typeof entry === "object" && !Array.isArray(entry)
+  );
+}
+
 function asFormatArray(value: unknown) {
   if (!Array.isArray(value)) return [];
   return value
@@ -225,6 +369,19 @@ function asFormatArray(value: unknown) {
     .filter((entry): entry is { name: string } => Boolean(entry));
 }
 
+function sanitizeNameList(values: FieldItem[]) {
+  return values.filter((entry) => !entry.pattern && normalizeText(entry.name).length > 0);
+}
+
+function sanitizeTitleList(values: FieldItem[]) {
+  return values.filter(
+    (entry) =>
+      !entry.pattern &&
+      normalizeText(entry.title).length > 0 &&
+      Number.isFinite(Number(entry.volume))
+  );
+}
+
 function normalizeText(value: unknown) {
   return String(value || "")
     .trim()
@@ -232,6 +389,15 @@ function normalizeText(value: unknown) {
 }
 
 export default DetailsSection;
+
+function formatSeriesLabel(entry: unknown) {
+  const option = entry as { title?: unknown; volume?: unknown };
+  const title = String(option?.title || "");
+  const volume =
+    option?.volume === undefined || option?.volume === null ? "" : String(option.volume);
+  if (!volume) return title;
+  return `${title} (Vol. ${volume})`;
+}
 
 function getPresetDateRange(preset: string): { from: string; to: string } | null {
   const now = new Date();

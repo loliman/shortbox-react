@@ -53,6 +53,7 @@ function FilterPage(props: FilterPageProps) {
                 <Paper elevation={0} sx={sectionSx}>
                   <DetailsSection
                     values={values}
+                    us={us}
                     isDesktop={isDesktop}
                     setFieldValue={setFieldValue}
                     hasSession={Boolean(session)}
