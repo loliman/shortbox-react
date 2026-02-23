@@ -39,17 +39,14 @@ export function ContainsItem(props: Readonly<ContainsItemProps>) {
         maxWidth: "100%",
         border: "1px solid",
         borderColor: "divider",
-        backgroundColor: (theme) =>
-          theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
+        backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#161b22" : "#ffffff"),
         overflow: "hidden",
         "&:before": { display: "none" },
         "& .MuiAccordionSummary-root": {
-          backgroundColor: (theme) =>
-            theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
+          backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#161b22" : "#ffffff"),
         },
         "& .MuiAccordionDetails-root": {
-          backgroundColor: (theme) =>
-            theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
+          backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#161b22" : "#ffffff"),
         },
       }}
       defaultExpanded={expanded(props.item, props.query)}

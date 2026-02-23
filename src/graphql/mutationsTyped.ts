@@ -7,11 +7,11 @@ import {
   DeleteSeriesDocument,
   EditIssueDocument,
   EditPublisherDocument,
-    EditSeriesDocument,
-    LoginDocument,
-    LogoutDocument,
-    ReleaseAllAdminTaskLocksDocument,
-    RunAdminTaskDocument,
+  EditSeriesDocument,
+  LoginDocument,
+  LogoutDocument,
+  ReleaseAllAdminTaskLocksDocument,
+  RunAdminTaskDocument,
 } from "./typed-documents.generated";
 import { HierarchyLevel } from "../util/hierarchy";
 

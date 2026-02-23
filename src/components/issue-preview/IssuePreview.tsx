@@ -85,7 +85,12 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
                 <Chip size="small" label="Einzige Veröffentlichung" color="secondary" />
               ) : null}
               {!us && !flags.hasOnlyApp && flags.hasFirstApp ? (
-                <Chip size="small" label="Erstveröffentlichung" color="secondary" variant="outlined" />
+                <Chip
+                  size="small"
+                  label="Erstveröffentlichung"
+                  color="secondary"
+                  variant="outlined"
+                />
               ) : null}
               {!us && flags.hasExclusive ? (
                 <Chip size="small" label="Exklusiver Inhalt" color="secondary" />

@@ -46,8 +46,8 @@ export const createAppTheme = (mode: AppThemeMode) =>
       },
     },
     components: {
-    MuiAppBar: {
-      styleOverrides: {
+      MuiAppBar: {
+        styleOverrides: {
           root: ({ theme }) => ({
             backgroundColor: "#000000",
             color:

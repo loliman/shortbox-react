@@ -20,7 +20,10 @@ const FilterToggleSwitch = styled(Switch)(({ theme }) => ({
   "& .MuiSwitch-track": {
     borderRadius: 22 / 2,
     opacity: 1,
-    backgroundColor: alpha(theme.palette.text.secondary, theme.palette.mode === "dark" ? 0.35 : 0.42),
+    backgroundColor: alpha(
+      theme.palette.text.secondary,
+      theme.palette.mode === "dark" ? 0.35 : 0.42
+    ),
     border: `1px solid ${alpha(theme.palette.text.secondary, theme.palette.mode === "dark" ? 0.65 : 0.7)}`,
     "&::before, &::after": {
       content: '""',
@@ -59,7 +62,8 @@ const FilterToggleSwitch = styled(Switch)(({ theme }) => ({
   },
   "& .MuiSwitch-thumb": {
     boxShadow: "0 1px 4px rgba(0,0,0,0.35)",
-    backgroundColor: theme.palette.mode === "dark" ? theme.palette.common.white : theme.palette.background.paper,
+    backgroundColor:
+      theme.palette.mode === "dark" ? theme.palette.common.white : theme.palette.background.paper,
     border: `1px solid ${
       theme.palette.mode === "dark"
         ? alpha(theme.palette.common.black, 0.24)
@@ -86,9 +90,12 @@ function FilterSwitch({ checked, label, onToggle, disabled = false, sx }: Filter
           borderRadius: 1.75,
           border: "1px solid",
           borderColor: "divider",
-          bgcolor: (theme) => alpha(theme.palette.background.paper, theme.palette.mode === "dark" ? 0.78 : 0.9),
+          bgcolor: (theme) =>
+            alpha(theme.palette.background.paper, theme.palette.mode === "dark" ? 0.78 : 0.9),
           boxShadow: (theme) =>
-            theme.palette.mode === "dark" ? "0 2px 8px rgba(0,0,0,0.45)" : "0 1px 3px rgba(0,0,0,0.08)",
+            theme.palette.mode === "dark"
+              ? "0 2px 8px rgba(0,0,0,0.45)"
+              : "0 1px 3px rgba(0,0,0,0.08)",
           transition: "border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease",
           opacity: disabled ? 0.6 : 1,
           "&:hover": {

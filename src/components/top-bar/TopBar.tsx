@@ -94,7 +94,8 @@ const Android12Switch = styled(Switch)(({ theme }) => ({
   },
   "& .MuiSwitch-thumb": {
     boxShadow: "0 1px 4px rgba(0,0,0,0.35)",
-    backgroundColor: theme.palette.mode === "dark" ? theme.palette.common.white : theme.palette.background.paper,
+    backgroundColor:
+      theme.palette.mode === "dark" ? theme.palette.common.white : theme.palette.background.paper,
     border: `1px solid ${
       theme.palette.mode === "dark"
         ? alpha(theme.palette.common.black, 0.24)
@@ -184,7 +185,9 @@ export function TopBar(props: TopBarProps) {
               <Box sx={{ minWidth: 0, flex: 1 }}>
                 <SearchBar us={us} navigate={navigate} />
               </Box>
-              <Tooltip title={darkModeEnabled ? "Zu hellem Modus wechseln" : "Zu dunklem Modus wechseln"}>
+              <Tooltip
+                title={darkModeEnabled ? "Zu hellem Modus wechseln" : "Zu dunklem Modus wechseln"}
+              >
                 <IconButton
                   color="inherit"
                   aria-label={darkModeEnabled ? "Hellmodus aktivieren" : "Darkmode aktivieren"}
@@ -216,7 +219,9 @@ export function TopBar(props: TopBarProps) {
             </IconButton>
           ) : null}
           {compactLayout ? (
-            <Tooltip title={darkModeEnabled ? "Zu hellem Modus wechseln" : "Zu dunklem Modus wechseln"}>
+            <Tooltip
+              title={darkModeEnabled ? "Zu hellem Modus wechseln" : "Zu dunklem Modus wechseln"}
+            >
               <IconButton
                 color="inherit"
                 aria-label={darkModeEnabled ? "Hellmodus aktivieren" : "Darkmode aktivieren"}
@@ -236,7 +241,11 @@ export function TopBar(props: TopBarProps) {
           />
           {props.session?.loggedIn ? (
             <Tooltip title="Adminpanel">
-              <IconButton color="inherit" aria-label="Adminpanel" onClick={(e) => navigate?.(e, "/admin/tasks")}>
+              <IconButton
+                color="inherit"
+                aria-label="Adminpanel"
+                onClick={(e) => navigate?.(e, "/admin/tasks")}
+              >
                 <AdminPanelSettingsIcon />
               </IconButton>
             </Tooltip>
@@ -273,7 +282,8 @@ export function TopBar(props: TopBarProps) {
             zIndex: (theme) => theme.zIndex.drawer + 3,
             px: 1,
             py: 0.75,
-            bgcolor: (theme) => (theme.palette.mode === "dark" ? "#0f172a" : theme.palette.primary.main),
+            bgcolor: (theme) =>
+              theme.palette.mode === "dark" ? "#0f172a" : theme.palette.primary.main,
             borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
           }}
         >

@@ -216,7 +216,12 @@ function SeriesEditor(props: Readonly<SeriesEditorProps>) {
                   <Stack spacing={2}>
                     <Typography variant="subtitle1">Basisdaten</Typography>
 
-                    <FastField name="title" label="Titel" component={TextField} sx={editorFieldSx} />
+                    <FastField
+                      name="title"
+                      label="Titel"
+                      component={TextField}
+                      sx={editorFieldSx}
+                    />
 
                     <SeriesPublisherAutocomplete
                       publisherName={values.publisher.name}
@@ -285,7 +290,9 @@ function SeriesEditor(props: Readonly<SeriesEditorProps>) {
 
                       <Button
                         disabled={isSubmitting}
-                        onClick={(e) => props.navigate(e, lastLocation ? lastLocation.pathname : "/")}
+                        onClick={(e) =>
+                          props.navigate(e, lastLocation ? lastLocation.pathname : "/")
+                        }
                         variant="outlined"
                         color="inherit"
                       >
@@ -293,7 +300,9 @@ function SeriesEditor(props: Readonly<SeriesEditorProps>) {
                       </Button>
                     </Box>
 
-                    <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", justifyContent: "flex-end" }}>
+                    <Box
+                      sx={{ display: "flex", gap: 1, flexWrap: "wrap", justifyContent: "flex-end" }}
+                    >
                       <Button
                         disabled={isSubmitting}
                         onClick={submitForm}

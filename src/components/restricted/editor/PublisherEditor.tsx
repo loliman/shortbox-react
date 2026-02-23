@@ -253,7 +253,9 @@ function PublisherEditor(props: Readonly<PublisherEditorProps>) {
                     </Button>
                   </Box>
 
-                  <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", justifyContent: "flex-end" }}>
+                  <Box
+                    sx={{ display: "flex", gap: 1, flexWrap: "wrap", justifyContent: "flex-end" }}
+                  >
                     <Button
                       disabled={isSubmitting}
                       onClick={submitForm}

@@ -52,16 +52,18 @@ interface IssueDetailsProps {
   [key: string]: unknown;
 }
 
-function getIssueSelectionKey(issueLike?: {
-  number?: string | null;
-  format?: string | null;
-  variant?: string | null;
-  series?: {
-    title?: string | null;
-    volume?: number | null;
-    publisher?: { name?: string | null };
-  } | null;
-} | null) {
+function getIssueSelectionKey(
+  issueLike?: {
+    number?: string | null;
+    format?: string | null;
+    variant?: string | null;
+    series?: {
+      title?: string | null;
+      volume?: number | null;
+      publisher?: { name?: string | null };
+    } | null;
+  } | null
+) {
   if (!issueLike) return "";
   return [
     String(issueLike.series?.publisher?.name || ""),
@@ -73,8 +75,12 @@ function getIssueSelectionKey(issueLike?: {
   ].join("|");
 }
 
-function getIssueVariantKey(issueLike?: { format?: string | null; variant?: string | null } | null) {
-  return [String(issueLike?.format || "").trim(), String(issueLike?.variant || "").trim()].join("|");
+function getIssueVariantKey(
+  issueLike?: { format?: string | null; variant?: string | null } | null
+) {
+  return [String(issueLike?.format || "").trim(), String(issueLike?.variant || "").trim()].join(
+    "|"
+  );
 }
 
 function IssueDetails(props: IssueDetailsProps) {
@@ -123,9 +129,9 @@ function IssueDetails(props: IssueDetailsProps) {
   const previousIssue = previousData?.issueDetails ?? null;
   const currentIssueKey = getIssueSelectionKey(currentIssue as unknown as any);
   const hasRequestedIssueData = currentIssueKey === requestedIssueKey;
-  const resolvedIssue = (currentIssue && hasRequestedIssueData ? currentIssue : null) as
-    | Issue
-    | null;
+  const resolvedIssue = (
+    currentIssue && hasRequestedIssueData ? currentIssue : null
+  ) as Issue | null;
   const fallbackIssue = (currentIssue || previousIssue || null) as Issue | null;
   const loadedIssue = (resolvedIssue || fallbackIssue) as Issue | null;
   const issueForVariants = loadedIssue ? toIssueWithMockVariants(loadedIssue) : null;
@@ -135,8 +141,11 @@ function IssueDetails(props: IssueDetailsProps) {
   const storyOwnerVariantKey = React.useMemo(() => {
     if (!issueForVariants) return "";
     const storyOwner = (issueForVariants as { storyOwner?: unknown }).storyOwner;
-    if (storyOwner) return getIssueVariantKey(storyOwner as { format?: string | null; variant?: string | null });
-    const inheritsStories = Boolean((issueForVariants as { inheritsStories?: unknown }).inheritsStories);
+    if (storyOwner)
+      return getIssueVariantKey(storyOwner as { format?: string | null; variant?: string | null });
+    const inheritsStories = Boolean(
+      (issueForVariants as { inheritsStories?: unknown }).inheritsStories
+    );
     if (inheritsStories) return "";
     return getIssueVariantKey(issueForVariants as unknown as any);
   }, [issueForVariants]);
@@ -268,8 +277,17 @@ function IssueDetails(props: IssueDetailsProps) {
               </Box>
 
               {arcs.length > 0 ? (
-                <Box sx={{ minWidth: 0, flex: "0 1 220px", alignSelf: { xs: "flex-start", md: "flex-end" } }}>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 500, mb: 0.75, whiteSpace: "nowrap" }}>
+                <Box
+                  sx={{
+                    minWidth: 0,
+                    flex: "0 1 220px",
+                    alignSelf: { xs: "flex-start", md: "flex-end" },
+                  }}
+                >
+                  <Typography
+                    variant="subtitle2"
+                    sx={{ fontWeight: 500, mb: 0.75, whiteSpace: "nowrap" }}
+                  >
                     Enthält Teile von
                   </Typography>
                   <StoryArcChips arcs={arcs} us={us} navigate={props.navigate} inline />
@@ -311,14 +329,21 @@ function IssueDetails(props: IssueDetailsProps) {
                     alignItems: "stretch",
                   }}
                 >
-                  <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-start" }}>
+                  <Box
+                    sx={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-start" }}
+                  >
                     <IssueCover us={us} issue={issueForVariants as unknown as PreviewIssue} />
                   </Box>
                   {!us && issueForVariants.comicguideid ? (
                     <Typography
                       variant="caption"
                       color="text.secondary"
-                      sx={{ mt: 1, opacity: 0.82, textAlign: "left", display: { xs: "none", md: "block" } }}
+                      sx={{
+                        mt: 1,
+                        opacity: 0.82,
+                        textAlign: "left",
+                        display: { xs: "none", md: "block" },
+                      }}
                     >
                       Das Cover für&nbsp;
                       <a
@@ -345,7 +370,12 @@ function IssueDetails(props: IssueDetailsProps) {
                     <Typography
                       variant="caption"
                       color="text.secondary"
-                      sx={{ mt: 1, opacity: 0.82, textAlign: "left", display: { xs: "none", md: "block" } }}
+                      sx={{
+                        mt: 1,
+                        opacity: 0.82,
+                        textAlign: "left",
+                        display: { xs: "none", md: "block" },
+                      }}
                     >
                       Informationen über&nbsp;
                       <a
@@ -373,7 +403,8 @@ function IssueDetails(props: IssueDetailsProps) {
                       >
                         Creative Commons License 3.0
                       </a>
-                      &nbsp;. Die Informationen wurden aufbereitet und unter Umständen ergänzt.&nbsp;
+                      &nbsp;. Die Informationen wurden aufbereitet und unter Umständen
+                      ergänzt.&nbsp;
                     </Typography>
                   ) : null}
                 </Box>
@@ -419,7 +450,9 @@ function IssueDetails(props: IssueDetailsProps) {
                         alignItems: "stretch",
                       }}
                     >
-                      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "flex-start" }}>
+                      <Box
+                        sx={{ display: "flex", justifyContent: "center", alignItems: "flex-start" }}
+                      >
                         <IssueCover us={us} issue={issueForVariants as unknown as PreviewIssue} />
                       </Box>
                     </Box>
@@ -427,7 +460,6 @@ function IssueDetails(props: IssueDetailsProps) {
                 </Box>
               </Box>
             </Box>
-
           </Box>
 
           {!us && issueForVariants.comicguideid ? (
@@ -445,7 +477,11 @@ function IssueDetails(props: IssueDetailsProps) {
                 {generateLabel(issueForVariants.series as any) + " #" + issueForVariants.number}
               </a>
               &nbsp;wird bereitgestellt vom&nbsp;
-              <a href="https://www.comicguide.de" rel="noopener noreferrer nofollow" target="_blank">
+              <a
+                href="https://www.comicguide.de"
+                rel="noopener noreferrer nofollow"
+                target="_blank"
+              >
                 deutschen ComicGuide
               </a>
               &nbsp;und darf nicht ohne Genehmigung weiterverbreitet werden.
@@ -466,7 +502,11 @@ function IssueDetails(props: IssueDetailsProps) {
                 {generateLabel(issueForVariants.series as any) + " #" + issueForVariants.number}
               </a>
               &nbsp;werden bezogen aus der&nbsp;
-              <a href="https://marvel.fandom.com" rel="noopener noreferrer nofollow" target="_blank">
+              <a
+                href="https://marvel.fandom.com"
+                rel="noopener noreferrer nofollow"
+                target="_blank"
+              >
                 Marvel Database
               </a>
               &nbsp;und stehen unter der&nbsp;

@@ -141,7 +141,9 @@ function normalizeReleaseDateInputs(
   if (!Array.isArray(rawReleasedates)) return result;
 
   const values = rawReleasedates.filter(Boolean) as Array<FilterDateOption>;
-  const exact = values.find((entry) => entry.compare === "=" && String(entry.date || "").trim() !== "");
+  const exact = values.find(
+    (entry) => entry.compare === "=" && String(entry.date || "").trim() !== ""
+  );
   if (exact) {
     result.releasedateExact = String(exact.date || "").trim();
     return result;
@@ -149,13 +151,11 @@ function normalizeReleaseDateInputs(
 
   const from = values.find(
     (entry) =>
-      (entry.compare === ">=" || entry.compare === ">") &&
-      String(entry.date || "").trim() !== ""
+      (entry.compare === ">=" || entry.compare === ">") && String(entry.date || "").trim() !== ""
   );
   const to = values.find(
     (entry) =>
-      (entry.compare === "<=" || entry.compare === "<") &&
-      String(entry.date || "").trim() !== ""
+      (entry.compare === "<=" || entry.compare === "<") && String(entry.date || "").trim() !== ""
   );
 
   result.releasedateFrom = from ? String(from.date || "").trim() : "";
@@ -192,13 +192,11 @@ function normalizeNumberInputs(
 
   const from = values.find(
     (entry) =>
-      (entry.compare === ">=" || entry.compare === ">") &&
-      String(entry.number || "").trim() !== ""
+      (entry.compare === ">=" || entry.compare === ">") && String(entry.number || "").trim() !== ""
   );
   const to = values.find(
     (entry) =>
-      (entry.compare === "<=" || entry.compare === "<") &&
-      String(entry.number || "").trim() !== ""
+      (entry.compare === "<=" || entry.compare === "<") && String(entry.number || "").trim() !== ""
   );
 
   result.numberFrom = from ? String(from.number || "").trim() : "";
@@ -233,7 +231,9 @@ export function parseFilterValues(queryFilter?: string): FilterValues {
     const onlyCollected = Boolean(parsed.onlyCollected);
     const onlyNotCollectedNoOwnedVariants =
       !onlyCollected &&
-      Boolean((parsed as { onlyNotCollectedNoOwnedVariants?: unknown }).onlyNotCollectedNoOwnedVariants);
+      Boolean(
+        (parsed as { onlyNotCollectedNoOwnedVariants?: unknown }).onlyNotCollectedNoOwnedVariants
+      );
     const onlyNotCollected =
       !onlyCollected && !onlyNotCollectedNoOwnedVariants && Boolean(parsed.onlyNotCollected);
 
@@ -251,8 +251,14 @@ export function parseFilterValues(queryFilter?: string): FilterValues {
     const [onlyTb, notOnlyTb] = parseNegatablePair(parsed.onlyTb, parsed.notOnlyTb);
     const [exclusive, notExclusive] = parseNegatablePair(parsed.exclusive, parsed.notExclusive);
     const [reprint, notReprint] = parseNegatablePair(parsed.reprint, parsed.notReprint);
-    const [otherOnlyTb, notOtherOnlyTb] = parseNegatablePair(parsed.otherOnlyTb, parsed.notOtherOnlyTb);
-    const [onlyOnePrint, notOnlyOnePrint] = parseNegatablePair(parsed.onlyOnePrint, parsed.notOnlyOnePrint);
+    const [otherOnlyTb, notOtherOnlyTb] = parseNegatablePair(
+      parsed.otherOnlyTb,
+      parsed.notOtherOnlyTb
+    );
+    const [onlyOnePrint, notOnlyOnePrint] = parseNegatablePair(
+      parsed.onlyOnePrint,
+      parsed.notOnlyOnePrint
+    );
     const [noPrint, notNoPrint] = parseNegatablePair(parsed.noPrint, parsed.notNoPrint);
 
     return {

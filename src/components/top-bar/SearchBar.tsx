@@ -133,7 +133,8 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
         onClick={(e) => closeSearch(e as unknown as React.MouseEvent<HTMLElement>)}
         sx={{
           zIndex: (theme) => theme.zIndex.appBar + 1,
-          backgroundColor: (theme) => alpha(theme.palette.common.black, theme.palette.mode === "dark" ? 0.58 : 0.36),
+          backgroundColor: (theme) =>
+            alpha(theme.palette.common.black, theme.palette.mode === "dark" ? 0.58 : 0.36),
           backdropFilter: "blur(5px)",
         }}
       />
@@ -159,10 +160,13 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
             sx: {
               borderRadius: 2,
               border: "2px solid",
-              borderColor: (theme) => alpha(theme.palette.text.primary, theme.palette.mode === "dark" ? 0.3 : 0.22),
+              borderColor: (theme) =>
+                alpha(theme.palette.text.primary, theme.palette.mode === "dark" ? 0.3 : 0.22),
               boxShadow: (theme) =>
                 `0 18px 44px ${alpha(theme.palette.common.black, 0.42)}, 0 0 0 1px ${alpha(
-                  theme.palette.mode === "dark" ? theme.palette.text.secondary : theme.palette.common.white,
+                  theme.palette.mode === "dark"
+                    ? theme.palette.text.secondary
+                    : theme.palette.common.white,
                   theme.palette.mode === "dark" ? 0.22 : 0.65
                 )} inset`,
               backdropFilter: "blur(10px)",

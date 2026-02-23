@@ -107,17 +107,37 @@ export function serializeFilterValues(
   }
 
   if (values.appearances.length > 0) {
-    payload.appearances = values.appearances.map((entry) => ({ name: String(entry.name || "").trim() }));
+    payload.appearances = values.appearances.map((entry) => ({
+      name: String(entry.name || "").trim(),
+    }));
   }
 
-  applyNegatableFlag(payload, values.firstPrint, values.notFirstPrint, "firstPrint", "notFirstPrint");
+  applyNegatableFlag(
+    payload,
+    values.firstPrint,
+    values.notFirstPrint,
+    "firstPrint",
+    "notFirstPrint"
+  );
   applyNegatableFlag(payload, values.onlyPrint, values.notOnlyPrint, "onlyPrint", "notOnlyPrint");
   applyNegatableFlag(payload, values.onlyTb, values.notOnlyTb, "onlyTb", "notOnlyTb");
   applyNegatableFlag(payload, values.exclusive, values.notExclusive, "exclusive", "notExclusive");
   applyNegatableFlag(payload, values.reprint, values.notReprint, "reprint", "notReprint");
-  applyNegatableFlag(payload, values.otherOnlyTb, values.notOtherOnlyTb, "otherOnlyTb", "notOtherOnlyTb");
+  applyNegatableFlag(
+    payload,
+    values.otherOnlyTb,
+    values.notOtherOnlyTb,
+    "otherOnlyTb",
+    "notOtherOnlyTb"
+  );
   applyNegatableFlag(payload, values.noPrint, values.notNoPrint, "noPrint", "notNoPrint");
-  applyNegatableFlag(payload, values.onlyOnePrint, values.notOnlyOnePrint, "onlyOnePrint", "notOnlyOnePrint");
+  applyNegatableFlag(
+    payload,
+    values.onlyOnePrint,
+    values.notOnlyOnePrint,
+    "onlyOnePrint",
+    "notOnlyOnePrint"
+  );
   if (values.onlyCollected) payload.onlyCollected = true;
   if (!values.onlyCollected && values.onlyNotCollectedNoOwnedVariants) {
     payload.onlyNotCollectedNoOwnedVariants = true;

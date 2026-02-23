@@ -14,7 +14,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import ScienceOutlinedIcon from '@mui/icons-material/ScienceOutlined';
+import ScienceOutlinedIcon from "@mui/icons-material/ScienceOutlined";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useMutation, useQuery } from "@apollo/client";
@@ -22,7 +22,7 @@ import { adminTasks } from "../../graphql/queriesTyped";
 import { releaseAllAdminTaskLocks, runAdminTask } from "../../graphql/mutationsTyped";
 import { withContext } from "../generic";
 import Layout from "../Layout";
-import {PlayArrowOutlined} from "@mui/icons-material";
+import { PlayArrowOutlined } from "@mui/icons-material";
 
 type SnackbarVariant = "success" | "error" | "warning" | "info";
 
@@ -98,7 +98,9 @@ const resolveStatusCircleSx = (state: VisualState) => {
   if (state === "running") {
     return {
       ...base,
-      backgroundColor: (theme: { palette: { mode: string; success: { main: string; light: string } } }) =>
+      backgroundColor: (theme: {
+        palette: { mode: string; success: { main: string; light: string } };
+      }) =>
         theme.palette.mode === "dark" ? theme.palette.success.light : theme.palette.success.main,
       animation: "admin-run-pulse 1.3s ease-in-out infinite",
       borderColor: (theme: { palette: { mode: string } }) =>
@@ -137,7 +139,9 @@ const resolveStatusCircleSx = (state: VisualState) => {
   if (state === "success") {
     return {
       ...base,
-      backgroundColor: (theme: { palette: { mode: string; success: { light: string; main: string } } }) =>
+      backgroundColor: (theme: {
+        palette: { mode: string; success: { light: string; main: string } };
+      }) =>
         theme.palette.mode === "dark" ? theme.palette.success.light : theme.palette.success.main,
       borderColor: (theme: { palette: { mode: string } }) =>
         theme.palette.mode === "dark" ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.12)",
@@ -146,15 +150,18 @@ const resolveStatusCircleSx = (state: VisualState) => {
   if (state === "failed") {
     return {
       ...base,
-      backgroundColor: (theme: { palette: { mode: string; error: { light: string; main: string } } }) =>
-        theme.palette.mode === "dark" ? theme.palette.error.light : theme.palette.error.main,
+      backgroundColor: (theme: {
+        palette: { mode: string; error: { light: string; main: string } };
+      }) => (theme.palette.mode === "dark" ? theme.palette.error.light : theme.palette.error.main),
       borderColor: (theme: { palette: { mode: string } }) =>
         theme.palette.mode === "dark" ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.12)",
     };
   }
   return {
     ...base,
-    backgroundColor: (theme: { palette: { mode: string; warning: { light: string; main: string } } }) =>
+    backgroundColor: (theme: {
+      palette: { mode: string; warning: { light: string; main: string } };
+    }) =>
       theme.palette.mode === "dark" ? theme.palette.warning.light : theme.palette.warning.main,
     borderColor: (theme: { palette: { mode: string } }) =>
       theme.palette.mode === "dark" ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.12)",
@@ -237,7 +244,7 @@ function AdminTasksPage(props: Readonly<AdminTasksProps>) {
       if (removedJobs > 0) {
         props.enqueueSnackbar?.(
           `${removedJobs} Admin-Job(s) wurden freigegeben und aus der Queue entfernt.`,
-          { variant: "success" },
+          { variant: "success" }
         );
       } else {
         props.enqueueSnackbar?.("Keine Admin-Jobs zum Freigeben/Entfernen gefunden.", {
@@ -259,20 +266,19 @@ function AdminTasksPage(props: Readonly<AdminTasksProps>) {
       <CardHeader
         title="Adminpanel"
         action={
-          <Tooltip
-              title="Alle Admin-Jobs entsperren und direkt aus der Queue entfernen">
-                  <span>
-                    <Button
-                        size="small"
-                        aria-label="Release Jobs"
-                        color="primary"
-                        disabled={releasingLocks}
-                        sx={{ minWidth: 0, width: 32, height: 32, p: 0 }}
-                        onClick={releaseAllLocksNow}
-                    >
-                      <LockOpenIcon fontSize="small" />
-                    </Button>
-                  </span>
+          <Tooltip title="Alle Admin-Jobs entsperren und direkt aus der Queue entfernen">
+            <span>
+              <Button
+                size="small"
+                aria-label="Release Jobs"
+                color="primary"
+                disabled={releasingLocks}
+                sx={{ minWidth: 0, width: 32, height: 32, p: 0 }}
+                onClick={releaseAllLocksNow}
+              >
+                <LockOpenIcon fontSize="small" />
+              </Button>
+            </span>
           </Tooltip>
         }
       />
@@ -287,228 +293,234 @@ function AdminTasksPage(props: Readonly<AdminTasksProps>) {
 
         <Box>
           {tasks.map((task, idx) => {
-          const taskKey = String(task?.key || "");
-          const runs = (task?.runs || []).slice(0, 10);
-          const aggregateState = resolveAggregateTaskState(runs);
-          const runningDryKey = `${taskKey}:dry`;
-          const runningRealKey = `${taskKey}:run`;
-          const isLast = idx === tasks.length - 1;
-          const borderRadius =
-            idx === 0 ? (isLast ? "8px" : "8px 8px 0 0") : isLast ? "0 0 8px 8px" : "0";
+            const taskKey = String(task?.key || "");
+            const runs = (task?.runs || []).slice(0, 10);
+            const aggregateState = resolveAggregateTaskState(runs);
+            const runningDryKey = `${taskKey}:dry`;
+            const runningRealKey = `${taskKey}:run`;
+            const isLast = idx === tasks.length - 1;
+            const borderRadius =
+              idx === 0 ? (isLast ? "8px" : "8px 8px 0 0") : isLast ? "0 0 8px 8px" : "0";
 
-          return (
-            <Accordion
-              key={String(task?.key || task?.id)}
-              sx={{
-                borderRadius,
-                width: "auto",
-                maxWidth: "100%",
-                border: "1px solid",
-                borderColor: "divider",
-                backgroundColor: (theme) =>
-                  theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
-                overflow: "hidden",
-                "&:before": { display: "none" },
-                "& .MuiAccordionSummary-root": {
-                  backgroundColor: (theme) =>
-                    theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
-                },
-                "& .MuiAccordionDetails-root": {
-                  backgroundColor: (theme) =>
-                    theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
-                },
-              }}
-            >
-              <AccordionSummary
-                expandIcon={<ExpandMoreIcon />}
+            return (
+              <Accordion
+                key={String(task?.key || task?.id)}
                 sx={{
-                  "& .MuiAccordionSummary-content": {
-                    width: "100%",
-                    my: 0.5,
+                  borderRadius,
+                  width: "auto",
+                  maxWidth: "100%",
+                  border: "1px solid",
+                  borderColor: "divider",
+                  backgroundColor: (theme) =>
+                    theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
+                  overflow: "hidden",
+                  "&:before": { display: "none" },
+                  "& .MuiAccordionSummary-root": {
+                    backgroundColor: (theme) =>
+                      theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
+                  },
+                  "& .MuiAccordionDetails-root": {
+                    backgroundColor: (theme) =>
+                      theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
                   },
                 }}
               >
-                <Stack
-                  direction={{ xs: "column", md: "row" }}
-                  spacing={1}
-                  justifyContent="space-between"
-                  sx={{ width: "100%", pr: 0.5 }}
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  sx={{
+                    "& .MuiAccordionSummary-content": {
+                      width: "100%",
+                      my: 0.5,
+                    },
+                  }}
                 >
-                  <Box sx={{ minWidth: 0 }}>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                      {task?.name}
-                    </Typography>
-                    <Typography variant="caption" color="text.secondary" sx={{ display: "block" }}>
-                      Key: {taskKey}
-                    </Typography>
-                    {task?.description ? (
-                      <Typography variant="body2" color="text.secondary" sx={{ mb: 0.75 }}>
-                        {task.description}
-                      </Typography>
-                    ) : null}
-                  </Box>
-
                   <Stack
-                    direction="row"
-                    spacing={0.25}
-                    alignItems="center"
-                    sx={{ flexWrap: "wrap" }}
+                    direction={{ xs: "column", md: "row" }}
+                    spacing={1}
+                    justifyContent="space-between"
+                    sx={{ width: "100%", pr: 0.5 }}
                   >
-                    <Tooltip title={`${resolveVisualStateLabel(aggregateState)}`}>
-                      <Box sx={{ ...resolveStatusCircleSx(aggregateState), mr: 1 }} />
-                    </Tooltip>
-                    <Box sx={{ width: 8 }} />
+                    <Box sx={{ minWidth: 0 }}>
+                      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+                        {task?.name}
+                      </Typography>
+                      <Typography
+                        variant="caption"
+                        color="text.secondary"
+                        sx={{ display: "block" }}
+                      >
+                        Key: {taskKey}
+                      </Typography>
+                      {task?.description ? (
+                        <Typography variant="body2" color="text.secondary" sx={{ mb: 0.75 }}>
+                          {task.description}
+                        </Typography>
+                      ) : null}
+                    </Box>
 
-                    <Tooltip
-                      title={runningTaskKey === runningDryKey ? "Dry-Run läuft" : "Dry-Run starten"}
+                    <Stack
+                      direction="row"
+                      spacing={0.25}
+                      alignItems="center"
+                      sx={{ flexWrap: "wrap" }}
                     >
-                      <span>
-                        <Button
-                          size="small"
-                          aria-label="Dry-Run starten"
-                          color="primary"
-                          disabled={Boolean(runningTaskKey)}
-                          sx={{ minWidth: 0, width: 32, height: 32, p: 0 }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            runSelectedTask(taskKey, true);
-                          }}
-                        >
-                          <ScienceOutlinedIcon fontSize="small" />
-                        </Button>
-                      </span>
-                    </Tooltip>
+                      <Tooltip title={`${resolveVisualStateLabel(aggregateState)}`}>
+                        <Box sx={{ ...resolveStatusCircleSx(aggregateState), mr: 1 }} />
+                      </Tooltip>
+                      <Box sx={{ width: 8 }} />
 
-                    <Tooltip
-                      title={runningTaskKey === runningRealKey ? "Run läuft" : "Live-Run starten"}
-                    >
-                      <span>
-                        <Button
-                          size="small"
-                          aria-label="Live-Run starten"
-                          color="primary"
-                          disabled={Boolean(runningTaskKey)}
-                          sx={{ minWidth: 0, width: 32, height: 32, p: 0 }}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            runSelectedTask(taskKey, false);
-                          }}
-                        >
-                          <PlayArrowOutlined fontSize="small" />
-                        </Button>
-                      </span>
-                    </Tooltip>
-                  </Stack>
-                </Stack>
-              </AccordionSummary>
-
-              <AccordionDetails sx={{ pt: 0.5 }}>
-                <Typography variant="h6">Letzte Runs</Typography>
-
-                <Stack spacing={0.75}>
-                  {runs.length === 0 ? (
-                    <Typography variant="body2" color="text.secondary">
-                      Keine Runs vorhanden.
-                    </Typography>
-                  ) : null}
-
-                  {runs.map((run, runIndex) => {
-                    const runId = String(run?.id || "");
-                    const details = trimDetails(run?.details || "");
-                    const runVisualState = resolveVisualState(run);
-
-                    return (
-                      <React.Fragment key={runId}>
-                        <Accordion
-                          disableGutters
-                          elevation={0}
-                          sx={{
-                            borderRadius: 1,
-                            border: "1px solid",
-                            borderColor: "divider",
-                            backgroundColor: (theme) =>
-                              theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
-                            overflow: "hidden",
-                            "&:before": { display: "none" },
-                            "&.Mui-expanded": { margin: 0 },
-                            "& .MuiAccordionSummary-root": {
-                              backgroundColor: (theme) =>
-                                theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
-                            },
-                            "& .MuiAccordionDetails-root": {
-                              backgroundColor: (theme) =>
-                                theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
-                            },
-                          }}
-                        >
-                          <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            sx={{
-                              minHeight: 40,
-                              "& .MuiAccordionSummary-content": { my: 0, width: "100%" },
-                              "& .MuiAccordionSummary-content.Mui-expanded": { my: 0 },
+                      <Tooltip
+                        title={
+                          runningTaskKey === runningDryKey ? "Dry-Run läuft" : "Dry-Run starten"
+                        }
+                      >
+                        <span>
+                          <Button
+                            size="small"
+                            aria-label="Dry-Run starten"
+                            color="primary"
+                            disabled={Boolean(runningTaskKey)}
+                            sx={{ minWidth: 0, width: 32, height: 32, p: 0 }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              runSelectedTask(taskKey, true);
                             }}
                           >
-                            <Stack
-                              direction={{ xs: "column", sm: "row" }}
-                              spacing={0.75}
-                              alignItems={{ xs: "flex-start", sm: "center" }}
-                              sx={{ minWidth: 0 }}
+                            <ScienceOutlinedIcon fontSize="small" />
+                          </Button>
+                        </span>
+                      </Tooltip>
+
+                      <Tooltip
+                        title={runningTaskKey === runningRealKey ? "Run läuft" : "Live-Run starten"}
+                      >
+                        <span>
+                          <Button
+                            size="small"
+                            aria-label="Live-Run starten"
+                            color="primary"
+                            disabled={Boolean(runningTaskKey)}
+                            sx={{ minWidth: 0, width: 32, height: 32, p: 0 }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              runSelectedTask(taskKey, false);
+                            }}
+                          >
+                            <PlayArrowOutlined fontSize="small" />
+                          </Button>
+                        </span>
+                      </Tooltip>
+                    </Stack>
+                  </Stack>
+                </AccordionSummary>
+
+                <AccordionDetails sx={{ pt: 0.5 }}>
+                  <Typography variant="h6">Letzte Runs</Typography>
+
+                  <Stack spacing={0.75}>
+                    {runs.length === 0 ? (
+                      <Typography variant="body2" color="text.secondary">
+                        Keine Runs vorhanden.
+                      </Typography>
+                    ) : null}
+
+                    {runs.map((run, runIndex) => {
+                      const runId = String(run?.id || "");
+                      const details = trimDetails(run?.details || "");
+                      const runVisualState = resolveVisualState(run);
+
+                      return (
+                        <React.Fragment key={runId}>
+                          <Accordion
+                            disableGutters
+                            elevation={0}
+                            sx={{
+                              borderRadius: 1,
+                              border: "1px solid",
+                              borderColor: "divider",
+                              backgroundColor: (theme) =>
+                                theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
+                              overflow: "hidden",
+                              "&:before": { display: "none" },
+                              "&.Mui-expanded": { margin: 0 },
+                              "& .MuiAccordionSummary-root": {
+                                backgroundColor: (theme) =>
+                                  theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
+                              },
+                              "& .MuiAccordionDetails-root": {
+                                backgroundColor: (theme) =>
+                                  theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
+                              },
+                            }}
+                          >
+                            <AccordionSummary
+                              expandIcon={<ExpandMoreIcon />}
+                              sx={{
+                                minHeight: 40,
+                                "& .MuiAccordionSummary-content": { my: 0, width: "100%" },
+                                "& .MuiAccordionSummary-content.Mui-expanded": { my: 0 },
+                              }}
                             >
-                              <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                                {formatDateTime(run?.startedAt)}
-                              </Typography>
-                              <Tooltip title={resolveVisualStateLabel(runVisualState)}>
-                                <Box sx={resolveStatusCircleSx(runVisualState)} />
-                              </Tooltip>
-                              <Chip
+                              <Stack
+                                direction={{ xs: "column", sm: "row" }}
+                                spacing={0.75}
+                                alignItems={{ xs: "flex-start", sm: "center" }}
+                                sx={{ minWidth: 0 }}
+                              >
+                                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                                  {formatDateTime(run?.startedAt)}
+                                </Typography>
+                                <Tooltip title={resolveVisualStateLabel(runVisualState)}>
+                                  <Box sx={resolveStatusCircleSx(runVisualState)} />
+                                </Tooltip>
+                                <Chip
                                   size="small"
                                   variant={"outlined"}
                                   label={run?.dryRun ? "Dry" : "Live"}
-                              />
-                              <Typography variant="body2" sx={{ minWidth: 0 }}>
-                                {run?.summary}
-                              </Typography>
-                            </Stack>
-                          </AccordionSummary>
-                          <AccordionDetails sx={{ pt: 0 }}>
-                            <Box
-                              component="pre"
-                              sx={{
-                                mt: 0.25,
-                                mb: 0,
-                                p: 1,
-                                maxHeight: 180,
-                                overflow: "auto",
-                                backgroundColor: "action.hover",
-                                borderRadius: 1,
-                                fontSize: "0.75rem",
-                                whiteSpace: "pre-wrap",
-                                wordBreak: "break-word",
-                              }}
-                            >
-                              {details.text || "(keine Details)"}
-                            </Box>
-                            {details.truncated ? (
-                              <Typography
-                                variant="caption"
-                                color="warning.main"
-                                sx={{ mt: 0.5, display: "block" }}
+                                />
+                                <Typography variant="body2" sx={{ minWidth: 0 }}>
+                                  {run?.summary}
+                                </Typography>
+                              </Stack>
+                            </AccordionSummary>
+                            <AccordionDetails sx={{ pt: 0 }}>
+                              <Box
+                                component="pre"
+                                sx={{
+                                  mt: 0.25,
+                                  mb: 0,
+                                  p: 1,
+                                  maxHeight: 180,
+                                  overflow: "auto",
+                                  backgroundColor: "action.hover",
+                                  borderRadius: 1,
+                                  fontSize: "0.75rem",
+                                  whiteSpace: "pre-wrap",
+                                  wordBreak: "break-word",
+                                }}
                               >
-                                Details wurden im UI gekürzt.
-                              </Typography>
-                            ) : null}
-                          </AccordionDetails>
-                        </Accordion>
-                        {runIndex < runs.length - 1 ? <Divider /> : null}
-                      </React.Fragment>
-                    );
-                  })}
-                </Stack>
-              </AccordionDetails>
-            </Accordion>
-          );
-        })}
+                                {details.text || "(keine Details)"}
+                              </Box>
+                              {details.truncated ? (
+                                <Typography
+                                  variant="caption"
+                                  color="warning.main"
+                                  sx={{ mt: 0.5, display: "block" }}
+                                >
+                                  Details wurden im UI gekürzt.
+                                </Typography>
+                              ) : null}
+                            </AccordionDetails>
+                          </Accordion>
+                          {runIndex < runs.length - 1 ? <Divider /> : null}
+                        </React.Fragment>
+                      );
+                    })}
+                  </Stack>
+                </AccordionDetails>
+              </Accordion>
+            );
+          })}
         </Box>
       </CardContent>
     </Layout>
