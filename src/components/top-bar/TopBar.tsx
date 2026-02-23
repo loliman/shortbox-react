@@ -4,7 +4,7 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import React from "react";
-import { styled } from "@mui/material/styles";
+import { alpha, styled } from "@mui/material/styles";
 import type { HierarchyLevelType } from "../../util/hierarchy";
 import { withContext } from "../generic";
 import IconButton from "@mui/material/IconButton";
@@ -15,6 +15,10 @@ import TopBarFilterMenu from "./TopBarFilterMenu";
 import Tooltip from "@mui/material/Tooltip";
 import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import type { AppThemeMode } from "../../app/theme";
 
 interface TopBarProps {
   toggleDrawer?: () => void;
@@ -32,6 +36,8 @@ interface TopBarProps {
   selected?: SelectedRoot;
   navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
   resetNavigationState?: () => void;
+  themeMode?: AppThemeMode;
+  toggleTheme?: () => void;
 }
 
 const SEARCH_MAX_WIDTH = 520;
@@ -42,8 +48,15 @@ const Android12Switch = styled(Switch)(({ theme }) => ({
   "& .MuiSwitch-track": {
     borderRadius: 22 / 2,
     opacity: 1,
-    backgroundColor: "rgba(255, 255, 255, 0.24)",
-    border: "1px solid rgba(255, 255, 255, 0.32)",
+    backgroundColor:
+      theme.palette.mode === "dark"
+        ? alpha(theme.palette.text.secondary, 0.26)
+        : alpha(theme.palette.common.white, 0.24),
+    border: `1px solid ${
+      theme.palette.mode === "dark"
+        ? alpha(theme.palette.text.secondary, 0.45)
+        : alpha(theme.palette.common.white, 0.32)
+    }`,
     "&::before, &::after": {
       content: '""',
       position: "absolute",
@@ -71,17 +84,23 @@ const Android12Switch = styled(Switch)(({ theme }) => ({
     transitionDuration: "220ms",
     "&.Mui-checked": {
       transform: "translateX(28px)",
-      color: "#ffffff",
+      color: theme.palette.common.white,
       "& + .MuiSwitch-track": {
-        backgroundColor: "#22c55e",
-        borderColor: "#22c55e",
+        backgroundColor: theme.palette.success.main,
+        borderColor: theme.palette.success.main,
         opacity: 1,
       },
     },
   },
   "& .MuiSwitch-thumb": {
     boxShadow: "0 1px 4px rgba(0,0,0,0.35)",
-    backgroundColor: "#ffffff",
+    backgroundColor:
+      theme.palette.mode === "dark" ? theme.palette.common.white : theme.palette.background.paper,
+    border: `1px solid ${
+      theme.palette.mode === "dark"
+        ? alpha(theme.palette.common.black, 0.24)
+        : alpha(theme.palette.text.primary, 0.14)
+    }`,
     width: 20,
     height: 20,
     margin: 0,
@@ -96,6 +115,7 @@ export function TopBar(props: TopBarProps) {
     props.compactLayout ?? Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
   const [mobileSearchOpen, setMobileSearchOpen] = React.useState(false);
   const isFilter = props.query?.filter;
+  const darkModeEnabled = props.themeMode === "dark";
 
   return (
     <AppBar
@@ -152,12 +172,32 @@ export function TopBar(props: TopBarProps) {
           sx={{
             minWidth: 0,
             width: "100%",
-            maxWidth: SEARCH_MAX_WIDTH,
+            maxWidth: SEARCH_MAX_WIDTH + 52,
             justifySelf: "center",
             px: 1,
+            display: "flex",
+            alignItems: "center",
+            gap: 0.5,
           }}
         >
-          {compactLayout ? null : <SearchBar us={us} navigate={navigate} />}
+          {compactLayout ? null : (
+            <>
+              <Box sx={{ minWidth: 0, flex: 1 }}>
+                <SearchBar us={us} navigate={navigate} />
+              </Box>
+              <Tooltip
+                title={darkModeEnabled ? "Zu hellem Modus wechseln" : "Zu dunklem Modus wechseln"}
+              >
+                <IconButton
+                  color="inherit"
+                  aria-label={darkModeEnabled ? "Hellmodus aktivieren" : "Darkmode aktivieren"}
+                  onClick={props.toggleTheme}
+                >
+                  {darkModeEnabled ? <LightModeIcon /> : <DarkModeIcon />}
+                </IconButton>
+              </Tooltip>
+            </>
+          )}
         </Box>
 
         <Box
@@ -178,6 +218,19 @@ export function TopBar(props: TopBarProps) {
               <SearchIcon />
             </IconButton>
           ) : null}
+          {compactLayout ? (
+            <Tooltip
+              title={darkModeEnabled ? "Zu hellem Modus wechseln" : "Zu dunklem Modus wechseln"}
+            >
+              <IconButton
+                color="inherit"
+                aria-label={darkModeEnabled ? "Hellmodus aktivieren" : "Darkmode aktivieren"}
+                onClick={props.toggleTheme}
+              >
+                {darkModeEnabled ? <LightModeIcon /> : <DarkModeIcon />}
+              </IconButton>
+            </Tooltip>
+          ) : null}
           <TopBarFilterMenu
             us={us}
             selected={selected}
@@ -186,6 +239,17 @@ export function TopBar(props: TopBarProps) {
             session={props.session}
             navigate={navigate}
           />
+          {props.session?.loggedIn ? (
+            <Tooltip title="Adminpanel">
+              <IconButton
+                color="inherit"
+                aria-label="Adminpanel"
+                onClick={(e) => navigate?.(e, "/admin/tasks")}
+              >
+                <AdminPanelSettingsIcon />
+              </IconButton>
+            </Tooltip>
+          ) : null}
 
           <Box sx={{ ml: 0.75, display: "inline-flex", alignItems: "center", gap: 0.75 }}>
             <Typography
@@ -218,8 +282,9 @@ export function TopBar(props: TopBarProps) {
             zIndex: (theme) => theme.zIndex.drawer + 3,
             px: 1,
             py: 0.75,
-            bgcolor: "primary.main",
-            borderBottom: (theme) => `1px solid ${theme.palette.primary.light}`,
+            bgcolor: (theme) =>
+              theme.palette.mode === "dark" ? "#0f172a" : theme.palette.primary.main,
+            borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
           }}
         >
           <Box sx={{ mx: "auto", width: "min(87vw, 700px)" }}>

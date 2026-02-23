@@ -14,11 +14,7 @@ interface ContentSectionProps {
 
 const MIN_QUERY_LENGTH = 2;
 
-function ContentSection({
-  values,
-  isDesktop: _isDesktop,
-  setFieldValue,
-}: ContentSectionProps) {
+function ContentSection({ values, isDesktop: _isDesktop, setFieldValue }: ContentSectionProps) {
   const [arcInput, setArcInput] = React.useState("");
   const [appearanceInput, setAppearanceInput] = React.useState("");
 

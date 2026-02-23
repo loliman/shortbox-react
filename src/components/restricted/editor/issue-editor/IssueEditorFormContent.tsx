@@ -1,15 +1,20 @@
 import React from "react";
-import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
+import CardContent from "@mui/material/CardContent";
+import CardHeader from "@mui/material/CardHeader";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import Tooltip from "@mui/material/Tooltip";
 import IssueEditorActions from "./IssueEditorActions";
-import IssueEditorHeader from "./IssueEditorHeader";
 import IssueEditorIdentifiersFields from "./IssueEditorIdentifiersFields";
 import IssueEditorMetadataFields from "./IssueEditorMetadataFields";
 import IssueEditorRelations from "./IssueEditorRelations";
 import IssueEditorSeriesFields from "./IssueEditorSeriesFields";
 import type { IssueEditorFormContentProps } from "./types";
+import { editorSectionSx } from "../editorLayout";
+import TitleLine from "../../../generic/TitleLine";
 
 function IssueEditorFormContent(props: IssueEditorFormContentProps) {
   const {
@@ -30,21 +35,32 @@ function IssueEditorFormContent(props: IssueEditorFormContentProps) {
   } = props;
 
   return (
-    <Box sx={{ width: "100%", maxWidth: 1280, mx: "auto" }}>
-      <IssueEditorHeader
-        header={header}
-        id={id}
-        session={session}
-        edit={edit}
-        us={values.series.publisher.us}
-        onToggle={() => {
-          onToggleUs();
-          resetForm();
-        }}
+    <>
+      <CardHeader
+        title={<TitleLine title={header} id={id} session={session} />}
+        action={
+          <FormControlLabel
+            sx={{ m: 0 }}
+            control={
+              <Tooltip title={(values.series.publisher.us ? "Deutsche" : "US") + " Ausgabe"}>
+                <Switch
+                  disabled={edit}
+                  checked={values.series.publisher.us}
+                  onChange={() => {
+                    onToggleUs();
+                    resetForm();
+                  }}
+                  color="secondary"
+                />
+              </Tooltip>
+            }
+            label="US"
+          />
+        }
       />
 
-      <Box sx={{ mt: 2 }}>
-        <Stack spacing={2.5}>
+      <CardContent sx={{ pt: 1 }}>
+        <Stack spacing={2.25}>
           <IssueEditorSection title="Basisdaten">
             <IssueEditorSeriesFields
               values={values}
@@ -73,7 +89,7 @@ function IssueEditorFormContent(props: IssueEditorFormContentProps) {
             />
           </IssueEditorSection>
 
-          <Paper variant="outlined" sx={{ p: { xs: 2, sm: 2.5 } }}>
+          <Paper elevation={0} sx={editorSectionSx}>
             <IssueEditorActions
               isSubmitting={isSubmitting}
               submitLabel={submitLabel}
@@ -84,8 +100,8 @@ function IssueEditorFormContent(props: IssueEditorFormContentProps) {
             />
           </Paper>
         </Stack>
-      </Box>
-    </Box>
+      </CardContent>
+    </>
   );
 }
 
@@ -96,7 +112,7 @@ interface IssueEditorSectionProps {
 
 function IssueEditorSection({ title, children }: Readonly<IssueEditorSectionProps>) {
   return (
-    <Paper variant="outlined" sx={{ p: { xs: 2, sm: 2.5 } }}>
+    <Paper elevation={0} sx={editorSectionSx}>
       <Stack spacing={2}>
         <Typography variant="subtitle1">{title}</Typography>
         {children}

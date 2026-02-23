@@ -22,7 +22,10 @@ describe("filter defaults", () => {
     const parsed = parseFilterValues(
       JSON.stringify({
         formats: ["Heft", { name: "Taschenbuch" }, { foo: "bar" }],
-        releasedates: [{ compare: ">=", date: "2020-01-01" }, { compare: "<=", date: "2022-12-31" }],
+        releasedates: [
+          { compare: ">=", date: "2020-01-01" },
+          { compare: "<=", date: "2022-12-31" },
+        ],
         publishers: [{ name: "Marvel" }],
         series: [{ title: "Spider-Man" }, null, 42],
         numbers: [

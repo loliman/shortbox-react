@@ -2,6 +2,7 @@ import { HierarchyLevel } from "../util/hierarchy";
 
 import {
   AppsDocument,
+  AdminTasksDocument,
   ArcsDocument,
   ExportDocument,
   IssueDocument,
@@ -25,6 +26,7 @@ const individuals = IndividualsDocument;
 const apps = AppsDocument;
 const arcs = ArcsDocument;
 const me = MeDocument;
+const adminTasks = AdminTasksDocument;
 const lastEdited = LastEditedDocument;
 const publisher = PublisherDocument;
 const seriesd = SeriesdDocument;
@@ -50,6 +52,7 @@ export {
   individuals,
   issues,
   lastEdited,
+  adminTasks,
   me,
   publisher,
   publishers,

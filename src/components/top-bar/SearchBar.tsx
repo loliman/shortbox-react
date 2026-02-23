@@ -133,7 +133,8 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
         onClick={(e) => closeSearch(e as unknown as React.MouseEvent<HTMLElement>)}
         sx={{
           zIndex: (theme) => theme.zIndex.appBar + 1,
-          backgroundColor: "rgba(10, 14, 22, 0.36)",
+          backgroundColor: (theme) =>
+            alpha(theme.palette.common.black, theme.palette.mode === "dark" ? 0.58 : 0.36),
           backdropFilter: "blur(5px)",
         }}
       />
@@ -159,10 +160,18 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
             sx: {
               borderRadius: 2,
               border: "2px solid",
-              borderColor: "rgba(15, 23, 42, 0.22)",
-              boxShadow: "0 18px 44px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255,255,255,0.65) inset",
+              borderColor: (theme) =>
+                alpha(theme.palette.text.primary, theme.palette.mode === "dark" ? 0.3 : 0.22),
+              boxShadow: (theme) =>
+                `0 18px 44px ${alpha(theme.palette.common.black, 0.42)}, 0 0 0 1px ${alpha(
+                  theme.palette.mode === "dark"
+                    ? theme.palette.text.secondary
+                    : theme.palette.common.white,
+                  theme.palette.mode === "dark" ? 0.22 : 0.65
+                )} inset`,
               backdropFilter: "blur(10px)",
-              backgroundColor: "rgba(255, 255, 255, 0.98)",
+              backgroundColor: (theme) =>
+                alpha(theme.palette.background.paper, theme.palette.mode === "dark" ? 0.94 : 0.98),
               width: "100%",
               height: `${resultsPanelHeight}px`,
               minHeight: `${resultsPanelHeight}px`,
@@ -193,7 +202,7 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
               "& .MuiAutocomplete-option": {
                 minHeight: 44,
                 borderBottom: "1px solid",
-                borderColor: "rgba(255,255,255,0.07)",
+                borderColor: "divider",
               },
               "& .MuiAutocomplete-option:last-of-type": {
                 borderBottom: "none",
@@ -319,7 +328,10 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
             },
             "&.Mui-focused": {
               boxShadow: (theme) =>
-                `0 0 0 3px ${theme.palette.primary.main}33, 0 10px 26px #00000033`,
+                `0 0 0 3px ${alpha(theme.palette.primary.main, 0.2)}, 0 10px 26px ${alpha(
+                  theme.palette.common.black,
+                  0.35
+                )}`,
               backgroundColor: "background.paper",
             },
           },

@@ -20,8 +20,9 @@ type IssueVariantTileProps = {
 
 export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
   const { coverUrl, blurCover } = getVariantCoverSource(props.variant, props.us);
-  const fallbackUrl = "/nocover_simple.jpg";
+  const fallbackUrl = "/nocover_simple.png";
   const [displayUrl, setDisplayUrl] = React.useState(coverUrl);
+  const isFallbackCover = displayUrl === fallbackUrl;
   const selected =
     props.selected ??
     (props.issue.format === props.variant.format && props.issue.variant === props.variant.variant);
@@ -88,7 +89,7 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            objectPosition: "center",
+            objectPosition: isFallbackCover ? "center 77%" : "center",
             filter: blurCover ? "blur(2px)" : "none",
           }}
         />
@@ -140,5 +141,5 @@ function getVariantCoverSource(
   const directCover = variant.cover?.url?.trim();
   if (directCover) return { coverUrl: directCover, blurCover: false };
 
-  return { coverUrl: "/nocover_simple.jpg", blurCover: false };
+  return { coverUrl: "/nocover_simple.png", blurCover: false };
 }

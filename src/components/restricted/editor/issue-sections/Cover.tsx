@@ -4,6 +4,7 @@ import Dialog from "@mui/material/Dialog";
 import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { alpha } from "@mui/material/styles";
 
 type CoverInput = { __typename?: string; url?: string } | string | null | undefined;
 
@@ -60,8 +61,12 @@ class Cover extends React.Component<CoverProps, CoverState> {
               position: "absolute",
               top: 8,
               right: 8,
-              bgcolor: "rgba(255,255,255,0.82)",
-              "&:hover": { bgcolor: "rgba(255,255,255,0.95)" },
+              bgcolor: (theme) =>
+                alpha(theme.palette.background.paper, theme.palette.mode === "dark" ? 0.7 : 0.82),
+              "&:hover": {
+                bgcolor: (theme) =>
+                  alpha(theme.palette.background.paper, theme.palette.mode === "dark" ? 0.9 : 0.95),
+              },
             }}
             onClick={this.props.onDelete}
           >

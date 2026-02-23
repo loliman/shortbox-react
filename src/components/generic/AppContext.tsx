@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import type { AppThemeMode } from "../../app/theme";
 import type { SessionData } from "../../app/session";
 import { useResponsive } from "../../app/useResponsive";
 
@@ -14,6 +15,8 @@ interface AppContextProps {
   children?: React.ReactNode;
   session?: SessionValue;
   setSession?: React.Dispatch<React.SetStateAction<SessionValue>>;
+  themeMode?: AppThemeMode;
+  toggleTheme?: () => void;
 }
 
 export interface AppContextValue {
@@ -36,6 +39,8 @@ export interface AppContextValue {
   unregisterLoadingComponent: (component: string) => void;
   isComponentRegistered: (component: string) => string | undefined;
   resetNavigationState: () => void;
+  themeMode: AppThemeMode;
+  toggleTheme: () => void;
 }
 
 const defaultContextValue: AppContextValue = {
@@ -58,11 +63,19 @@ const defaultContextValue: AppContextValue = {
   unregisterLoadingComponent: () => {},
   isComponentRegistered: () => undefined,
   resetNavigationState: () => {},
+  themeMode: "light",
+  toggleTheme: () => {},
 };
 
 export const AppContext = React.createContext<AppContextValue>(defaultContextValue);
 
-function AppContextProvider({ children, session, setSession }: Readonly<AppContextProps>) {
+function AppContextProvider({
+  children,
+  session,
+  setSession,
+  themeMode = "light",
+  toggleTheme = () => {},
+}: Readonly<AppContextProps>) {
   const responsive = useResponsive();
   const [state, setState] = useState<AppContextState>(() => {
     return {
@@ -158,6 +171,8 @@ function AppContextProvider({ children, session, setSession }: Readonly<AppConte
       unregisterLoadingComponent,
       isComponentRegistered,
       resetNavigationState,
+      themeMode,
+      toggleTheme,
     }),
     [
       handleLogin,
@@ -178,7 +193,9 @@ function AppContextProvider({ children, session, setSession }: Readonly<AppConte
       state.drawerOpen,
       state.loadingComponents.length,
       state.navResetVersion,
+      themeMode,
       toggleDrawer,
+      toggleTheme,
       unregisterLoadingComponent,
       resetNavigationState,
     ]

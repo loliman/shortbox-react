@@ -99,6 +99,16 @@ describe("TopBar", () => {
     expect(screen.getByTestId("topbar-search-center")).toBeTruthy();
   });
 
+  it("toggles theme mode through theme button", async () => {
+    const user = userEvent.setup();
+    const toggleTheme = vi.fn();
+
+    render(<TopBar themeMode="light" toggleTheme={toggleTheme} navigate={vi.fn()} />);
+
+    await user.click(screen.getByRole("button", { name: "Darkmode aktivieren" }));
+    expect(toggleTheme).toHaveBeenCalledTimes(1);
+  });
+
   it("uses icon-only search on mobile and expands full-width search on click", async () => {
     const user = userEvent.setup();
 

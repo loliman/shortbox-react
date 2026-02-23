@@ -3,6 +3,7 @@ import Paper from "@mui/material/Paper";
 import CardContent from "@mui/material/CardContent";
 import CardHeader from "@mui/material/CardHeader";
 import Stack from "@mui/material/Stack";
+import { type Theme } from "@mui/material/styles";
 import { Form, Formik } from "formik";
 import Layout from "../Layout";
 import FormActions from "./FormActions";
@@ -22,8 +23,8 @@ function FilterPage(props: FilterPageProps) {
     borderRadius: 2,
     border: "1px solid",
     borderColor: "divider",
-    boxShadow: "0 1px 3px rgba(0, 0, 0, 0.08)",
-    background: "linear-gradient(180deg, rgba(255,255,255,0.96) 0%, rgba(248,249,252,0.96) 100%)",
+    boxShadow: (theme: Theme) => theme.shadows[1],
+    backgroundColor: "background.paper",
   } as const;
 
   return (
@@ -53,6 +54,7 @@ function FilterPage(props: FilterPageProps) {
                 <Paper elevation={0} sx={sectionSx}>
                   <DetailsSection
                     values={values}
+                    us={us}
                     isDesktop={isDesktop}
                     setFieldValue={setFieldValue}
                     hasSession={Boolean(session)}
@@ -72,17 +74,19 @@ function FilterPage(props: FilterPageProps) {
                   <ContributorsSection values={values} us={us} setFieldValue={setFieldValue} />
                 </Paper>
 
-                <FormActions
-                  isSubmitting={isSubmitting}
-                  onReset={() => resetForm({ values: createDefaultFilterValues() })}
-                  onCancel={() => {
-                    const url = lastLocation?.pathname
-                      ? lastLocation.pathname
-                      : `/${us ? "us" : "de"}`;
-                    navigate(null, url);
-                  }}
-                  onSubmit={() => submitForm()}
-                />
+                <Paper elevation={0} sx={sectionSx}>
+                  <FormActions
+                    isSubmitting={isSubmitting}
+                    onReset={() => resetForm({ values: createDefaultFilterValues() })}
+                    onCancel={() => {
+                      const url = lastLocation?.pathname
+                        ? lastLocation.pathname
+                        : `/${us ? "us" : "de"}`;
+                      navigate(null, url);
+                    }}
+                    onSubmit={() => submitForm()}
+                  />
+                </Paper>
               </Stack>
             </CardContent>
           </Form>

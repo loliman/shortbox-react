@@ -17,6 +17,39 @@ export type Scalars = {
   DateTime: { input: string; output: string; }
 };
 
+export type AdminTask = {
+  __typename?: 'AdminTask';
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  key: Scalars['String']['output'];
+  lastRun?: Maybe<AdminTaskRun>;
+  name: Scalars['String']['output'];
+  runs: Array<AdminTaskRun>;
+};
+
+
+export type AdminTaskRunsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type AdminTaskRun = {
+  __typename?: 'AdminTaskRun';
+  details?: Maybe<Scalars['String']['output']>;
+  dryRun: Scalars['Boolean']['output'];
+  finishedAt?: Maybe<Scalars['DateTime']['output']>;
+  id: Scalars['ID']['output'];
+  startedAt: Scalars['DateTime']['output'];
+  status: AdminTaskRunStatus;
+  summary: Scalars['String']['output'];
+  taskKey: Scalars['String']['output'];
+  taskName: Scalars['String']['output'];
+};
+
+export enum AdminTaskRunStatus {
+  Failed = 'FAILED',
+  Success = 'SUCCESS'
+}
+
 export type Appearance = {
   __typename?: 'Appearance';
   id?: Maybe<Scalars['ID']['output']>;
@@ -109,9 +142,18 @@ export type Filter = {
   noComicguideId?: InputMaybe<Scalars['Boolean']['input']>;
   noContent?: InputMaybe<Scalars['Boolean']['input']>;
   noPrint?: InputMaybe<Scalars['Boolean']['input']>;
+  notExclusive?: InputMaybe<Scalars['Boolean']['input']>;
+  notFirstPrint?: InputMaybe<Scalars['Boolean']['input']>;
+  notNoPrint?: InputMaybe<Scalars['Boolean']['input']>;
+  notOnlyOnePrint?: InputMaybe<Scalars['Boolean']['input']>;
+  notOnlyPrint?: InputMaybe<Scalars['Boolean']['input']>;
+  notOnlyTb?: InputMaybe<Scalars['Boolean']['input']>;
+  notOtherOnlyTb?: InputMaybe<Scalars['Boolean']['input']>;
+  notReprint?: InputMaybe<Scalars['Boolean']['input']>;
   numbers?: InputMaybe<Array<InputMaybe<NumberFilter>>>;
   onlyCollected?: InputMaybe<Scalars['Boolean']['input']>;
   onlyNotCollected?: InputMaybe<Scalars['Boolean']['input']>;
+  onlyNotCollectedNoOwnedVariants?: InputMaybe<Scalars['Boolean']['input']>;
   onlyOnePrint?: InputMaybe<Scalars['Boolean']['input']>;
   onlyPrint?: InputMaybe<Scalars['Boolean']['input']>;
   onlyTb?: InputMaybe<Scalars['Boolean']['input']>;
@@ -229,6 +271,8 @@ export type Mutation = {
   editSeries?: Maybe<Series>;
   login: User;
   logout: Scalars['Boolean']['output'];
+  releaseAllAdminTaskLocks: Scalars['Int']['output'];
+  runAdminTask: AdminTaskRun;
 };
 
 
@@ -282,6 +326,11 @@ export type MutationEditSeriesArgs = {
 
 export type MutationLoginArgs = {
   credentials: LoginInput;
+};
+
+
+export type MutationRunAdminTaskArgs = {
+  input: RunAdminTaskInput;
 };
 
 export type Node = {
@@ -349,9 +398,11 @@ export type PublisherInput = {
 export type Query = {
   __typename?: 'Query';
   _empty?: Maybe<Scalars['String']['output']>;
+  adminTasks: Array<AdminTask>;
   apps?: Maybe<AppearanceConnection>;
   arcs?: Maybe<ArcConnection>;
   export?: Maybe<Scalars['String']['output']>;
+  filterCount: Scalars['Int']['output'];
   individuals?: Maybe<IndividualConnection>;
   issueDetails?: Maybe<Issue>;
   issueList?: Maybe<IssueConnection>;
@@ -362,6 +413,11 @@ export type Query = {
   publisherList?: Maybe<PublisherConnection>;
   seriesDetails?: Maybe<Series>;
   seriesList?: Maybe<SeriesConnection>;
+};
+
+
+export type QueryAdminTasksArgs = {
+  limitRuns?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -384,6 +440,11 @@ export type QueryArcsArgs = {
 export type QueryExportArgs = {
   filter: Filter;
   type: Scalars['String']['input'];
+};
+
+
+export type QueryFilterCountArgs = {
+  filter: Filter;
 };
 
 
@@ -450,6 +511,22 @@ export type QuerySeriesListArgs = {
   first?: InputMaybe<Scalars['Int']['input']>;
   pattern?: InputMaybe<Scalars['String']['input']>;
   publisher: PublisherInput;
+};
+
+export enum ReimportScopeKind {
+  AllUs = 'ALL_US',
+  Issue = 'ISSUE',
+  Publisher = 'PUBLISHER',
+  Series = 'SERIES'
+}
+
+export type RunAdminTaskInput = {
+  dryRun?: InputMaybe<Scalars['Boolean']['input']>;
+  issueId?: InputMaybe<Scalars['ID']['input']>;
+  publisherId?: InputMaybe<Scalars['ID']['input']>;
+  reimportScopeKind?: InputMaybe<ReimportScopeKind>;
+  seriesId?: InputMaybe<Scalars['ID']['input']>;
+  taskKey: Scalars['String']['input'];
 };
 
 export type Series = {
@@ -619,6 +696,13 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id?: string | null } | null };
 
+export type AdminTasksQueryVariables = Exact<{
+  limitRuns?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type AdminTasksQuery = { __typename?: 'Query', adminTasks: Array<{ __typename?: 'AdminTask', id: string, key: string, name: string, description?: string | null, lastRun?: { __typename?: 'AdminTaskRun', id: string, taskKey: string, taskName: string, startedAt: string, finishedAt?: string | null, dryRun: boolean, status: AdminTaskRunStatus, summary: string, details?: string | null } | null, runs: Array<{ __typename?: 'AdminTaskRun', id: string, taskKey: string, taskName: string, startedAt: string, finishedAt?: string | null, dryRun: boolean, status: AdminTaskRunStatus, summary: string, details?: string | null }> }> };
+
 export type LoginMutationVariables = Exact<{
   credentials: LoginInput;
 }>;
@@ -630,6 +714,18 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
 export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
+
+export type RunAdminTaskMutationVariables = Exact<{
+  input: RunAdminTaskInput;
+}>;
+
+
+export type RunAdminTaskMutation = { __typename?: 'Mutation', runAdminTask: { __typename?: 'AdminTaskRun', id: string, taskKey: string, taskName: string, startedAt: string, finishedAt?: string | null, dryRun: boolean, status: AdminTaskRunStatus, summary: string, details?: string | null } };
+
+export type ReleaseAllAdminTaskLocksMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ReleaseAllAdminTaskLocksMutation = { __typename?: 'Mutation', releaseAllAdminTaskLocks: number };
 
 export type LastEditedQueryVariables = Exact<{
   filter?: InputMaybe<Filter>;
@@ -740,8 +836,11 @@ export const IndividualsDocument = {"kind":"Document","definitions":[{"kind":"Op
 export const AppsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Apps"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pattern"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"type"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"apps"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pattern"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pattern"}}},{"kind":"Argument","name":{"kind":"Name","value":"type"},"value":{"kind":"Variable","name":{"kind":"Name","value":"type"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"endCursor"}}]}}]}}]}}]} as unknown as DocumentNode<AppsQuery, AppsQueryVariables>;
 export const ArcsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Arcs"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"pattern"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"type"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"arcs"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pattern"},"value":{"kind":"Variable","name":{"kind":"Name","value":"pattern"}}},{"kind":"Argument","name":{"kind":"Name","value":"type"},"value":{"kind":"Variable","name":{"kind":"Name","value":"type"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"type"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"endCursor"}}]}}]}}]}}]} as unknown as DocumentNode<ArcsQuery, ArcsQueryVariables>;
 export const MeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"me"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<MeQuery, MeQueryVariables>;
+export const AdminTasksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"AdminTasks"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"limitRuns"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"adminTasks"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limitRuns"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limitRuns"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"lastRun"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"taskKey"}},{"kind":"Field","name":{"kind":"Name","value":"taskName"}},{"kind":"Field","name":{"kind":"Name","value":"startedAt"}},{"kind":"Field","name":{"kind":"Name","value":"finishedAt"}},{"kind":"Field","name":{"kind":"Name","value":"dryRun"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"details"}}]}},{"kind":"Field","name":{"kind":"Name","value":"runs"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"Variable","name":{"kind":"Name","value":"limitRuns"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"taskKey"}},{"kind":"Field","name":{"kind":"Name","value":"taskName"}},{"kind":"Field","name":{"kind":"Name","value":"startedAt"}},{"kind":"Field","name":{"kind":"Name","value":"finishedAt"}},{"kind":"Field","name":{"kind":"Name","value":"dryRun"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"details"}}]}}]}}]}}]} as unknown as DocumentNode<AdminTasksQuery, AdminTasksQueryVariables>;
 export const LoginDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Login"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"credentials"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"LoginInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"login"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"credentials"},"value":{"kind":"Variable","name":{"kind":"Name","value":"credentials"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
 export const LogoutDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Logout"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"logout"}}]}}]} as unknown as DocumentNode<LogoutMutation, LogoutMutationVariables>;
+export const RunAdminTaskDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"RunAdminTask"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"input"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RunAdminTaskInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"runAdminTask"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"input"},"value":{"kind":"Variable","name":{"kind":"Name","value":"input"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"taskKey"}},{"kind":"Field","name":{"kind":"Name","value":"taskName"}},{"kind":"Field","name":{"kind":"Name","value":"startedAt"}},{"kind":"Field","name":{"kind":"Name","value":"finishedAt"}},{"kind":"Field","name":{"kind":"Name","value":"dryRun"}},{"kind":"Field","name":{"kind":"Name","value":"status"}},{"kind":"Field","name":{"kind":"Name","value":"summary"}},{"kind":"Field","name":{"kind":"Name","value":"details"}}]}}]}}]} as unknown as DocumentNode<RunAdminTaskMutation, RunAdminTaskMutationVariables>;
+export const ReleaseAllAdminTaskLocksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ReleaseAllAdminTaskLocks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"releaseAllAdminTaskLocks"}}]}}]} as unknown as DocumentNode<ReleaseAllAdminTaskLocksMutation, ReleaseAllAdminTaskLocksMutationVariables>;
 export const LastEditedDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"LastEdited"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"filter"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Filter"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"first"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"after"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"order"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"direction"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"lastEdited"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"filter"},"value":{"kind":"Variable","name":{"kind":"Name","value":"filter"}}},{"kind":"Argument","name":{"kind":"Name","value":"first"},"value":{"kind":"Variable","name":{"kind":"Name","value":"first"}}},{"kind":"Argument","name":{"kind":"Name","value":"after"},"value":{"kind":"Variable","name":{"kind":"Name","value":"after"}}},{"kind":"Argument","name":{"kind":"Name","value":"order"},"value":{"kind":"Variable","name":{"kind":"Name","value":"order"}}},{"kind":"Argument","name":{"kind":"Name","value":"direction"},"value":{"kind":"Variable","name":{"kind":"Name","value":"direction"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"edges"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"node"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"format"}},{"kind":"Field","name":{"kind":"Name","value":"variant"}},{"kind":"Field","name":{"kind":"Name","value":"verified"}},{"kind":"Field","name":{"kind":"Name","value":"collected"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"createdat"}},{"kind":"Field","name":{"kind":"Name","value":"updatedat"}},{"kind":"Field","name":{"kind":"Name","value":"comicguideid"}},{"kind":"Field","name":{"kind":"Name","value":"cover"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"url"}}]}},{"kind":"Field","name":{"kind":"Name","value":"series"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"volume"}},{"kind":"Field","name":{"kind":"Name","value":"startyear"}},{"kind":"Field","name":{"kind":"Name","value":"endyear"}},{"kind":"Field","name":{"kind":"Name","value":"publisher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"us"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"stories"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"onlyapp"}},{"kind":"Field","name":{"kind":"Name","value":"firstapp"}},{"kind":"Field","name":{"kind":"Name","value":"onlytb"}},{"kind":"Field","name":{"kind":"Name","value":"exclusive"}},{"kind":"Field","name":{"kind":"Name","value":"otheronlytb"}},{"kind":"Field","name":{"kind":"Name","value":"onlyoneprint"}},{"kind":"Field","name":{"kind":"Name","value":"collectedmultipletimes"}},{"kind":"Field","name":{"kind":"Name","value":"collected"}},{"kind":"Field","name":{"kind":"Name","value":"number"}},{"kind":"Field","name":{"kind":"Name","value":"children"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"issue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"collected"}}]}},{"kind":"Field","name":{"kind":"Name","value":"number"}}]}},{"kind":"Field","name":{"kind":"Name","value":"reprintOf"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"number"}}]}},{"kind":"Field","name":{"kind":"Name","value":"reprints"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"number"}}]}},{"kind":"Field","name":{"kind":"Name","value":"parent"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"collectedmultipletimes"}},{"kind":"Field","name":{"kind":"Name","value":"collected"}},{"kind":"Field","name":{"kind":"Name","value":"children"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"issue"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"collected"}}]}},{"kind":"Field","name":{"kind":"Name","value":"number"}}]}}]}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"pageInfo"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hasNextPage"}},{"kind":"Field","name":{"kind":"Name","value":"endCursor"}}]}}]}}]}}]} as unknown as DocumentNode<LastEditedQuery, LastEditedQueryVariables>;
 export const PublisherDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Publisher"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"publisher"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PublisherInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"publisherDetails"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"publisher"},"value":{"kind":"Variable","name":{"kind":"Name","value":"publisher"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"us"}},{"kind":"Field","name":{"kind":"Name","value":"startyear"}},{"kind":"Field","name":{"kind":"Name","value":"endyear"}},{"kind":"Field","name":{"kind":"Name","value":"seriesCount"}},{"kind":"Field","name":{"kind":"Name","value":"issueCount"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"addinfo"}}]}}]}}]} as unknown as DocumentNode<PublisherQuery, PublisherQueryVariables>;
 export const SeriesdDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"Seriesd"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"series"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"SeriesInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"seriesDetails"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"series"},"value":{"kind":"Variable","name":{"kind":"Name","value":"series"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"volume"}},{"kind":"Field","name":{"kind":"Name","value":"startyear"}},{"kind":"Field","name":{"kind":"Name","value":"endyear"}},{"kind":"Field","name":{"kind":"Name","value":"issueCount"}},{"kind":"Field","name":{"kind":"Name","value":"active"}},{"kind":"Field","name":{"kind":"Name","value":"addinfo"}},{"kind":"Field","name":{"kind":"Name","value":"publisher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"us"}}]}}]}}]}}]} as unknown as DocumentNode<SeriesdQuery, SeriesdQueryVariables>;

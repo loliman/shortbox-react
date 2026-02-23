@@ -15,7 +15,18 @@ interface ContainsSimpleItemProps {
 export function ContainsSimpleItem(props: Readonly<ContainsSimpleItemProps>) {
   return (
     <Accordion
-      sx={{ width: "auto", maxWidth: "100%" }}
+      sx={{
+        width: "auto",
+        maxWidth: "100%",
+        border: "1px solid",
+        borderColor: "divider",
+        backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#161b22" : "#ffffff"),
+        overflow: "hidden",
+        "&:before": { display: "none" },
+        "& .MuiAccordionSummary-root": {
+          backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#161b22" : "#ffffff"),
+        },
+      }}
       defaultExpanded={expanded(props.item, props.query)}
     >
       <AccordionSummary

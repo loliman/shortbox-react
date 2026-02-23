@@ -11,6 +11,7 @@ const IssueDetailsDE = lazy(() => import("../components/details/IssueDetailsDE")
 const IssueDetailsUS = lazy(() => import("../components/details/IssueDetailsUS"));
 const Filter = lazy(() => import("../components/filter/Filter"));
 const Login = lazy(() => import("../components/Login"));
+const AdminTasks = lazy(() => import("../components/admin/AdminTasks"));
 const Contact = lazy(() => import("../components/footer/Contact"));
 const Impress = lazy(() => import("../components/footer/Impress"));
 const Privacy = lazy(() => import("../components/footer/Privacy"));
@@ -56,6 +57,7 @@ export function AppRoutes({ session, authReady = false }: Readonly<AppRoutesProp
       <Route path="/filter/us" element={<Filter />} />
 
       <Route path="/login" element={<Login />} />
+      <Route path="/admin/tasks" element={guard(session, authReady, <AdminTasks />)} />
 
       <Route path="/contact" element={<Contact />} />
       <Route path="/impress" element={<Impress />} />

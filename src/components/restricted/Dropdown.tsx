@@ -9,11 +9,14 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import PlaylistRemoveIcon from "@mui/icons-material/PlaylistRemove";
+import RefreshIcon from "@mui/icons-material/Refresh";
 import Typography from "@mui/material/Typography";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import DeletionDialog from "./DeletionDialog";
 import { withContext } from "../generic";
 import { stripItem } from "../../util/util";
+import { runAdminTask } from "../../graphql/mutationsTyped";
+import { ReimportScopeKind } from "../../graphql/typed-documents.generated";
 
 const EDIT_ISSUE_STATUS_MUTATION = gql`
   mutation EditIssueStatus($old: IssueInput!, $item: IssueInput!) {
@@ -120,7 +123,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
           onClose={() => this.props.handleClose?.()}
           PaperProps={{
             sx: {
-              maxHeight: 48 * 4.5,
+              maxHeight: 48 * 6,
               width: 260,
             },
           }}
@@ -167,6 +170,15 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
             </Typography>
           </MenuItem>
 
+          {resolveItemUs(selectedItem, this.props.level, Boolean(this.props.us)) ? (
+            <ReimportMenuItem
+              item={selectedItem}
+              level={this.props.level}
+              onClose={this.props.handleClose}
+              enqueueSnackbar={this.props.enqueueSnackbar}
+            />
+          ) : null}
+
           <MenuItem disabled={!canDelete} key="delete" onClick={() => this.handleDelete()}>
             <ListItemIcon>
               <DeleteIcon />
@@ -203,11 +215,19 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
 
 interface ActionMenuItemProps {
   item: DropdownItem;
+  level?: string;
   verified?: boolean;
   collected?: boolean;
   onClose?: () => void;
   enqueueSnackbar?: DropdownProps["enqueueSnackbar"];
 }
+
+type ReimportScopeInput = {
+  reimportScopeKind: ReimportScopeKind;
+  publisherId?: string;
+  seriesId?: string;
+  issueId?: string;
+};
 
 function buildIssueMutationInput(item: DropdownItem): IssueMutationInput {
   const stripped = stripItem(structuredClone(item));
@@ -237,6 +257,90 @@ function formatGraphQLErrorMessage(error: unknown): string {
   const graphQLErrors = (error as { graphQLErrors?: Array<{ message?: string }> })?.graphQLErrors;
   if (!graphQLErrors || graphQLErrors.length === 0 || !graphQLErrors[0]?.message) return "";
   return ` [${graphQLErrors[0].message}]`;
+}
+
+function toPositiveId(value: unknown): string | null {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed) || Math.trunc(parsed) <= 0) return null;
+  return String(Math.trunc(parsed));
+}
+
+function toReimportScopeInput(
+  item: DropdownItem,
+  level: string | undefined
+): ReimportScopeInput | null {
+  const id = toPositiveId(item.id);
+  if (!id) return null;
+
+  if (level === HierarchyLevel.PUBLISHER) {
+    return {
+      reimportScopeKind: ReimportScopeKind.Publisher,
+      publisherId: id,
+    };
+  }
+
+  if (level === HierarchyLevel.SERIES) {
+    return {
+      reimportScopeKind: ReimportScopeKind.Series,
+      seriesId: id,
+    };
+  }
+
+  if (level === HierarchyLevel.ISSUE) {
+    return {
+      reimportScopeKind: ReimportScopeKind.Issue,
+      issueId: id,
+    };
+  }
+
+  return null;
+}
+
+function ReimportMenuItem(props: Readonly<ActionMenuItemProps>) {
+  const [enqueueReimport] = useMutation(runAdminTask);
+  const scopeInput = toReimportScopeInput(props.item, props.level);
+
+  return (
+    <MenuItem
+      disabled={!scopeInput}
+      key="reimport"
+      onClick={async () => {
+        if (!scopeInput) {
+          props.onClose?.();
+          return;
+        }
+
+        try {
+          const result = await enqueueReimport({
+            variables: {
+              input: {
+                taskKey: "reimport-us",
+                dryRun: false,
+                ...scopeInput,
+              },
+            },
+          });
+
+          const summary = result.data?.runAdminTask?.summary || "Reimport Job gestartet";
+          props.enqueueSnackbar?.(summary, { variant: "success" });
+        } catch (error) {
+          props.enqueueSnackbar?.(
+            `Reimport konnte nicht gestartet werden${formatGraphQLErrorMessage(error)}`,
+            { variant: "error" }
+          );
+        } finally {
+          props.onClose?.();
+        }
+      }}
+    >
+      <ListItemIcon>
+        <RefreshIcon />
+      </ListItemIcon>
+      <Typography variant="inherit" noWrap>
+        Reimport
+      </Typography>
+    </MenuItem>
+  );
 }
 
 function VerifyMenuItem(props: Readonly<ActionMenuItemProps>) {

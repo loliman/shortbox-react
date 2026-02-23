@@ -65,7 +65,13 @@ export default function TopBarFilterMenu(props: Readonly<TopBarFilterMenuProps>)
             overlap="circular"
             showZero={false}
             badgeContent={
-              isFilterActive ? (loading ? "…" : Number.isFinite(count) ? count : undefined) : undefined
+              isFilterActive
+                ? loading
+                  ? "…"
+                  : Number.isFinite(count)
+                    ? count
+                    : undefined
+                : undefined
             }
             invisible={!isFilterActive || (!loading && !Number.isFinite(count))}
             slotProps={{
@@ -79,26 +85,26 @@ export default function TopBarFilterMenu(props: Readonly<TopBarFilterMenuProps>)
               },
             }}
           >
-          <IconButton
-            color={isFilterActive ? "secondary" : "inherit"}
-            aria-label={isFilterActive ? "Filteroptionen" : "Filter öffnen"}
-            aria-controls={menuOpen ? "topbar-filter-menu" : undefined}
-            aria-haspopup="menu"
-            aria-expanded={menuOpen ? "true" : undefined}
-            onClick={(e) => {
-              if (!isFilterActive) {
-                navigate?.(e, us ? "/filter/us" : "/filter/de");
-                return;
-              }
-              if (menuOpen) {
-                handleFilterMenuClose();
-              } else {
-                handleFilterMenuOpen(e);
-              }
-            }}
-          >
-            <TuneRoundedIcon />
-          </IconButton>
+            <IconButton
+              color={isFilterActive ? "secondary" : "inherit"}
+              aria-label={isFilterActive ? "Filteroptionen" : "Filter öffnen"}
+              aria-controls={menuOpen ? "topbar-filter-menu" : undefined}
+              aria-haspopup="menu"
+              aria-expanded={menuOpen ? "true" : undefined}
+              onClick={(e) => {
+                if (!isFilterActive) {
+                  navigate?.(e, us ? "/filter/us" : "/filter/de");
+                  return;
+                }
+                if (menuOpen) {
+                  handleFilterMenuClose();
+                } else {
+                  handleFilterMenuOpen(e);
+                }
+              }}
+            >
+              <TuneRoundedIcon />
+            </IconButton>
           </Badge>
         </Box>
       </Tooltip>

@@ -17,7 +17,10 @@ import TitleLine from "../../generic/TitleLine";
 import Stack from "@mui/material/Stack";
 import Paper from "@mui/material/Paper";
 import Typography from "@mui/material/Typography";
+import CardContent from "@mui/material/CardContent";
+import CardHeader from "@mui/material/CardHeader";
 import type { DocumentNode } from "graphql";
+import { editorSectionSx } from "./editorLayout";
 
 const editorFieldSx = { width: "100%", maxWidth: { xs: "100%", md: 420 } } as const;
 const editorTextAreaSx = { width: "100%", maxWidth: { xs: "100%", md: 640 } } as const;
@@ -159,123 +162,113 @@ function PublisherEditor(props: Readonly<PublisherEditorProps>) {
     >
       {({ values, resetForm, submitForm, isSubmitting }) => (
         <Form>
-          <Box sx={{ width: "100%", maxWidth: 1280, mx: "auto" }}>
-            <Paper variant="outlined" sx={{ p: { xs: 2, sm: 2.5 } }}>
-              <Stack
-                direction={{ xs: "column", sm: "row" }}
-                spacing={1.5}
-                alignItems={{ xs: "flex-start", sm: "center" }}
-                justifyContent="space-between"
-              >
-                <Box sx={{ minWidth: 0 }}>
-                  <Typography variant="h5" component="h1" sx={{ fontWeight: 600 }}>
-                    <TitleLine title={header} id={props.id} session={props.session} />
-                  </Typography>
-                </Box>
-
-                <FormControlLabel
-                  sx={{ m: 0 }}
-                  control={
-                    <Tooltip title={(values.us ? "Deutscher" : "US") + " Verlag"}>
-                      <Switch
-                        disabled={edit}
-                        checked={values.us}
-                        onChange={() => {
-                          toggleUs();
-                          resetForm();
-                        }}
-                        color="secondary"
-                      />
-                    </Tooltip>
-                  }
-                  label="US"
-                />
-              </Stack>
-            </Paper>
-
-            <Box sx={{ mt: 2 }}>
-              <Stack spacing={2.5}>
-                <Paper variant="outlined" sx={{ p: { xs: 2, sm: 2.5 } }}>
-                  <Stack spacing={2}>
-                    <Typography variant="subtitle1">Basisdaten</Typography>
-
-                    <FastField name="name" label="Name" component={TextField} sx={editorFieldSx} />
-
-                    <FastField
-                      name="startyear"
-                      label="Startjahr"
-                      type="number"
-                      component={TextField}
-                      sx={editorFieldSx}
+          <CardHeader
+            title={<TitleLine title={header} id={props.id} session={props.session} />}
+            action={
+              <FormControlLabel
+                sx={{ m: 0 }}
+                control={
+                  <Tooltip title={(values.us ? "Deutscher" : "US") + " Verlag"}>
+                    <Switch
+                      disabled={edit}
+                      checked={values.us}
+                      onChange={() => {
+                        toggleUs();
+                        resetForm();
+                      }}
+                      color="secondary"
                     />
+                  </Tooltip>
+                }
+                label="US"
+              />
+            }
+          />
 
-                    <FastField
-                      name="endyear"
-                      label="Endjahr"
-                      type="number"
-                      component={TextField}
-                      sx={editorFieldSx}
-                    />
-                  </Stack>
-                </Paper>
+          <CardContent sx={{ pt: 1 }}>
+            <Stack spacing={2.25}>
+              <Paper elevation={0} sx={editorSectionSx}>
+                <Stack spacing={2}>
+                  <Typography variant="subtitle1">Basisdaten</Typography>
 
-                <Paper variant="outlined" sx={{ p: { xs: 2, sm: 2.5 } }}>
-                  <Stack spacing={2}>
-                    <Typography variant="subtitle1">Beschreibung</Typography>
+                  <FastField name="name" label="Name" component={TextField} sx={editorFieldSx} />
 
-                    <FastField
-                      name="addinfo"
-                      label="Weitere Informationen"
-                      multiline
-                      rows={10}
-                      component={TextField}
-                      sx={editorTextAreaSx}
-                    />
-                  </Stack>
-                </Paper>
+                  <FastField
+                    name="startyear"
+                    label="Startjahr"
+                    type="number"
+                    component={TextField}
+                    sx={editorFieldSx}
+                  />
 
-                <Paper variant="outlined" sx={{ p: { xs: 2, sm: 2.5 } }}>
-                  <Stack
-                    direction={{ xs: "column", md: "row" }}
-                    spacing={1.5}
-                    justifyContent="space-between"
-                    alignItems={{ xs: "stretch", md: "center" }}
+                  <FastField
+                    name="endyear"
+                    label="Endjahr"
+                    type="number"
+                    component={TextField}
+                    sx={editorFieldSx}
+                  />
+                </Stack>
+              </Paper>
+
+              <Paper elevation={0} sx={editorSectionSx}>
+                <Stack spacing={2}>
+                  <Typography variant="subtitle1">Beschreibung</Typography>
+
+                  <FastField
+                    name="addinfo"
+                    label="Weitere Informationen"
+                    multiline
+                    rows={10}
+                    component={TextField}
+                    sx={editorTextAreaSx}
+                  />
+                </Stack>
+              </Paper>
+
+              <Paper elevation={0} sx={editorSectionSx}>
+                <Stack
+                  direction={{ xs: "column", md: "row" }}
+                  spacing={1.5}
+                  justifyContent="space-between"
+                  alignItems={{ xs: "stretch", md: "center" }}
+                >
+                  <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+                    <Button
+                      disabled={isSubmitting}
+                      onClick={() => resetForm()}
+                      variant="text"
+                      color="inherit"
+                    >
+                      Zurücksetzen
+                    </Button>
+
+                    <Button
+                      disabled={isSubmitting}
+                      onClick={(e) => props.navigate(e, lastLocation ? lastLocation.pathname : "/")}
+                      variant="outlined"
+                      color="inherit"
+                    >
+                      Abbrechen
+                    </Button>
+                  </Box>
+
+                  <Box
+                    sx={{ display: "flex", gap: 1, flexWrap: "wrap", justifyContent: "flex-end" }}
                   >
-                    <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-                      <Button
-                        disabled={isSubmitting}
-                        onClick={() => resetForm()}
-                        variant="text"
-                        color="inherit"
-                      >
-                        Zurücksetzen
-                      </Button>
-
-                      <Button
-                        disabled={isSubmitting}
-                        onClick={(e) => props.navigate(e, lastLocation ? lastLocation.pathname : "/")}
-                        variant="outlined"
-                        color="inherit"
-                      >
-                        Abbrechen
-                      </Button>
-                    </Box>
-
-                    <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", justifyContent: "flex-end" }}>
-                      <Button
-                        disabled={isSubmitting}
-                        onClick={submitForm}
-                        variant="contained"
-                        color="primary"
-                      >
-                        {submitLabel}
-                      </Button>
-                    </Box>
-                  </Stack>
-                </Paper>
-              </Stack>
-            </Box>
-          </Box>
+                    <Button
+                      disabled={isSubmitting}
+                      onClick={submitForm}
+                      variant="contained"
+                      color="primary"
+                    >
+                      {submitLabel}
+                    </Button>
+                  </Box>
+                </Stack>
+              </Paper>
+            </Stack>
+          </CardContent>
         </Form>
       )}
     </Formik>
