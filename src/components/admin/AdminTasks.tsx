@@ -526,14 +526,6 @@ function AdminTasksPage(props: Readonly<AdminTasksProps>) {
                                 </Box>
                               </Box>
                             </Box>
-                            {details.truncated ? (
-                              <Typography
-                                variant="caption"
-                                color="warning.main"
-                                sx={{ mt: 0.5, display: "block" }}
-                              >
-                                {details.text || "(keine Details)"}
-                              </Box>
                               {details.truncated ? (
                                 <Typography
                                   variant="caption"
