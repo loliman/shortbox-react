@@ -7,6 +7,7 @@ import { TextField } from "../../../generic/FormikTextField";
 import { individuals, series } from "../../../../graphql/queriesTyped";
 import type { ContainsProps, FieldItem } from "./types";
 import TypedRoleAutocomplete from "./TypedRoleAutocomplete";
+import { getSeriesLabel } from "../../../../util/issuePresentation";
 
 const MIN_QUERY_LENGTH = 2;
 
@@ -135,12 +136,12 @@ function isOptionLike(value: unknown): value is FieldItem {
 }
 
 function formatSeriesLabel(entry: unknown) {
-  const option = entry as { title?: unknown; volume?: unknown };
-  const title = String(option?.title || "");
-  const volume =
-    option?.volume === null || option?.volume === undefined ? "" : String(option.volume);
-  if (!volume) return title;
-  return `${title} (Vol. ${volume})`;
+  const option = entry as { title?: unknown; volume?: unknown; startyear?: unknown };
+  return getSeriesLabel({
+    title: String(option?.title || ""),
+    volume: option?.volume as string | number | null | undefined,
+    startyear: option?.startyear as string | number | null | undefined,
+  });
 }
 
 function getSeriesKey(value: unknown) {

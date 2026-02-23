@@ -6,8 +6,8 @@ type PublisherLike = {
 
 type SeriesLike = {
   title?: string | null;
-  volume?: number | null;
-  startyear?: number | null;
+  volume?: number | string | null;
+  startyear?: number | string | null;
   publisher?: PublisherLike | null;
 };
 
@@ -18,14 +18,19 @@ type IssueLike = {
   series?: SeriesLike | null;
 };
 
-export function getSeriesLabel(series?: SeriesLike | null): string {
+interface SeriesLabelOptions {
+  fallbackYear?: string;
+}
+
+export function getSeriesLabel(series?: SeriesLike | null, options?: SeriesLabelOptions): string {
   if (!series?.title) return "";
 
   const volume =
     series.volume !== undefined && series.volume !== null
       ? ` (Vol. ${romanize(series.volume)})`
       : "";
-  const year = series.startyear ? ` (${series.startyear})` : "";
+  const startyear = series.startyear ?? options?.fallbackYear;
+  const year = startyear ? ` (${startyear})` : "";
 
   return `${series.title}${volume}${year}`;
 }

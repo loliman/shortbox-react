@@ -36,7 +36,7 @@ import {
   getNavDrawerWidth,
 } from "../layoutMetrics";
 import { parseFilter } from "./listUtils";
-import { romanize } from "../../util/util";
+import { getSeriesLabel } from "../../util/issuePresentation";
 import CoverTooltip from "./CoverTooltip";
 
 const LIST_PAGE_SIZE = 250;
@@ -784,12 +784,7 @@ function toIssueNodes(data?: IssuesQuery): IssueNode[] {
 }
 
 function createSeriesLabel(seriesNode: SeriesNode): string {
-  const title = seriesNode.title || "";
-  const year =
-    seriesNode.startyear && seriesNode.startyear > 0 ? String(seriesNode.startyear) : "?";
-  const volume = seriesNode.volume;
-  if (volume === null || volume === undefined) return `${title} (${year})`;
-  return `${title} (Vol. ${romanize(volume)}) (${year})`;
+  return getSeriesLabel(seriesNode, { fallbackYear: "?" });
 }
 
 function createIssueLabel(issueNode: IssueNode, us: boolean): string {

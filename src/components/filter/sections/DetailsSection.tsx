@@ -14,6 +14,7 @@ import { FORMAT_OPTIONS } from "../constants";
 import { FilterValues } from "../types";
 import { publishers, series } from "../../../graphql/queriesTyped";
 import type { FieldItem } from "../../../util/filterFieldHelpers";
+import { getSeriesLabel } from "../../../util/issuePresentation";
 
 const MIN_QUERY_LENGTH = 2;
 
@@ -406,12 +407,12 @@ function normalizeText(value: unknown) {
 export default DetailsSection;
 
 function formatSeriesLabel(entry: unknown) {
-  const option = entry as { title?: unknown; volume?: unknown };
-  const title = String(option?.title || "");
-  const volume =
-    option?.volume === undefined || option?.volume === null ? "" : String(option.volume);
-  if (!volume) return title;
-  return `${title} (Vol. ${volume})`;
+  const option = entry as { title?: unknown; volume?: unknown; startyear?: unknown };
+  return getSeriesLabel({
+    title: String(option?.title || ""),
+    volume: option?.volume as string | number | null | undefined,
+    startyear: option?.startyear as string | number | null | undefined,
+  });
 }
 
 function getPresetDateRange(preset: string): { from: string; to: string } | null {

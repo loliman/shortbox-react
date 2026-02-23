@@ -6,6 +6,7 @@ import AutocompleteBase from "../../../generic/AutocompleteBase";
 import { useAutocompleteQuery } from "../../../generic/useAutocompleteQuery";
 import { publishers, series } from "../../../../graphql/queriesTyped";
 import type { IssueEditorFormValues } from "./types";
+import { getSeriesLabel } from "../../../../util/issuePresentation";
 
 interface IssueEditorSeriesFieldsProps {
   values: IssueEditorFormValues;
@@ -22,6 +23,7 @@ interface PublisherOption {
 interface SeriesOption {
   title?: string;
   volume?: number | string;
+  startyear?: number | string;
   publisher?: { name?: string; us?: boolean };
   [key: string]: unknown;
 }
@@ -208,10 +210,7 @@ function formatPublisherLabel(option: PublisherOption) {
 }
 
 function formatSeriesLabel(option: SeriesOption) {
-  const title = String(option.title || "");
-  const volume = option.volume === null || option.volume === undefined ? "" : String(option.volume);
-  if (!volume) return title;
-  return `${title} (Vol. ${volume})`;
+  return getSeriesLabel(option);
 }
 
 function getSeriesKey(value: SeriesOption | Record<string, unknown> | null | undefined) {
