@@ -10,6 +10,7 @@ import {
   CardHeader,
   Chip,
   Divider,
+  IconButton,
   Stack,
   Tooltip,
   Typography,
@@ -17,6 +18,7 @@ import {
 import ScienceOutlinedIcon from "@mui/icons-material/ScienceOutlined";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useMutation, useQuery } from "@apollo/client";
 import { adminTasks } from "../../graphql/queriesTyped";
 import { releaseAllAdminTaskLocks, runAdminTask } from "../../graphql/mutationsTyped";
@@ -70,6 +72,13 @@ const getWorkerStateFromDetails = (details?: string | null): string | null => {
   }
 };
 
+const hasFailedItemsInSummary = (summary: string): boolean => {
+  const match = summary.match(/failed\s*=\s*(\d+)/i);
+  if (!match) return false;
+  const failedCount = Number(match[1]);
+  return Number.isFinite(failedCount) && failedCount > 0;
+};
+
 const resolveVisualState = (run: RunLike | null | undefined): VisualState => {
   if (!run) return "missing";
 
@@ -81,6 +90,7 @@ const resolveVisualState = (run: RunLike | null | undefined): VisualState => {
     if (workerState === "queued" || summary.includes("queued")) return "queued";
   }
 
+  if (hasFailedItemsInSummary(summary)) return "failed";
   if (run.status === "FAILED" || workerState === "failed-awaiting-retry") return "failed";
   if (run.status === "SUCCESS") return "success";
   return "missing";
@@ -98,29 +108,27 @@ const resolveStatusCircleSx = (state: VisualState) => {
   if (state === "running") {
     return {
       ...base,
-      backgroundColor: (theme: {
-        palette: { mode: string; success: { main: string; light: string } };
-      }) =>
-        theme.palette.mode === "dark" ? theme.palette.success.light : theme.palette.success.main,
+      backgroundColor: (theme: { palette: { mode: string; info: { main: string; light: string } } }) =>
+        theme.palette.mode === "dark" ? theme.palette.info.light : theme.palette.info.main,
       animation: "admin-run-pulse 1.3s ease-in-out infinite",
       borderColor: (theme: { palette: { mode: string } }) =>
         theme.palette.mode === "dark" ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.12)",
       boxShadow: (theme: { palette: { mode: string } }) =>
         theme.palette.mode === "dark"
-          ? "0 0 0 0 rgba(134, 239, 172, 0.75)"
-          : "0 0 0 0 rgba(46, 125, 50, 0.65)",
+          ? "0 0 0 0 rgba(125, 211, 252, 0.75)"
+          : "0 0 0 0 rgba(2, 136, 209, 0.65)",
       "@keyframes admin-run-pulse": {
         "0%": {
           transform: "scale(0.95)",
-          boxShadow: "0 0 0 0 rgba(134, 239, 172, 0.75)",
+          boxShadow: "0 0 0 0 rgba(125, 211, 252, 0.75)",
         },
         "70%": {
           transform: "scale(1)",
-          boxShadow: "0 0 0 7px rgba(134, 239, 172, 0)",
+          boxShadow: "0 0 0 7px rgba(125, 211, 252, 0)",
         },
         "100%": {
           transform: "scale(0.95)",
-          boxShadow: "0 0 0 0 rgba(134, 239, 172, 0)",
+          boxShadow: "0 0 0 0 rgba(125, 211, 252, 0)",
         },
       },
     };
@@ -159,10 +167,8 @@ const resolveStatusCircleSx = (state: VisualState) => {
   }
   return {
     ...base,
-    backgroundColor: (theme: {
-      palette: { mode: string; warning: { light: string; main: string } };
-    }) =>
-      theme.palette.mode === "dark" ? theme.palette.warning.light : theme.palette.warning.main,
+    backgroundColor: (theme: { palette: { mode: string } }) =>
+      theme.palette.mode === "dark" ? "rgba(255,255,255,0.38)" : "rgba(0,0,0,0.38)",
     borderColor: (theme: { palette: { mode: string } }) =>
       theme.palette.mode === "dark" ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.12)",
   };
@@ -178,12 +184,9 @@ const resolveVisualStateLabel = (state: VisualState): string => {
 
 const resolveAggregateTaskState = (runs: Array<RunLike | null | undefined>): VisualState => {
   if (!runs || runs.length === 0) return "missing";
-  const states = runs.map((run) => resolveVisualState(run));
-  if (states.includes("running")) return "running";
-  if (states.includes("queued")) return "queued";
-  if (states.includes("failed")) return "failed";
-  if (states.includes("success")) return "success";
-  return "missing";
+  const latestRun = runs.find((run) => Boolean(run));
+  if (!latestRun) return "missing";
+  return resolveVisualState(latestRun);
 };
 
 function AdminTasksPage(props: Readonly<AdminTasksProps>) {
@@ -199,6 +202,16 @@ function AdminTasksPage(props: Readonly<AdminTasksProps>) {
   const [releaseLocks, { loading: releasingLocks }] = useMutation(releaseAllAdminTaskLocks);
 
   const tasks = data?.adminTasks || [];
+
+  const copyDetailsToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text || "");
+      props.enqueueSnackbar?.("Log kopiert.", { variant: "success" });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unbekannter Fehler";
+      props.enqueueSnackbar?.(`Kopieren fehlgeschlagen: ${message}`, { variant: "error" });
+    }
+  };
 
   const runSelectedTask = async (taskKey: string, dryRun: boolean) => {
     setRunningTaskKey(taskKey + (dryRun ? ":dry" : ":run"));
@@ -369,135 +382,155 @@ function AdminTasksPage(props: Readonly<AdminTasksProps>) {
                       </Tooltip>
                       <Box sx={{ width: 8 }} />
 
-                      <Tooltip
-                        title={
-                          runningTaskKey === runningDryKey ? "Dry-Run läuft" : "Dry-Run starten"
-                        }
-                      >
-                        <span>
-                          <Button
-                            size="small"
-                            aria-label="Dry-Run starten"
-                            color="primary"
-                            disabled={Boolean(runningTaskKey)}
-                            sx={{ minWidth: 0, width: 32, height: 32, p: 0 }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              runSelectedTask(taskKey, true);
-                            }}
-                          >
-                            <ScienceOutlinedIcon fontSize="small" />
-                          </Button>
-                        </span>
-                      </Tooltip>
-
-                      <Tooltip
-                        title={runningTaskKey === runningRealKey ? "Run läuft" : "Live-Run starten"}
-                      >
-                        <span>
-                          <Button
-                            size="small"
-                            aria-label="Live-Run starten"
-                            color="primary"
-                            disabled={Boolean(runningTaskKey)}
-                            sx={{ minWidth: 0, width: 32, height: 32, p: 0 }}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              runSelectedTask(taskKey, false);
-                            }}
-                          >
-                            <PlayArrowOutlined fontSize="small" />
-                          </Button>
-                        </span>
-                      </Tooltip>
-                    </Stack>
+                    <Tooltip
+                      title={runningTaskKey === runningRealKey ? "Run läuft" : "Live-Run starten"}
+                    >
+                      <span>
+                        <Button
+                          size="small"
+                          aria-label="Live-Run starten"
+                          color="primary"
+                          disabled={Boolean(runningTaskKey)}
+                          sx={{ minWidth: 0, width: 32, height: 32, p: 0 }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            runSelectedTask(taskKey, false);
+                          }}
+                        >
+                          <PlayArrowOutlined fontSize="small" />
+                        </Button>
+                      </span>
+                    </Tooltip>
                   </Stack>
-                </AccordionSummary>
+                </Stack>
+              </AccordionSummary>
 
-                <AccordionDetails sx={{ pt: 0.5 }}>
-                  <Typography variant="h6">Letzte Runs</Typography>
+              <AccordionDetails sx={{ pt: 0.5 }}>
+                <Typography variant="h6">Letzte Runs</Typography>
 
-                  <Stack spacing={0.75}>
-                    {runs.length === 0 ? (
-                      <Typography variant="body2" color="text.secondary">
-                        Keine Runs vorhanden.
-                      </Typography>
-                    ) : null}
+                <Stack spacing={0.75}>
+                  {runs.length === 0 ? (
+                    <Typography variant="body2" color="text.secondary">
+                      Keine Runs vorhanden.
+                    </Typography>
+                  ) : null}
 
-                    {runs.map((run, runIndex) => {
-                      const runId = String(run?.id || "");
-                      const details = trimDetails(run?.details || "");
-                      const runVisualState = resolveVisualState(run);
+                  {runs.map((run, runIndex) => {
+                    const runId = String(run?.id || "");
+                    const details = trimDetails(run?.details || "");
+                    const runVisualState = resolveVisualState(run);
 
-                      return (
-                        <React.Fragment key={runId}>
-                          <Accordion
-                            disableGutters
-                            elevation={0}
-                            sx={{
-                              borderRadius: 1,
-                              border: "1px solid",
-                              borderColor: "divider",
+                    return (
+                      <React.Fragment key={runId}>
+                        <Accordion
+                          disableGutters
+                          elevation={0}
+                          sx={{
+                            borderRadius: 1,
+                            border: "1px solid",
+                            borderColor: "divider",
+                            backgroundColor: (theme) =>
+                              theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
+                            overflow: "hidden",
+                            "&:before": { display: "none" },
+                            "&.Mui-expanded": { margin: 0 },
+                            "& .MuiAccordionSummary-root": {
                               backgroundColor: (theme) =>
                                 theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
-                              overflow: "hidden",
-                              "&:before": { display: "none" },
-                              "&.Mui-expanded": { margin: 0 },
-                              "& .MuiAccordionSummary-root": {
-                                backgroundColor: (theme) =>
-                                  theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
+                            },
+                            "& .MuiAccordionDetails-root": {
+                              backgroundColor: (theme) =>
+                                theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
+                            },
+                          }}
+                        >
+                          <AccordionSummary
+                            expandIcon={<ExpandMoreIcon />}
+                            sx={{
+                              minHeight: 40,
+                              "& .MuiAccordionSummary-content": {
+                                my: 0,
+                                width: "100%",
+                                minWidth: 0,
+                                flexWrap: "nowrap",
                               },
-                              "& .MuiAccordionDetails-root": {
-                                backgroundColor: (theme) =>
-                                  theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
-                              },
+                              "& .MuiAccordionSummary-content.Mui-expanded": { my: 0 },
                             }}
                           >
-                            <AccordionSummary
-                              expandIcon={<ExpandMoreIcon />}
-                              sx={{
-                                minHeight: 40,
-                                "& .MuiAccordionSummary-content": { my: 0, width: "100%" },
-                                "& .MuiAccordionSummary-content.Mui-expanded": { my: 0 },
-                              }}
+                            <Stack
+                              direction="row"
+                              spacing={0.75}
+                              alignItems="center"
+                              sx={{ minWidth: 0, width: "100%", flexWrap: "nowrap", overflow: "hidden" }}
                             >
-                              <Stack
-                                direction={{ xs: "column", sm: "row" }}
-                                spacing={0.75}
-                                alignItems={{ xs: "flex-start", sm: "center" }}
-                                sx={{ minWidth: 0 }}
-                              >
-                                <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                                  {formatDateTime(run?.startedAt)}
-                                </Typography>
-                                <Tooltip title={resolveVisualStateLabel(runVisualState)}>
-                                  <Box sx={resolveStatusCircleSx(runVisualState)} />
-                                </Tooltip>
-                                <Chip
+                              <Typography variant="body2" sx={{ fontWeight: 600, whiteSpace: "nowrap", flexShrink: 0 }}>
+                                {formatDateTime(run?.startedAt)}
+                              </Typography>
+                              <Tooltip title={resolveVisualStateLabel(runVisualState)}>
+                                <Box sx={{ ...resolveStatusCircleSx(runVisualState), flexShrink: 0 }} />
+                              </Tooltip>
+                              <Chip
                                   size="small"
                                   variant={"outlined"}
+                                  sx={{ flexShrink: 0 }}
                                   label={run?.dryRun ? "Dry" : "Live"}
-                                />
-                                <Typography variant="body2" sx={{ minWidth: 0 }}>
-                                  {run?.summary}
-                                </Typography>
-                              </Stack>
-                            </AccordionSummary>
-                            <AccordionDetails sx={{ pt: 0 }}>
-                              <Box
-                                component="pre"
+                              />
+                              <Typography
+                                variant="body2"
                                 sx={{
-                                  mt: 0.25,
+                                  minWidth: 0,
+                                  whiteSpace: "nowrap",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                }}
+                              >
+                                {run?.summary}
+                              </Typography>
+                            </Stack>
+                          </AccordionSummary>
+                          <AccordionDetails sx={{ pt: 0 }}>
+                            <Box sx={{ mt: 0.25 }}>
+                              <Box
+                                sx={{
+                                  mt: 0,
                                   mb: 0,
                                   p: 1,
+                                  pt: 4,
                                   maxHeight: 180,
                                   overflow: "auto",
                                   backgroundColor: "action.hover",
                                   borderRadius: 1,
-                                  fontSize: "0.75rem",
-                                  whiteSpace: "pre-wrap",
-                                  wordBreak: "break-word",
+                                  position: "relative",
                                 }}
+                              >
+                                <Tooltip title="Log kopieren">
+                                  <IconButton
+                                    size="small"
+                                    onClick={() => copyDetailsToClipboard(details.text || "")}
+                                    sx={{ position: "absolute", top: 4, right: 4 }}
+                                  >
+                                    <ContentCopyIcon fontSize="inherit" />
+                                  </IconButton>
+                                </Tooltip>
+                                <Box
+                                  component="pre"
+                                  sx={{
+                                    mt: 0,
+                                    mb: 0,
+                                    fontSize: "0.75rem",
+                                    whiteSpace: "pre-wrap",
+                                    wordBreak: "break-word",
+                                  }}
+                                >
+                                  {details.text || "(keine Details)"}
+                                </Box>
+                              </Box>
+                            </Box>
+                            {details.truncated ? (
+                              <Typography
+                                variant="caption"
+                                color="warning.main"
+                                sx={{ mt: 0.5, display: "block" }}
                               >
                                 {details.text || "(keine Details)"}
                               </Box>
