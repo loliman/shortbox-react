@@ -48,8 +48,8 @@ class AddFab extends React.Component<AddFabProps, AddFabState> {
           open={this.state.open}
           sx={{
             position: "fixed",
-            bottom: 16,
-            right: 24,
+            bottom: { xs: "calc(16px + 64px + env(safe-area-inset-bottom))", sm: 16 },
+            right: { xs: 16, sm: 24 },
           }}
         >
           <SpeedDialAction

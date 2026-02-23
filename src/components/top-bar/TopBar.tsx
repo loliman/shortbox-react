@@ -116,6 +116,8 @@ export function TopBar(props: TopBarProps) {
   const [mobileSearchOpen, setMobileSearchOpen] = React.useState(false);
   const isFilter = props.query?.filter;
   const darkModeEnabled = props.themeMode === "dark";
+  const localeSwitchAriaLabel = us ? "Zu Deutsch wechseln" : "Zu US wechseln";
+  const localeSwitchLabel = us ? "US" : "DE";
 
   return (
     <AppBar
@@ -124,8 +126,10 @@ export function TopBar(props: TopBarProps) {
     >
       <Toolbar
         sx={{
-          display: "grid",
+          display: compactLayout ? "flex" : "grid",
           alignItems: "center",
+          justifyContent: compactLayout ? "space-between" : undefined,
+          width: "100%",
           columnGap: 1,
           gridTemplateColumns: {
             xs: "auto minmax(148px, 1fr) auto",
@@ -141,14 +145,16 @@ export function TopBar(props: TopBarProps) {
             flexShrink: 0,
           }}
         >
-          <IconButton
-            color="inherit"
-            aria-label="Navigation umschalten"
-            onClick={() => toggleDrawer?.()}
-            sx={{ mr: 0.5 }}
-          >
-            <HamburgerIcon open={Boolean(drawerOpen)} />
-          </IconButton>
+          {compactLayout ? null : (
+            <IconButton
+              color="inherit"
+              aria-label="Navigation umschalten"
+              onClick={() => toggleDrawer?.()}
+              sx={{ mr: 0.5 }}
+            >
+              <HamburgerIcon open={Boolean(drawerOpen)} />
+            </IconButton>
+          )}
 
           <ButtonBase
             aria-label="Zur Startseite"
@@ -167,6 +173,18 @@ export function TopBar(props: TopBarProps) {
           </ButtonBase>
         </Box>
 
+        {compactLayout ? (
+          <Tooltip title={darkModeEnabled ? "Zu hellem Modus wechseln" : "Zu dunklem Modus wechseln"}>
+            <IconButton
+              color="inherit"
+              aria-label={darkModeEnabled ? "Hellmodus aktivieren" : "Darkmode aktivieren"}
+              onClick={props.toggleTheme}
+            >
+              {darkModeEnabled ? <LightModeIcon /> : <DarkModeIcon />}
+            </IconButton>
+          </Tooltip>
+        ) : null}
+
         <Box
           data-testid="topbar-search-center"
           sx={{
@@ -175,7 +193,7 @@ export function TopBar(props: TopBarProps) {
             maxWidth: SEARCH_MAX_WIDTH + 52,
             justifySelf: "center",
             px: 1,
-            display: "flex",
+            display: compactLayout ? "none" : "flex",
             alignItems: "center",
             gap: 0.5,
           }}
@@ -200,76 +218,56 @@ export function TopBar(props: TopBarProps) {
           )}
         </Box>
 
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 0.5,
-            minWidth: 0,
-            justifySelf: "end",
-          }}
-        >
-          {compactLayout ? (
-            <IconButton
-              color="inherit"
-              aria-label="Suche öffnen"
-              onClick={() => setMobileSearchOpen(true)}
-            >
-              <SearchIcon />
-            </IconButton>
-          ) : null}
-          {compactLayout ? (
-            <Tooltip
-              title={darkModeEnabled ? "Zu hellem Modus wechseln" : "Zu dunklem Modus wechseln"}
-            >
-              <IconButton
-                color="inherit"
-                aria-label={darkModeEnabled ? "Hellmodus aktivieren" : "Darkmode aktivieren"}
-                onClick={props.toggleTheme}
-              >
-                {darkModeEnabled ? <LightModeIcon /> : <DarkModeIcon />}
-              </IconButton>
-            </Tooltip>
-          ) : null}
-          <TopBarFilterMenu
-            us={us}
-            selected={selected}
-            isFilterActive={isFilter}
-            query={props.query}
-            session={props.session}
-            navigate={navigate}
-          />
-          {props.session?.loggedIn ? (
-            <Tooltip title="Adminpanel">
-              <IconButton
-                color="inherit"
-                aria-label="Adminpanel"
-                onClick={(e) => navigate?.(e, "/admin/tasks")}
-              >
-                <AdminPanelSettingsIcon />
-              </IconButton>
-            </Tooltip>
-          ) : null}
+        {compactLayout ? null : (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 0.5,
+              minWidth: 0,
+              justifySelf: "end",
+            }}
+          >
+            <TopBarFilterMenu
+              us={us}
+              selected={selected}
+              isFilterActive={isFilter}
+              query={props.query}
+              session={props.session}
+              navigate={navigate}
+            />
+            {props.session?.loggedIn ? (
+              <Tooltip title="Adminpanel">
+                <IconButton
+                  color="inherit"
+                  aria-label="Adminpanel"
+                  onClick={(e) => navigate?.(e, "/admin/tasks")}
+                >
+                  <AdminPanelSettingsIcon />
+                </IconButton>
+              </Tooltip>
+            ) : null}
 
-          <Box sx={{ ml: 0.75, display: "inline-flex", alignItems: "center", gap: 0.75 }}>
-            <Typography
-              sx={{ fontSize: "0.82rem", fontWeight: 600, letterSpacing: 0.2, opacity: 0.95 }}
-            >
-              US
-            </Typography>
-            <Tooltip title={"Wechseln zu " + (us ? "Deutsch" : "US")}>
-              <Android12Switch
-                checked={us}
-                color="primary"
-                inputProps={{ "aria-label": us ? "Zu Deutsch wechseln" : "Zu US wechseln" }}
-                onChange={() => {
-                  props.resetNavigationState?.();
-                  navigate?.(null, us ? "/de" : "/us", { filter: null });
-                }}
-              />
-            </Tooltip>
+            <Box sx={{ ml: 0.75, display: "inline-flex", alignItems: "center", gap: 0.75 }}>
+              <Typography
+                sx={{ fontSize: "0.82rem", fontWeight: 600, letterSpacing: 0.2, opacity: 0.95 }}
+              >
+                US
+              </Typography>
+              <Tooltip title={"Wechseln zu " + (us ? "Deutsch" : "US")}>
+                <Android12Switch
+                  checked={us}
+                  color="primary"
+                  inputProps={{ "aria-label": localeSwitchAriaLabel }}
+                  onChange={() => {
+                    props.resetNavigationState?.();
+                    navigate?.(null, us ? "/de" : "/us", { filter: null });
+                  }}
+                />
+              </Tooltip>
+            </Box>
           </Box>
-        </Box>
+        )}
       </Toolbar>
 
       {compactLayout && mobileSearchOpen ? (
@@ -313,6 +311,70 @@ export function TopBar(props: TopBarProps) {
               <CloseIcon />
             </IconButton>
           </Box>
+        </Box>
+      ) : null}
+
+      {compactLayout ? (
+        <Box
+          data-testid="mobile-bottom-bar"
+          sx={{
+            position: "fixed",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: (theme) => theme.zIndex.drawer + 2,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-around",
+            gap: 0.25,
+            px: 0.75,
+            pt: 0.5,
+            pb: "calc(0.5rem + env(safe-area-inset-bottom))",
+            bgcolor: "common.black",
+            color: "common.white",
+            borderTop: "1px solid rgba(255,255,255,0.2)",
+            boxShadow: "0 -6px 18px rgba(0,0,0,0.12)",
+          }}
+        >
+          <IconButton color="inherit" aria-label="Navigation umschalten" onClick={() => toggleDrawer?.()}>
+            <HamburgerIcon open={Boolean(drawerOpen)} />
+          </IconButton>
+          <IconButton color="inherit" aria-label="Suche öffnen" onClick={() => setMobileSearchOpen(true)}>
+            <SearchIcon />
+          </IconButton>
+          <TopBarFilterMenu
+            us={us}
+            selected={selected}
+            isFilterActive={isFilter}
+            query={props.query}
+            session={props.session}
+            navigate={navigate}
+          />
+          {props.session?.loggedIn ? (
+            <Tooltip title="Adminpanel">
+              <IconButton
+                color="inherit"
+                aria-label="Adminpanel"
+                onClick={(e) => navigate?.(e, "/admin/tasks")}
+              >
+                <AdminPanelSettingsIcon />
+              </IconButton>
+            </Tooltip>
+          ) : null}
+          <Tooltip title={"Wechseln zu " + (us ? "Deutsch" : "US")}>
+            <IconButton
+              color="inherit"
+              aria-label={localeSwitchAriaLabel}
+              onClick={() => {
+                props.resetNavigationState?.();
+                navigate?.(null, us ? "/de" : "/us", { filter: null });
+              }}
+            >
+              <Typography sx={{ fontSize: "0.82rem", fontWeight: 700, letterSpacing: 0.2 }}>
+                {localeSwitchLabel}
+              </Typography>
+            </IconButton>
+          </Tooltip>
         </Box>
       ) : null}
     </AppBar>

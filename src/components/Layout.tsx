@@ -65,7 +65,8 @@ function Layout(props: Readonly<LayoutProps>) {
             flexGrow: 1,
             minWidth: 0,
             px: { xs: 1, sm: 2 },
-            py: 2,
+            pt: 2,
+            pb: temporaryDrawer ? "calc(2rem + 64px + env(safe-area-inset-bottom))" : 2,
             ml: contentOffset,
             transition: (theme) =>
               theme.transitions.create("margin-left", {
