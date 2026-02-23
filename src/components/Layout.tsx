@@ -64,9 +64,9 @@ function Layout(props: Readonly<LayoutProps>) {
             display: "flex",
             flexGrow: 1,
             minWidth: 0,
-            px: { xs: 1, sm: 2 },
-            pt: 2,
-            pb: temporaryDrawer ? "calc(2rem + 64px + env(safe-area-inset-bottom))" : 2,
+            px: { xs: 0, sm: 2 },
+            pt: { xs: 0, sm: 2 },
+            pb: temporaryDrawer ? "calc(64px + env(safe-area-inset-bottom))" : 2,
             ml: contentOffset,
             transition: (theme) =>
               theme.transitions.create("margin-left", {
@@ -77,13 +77,14 @@ function Layout(props: Readonly<LayoutProps>) {
           onScroll={(e) => (props.handleScroll ? props.handleScroll(e) : false)}
         >
           <Card sx={{ width: "100%", display: "flex", flexDirection: "column", minWidth: 0 }}>
-            <Box sx={{ flexGrow: 1, p: { xs: 1.5, sm: 2 }, minHeight: 0 }}>{children}</Box>
+            <Box sx={{ flexGrow: 1, p: { xs: 0, sm: 2 }, minHeight: 0 }}>{children}</Box>
 
             <Box
               sx={{
                 mt: "auto",
-                px: { xs: 1.5, sm: 2 },
-                py: 1.25,
+                px: { xs: 0, sm: 2 },
+                pt: 1.25,
+                pb: { xs: 0, sm: 1.25 },
                 borderTop: 1,
                 borderColor: "divider",
                 backgroundColor: "background.paper",

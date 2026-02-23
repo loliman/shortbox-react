@@ -6,7 +6,7 @@ import Box from "@mui/material/Box";
 
 export function IssueDetailsPreview() {
   const coverWidth = {
-    xs: "min(85.3vw, 717px)",
+    xs: "100%",
     md: "clamp(320px, 36vw, 480px)",
   };
 

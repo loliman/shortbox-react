@@ -49,10 +49,10 @@ export function ChipList(props: Readonly<ChipListProps>) {
           ? {
               mb: 2,
               display: "grid",
-              gridTemplateColumns: { xs: "1fr", sm: "120px minmax(0, 1fr)" },
+              gridTemplateColumns: { xs: "96px minmax(0, 1fr)", sm: "120px minmax(0, 1fr)" },
               columnGap: 2,
-              rowGap: 1,
-              alignItems: "center",
+              rowGap: 0.75,
+              alignItems: "start",
             }
           : {
               mb: 2,

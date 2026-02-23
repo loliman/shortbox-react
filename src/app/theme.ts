@@ -73,6 +73,78 @@ export const createAppTheme = (mode: AppThemeMode) =>
           }),
         },
       },
+      MuiCardHeader: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            [theme.breakpoints.down("sm")]: {
+              paddingLeft: theme.spacing(1),
+              paddingRight: theme.spacing(1),
+            },
+          }),
+        },
+      },
+      MuiCardContent: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            [theme.breakpoints.down("sm")]: {
+              paddingLeft: theme.spacing(1),
+              paddingRight: theme.spacing(1),
+            },
+            "&:last-child": {
+              [theme.breakpoints.down("sm")]: {
+                paddingBottom: theme.spacing(2),
+              },
+            },
+          }),
+        },
+      },
+      MuiAccordion: {
+        defaultProps: {
+          disableGutters: true,
+        },
+        styleOverrides: {
+          root: {
+            margin: 0,
+            "&.Mui-expanded": {
+              margin: 0,
+            },
+          },
+        },
+      },
+      MuiAccordionSummary: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            [theme.breakpoints.down("sm")]: {
+              paddingLeft: theme.spacing(1.25),
+              paddingRight: theme.spacing(1.25),
+              minHeight: 44,
+              "&.Mui-expanded": {
+                minHeight: 44,
+              },
+            },
+          }),
+          content: ({ theme }) => ({
+            [theme.breakpoints.down("sm")]: {
+              marginTop: theme.spacing(0.75),
+              marginBottom: theme.spacing(0.75),
+              "&.Mui-expanded": {
+                marginTop: theme.spacing(0.75),
+                marginBottom: theme.spacing(0.75),
+              },
+            },
+          }),
+        },
+      },
+      MuiAccordionDetails: {
+        styleOverrides: {
+          root: ({ theme }) => ({
+            [theme.breakpoints.down("sm")]: {
+              paddingLeft: theme.spacing(1.25),
+              paddingRight: theme.spacing(1.25),
+            },
+          }),
+        },
+      },
       MuiChip: {
         defaultProps: {
           size: "small",

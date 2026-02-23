@@ -198,6 +198,11 @@ function IssueDetails(props: IssueDetailsProps) {
             id="notVerifiedWarning"
             message="Diese Ausgabe ist noch nicht im Handel erhältlich und noch nicht vorab verifiziert worden.
                                         Die angezeigten Informationen weichen gegebenenfalls von den tatsächlichen Daten ab."
+            sx={{
+              width: { xs: "calc(100% - 16px)", sm: "100%" },
+              mx: "auto",
+              borderRadius: { xs: 1, sm: 0 },
+            }}
           />
         ) : null}
 
