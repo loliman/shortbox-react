@@ -92,7 +92,7 @@ function Layout(props: Readonly<LayoutProps>) {
                 bottom: 0,
                 zIndex: 1,
                 display: "flex",
-                justifyContent: "flex-end",
+                justifyContent: { xs: "center", sm: "flex-end" },
               }}
             >
               <FooterLinks

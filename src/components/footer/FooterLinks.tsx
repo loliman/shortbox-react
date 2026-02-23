@@ -25,9 +25,17 @@ export default function FooterLinks(props: Readonly<FooterLinksProps>) {
       aria-label="Footer"
       sx={{
         color: "text.secondary",
+        width: "100%",
       }}
     >
-      <Stack direction="row" spacing={0.5} useFlexGap flexWrap="wrap" alignItems="center">
+      <Stack
+        direction="row"
+        spacing={0.5}
+        useFlexGap
+        flexWrap="wrap"
+        alignItems="center"
+        justifyContent={{ xs: "center", sm: "flex-end" }}
+      >
         <Button
           type="button"
           size="small"
