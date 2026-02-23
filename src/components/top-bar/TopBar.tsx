@@ -17,6 +17,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import type { AppThemeMode } from "../../app/theme";
 
 interface TopBarProps {
@@ -93,7 +94,12 @@ const Android12Switch = styled(Switch)(({ theme }) => ({
   },
   "& .MuiSwitch-thumb": {
     boxShadow: "0 1px 4px rgba(0,0,0,0.35)",
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.mode === "dark" ? theme.palette.common.white : theme.palette.background.paper,
+    border: `1px solid ${
+      theme.palette.mode === "dark"
+        ? alpha(theme.palette.common.black, 0.24)
+        : alpha(theme.palette.text.primary, 0.14)
+    }`,
     width: 20,
     height: 20,
     margin: 0,
@@ -228,6 +234,13 @@ export function TopBar(props: TopBarProps) {
             session={props.session}
             navigate={navigate}
           />
+          {props.session?.loggedIn ? (
+            <Tooltip title="Adminpanel">
+              <IconButton color="inherit" aria-label="Adminpanel" onClick={(e) => navigate?.(e, "/admin/tasks")}>
+                <AdminPanelSettingsIcon />
+              </IconButton>
+            </Tooltip>
+          ) : null}
 
           <Box sx={{ ml: 0.75, display: "inline-flex", alignItems: "center", gap: 0.75 }}>
             <Typography

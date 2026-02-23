@@ -278,7 +278,7 @@ function List(props: Readonly<ListProps>) {
     maxWidth: "100%",
     top: drawerHeaderTopOffset,
     height: drawerHeaderAdjustedHeight,
-  };
+    backgroundColor: (theme: { palette: { mode: string } }) => "background.paper"};
 
   const handleNavScroll = React.useCallback(
     (event: React.UIEvent<HTMLDivElement>) => {

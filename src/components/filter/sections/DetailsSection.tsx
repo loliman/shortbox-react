@@ -125,7 +125,19 @@ function DetailsSection({
               px: 1,
               py: 0.35,
               fontSize: "0.75rem",
+              backgroundColor: "background.paper",
+              color: "text.primary",
               borderColor: "rgba(100, 116, 139, 0.35)",
+              "&:hover": {
+                backgroundColor: "action.hover",
+              },
+              "&.Mui-selected": {
+                backgroundColor: "action.selected",
+                color: "text.primary",
+              },
+              "&.Mui-selected:hover": {
+                backgroundColor: "action.selected",
+              },
             },
           }}
         >
@@ -287,65 +299,66 @@ function DetailsSection({
         />
       </Box>
 
-      <Divider sx={{ my: 0.25 }} />
-
       {hasSession ? (
-        <Box sx={switchGridSx}>
-          <FilterSwitch
-            checked={values.withVariants}
-            label="Mit Varianten"
-            onToggle={() => setFieldValue("withVariants", !values.withVariants)}
-          />
-          <FilterSwitch
-            checked={values.noComicguideId}
-            label="Ohne Comicguide ID"
-            onToggle={() => setFieldValue("noComicguideId", !values.noComicguideId)}
-          />
-          <FilterSwitch
-            checked={values.noContent}
-            label="Ohne Inhalt"
-            onToggle={() => setFieldValue("noContent", !values.noContent)}
-          />
-          <FilterSwitch
-            checked={values.onlyCollected}
-            label="Nur in Sammlung"
-            disabled={values.onlyNotCollected || values.onlyNotCollectedNoOwnedVariants}
-            onToggle={() => {
-              const next = !values.onlyCollected;
-              setFieldValue("onlyCollected", next);
-              if (next) {
-                setFieldValue("onlyNotCollected", false);
-                setFieldValue("onlyNotCollectedNoOwnedVariants", false);
-              }
-            }}
-          />
-          <FilterSwitch
-            checked={values.onlyNotCollected}
-            label="Nur nicht in Sammlung"
-            disabled={values.onlyCollected || values.onlyNotCollectedNoOwnedVariants}
-            onToggle={() => {
-              const next = !values.onlyNotCollected;
-              setFieldValue("onlyNotCollected", next);
-              if (next) {
-                setFieldValue("onlyCollected", false);
-                setFieldValue("onlyNotCollectedNoOwnedVariants", false);
-              }
-            }}
-          />
-          <FilterSwitch
-            checked={values.onlyNotCollectedNoOwnedVariants}
-            label="Nur nicht in Sammlung (ohne Variants)"
-            disabled={values.onlyCollected || values.onlyNotCollected}
-            onToggle={() => {
-              const next = !values.onlyNotCollectedNoOwnedVariants;
-              setFieldValue("onlyNotCollectedNoOwnedVariants", next);
-              if (next) {
-                setFieldValue("onlyCollected", false);
-                setFieldValue("onlyNotCollected", false);
-              }
-            }}
-          />
-        </Box>
+        <>
+          <Divider sx={{ my: 0.25 }} />
+          <Box sx={switchGridSx}>
+            <FilterSwitch
+              checked={values.withVariants}
+              label="Mit Varianten"
+              onToggle={() => setFieldValue("withVariants", !values.withVariants)}
+            />
+            <FilterSwitch
+              checked={values.noComicguideId}
+              label="Ohne Comicguide ID"
+              onToggle={() => setFieldValue("noComicguideId", !values.noComicguideId)}
+            />
+            <FilterSwitch
+              checked={values.noContent}
+              label="Ohne Inhalt"
+              onToggle={() => setFieldValue("noContent", !values.noContent)}
+            />
+            <FilterSwitch
+              checked={values.onlyCollected}
+              label="Nur in Sammlung"
+              disabled={values.onlyNotCollected || values.onlyNotCollectedNoOwnedVariants}
+              onToggle={() => {
+                const next = !values.onlyCollected;
+                setFieldValue("onlyCollected", next);
+                if (next) {
+                  setFieldValue("onlyNotCollected", false);
+                  setFieldValue("onlyNotCollectedNoOwnedVariants", false);
+                }
+              }}
+            />
+            <FilterSwitch
+              checked={values.onlyNotCollected}
+              label="Nur nicht in Sammlung"
+              disabled={values.onlyCollected || values.onlyNotCollectedNoOwnedVariants}
+              onToggle={() => {
+                const next = !values.onlyNotCollected;
+                setFieldValue("onlyNotCollected", next);
+                if (next) {
+                  setFieldValue("onlyCollected", false);
+                  setFieldValue("onlyNotCollectedNoOwnedVariants", false);
+                }
+              }}
+            />
+            <FilterSwitch
+              checked={values.onlyNotCollectedNoOwnedVariants}
+              label="Nur nicht in Sammlung (ohne Variants)"
+              disabled={values.onlyCollected || values.onlyNotCollected}
+              onToggle={() => {
+                const next = !values.onlyNotCollectedNoOwnedVariants;
+                setFieldValue("onlyNotCollectedNoOwnedVariants", next);
+                if (next) {
+                  setFieldValue("onlyCollected", false);
+                  setFieldValue("onlyNotCollected", false);
+                }
+              }}
+            />
+          </Box>
+        </>
       ) : null}
     </Stack>
   );

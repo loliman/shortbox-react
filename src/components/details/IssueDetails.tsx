@@ -499,7 +499,7 @@ function IssueDetails(props: IssueDetailsProps) {
 function toIssueWithMockVariants(issue: Issue): Issue {
   if (!isMockMode) return issue;
 
-  const cover = issue.cover?.url ? issue.cover : { url: "/nocover_simple.jpg" };
+  const cover = issue.cover?.url ? issue.cover : { url: "/nocover_simple.png" };
   const primaryVariant: Issue = {
     ...issue,
     cover,

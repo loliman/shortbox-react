@@ -49,8 +49,7 @@ export const createAppTheme = (mode: AppThemeMode) =>
     MuiAppBar: {
       styleOverrides: {
           root: ({ theme }) => ({
-            backgroundColor:
-              theme.palette.mode === "dark" ? "#0f172a" : theme.palette.primary.main,
+            backgroundColor: "#000000",
             color:
               theme.palette.mode === "dark"
                 ? theme.palette.common.white

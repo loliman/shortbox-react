@@ -14,9 +14,9 @@ interface FilterSwitchProps {
 }
 
 const FilterToggleSwitch = styled(Switch)(({ theme }) => ({
-  padding: 6,
-  width: 58,
-  height: 32,
+  padding: 8,
+  width: 62,
+  height: 34,
   "& .MuiSwitch-track": {
     borderRadius: 22 / 2,
     opacity: 1,
@@ -34,21 +34,21 @@ const FilterToggleSwitch = styled(Switch)(({ theme }) => ({
       backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
         theme.palette.getContrastText(theme.palette.primary.main)
       )}" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>')`,
-      left: 10,
+      left: 12,
     },
     "&::after": {
       backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="${encodeURIComponent(
         theme.palette.getContrastText(theme.palette.primary.main)
       )}" d="M19,13H5V11H19V13Z" /></svg>')`,
-      right: 10,
+      right: 12,
     },
   },
   "& .MuiSwitch-switchBase": {
     margin: 0,
-    padding: 6,
+    padding: 7,
     transitionDuration: "220ms",
     "&.Mui-checked": {
-      transform: "translateX(26px)",
+      transform: "translateX(28px)",
       color: theme.palette.common.white,
       "& + .MuiSwitch-track": {
         backgroundColor: theme.palette.success.main,
@@ -59,9 +59,14 @@ const FilterToggleSwitch = styled(Switch)(({ theme }) => ({
   },
   "& .MuiSwitch-thumb": {
     boxShadow: "0 1px 4px rgba(0,0,0,0.35)",
-    backgroundColor: theme.palette.background.paper,
-    width: 18,
-    height: 18,
+    backgroundColor: theme.palette.mode === "dark" ? theme.palette.common.white : theme.palette.background.paper,
+    border: `1px solid ${
+      theme.palette.mode === "dark"
+        ? alpha(theme.palette.common.black, 0.24)
+        : alpha(theme.palette.text.primary, 0.14)
+    }`,
+    width: 20,
+    height: 20,
     margin: 0,
   },
 }));
@@ -76,8 +81,8 @@ function FilterSwitch({ checked, label, onToggle, disabled = false, sx }: Filter
           justifyContent: "space-between",
           gap: 1.25,
           px: 0.9,
-          py: 0.35,
-          minHeight: 42,
+          py: 0.45,
+          minHeight: 44,
           borderRadius: 1.75,
           border: "1px solid",
           borderColor: "divider",

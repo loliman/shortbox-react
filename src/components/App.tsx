@@ -13,11 +13,6 @@ import { AppPageLoader } from "./generic/loading";
 
 const THEME_MODE_STORAGE_KEY = "shortbox_theme_mode";
 
-const prefersDarkScheme = (): AppThemeMode => {
-  if (typeof window === "undefined" || typeof window.matchMedia !== "function") return "light";
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-};
-
 const readStoredThemeMode = (): AppThemeMode | null => {
   if (typeof window === "undefined") return null;
   const value = window.localStorage.getItem(THEME_MODE_STORAGE_KEY);
@@ -29,9 +24,8 @@ export default function App() {
   const [session, setSession] = useState<SessionData | null>(null);
   const loggedIn = Boolean(session?.loggedIn);
   const [authReady, setAuthReady] = useState(false);
-  const [systemThemeMode, setSystemThemeMode] = useState<AppThemeMode>(() => prefersDarkScheme());
-  const [themeMode, setThemeMode] = useState<AppThemeMode>(() => readStoredThemeMode() || prefersDarkScheme());
-  const [themeLockedByUser, setThemeLockedByUser] = useState<boolean>(() => Boolean(readStoredThemeMode()));
+  const [themeMode, setThemeMode] = useState<AppThemeMode>(() => readStoredThemeMode() || "light");
+  const [themeLockedByUser, setThemeLockedByUser] = useState<boolean>(true);
 
   const toggleTheme = () => {
     setThemeMode((prev) => {
@@ -43,32 +37,6 @@ export default function App() {
     });
     setThemeLockedByUser(true);
   };
-
-  useEffect(() => {
-    if (typeof window === "undefined" || typeof window.matchMedia !== "function") return;
-
-    const media = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = (event: MediaQueryListEvent) => {
-      const nextSystemMode = event.matches ? "dark" : "light";
-      setSystemThemeMode(nextSystemMode);
-      if (!themeLockedByUser) {
-        setThemeMode(nextSystemMode);
-      }
-    };
-
-    if (typeof media.addEventListener === "function") {
-      media.addEventListener("change", handleChange);
-      return () => media.removeEventListener("change", handleChange);
-    }
-
-    media.addListener(handleChange);
-    return () => media.removeListener(handleChange);
-  }, [themeLockedByUser]);
-
-  useEffect(() => {
-    if (themeLockedByUser) return;
-    setThemeMode(systemThemeMode);
-  }, [systemThemeMode, themeLockedByUser]);
 
   const theme = useMemo(() => createAppTheme(themeMode), [themeMode]);
 

@@ -72,8 +72,8 @@ function ContainsSection({
           borderRadius: 1.75,
           border: "1px solid",
           borderColor: "divider",
-          bgcolor: "rgba(255,255,255,0.9)",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.08)",
+          bgcolor: "background.paper",
+          boxShadow: (theme) => theme.shadows[1],
         }}
       >
         <Typography
@@ -101,6 +101,8 @@ function ContainsSection({
               px: 1,
               py: 0.4,
               textTransform: "none",
+              backgroundColor: "transparent",
+              minWidth: 56,
               borderColor: "rgba(100, 116, 139, 0.35)",
               fontSize: "0.78rem",
               fontWeight: 500,
@@ -114,9 +116,6 @@ function ContainsSection({
             },
             "& .MuiToggleButton-root[value='exclude']": {
               color: "rgba(185,28,28,1)",
-            },
-            "& .MuiToggleButton-root.Mui-selected": {
-              borderWidth: 1,
             },
             "& .MuiToggleButton-root[value='any'].Mui-selected": {
               bgcolor: "rgba(250,204,21,0.2)",

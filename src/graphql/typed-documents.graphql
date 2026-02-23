@@ -148,6 +148,37 @@ query Me {
   }
 }
 
+query AdminTasks($limitRuns: Int) {
+  adminTasks(limitRuns: $limitRuns) {
+    id
+    key
+    name
+    description
+    lastRun {
+      id
+      taskKey
+      taskName
+      startedAt
+      finishedAt
+      dryRun
+      status
+      summary
+      details
+    }
+    runs(limit: $limitRuns) {
+      id
+      taskKey
+      taskName
+      startedAt
+      finishedAt
+      dryRun
+      status
+      summary
+      details
+    }
+  }
+}
+
 mutation Login($credentials: LoginInput!) {
   login(credentials: $credentials) {
     id
@@ -156,6 +187,24 @@ mutation Login($credentials: LoginInput!) {
 
 mutation Logout {
   logout
+}
+
+mutation RunAdminTask($input: RunAdminTaskInput!) {
+  runAdminTask(input: $input) {
+    id
+    taskKey
+    taskName
+    startedAt
+    finishedAt
+    dryRun
+    status
+    summary
+    details
+  }
+}
+
+mutation ReleaseAllAdminTaskLocks {
+  releaseAllAdminTaskLocks
 }
 
 query LastEdited($filter: Filter, $first: Int, $after: String, $order: String, $direction: String) {

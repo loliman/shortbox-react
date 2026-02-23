@@ -7,14 +7,18 @@ import {
   DeleteSeriesDocument,
   EditIssueDocument,
   EditPublisherDocument,
-  EditSeriesDocument,
-  LoginDocument,
-  LogoutDocument,
+    EditSeriesDocument,
+    LoginDocument,
+    LogoutDocument,
+    ReleaseAllAdminTaskLocksDocument,
+    RunAdminTaskDocument,
 } from "./typed-documents.generated";
 import { HierarchyLevel } from "../util/hierarchy";
 
 const login = LoginDocument;
 const logout = LogoutDocument;
+const releaseAllAdminTaskLocks = ReleaseAllAdminTaskLocksDocument;
+const runAdminTask = RunAdminTaskDocument;
 const createIssue = CreateIssueDocument;
 const createSeries = CreateSeriesDocument;
 const createPublisher = CreatePublisherDocument;
@@ -46,4 +50,6 @@ export {
   getDeleteMutation,
   login,
   logout,
+  releaseAllAdminTaskLocks,
+  runAdminTask,
 };
