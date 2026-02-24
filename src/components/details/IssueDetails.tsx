@@ -11,11 +11,15 @@ import Collapse from "@mui/material/Collapse";
 import { generateIssueSubHeader } from "../../util/issues";
 import Typography from "@mui/material/Typography";
 import { generateLabel } from "../../util/hierarchy";
+import { getIssueUrl } from "../../util/issuePresentation";
 import { isMockMode } from "../../app/mockMode";
 import EditButton from "../restricted/EditButton";
 import SnackbarContent from "@mui/material/SnackbarContent";
 import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import TitleLine from "../generic/TitleLine";
 import type { Issue, SelectedRoot } from "../../types/domain";
 import { sanitizeHtml } from "../../util/sanitizeHtml";
@@ -83,6 +87,25 @@ function getIssueVariantKey(
   );
 }
 
+function getIssueIdentityKey(
+  issueLike?: {
+    number?: string | null;
+    series?: {
+      title?: string | null;
+      volume?: number | null;
+      publisher?: { name?: string | null };
+    } | null;
+  } | null
+) {
+  if (!issueLike) return "";
+  return [
+    String(issueLike.series?.publisher?.name || ""),
+    String(issueLike.series?.title || ""),
+    String(issueLike.series?.volume || ""),
+    String(issueLike.number || ""),
+  ].join("|");
+}
+
 function IssueDetails(props: IssueDetailsProps) {
   const selected = props.selected || { us: Boolean(props.us) };
   const us = Boolean(props.us);
@@ -138,6 +161,16 @@ function IssueDetails(props: IssueDetailsProps) {
   const isIssueTransitioning =
     Boolean(issueVariables) && !hasRequestedIssueData && (loading || networkStatus < 7);
   const isIssueMissing = Boolean(issueVariables) && !loading && networkStatus >= 7 && !currentIssue;
+  const requestedIssueIdentityKey = getIssueIdentityKey(selected.issue as unknown as any);
+  const requestedVariantKey = getIssueVariantKey(selected.issue as unknown as any);
+  const loadedIssueIdentityKey = getIssueIdentityKey(loadedIssue as unknown as any);
+  const loadedVariantKey = getIssueVariantKey(loadedIssue as unknown as any);
+  const isVariantTransition =
+    Boolean(issueVariables) &&
+    requestedIssueIdentityKey !== "" &&
+    requestedIssueIdentityKey === loadedIssueIdentityKey &&
+    requestedVariantKey !== loadedVariantKey &&
+    !isIssueMissing;
   const storyOwnerVariantKey = React.useMemo(() => {
     if (!issueForVariants) return "";
     const storyOwner = (issueForVariants as { storyOwner?: unknown }).storyOwner;
@@ -149,8 +182,12 @@ function IssueDetails(props: IssueDetailsProps) {
     if (inheritsStories) return "";
     return getIssueVariantKey(issueForVariants as unknown as any);
   }, [issueForVariants]);
+  const coverGalleryIssues = React.useMemo(
+    () => (issueForVariants ? buildCoverGalleryIssues(issueForVariants) : []),
+    [issueForVariants]
+  );
 
-  if (isIssueTransitioning && !error) {
+  if (isIssueTransitioning && !error && !isVariantTransition) {
     return (
       <Layout>
         <QueryResult
@@ -251,7 +288,8 @@ function IssueDetails(props: IssueDetailsProps) {
             />
           </Box>
 
-          <Box
+          <Box>
+            <Box
             sx={{
               display: "grid",
               gridTemplateColumns,
@@ -259,7 +297,7 @@ function IssueDetails(props: IssueDetailsProps) {
               alignItems: "start",
               width: "100%",
             }}
-          >
+            >
             <Box
               sx={{
                 minWidth: 0,
@@ -337,7 +375,14 @@ function IssueDetails(props: IssueDetailsProps) {
                   <Box
                     sx={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-start" }}
                   >
-                    <IssueCover us={us} issue={issueForVariants as unknown as PreviewIssue} />
+                    <IssueCoverGallery
+                      us={us}
+                      issues={coverGalleryIssues}
+                      activeFormat={selected.issue?.format ?? undefined}
+                      activeVariant={selected.issue?.variant ?? undefined}
+                      storyOwnerKey={storyOwnerVariantKey}
+                      navigate={props.navigate}
+                    />
                   </Box>
                   {!us && issueForVariants.comicguideid ? (
                     <Typography
@@ -458,87 +503,233 @@ function IssueDetails(props: IssueDetailsProps) {
                       <Box
                         sx={{ display: "flex", justifyContent: "center", alignItems: "flex-start" }}
                       >
-                        <IssueCover us={us} issue={issueForVariants as unknown as PreviewIssue} />
+                        <IssueCoverGallery
+                          us={us}
+                          issues={coverGalleryIssues}
+                          activeFormat={selected.issue?.format ?? undefined}
+                          activeVariant={selected.issue?.variant ?? undefined}
+                          storyOwnerKey={storyOwnerVariantKey}
+                          navigate={props.navigate}
+                        />
                       </Box>
                     </Box>
                   </Collapse>
                 </Box>
               </Box>
             </Box>
-          </Box>
+            </Box>
 
-          {!us && issueForVariants.comicguideid ? (
-            <Typography
-              variant="caption"
-              color="text.secondary"
-              sx={{ mt: 2, opacity: 0.82, textAlign: "left", display: { xs: "block", md: "none" } }}
-            >
-              Das Cover für&nbsp;
-              <a
-                href={generateComicGuideUrl(issueForVariants as any)}
-                rel="noopener noreferrer nofollow"
-                target="_blank"
-              >
-                {generateLabel(issueForVariants.series as any) + " #" + issueForVariants.number}
-              </a>
-              &nbsp;wird bereitgestellt vom&nbsp;
-              <a
-                href="https://www.comicguide.de"
-                rel="noopener noreferrer nofollow"
-                target="_blank"
-              >
-                deutschen ComicGuide
-              </a>
-              &nbsp;und darf nicht ohne Genehmigung weiterverbreitet werden.
-            </Typography>
-          ) : null}
-          {us ? (
-            <Typography
-              variant="caption"
-              color="text.secondary"
-              sx={{ mt: 2, opacity: 0.82, textAlign: "left", display: { xs: "block", md: "none" } }}
-            >
-              Informationen über&nbsp;
-              <a
-                href={generateMarvelDbUrl(issueForVariants as any)}
-                rel="noopener noreferrer nofollow"
-                target="_blank"
-              >
-                {generateLabel(issueForVariants.series as any) + " #" + issueForVariants.number}
-              </a>
-              &nbsp;werden bezogen aus der&nbsp;
-              <a
-                href="https://marvel.fandom.com"
-                rel="noopener noreferrer nofollow"
-                target="_blank"
-              >
-                Marvel Database
-              </a>
-              &nbsp;und stehen unter der&nbsp;
-              <a
-                href="https://creativecommons.org/licenses/by/3.0/de/"
-                rel="noopener noreferrer nofollow"
-                target="_blank"
-              >
-                Creative Commons License 3.0
-              </a>
-              &nbsp;. Die Informationen wurden aufbereitet und unter Umständen ergänzt.&nbsp;
-            </Typography>
-          ) : null}
-
-          {issueForVariants.addinfo && issueForVariants.addinfo !== "" ? (
-            <Paper variant="outlined" sx={{ mt: 2, p: 2 }}>
+            {!us && issueForVariants.comicguideid ? (
               <Typography
-                dangerouslySetInnerHTML={{
-                  __html: sanitizeHtml(issueForVariants.addinfo),
+                variant="caption"
+                color="text.secondary"
+                sx={{
+                  mt: 2,
+                  opacity: 0.82,
+                  textAlign: "left",
+                  display: { xs: "block", md: "none" },
                 }}
-              />
-            </Paper>
-          ) : null}
+              >
+                Das Cover für&nbsp;
+                <a
+                  href={generateComicGuideUrl(issueForVariants as any)}
+                  rel="noopener noreferrer nofollow"
+                  target="_blank"
+                >
+                  {generateLabel(issueForVariants.series as any) + " #" + issueForVariants.number}
+                </a>
+                &nbsp;wird bereitgestellt vom&nbsp;
+                <a
+                  href="https://www.comicguide.de"
+                  rel="noopener noreferrer nofollow"
+                  target="_blank"
+                >
+                  deutschen ComicGuide
+                </a>
+                &nbsp;und darf nicht ohne Genehmigung weiterverbreitet werden.
+              </Typography>
+            ) : null}
+            {us ? (
+              <Typography
+                variant="caption"
+                color="text.secondary"
+                sx={{
+                  mt: 2,
+                  opacity: 0.82,
+                  textAlign: "left",
+                  display: { xs: "block", md: "none" },
+                }}
+              >
+                Informationen über&nbsp;
+                <a
+                  href={generateMarvelDbUrl(issueForVariants as any)}
+                  rel="noopener noreferrer nofollow"
+                  target="_blank"
+                >
+                  {generateLabel(issueForVariants.series as any) + " #" + issueForVariants.number}
+                </a>
+                &nbsp;werden bezogen aus der&nbsp;
+                <a
+                  href="https://marvel.fandom.com"
+                  rel="noopener noreferrer nofollow"
+                  target="_blank"
+                >
+                  Marvel Database
+                </a>
+                &nbsp;und stehen unter der&nbsp;
+                <a
+                  href="https://creativecommons.org/licenses/by/3.0/de/"
+                  rel="noopener noreferrer nofollow"
+                  target="_blank"
+                >
+                  Creative Commons License 3.0
+                </a>
+                &nbsp;. Die Informationen wurden aufbereitet und unter Umständen ergänzt.&nbsp;
+              </Typography>
+            ) : null}
+
+            {issueForVariants.addinfo && issueForVariants.addinfo !== "" ? (
+              <Paper variant="outlined" sx={{ mt: 2, p: 2 }}>
+                <Typography
+                  dangerouslySetInnerHTML={{
+                    __html: sanitizeHtml(issueForVariants.addinfo),
+                  }}
+                />
+              </Paper>
+            ) : null}
+          </Box>
         </CardContent>
       </React.Fragment>
     </Layout>
   );
+}
+
+function IssueCoverGallery(props: {
+  us: boolean;
+  issues: PreviewIssue[];
+  activeFormat?: string;
+  activeVariant?: string;
+  storyOwnerKey?: string;
+  navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
+}) {
+  const maxIndex = Math.max(0, props.issues.length - 1);
+  const activeIssueKey = getIssueVariantKey({
+    format: props.activeFormat ?? null,
+    variant: props.activeVariant ?? null,
+  });
+  const activeIndex = React.useMemo(() => {
+    const idx = props.issues.findIndex((item) => getIssueVariantKey(item) === activeIssueKey);
+    return idx >= 0 ? idx : 0;
+  }, [activeIssueKey, props.issues]);
+  const activeIssue = props.issues[activeIndex] || props.issues[0];
+  const isStoryOwner = getIssueVariantKey(activeIssue) === (props.storyOwnerKey || "");
+
+  if (!activeIssue) return null;
+
+  return (
+    <Box sx={{ position: "relative", width: "100%" }}>
+      <IssueCover us={props.us} issue={activeIssue} />
+
+      {isStoryOwner ? (
+        <Box
+          sx={{
+            position: "absolute",
+            top: 8,
+            right: 8,
+            zIndex: 3,
+            color: "common.white",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            pointerEvents: "none",
+            textShadow: "0 1px 2px rgba(0,0,0,0.7)",
+          }}
+          title="Story-Quelle"
+          aria-label="Story-Quelle"
+        >
+          <BookmarkBorderIcon sx={{ fontSize: 24 }} />
+        </Box>
+      ) : null}
+
+      {props.issues.length > 1 ? (
+        <React.Fragment>
+          {activeIndex > 0 ? (
+            <IconButton
+              aria-label="Vorheriges Cover"
+              onClick={(event) => {
+                event.stopPropagation();
+                const prevIssue = props.issues[Math.max(0, activeIndex - 1)];
+                if (!prevIssue) return;
+                props.navigate?.(event, getIssueUrl(prevIssue, props.us));
+              }}
+              sx={coverGalleryArrowSx("left")}
+            >
+              <ChevronLeftIcon />
+            </IconButton>
+          ) : null}
+
+          {activeIndex < maxIndex ? (
+            <IconButton
+              aria-label="Nächstes Cover"
+              onClick={(event) => {
+                event.stopPropagation();
+                const nextIssue = props.issues[Math.min(maxIndex, activeIndex + 1)];
+                if (!nextIssue) return;
+                props.navigate?.(event, getIssueUrl(nextIssue, props.us));
+              }}
+              sx={coverGalleryArrowSx("right")}
+            >
+              <ChevronRightIcon />
+            </IconButton>
+          ) : null}
+        </React.Fragment>
+      ) : null}
+    </Box>
+  );
+}
+
+function coverGalleryArrowSx(side: "left" | "right") {
+  return {
+    position: "absolute",
+    top: "50%",
+    [side]: 8,
+    transform: "translateY(-50%)",
+    zIndex: 2,
+    color: "common.white",
+    bgcolor: "rgba(0,0,0,0.44)",
+    border: "1px solid rgba(255,255,255,0.35)",
+    width: 34,
+    height: 34,
+    "&:hover": {
+      bgcolor: "rgba(0,0,0,0.6)",
+    },
+  };
+}
+
+function buildCoverGalleryIssues(issue: Issue): PreviewIssue[] {
+  const variants = (issue.variants || []).filter(Boolean) as Issue[];
+  const candidates = variants.length > 0 ? variants : [issue];
+  const seenCoverUrls = new Set<string>();
+  const gallery: PreviewIssue[] = [];
+
+  for (const candidate of candidates) {
+    const normalizedCoverUrl = normalizeCoverUrl(candidate);
+    if (seenCoverUrls.has(normalizedCoverUrl)) continue;
+    seenCoverUrls.add(normalizedCoverUrl);
+
+    gallery.push({
+      ...(issue as unknown as PreviewIssue),
+      ...(candidate as unknown as PreviewIssue),
+      cover: candidate.cover || issue.cover,
+    });
+  }
+
+  return gallery.length > 0 ? gallery : [issue as unknown as PreviewIssue];
+}
+
+function normalizeCoverUrl(issueLike?: { cover?: { url?: string | null } | null } | null): string {
+  const direct = issueLike?.cover?.url?.trim();
+  return direct && direct !== "" ? direct : "/nocover.png";
 }
 
 function toIssueWithMockVariants(issue: Issue): Issue {

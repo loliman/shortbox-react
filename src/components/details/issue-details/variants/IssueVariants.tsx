@@ -35,7 +35,7 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
       defaultExpanded={false}
       slotProps={{
         transition: {
-          collapsedSize: "25px",
+          collapsedSize: "0px",
         },
       }}
       sx={{

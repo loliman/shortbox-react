@@ -57,7 +57,7 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
           sx={{
             position: "absolute",
             top: 6,
-            left: 6,
+            right: 6,
             zIndex: 2,
             color: "common.white",
             display: "flex",
