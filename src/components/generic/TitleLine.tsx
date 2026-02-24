@@ -36,6 +36,7 @@ export default function TitleLine(props: Readonly<TitleLineProps>) {
             opacity: 0.8,
             whiteSpace: "nowrap",
             lineHeight: 1,
+            pr: 1.5,
           }}
         >
           #{props.id}

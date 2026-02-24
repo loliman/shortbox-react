@@ -203,17 +203,14 @@ export function TopBar(props: TopBarProps) {
               <Box sx={{ minWidth: 0, flex: 1 }}>
                 <SearchBar us={us} navigate={navigate} />
               </Box>
-              <Tooltip
-                title={darkModeEnabled ? "Zu hellem Modus wechseln" : "Zu dunklem Modus wechseln"}
-              >
-                <IconButton
-                  color="inherit"
-                  aria-label={darkModeEnabled ? "Hellmodus aktivieren" : "Darkmode aktivieren"}
-                  onClick={props.toggleTheme}
-                >
-                  {darkModeEnabled ? <LightModeIcon /> : <DarkModeIcon />}
-                </IconButton>
-              </Tooltip>
+              <TopBarFilterMenu
+                us={us}
+                selected={selected}
+                isFilterActive={isFilter}
+                query={props.query}
+                session={props.session}
+                navigate={navigate}
+              />
             </>
           )}
         </Box>
@@ -228,14 +225,6 @@ export function TopBar(props: TopBarProps) {
               justifySelf: "end",
             }}
           >
-            <TopBarFilterMenu
-              us={us}
-              selected={selected}
-              isFilterActive={isFilter}
-              query={props.query}
-              session={props.session}
-              navigate={navigate}
-            />
             {props.session?.loggedIn ? (
               <Tooltip title="Adminpanel">
                 <IconButton
@@ -266,6 +255,15 @@ export function TopBar(props: TopBarProps) {
                 />
               </Tooltip>
             </Box>
+            <Tooltip title={darkModeEnabled ? "Zu hellem Modus wechseln" : "Zu dunklem Modus wechseln"}>
+              <IconButton
+                color="inherit"
+                aria-label={darkModeEnabled ? "Hellmodus aktivieren" : "Darkmode aktivieren"}
+                onClick={props.toggleTheme}
+              >
+                {darkModeEnabled ? <LightModeIcon /> : <DarkModeIcon />}
+              </IconButton>
+            </Tooltip>
           </Box>
         )}
       </Toolbar>

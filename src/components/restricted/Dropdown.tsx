@@ -1,17 +1,16 @@
 import React from "react";
 import { gql, useMutation } from "@apollo/client";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
+import Box from "@mui/material/Box";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 import { generateLabel, generateUrl, HierarchyLevel } from "../../util/hierarchy";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
-import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
-import PlaylistRemoveIcon from "@mui/icons-material/PlaylistRemove";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import Typography from "@mui/material/Typography";
-import ListItemIcon from "@mui/material/ListItemIcon";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import EditNoteIcon from "@mui/icons-material/EditNote";
+import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined";
+import GppMaybeOutlinedIcon from "@mui/icons-material/GppMaybeOutlined";
+import BookmarkAddOutlinedIcon from "@mui/icons-material/BookmarkAddOutlined";
+import BookmarkRemoveOutlinedIcon from "@mui/icons-material/BookmarkRemoveOutlined";
+import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
 import DeletionDialog from "./DeletionDialog";
 import { withContext } from "../generic";
 import { stripItem } from "../../util/util";
@@ -27,6 +26,19 @@ const EDIT_ISSUE_STATUS_MUTATION = gql`
     }
   }
 `;
+
+const actionButtonSx = {
+  border: "1px solid",
+  borderColor: "divider",
+  borderRadius: 1.5,
+  bgcolor: "action.hover",
+  width: 34,
+  height: 34,
+  "&:hover": {
+    bgcolor: "action.selected",
+    borderColor: "text.disabled",
+  },
+};
 
 interface DropdownStory {
   children?: unknown[];
@@ -64,6 +76,7 @@ interface DropdownProps {
     options?: { variant?: "success" | "error" | "warning" | "info" }
   ) => void;
   handleClose?: () => void;
+  item?: DropdownItem | null;
   EditDropdown?: {
     anchorEl: HTMLElement | null;
     item?: DropdownItem | null;
@@ -102,7 +115,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
   }
 
   render() {
-    const selectedItem = this.props.EditDropdown?.item;
+    const selectedItem = this.props.item ?? this.props.EditDropdown?.item;
     if (!selectedItem || !this.props.session) return null;
 
     const isUsIssue =
@@ -115,63 +128,10 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     const isCollected = Boolean(selectedItem.collected);
 
     return (
-      <div>
-        <Menu
-          id="edit-item-menu"
-          anchorEl={this.props.EditDropdown.anchorEl}
-          open={this.props.EditDropdown.anchorEl !== null}
-          onClose={() => this.props.handleClose?.()}
-          PaperProps={{
-            sx: {
-              maxHeight: 48 * 6,
-              width: 260,
-            },
-          }}
-        >
-          {isIssueLevel ? (
-            <VerifyMenuItem
-              item={selectedItem}
-              verified={isVerified}
-              onClose={this.props.handleClose}
-              enqueueSnackbar={this.props.enqueueSnackbar}
-            />
-          ) : null}
-
-          {isIssueLevel ? (
-            <CollectionMenuItem
-              item={selectedItem}
-              collected={isCollected}
-              onClose={this.props.handleClose}
-              enqueueSnackbar={this.props.enqueueSnackbar}
-            />
-          ) : null}
-
-          <MenuItem
-            key="edit"
-            onClick={() => {
-              const us = resolveItemUs(selectedItem, this.props.level, Boolean(this.props.us));
-
-              this.props.navigate?.(
-                null,
-                "/edit" +
-                  generateUrl(
-                    selectedItem as unknown as import("../../types/domain").SelectedRoot,
-                    us
-                  )
-              );
-              this.props.handleClose?.();
-            }}
-          >
-            <ListItemIcon>
-              <EditIcon />
-            </ListItemIcon>
-            <Typography variant="inherit" noWrap>
-              Bearbeiten
-            </Typography>
-          </MenuItem>
-
+      <>
+        <Box sx={{ display: "inline-flex", alignItems: "center", gap: 0.6 }}>
           {resolveItemUs(selectedItem, this.props.level, Boolean(this.props.us)) ? (
-            <ReimportMenuItem
+            <ReimportActionButton
               item={selectedItem}
               level={this.props.level}
               onClose={this.props.handleClose}
@@ -179,22 +139,65 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
             />
           ) : null}
 
-          <MenuItem disabled={!canDelete} key="delete" onClick={() => this.handleDelete()}>
-            <ListItemIcon>
-              <DeleteIcon />
-            </ListItemIcon>
-            <Typography variant="inherit" noWrap>
-              Löschen
-            </Typography>
-          </MenuItem>
-        </Menu>
+          {isIssueLevel ? (
+            <CollectionActionButton
+              item={selectedItem}
+              collected={isCollected}
+              onClose={this.props.handleClose}
+              enqueueSnackbar={this.props.enqueueSnackbar}
+            />
+          ) : null}
+
+          {isIssueLevel ? (
+            <VerifyActionButton
+              item={selectedItem}
+              verified={isVerified}
+              onClose={this.props.handleClose}
+              enqueueSnackbar={this.props.enqueueSnackbar}
+            />
+          ) : null}
+
+          <Tooltip title={canDelete ? "Löschen" : "Löschen nicht möglich"}>
+            <span>
+              <IconButton
+                aria-label="Löschen"
+                disabled={!canDelete}
+                onClick={() => this.handleDelete()}
+                sx={actionButtonSx}
+              >
+                <DeleteOutlineIcon />
+              </IconButton>
+            </span>
+          </Tooltip>
+
+          <Tooltip title="Bearbeiten">
+            <IconButton
+              aria-label="Bearbeiten"
+              onClick={() => {
+                const us = resolveItemUs(selectedItem, this.props.level, Boolean(this.props.us));
+                this.props.navigate?.(
+                  null,
+                  "/edit" +
+                    generateUrl(
+                      selectedItem as unknown as import("../../types/domain").SelectedRoot,
+                      us
+                    )
+                );
+                this.props.handleClose?.();
+              }}
+              sx={actionButtonSx}
+            >
+              <EditNoteIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
 
         <DeletionDialog
           handleClose={this.handleDeletionClose}
           open={this.state.deletionOpen}
           item={selectedItem}
         />
-      </div>
+      </>
     );
   }
 
@@ -296,141 +299,139 @@ function toReimportScopeInput(
   return null;
 }
 
-function ReimportMenuItem(props: Readonly<ActionMenuItemProps>) {
+function ReimportActionButton(props: Readonly<ActionMenuItemProps>) {
   const [enqueueReimport] = useMutation(runAdminTask);
   const scopeInput = toReimportScopeInput(props.item, props.level);
 
   return (
-    <MenuItem
-      disabled={!scopeInput}
-      key="reimport"
-      onClick={async () => {
-        if (!scopeInput) {
-          props.onClose?.();
-          return;
-        }
+    <Tooltip title="ID Sync">
+      <span>
+        <IconButton
+          aria-label="ID Sync"
+          disabled={!scopeInput}
+          onClick={async () => {
+            if (!scopeInput) {
+              props.onClose?.();
+              return;
+            }
 
-        try {
-          const result = await enqueueReimport({
-            variables: {
-              input: {
-                taskKey: "reimport-us",
-                dryRun: false,
-                ...scopeInput,
-              },
-            },
-          });
+            try {
+              const result = await enqueueReimport({
+                variables: {
+                  input: {
+                    taskKey: "reimport-us",
+                    dryRun: false,
+                    ...scopeInput,
+                  },
+                },
+              });
 
-          const summary = result.data?.runAdminTask?.summary || "Reimport Job gestartet";
-          props.enqueueSnackbar?.(summary, { variant: "success" });
-        } catch (error) {
-          props.enqueueSnackbar?.(
-            `Reimport konnte nicht gestartet werden${formatGraphQLErrorMessage(error)}`,
-            { variant: "error" }
-          );
-        } finally {
-          props.onClose?.();
-        }
-      }}
-    >
-      <ListItemIcon>
-        <RefreshIcon />
-      </ListItemIcon>
-      <Typography variant="inherit" noWrap>
-        Reimport
-      </Typography>
-    </MenuItem>
+              const summary = result.data?.runAdminTask?.summary || "Reimport Job gestartet";
+              props.enqueueSnackbar?.(summary, { variant: "success" });
+            } catch (error) {
+              props.enqueueSnackbar?.(
+                `Reimport konnte nicht gestartet werden${formatGraphQLErrorMessage(error)}`,
+                { variant: "error" }
+              );
+            } finally {
+              props.onClose?.();
+            }
+          }}
+          sx={{ ...actionButtonSx, width: "auto", px: 1, pr: 1.4 }}
+        >
+          <BadgeOutlinedIcon />
+        </IconButton>
+      </span>
+    </Tooltip>
   );
 }
 
-function VerifyMenuItem(props: Readonly<ActionMenuItemProps>) {
+function VerifyActionButton(props: Readonly<ActionMenuItemProps>) {
   const [editIssue] = useMutation(EDIT_ISSUE_STATUS_MUTATION);
   const label = props.verified ? "Falsifizieren" : "Verifizieren";
 
   return (
-    <MenuItem
-      key="verify"
-      onClick={async () => {
-        const oldInput = buildIssueMutationInput(props.item);
-        const nextInput = {
-          ...oldInput,
-          verified: !Boolean(props.verified),
-        };
+    <Tooltip title={label}>
+      <IconButton
+        aria-label={label}
+        onClick={async () => {
+          const oldInput = buildIssueMutationInput(props.item);
+          const nextInput = {
+            ...oldInput,
+            verified: !props.verified,
+          };
 
-        try {
-          await editIssue({
-            variables: {
-              old: oldInput,
-              item: nextInput,
-            },
-          });
+          try {
+            await editIssue({
+              variables: {
+                old: oldInput,
+                item: nextInput,
+              },
+            });
 
-          props.enqueueSnackbar?.(
-            `${generateLabel(props.item as never)} erfolgreich ${label.toLowerCase()}`,
-            {
-              variant: "success",
-            }
-          );
-        } catch (error) {
-          props.enqueueSnackbar?.(
-            `Ausgabe konnte nicht ${label.toLowerCase()} werden${formatGraphQLErrorMessage(error)}`,
-            { variant: "error" }
-          );
-        } finally {
-          props.onClose?.();
-        }
-      }}
-    >
-      <ListItemIcon>
-        {props.verified ? <CheckCircleIcon /> : <CheckCircleOutlineIcon />}
-      </ListItemIcon>
-      <Typography variant="inherit" noWrap>
-        {label}
-      </Typography>
-    </MenuItem>
+            props.enqueueSnackbar?.(
+              `${generateLabel(props.item as never)} erfolgreich ${label.toLowerCase()}`,
+              {
+                variant: "success",
+              }
+            );
+          } catch (error) {
+            props.enqueueSnackbar?.(
+              `Ausgabe konnte nicht ${label.toLowerCase()} werden${formatGraphQLErrorMessage(error)}`,
+              { variant: "error" }
+            );
+          } finally {
+            props.onClose?.();
+          }
+        }}
+        sx={actionButtonSx}
+      >
+        {props.verified ? <GppMaybeOutlinedIcon /> : <FactCheckOutlinedIcon />}
+      </IconButton>
+    </Tooltip>
   );
 }
 
-function CollectionMenuItem(props: Readonly<ActionMenuItemProps>) {
+function CollectionActionButton(props: Readonly<ActionMenuItemProps>) {
   const [editIssue] = useMutation(EDIT_ISSUE_STATUS_MUTATION);
   const label = props.collected ? "Aus Sammlung entfernen" : "Zur Sammlung hinzufügen";
 
   return (
-    <MenuItem
-      key="collection"
-      onClick={async () => {
-        const oldInput = buildIssueMutationInput(props.item);
-        const nextInput = {
-          ...oldInput,
-          collected: !Boolean(props.collected),
-        };
+    <Tooltip title={label}>
+      <IconButton
+        aria-label={label}
+        onClick={async () => {
+          const oldInput = buildIssueMutationInput(props.item);
+          const nextInput = {
+            ...oldInput,
+            collected: !props.collected,
+          };
 
-        try {
-          await editIssue({
-            variables: {
-              old: oldInput,
-              item: nextInput,
-            },
-          });
+          try {
+            await editIssue({
+              variables: {
+                old: oldInput,
+                item: nextInput,
+              },
+            });
 
-          props.enqueueSnackbar?.(`${generateLabel(props.item as never)} ${label.toLowerCase()}`, {
-            variant: "success",
-          });
-        } catch (error) {
-          props.enqueueSnackbar?.(
-            `Ausgabe konnte nicht ${label.toLowerCase()} werden${formatGraphQLErrorMessage(error)}`,
-            { variant: "error" }
-          );
-        } finally {
-          props.onClose?.();
-        }
-      }}
-    >
-      <ListItemIcon>{props.collected ? <PlaylistRemoveIcon /> : <PlaylistAddIcon />}</ListItemIcon>
-      <Typography variant="inherit" noWrap>
-        {label}
-      </Typography>
-    </MenuItem>
+            props.enqueueSnackbar?.(`${generateLabel(props.item as never)} ${label.toLowerCase()}`, {
+              variant: "success",
+            });
+          } catch (error) {
+            props.enqueueSnackbar?.(
+              `Ausgabe konnte nicht ${label.toLowerCase()} werden${formatGraphQLErrorMessage(error)}`,
+              { variant: "error" }
+            );
+          } finally {
+            props.onClose?.();
+          }
+        }}
+        sx={actionButtonSx}
+      >
+        {props.collected ? <BookmarkRemoveOutlinedIcon /> : <BookmarkAddOutlinedIcon />}
+      </IconButton>
+    </Tooltip>
   );
 }
 

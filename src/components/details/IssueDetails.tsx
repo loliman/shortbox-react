@@ -217,23 +217,23 @@ function IssueDetails(props: IssueDetailsProps) {
           subheader={props.subheader ? generateIssueSubHeader(loadedIssue) : ""}
           action={
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              {loadedIssue.verified ? (
-                <Box
-                  component="img"
-                  src="/verified_badge.png"
-                  alt="verifiziert"
-                  sx={{ height: 35, width: "auto", ml: 0.75 }}
-                />
-              ) : null}
+              <EditButton item={loadedIssue} />
               {loadedIssue.collected && props.session ? (
                 <Box
                   component="img"
                   src="/collected_badge.png"
                   alt="gesammelt"
-                  sx={{ height: 35, width: "auto", ml: 0.75 }}
+                  sx={{ height: 26, width: "auto", ml: 0.25 }}
                 />
               ) : null}
-              <EditButton item={loadedIssue} />
+              {loadedIssue.verified ? (
+                <Box
+                  component="img"
+                  src="/verified_badge.png"
+                  alt="verifiziert"
+                  sx={{ height: 26, width: "auto", ml: 0.25 }}
+                />
+              ) : null}
             </Box>
           }
         />
