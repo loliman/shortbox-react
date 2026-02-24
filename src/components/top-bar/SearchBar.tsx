@@ -18,13 +18,6 @@ const MIN_QUERY_LENGTH = 2;
 const RESULT_ROW_HEIGHT = 44;
 const RESULT_PANEL_MAX_HEIGHT = 911;
 const RESULT_PANEL_BOTTOM_BUFFER = 12;
-const HINT_FONTS = [
-  { family: "HintAvengeance", file: "Avengeance-YolO.ttf" },
-  { family: "HintBlackWidow", file: "BlackWidowMovie-d95Rg.ttf" },
-  { family: "HintCombackHome", file: "CombackHomeRegular-jEMd9.ttf" },
-  { family: "HintMarvelRegular", file: "MarvelRegular-Dj83.ttf" },
-  { family: "HintMightySpidey", file: "Mightyspidey-pmaa.ttf" },
-] as const;
 
 interface SearchBarProps {
   us?: boolean;
@@ -40,8 +33,7 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
   const [pattern, setPattern] = useState("");
   const [debouncedPattern, setDebouncedPattern] = useState("");
   const [focused, setFocused] = useState(false);
-  const [hintFontIndex, setHintFontIndex] = useState(0);
-  const [hintAnimTick, setHintAnimTick] = useState(0);
+  const [hintDotCount, setHintDotCount] = useState(0);
   const queryPattern = debouncedPattern;
   const us = Boolean(props.us);
 
@@ -56,20 +48,13 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
   }, [pattern]);
 
   useEffect(() => {
-    if (typeof window === "undefined" || typeof document === "undefined") return;
-    if (!("fonts" in document)) return;
+    const handle = window.setInterval(() => {
+      setHintDotCount((prev) => (prev + 1) % 4);
+    }, 520);
 
-    HINT_FONTS.forEach((font) => {
-      const fontFace = new FontFace(font.family, `url(/fonts/${font.file})`);
-      fontFace
-        .load()
-        .then((loaded) => {
-          document.fonts.add(loaded);
-        })
-        .catch(() => {
-          // Ignore failed custom font loads and fallback to default font.
-        });
-    });
+    return () => {
+      window.clearInterval(handle);
+    };
   }, []);
 
   const { data, loading, error } = useQuery(search, {
@@ -108,18 +93,6 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
     const activeElement = document.activeElement as HTMLElement | null;
     activeElement?.blur();
     handleFocus(e, false);
-  };
-
-  const rotateFontAndTriggerHintWave = () => {
-    setHintFontIndex((prev) => {
-      if (HINT_FONTS.length <= 1) return prev;
-      let next = prev;
-      while (next === prev) {
-        next = Math.floor(Math.random() * HINT_FONTS.length);
-      }
-      return next;
-    });
-    setHintAnimTick((prev) => prev + 1);
   };
 
   return (
@@ -217,45 +190,34 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
         noOptionsText={
           queryPattern.length < MIN_QUERY_LENGTH ? (
             <Box
-              key={`hint-${hintAnimTick}`}
               sx={{
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontFamily: `${HINT_FONTS[hintFontIndex].family}, "Segoe UI", sans-serif`,
-                fontSize: "1.35rem",
-                lineHeight: 1.1,
-                letterSpacing: 0.4,
-                "@keyframes searchHintWaveOnce": {
-                  "0%": { transform: "translateY(0)" },
-                  "32%": { transform: "translateY(-5px)" },
-                  "64%": { transform: "translateY(2px)" },
-                  "100%": { transform: "translateY(0)" },
-                },
+                width: "100%",
+                minWidth: 0,
+                gap: 0.15,
               }}
             >
-              {"Tippen zum Suchen...".split("").map((char, idx) => (
-                <Box
-                  key={`${char}-${idx}`}
-                  component="span"
-                  sx={{
-                    display: "inline-block",
-                    whiteSpace: char === " " ? "pre" : "normal",
-                    animationName: "searchHintWaveOnce",
-                    animationDuration: "480ms",
-                    animationTimingFunction: "ease-out",
-                    animationIterationCount: 1,
-                    animationDelay: `${idx * 28}ms`,
-                  }}
-                >
-                  {char === " " ? "\u00A0" : char}
-                </Box>
-              ))}
+              <Typography
+                component="span"
+                noWrap
+                sx={{ minWidth: 0, flexShrink: 0, fontSize: "1rem", color: "text.primary" }}
+              >
+                Tippen zum Suchen
+              </Typography>
+              <Typography component="span" noWrap sx={{ minWidth: "1.2em", textAlign: "left" }}>
+                {".".repeat(hintDotCount)}
+              </Typography>
             </Box>
           ) : error ? (
-            "Fehler!"
+            <Typography component="span" noWrap sx={{ fontSize: "1rem", color: "text.primary" }}>
+              Fehler!
+            </Typography>
           ) : (
-            "Keine Ergebnisse gefunden"
+            <Typography component="span" noWrap sx={{ fontSize: "1rem", color: "text.primary" }}>
+              Keine Ergebnisse gefunden
+            </Typography>
           )
         }
         getOptionLabel={(option) =>
@@ -275,10 +237,7 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
         onClose={(_, reason) => {
           if (reason === "escape") closeSearch(null);
         }}
-        onFocus={(e) => {
-          rotateFontAndTriggerHintWave();
-          handleFocus(e, true);
-        }}
+        onFocus={(e) => handleFocus(e, true)}
         onBlur={(e) => handleFocus(e, false)}
         renderOption={(optionProps, option) => (
           <li {...optionProps}>

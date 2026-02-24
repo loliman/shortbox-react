@@ -65,8 +65,7 @@ export function IssueCover(props: Readonly<IssueCoverProps>) {
         slotProps={{
           backdrop: {
             sx: {
-              backgroundColor: "rgba(10, 14, 22, 0.36)",
-              backdropFilter: "blur(5px)",
+              backgroundColor: "rgba(0, 0, 0, 0.88)",
             },
           },
         }}

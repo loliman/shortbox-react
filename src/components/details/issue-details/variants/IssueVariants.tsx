@@ -27,6 +27,12 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
     Boolean(variant)
   );
   if (variants.length <= 1) return null;
+  const activeKey = getIssueKey({
+    format: props.activeFormat ?? props.issue.format,
+    variant: props.activeVariant ?? props.issue.variant,
+  });
+  const activeVariant = variants.find((variant) => getIssueKey(variant) === activeKey) || variants[0];
+  const activeCoverUrl = getVariantCoverUrl(activeVariant);
 
   return (
     <Accordion
@@ -39,10 +45,27 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
         },
       }}
       sx={{
-        backgroundColor: "transparent",
+        position: "relative",
+        backgroundColor: (theme) =>
+          theme.palette.mode === "dark" ? "rgba(9,11,15,0.6)" : "rgba(255,255,255,0.52)",
         border: (theme) => `1px solid ${theme.palette.divider}`,
         borderRadius: 1.5,
         overflow: "hidden",
+        "&::after": activeCoverUrl
+          ? {
+              content: '""',
+              position: "absolute",
+              inset: 0,
+              backgroundImage: `url("${activeCoverUrl}")`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+              filter: "grayscale(0.55)",
+              opacity: 0.1,
+              transform: "scale(1.03)",
+              zIndex: 0,
+            }
+          : undefined,
         "&::before": { display: "none" },
       }}
     >
@@ -50,10 +73,12 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
         expandIcon={<ExpandMoreIcon sx={{ fontSize: 24 }} />}
         aria-label="Varianten anzeigen"
         sx={{
+          position: "relative",
+          zIndex: 1,
           minHeight: 48,
           px: 1.5,
           py: 0,
-          backgroundColor: (theme) => theme.palette.background.paper,
+          backgroundColor: "transparent",
           "& .MuiAccordionSummary-content": { my: 0, alignItems: "center" },
           "& .MuiAccordionSummary-expandIconWrapper": {
             alignSelf: "center",
@@ -68,11 +93,12 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
 
       <AccordionDetails
         sx={{
+          position: "relative",
+          zIndex: 1,
           px: 1.25,
           pb: 1.25,
           pt: 0.5,
-          backgroundColor: (theme) =>
-            theme.palette.mode === "dark" ? theme.palette.background.paper : "transparent",
+          backgroundColor: "transparent",
         }}
       >
         <Box
@@ -81,12 +107,13 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
             overflowY: "hidden",
             WebkitOverflowScrolling: "touch",
             pb: 1,
+            position: "relative",
           }}
         >
           <Stack
             component="ul"
             direction="row"
-            spacing={0.35}
+            spacing={0}
             sx={{
               alignItems: "center",
               m: 0,
@@ -96,10 +123,6 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
             }}
           >
             {variants.map((variant, idx) => {
-              const activeKey = getIssueKey({
-                format: props.activeFormat ?? props.issue.format,
-                variant: props.activeVariant ?? props.issue.variant,
-              });
               const selected = getIssueKey(variant) === activeKey;
               const storyOwner = getIssueKey(variant) === (props.storyOwnerKey || "");
 
@@ -111,18 +134,28 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
                     p: 0,
                     m: 0,
                     width: selected
-                      ? { xs: "363px", sm: "412.5px", md: "473px" }
-                      : { xs: "330px", sm: "375px", md: "430px" },
+                      ? { xs: "332px", sm: "378px", md: "432px" }
+                      : { xs: "302px", sm: "344px", md: "392px" },
                     height: selected
-                      ? { xs: "145.2px", sm: "158.4px", md: "171.6px" }
-                      : { xs: "132px", sm: "144px", md: "156px" },
+                      ? { xs: "132.8px", sm: "145.1px", md: "156.9px" }
+                      : { xs: "120.8px", sm: "132.1px", md: "142.2px" },
                     flex: "0 0 auto",
+                    ml: idx === 0 ? 0 : "-1px",
                     transition: "width 180ms ease, height 180ms ease",
                   }}
                 >
                   <IssueVariantTile
                     issue={props.issue}
                     variant={variant}
+                    edge={
+                      variants.length === 1
+                        ? "single"
+                        : idx === 0
+                          ? "start"
+                          : idx === variants.length - 1
+                            ? "end"
+                            : "middle"
+                    }
                     selected={selected}
                     storyOwner={storyOwner}
                     session={props.session}
@@ -141,4 +174,9 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
 
 function getIssueKey(issue: VariantIssue): string {
   return [String(issue.format || "").trim(), String(issue.variant || "").trim()].join("|");
+}
+
+function getVariantCoverUrl(variant?: VariantIssue | null): string {
+  const direct = variant?.cover?.url?.trim();
+  return direct && direct !== "" ? direct : "";
 }

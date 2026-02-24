@@ -14,6 +14,7 @@ type IssueVariantTileProps = {
   us: boolean;
   selected?: boolean;
   storyOwner?: boolean;
+  edge?: "single" | "start" | "middle" | "end";
   session?: unknown;
   navigate?: NavigateFn;
 };
@@ -40,16 +41,20 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
   return (
     <Box
       sx={{
-        borderRadius: (theme) => `${Number(theme.shape.borderRadius) || 12}px`,
+        borderRadius:
+          props.edge === "single"
+            ? "10px"
+            : props.edge === "start"
+              ? "10px 0 0 10px"
+              : props.edge === "end"
+                ? "0 10px 10px 0"
+                : "0",
         overflow: "hidden",
         position: "relative",
         height: "100%",
-        transition: "box-shadow 180ms ease, border-color 180ms ease",
-        border: (theme) =>
-          selected
-            ? `2px solid ${theme.palette.common.white}`
-            : `1px solid ${theme.palette.divider}`,
-        boxShadow: 1,
+        transition: "box-shadow 180ms ease",
+        border: (theme) => `1px solid ${theme.palette.divider}`,
+        boxShadow: selected ? "inset 0 0 0 2px rgba(255,255,255,0.92)" : 1,
       }}
     >
       {mainIssue ? (
