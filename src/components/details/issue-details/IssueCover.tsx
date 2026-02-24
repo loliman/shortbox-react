@@ -33,7 +33,7 @@ export function IssueCover(props: Readonly<IssueCoverProps>) {
           aspectRatio: "2 / 3",
           borderRadius: (theme) => `${Number(theme.shape.borderRadius) || 12}px`,
           overflow: "hidden",
-          bgcolor: "grey.300",
+          bgcolor: (theme) => (theme.palette.mode === "dark" ? "#000000" : theme.palette.grey[300]),
           border: (theme) => `1px solid ${theme.palette.divider}`,
           boxShadow: 1,
           cursor: "zoom-in",
@@ -85,7 +85,7 @@ export function IssueCover(props: Readonly<IssueCoverProps>) {
             width: "auto",
             height: "auto",
             objectFit: "contain",
-            bgcolor: "grey.200",
+            bgcolor: (theme) => (theme.palette.mode === "dark" ? "#000000" : theme.palette.grey[200]),
           }}
         />
       </Dialog>

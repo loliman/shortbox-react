@@ -66,7 +66,15 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
         </Typography>
       </AccordionSummary>
 
-      <AccordionDetails sx={{ px: 1.25, pb: 1.25, pt: 0.5 }}>
+      <AccordionDetails
+        sx={{
+          px: 1.25,
+          pb: 1.25,
+          pt: 0.5,
+          backgroundColor: (theme) =>
+            theme.palette.mode === "dark" ? theme.palette.background.paper : "transparent",
+        }}
+      >
         <Box
           sx={{
             overflowX: "auto",

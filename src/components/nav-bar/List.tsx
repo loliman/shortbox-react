@@ -515,18 +515,8 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
     previousIssueNumberRef.current = selectedIssueNumber;
   }, [selectedIssueNumber]);
 
-  React.useEffect(() => {
+  const scrollSelectedIssueIntoView = React.useCallback(() => {
     if (!selectedIssueNumber) return;
-
-    if (props.suppressAutoScrollRef.current) {
-      props.suppressAutoScrollRef.current = false;
-      return;
-    }
-
-    if (skipSameIssueAutoScrollRef.current) {
-      skipSameIssueAutoScrollRef.current = false;
-      return;
-    }
 
     const listElement = issueListRef.current;
     const scrollContainer = props.navScrollContainerRef.current;
@@ -542,12 +532,40 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
       block: "center",
       inline: "nearest",
     });
+  }, [selectedIssueNumber, props.navScrollContainerRef]);
+
+  React.useEffect(() => {
+    if (!selectedIssueNumber) return;
+
+    if (props.suppressAutoScrollRef.current) {
+      props.suppressAutoScrollRef.current = false;
+      return;
+    }
+
+    if (skipSameIssueAutoScrollRef.current) {
+      skipSameIssueAutoScrollRef.current = false;
+      return;
+    }
+
+    scrollSelectedIssueIntoView();
+
+    if (typeof ResizeObserver === "undefined") return;
+    const listElement = issueListRef.current;
+    if (!listElement) return;
+
+    const observer = new ResizeObserver(() => {
+      scrollSelectedIssueIntoView();
+    });
+    observer.observe(listElement);
+
+    return () => {
+      observer.disconnect();
+    };
   }, [
     issueNodes,
     selectedIssueNumber,
-    props.selectedIssue,
-    props.navScrollContainerRef,
     props.suppressAutoScrollRef,
+    scrollSelectedIssueIntoView,
   ]);
 
   if (issuesLoading && issueNodes.length === 0) return <NestedLoadingRow depth={2} />;
