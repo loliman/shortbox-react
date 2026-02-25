@@ -17,14 +17,16 @@ type IssueHistoryListProps = {
   query?: QueryState;
   loadingMore?: boolean;
   previewProps?: Record<string, unknown>;
+  showSort?: boolean;
 };
 
 export function IssueHistoryList(props: Readonly<IssueHistoryListProps>) {
   const issues = props.issues || [];
+  const showSort = props.showSort ?? true;
 
   return (
     <Box component="section">
-      <SortContainer {...props.previewProps} />
+      {showSort ? <SortContainer {...props.previewProps} /> : null}
       <Stack spacing={1} sx={{ mt: 2 }}>
         {issues.map((issue, idx) => (
           <IssuePreviewSmall

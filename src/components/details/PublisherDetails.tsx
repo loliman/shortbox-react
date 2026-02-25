@@ -1,6 +1,7 @@
 import React from "react";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
+import Stack from "@mui/material/Stack";
 import Layout from "../Layout";
 import { useQuery } from "@apollo/client";
 import QueryResult from "../generic/QueryResult";
@@ -16,6 +17,7 @@ import { DetailsPagePlaceholder } from "../placeholders/DetailsPagePlaceholder";
 import { DetailsAddInfo } from "./DetailsAddInfo";
 import { useDualLoadingRegistration } from "./useDualLoadingRegistration";
 import type { SelectedRoot } from "../../types/domain";
+import SortContainer from "../SortContainer";
 
 interface PublisherDetailsProps {
   selected: SelectedRoot & {
@@ -115,7 +117,12 @@ function PublisherDetails(props: Readonly<PublisherDetailsProps>) {
                     />
                   }
                   subheader={details.startyear + " - " + endYearLabel}
-                  action={<EditButton item={details} />}
+                  action={
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      <SortContainer {...pageProps} />
+                      <EditButton item={details} />
+                    </Stack>
+                  }
                 />
 
                 <CardContent sx={{ pt: 1 }}>
@@ -126,6 +133,7 @@ function PublisherDetails(props: Readonly<PublisherDetailsProps>) {
                     issues={issues}
                     loadingMore={Boolean(hasMore && fetching)}
                     previewProps={pageProps}
+                    showSort={false}
                   />
                 </CardContent>
               </React.Fragment>

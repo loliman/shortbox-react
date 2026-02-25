@@ -72,10 +72,25 @@ class Home extends React.Component<HomeProps> {
                 <React.Fragment>
                   <Stack spacing={3} sx={{ p: { xs: 1.5, sm: 2 } }}>
                     <Box>
-                      <Typography variant="h5">All-New, All-Different Shortbox</Typography>
-                      <Typography color="text.secondary">
-                        Das deutsche Archiv für Marvel Comics
-                      </Typography>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          alignItems: "flex-start",
+                          justifyContent: "space-between",
+                          gap: 1.5,
+                        }}
+                      >
+                        <Box sx={{ minWidth: 0 }}>
+                          <Typography variant="h5">All-New, All-Different Shortbox</Typography>
+                          <Typography color="text.secondary">
+                            Das deutsche Archiv für Marvel Comics
+                          </Typography>
+                        </Box>
+                        <Box sx={{ display: "flex", justifyContent: "flex-end", flexGrow: 1 }}>
+                          <SortContainer {...this.props} />
+                        </Box>
+                      </Box>
                       <Typography
                         component="p"
                         sx={{
@@ -93,8 +108,6 @@ class Home extends React.Component<HomeProps> {
                         {HOME_SEO_SUMMARY}
                       </Typography>
                     </Box>
-
-                    <SortContainer {...this.props} />
 
                     <Stack spacing={1.5}>
                       {data.lastEdited

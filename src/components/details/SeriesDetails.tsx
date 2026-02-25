@@ -1,6 +1,7 @@
 import React from "react";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
+import Stack from "@mui/material/Stack";
 import { generateLabel } from "../../util/hierarchy";
 import Layout from "../Layout";
 import { useQuery } from "@apollo/client";
@@ -16,6 +17,7 @@ import { DetailsPagePlaceholder } from "../placeholders/DetailsPagePlaceholder";
 import { DetailsAddInfo } from "./DetailsAddInfo";
 import { useDualLoadingRegistration } from "./useDualLoadingRegistration";
 import type { SelectedRoot } from "../../types/domain";
+import SortContainer from "../SortContainer";
 
 interface SeriesDetailsProps {
   selected: SelectedRoot & {
@@ -131,7 +133,12 @@ function SeriesDetails(props: Readonly<SeriesDetailsProps>) {
                     />
                   }
                   subheader={details.startyear + " - " + endYearLabel}
-                  action={<EditButton item={details} />}
+                  action={
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      <SortContainer {...pageProps} />
+                      <EditButton item={details} />
+                    </Stack>
+                  }
                 />
 
                 <CardContent sx={{ pt: 1 }}>
@@ -142,6 +149,7 @@ function SeriesDetails(props: Readonly<SeriesDetailsProps>) {
                     issues={issues}
                     loadingMore={Boolean(hasMore && fetching)}
                     previewProps={pageProps}
+                    showSort={false}
                   />
                 </CardContent>
               </React.Fragment>
