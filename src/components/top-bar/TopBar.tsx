@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import React from "react";
 import { alpha, styled } from "@mui/material/styles";
+import { useApolloClient, useMutation } from "@apollo/client";
 import type { HierarchyLevelType } from "../../util/hierarchy";
 import { withContext } from "../generic";
 import { handleInAppLinkClick, shouldHandleClientSideNavigation } from "../generic/linkUtils";
@@ -19,7 +20,11 @@ import CloseIcon from "@mui/icons-material/Close";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import LoginIcon from "@mui/icons-material/Login";
+import LogoutIcon from "@mui/icons-material/Logout";
 import type { AppThemeMode } from "../../app/theme";
+import { logout } from "../../graphql/mutationsTyped";
+import { isMockMode } from "../../app/mockMode";
 
 interface TopBarProps {
   toggleDrawer?: () => void;
@@ -39,6 +44,11 @@ interface TopBarProps {
   resetNavigationState?: () => void;
   themeMode?: AppThemeMode;
   toggleTheme?: () => void;
+  enqueueSnackbar?: (
+    message: string,
+    options?: { variant?: "success" | "error" | "warning" | "info" }
+  ) => void;
+  handleLogout?: () => void;
 }
 
 const SEARCH_MAX_WIDTH = 520;
@@ -110,6 +120,25 @@ const Android12Switch = styled(Switch)(({ theme }) => ({
 
 export function TopBar(props: TopBarProps) {
   const { toggleDrawer, navigate, drawerOpen } = props;
+  const client = useApolloClient();
+  const [runLogout] = useMutation(logout, {
+    onCompleted: (data) => {
+      if (!data.logout) {
+        props.enqueueSnackbar?.("Logout fehlgeschlagen", { variant: "error" });
+      } else {
+        props.enqueueSnackbar?.("Auf Wiedersehen!", { variant: "success" });
+        client.resetStore();
+        props.handleLogout?.();
+      }
+    },
+    onError: (errors) => {
+      const message =
+        errors.graphQLErrors && errors.graphQLErrors.length > 0
+          ? " [" + errors.graphQLErrors[0].message + "]"
+          : "";
+      props.enqueueSnackbar?.("Logout fehlgeschlagen" + message, { variant: "error" });
+    },
+  });
   const us = Boolean(props.us);
   const selected = props.selected || { us };
   const compactLayout =
@@ -119,6 +148,16 @@ export function TopBar(props: TopBarProps) {
   const darkModeEnabled = props.themeMode === "dark";
   const localeSwitchAriaLabel = us ? "Zu Deutsch wechseln" : "Zu US wechseln";
   const localeSwitchLabel = us ? "US" : "DE";
+
+  const onLogout = () => {
+    if (isMockMode) {
+      props.enqueueSnackbar?.("Auf Wiedersehen!", { variant: "success" });
+      client.resetStore();
+      props.handleLogout?.();
+      return;
+    }
+    runLogout();
+  };
 
   return (
     <AppBar
@@ -180,15 +219,17 @@ export function TopBar(props: TopBarProps) {
         </Box>
 
         {compactLayout ? (
-          <Tooltip title={darkModeEnabled ? "Zu hellem Modus wechseln" : "Zu dunklem Modus wechseln"}>
-            <IconButton
-              color="inherit"
-              aria-label={darkModeEnabled ? "Hellmodus aktivieren" : "Darkmode aktivieren"}
-              onClick={props.toggleTheme}
-            >
-              {darkModeEnabled ? <LightModeIcon /> : <DarkModeIcon />}
-            </IconButton>
-          </Tooltip>
+          <Box sx={{ display: "inline-flex", alignItems: "center", gap: 0.25 }}>
+            <Tooltip title={darkModeEnabled ? "Zu hellem Modus wechseln" : "Zu dunklem Modus wechseln"}>
+              <IconButton
+                color="inherit"
+                aria-label={darkModeEnabled ? "Hellmodus aktivieren" : "Darkmode aktivieren"}
+                onClick={props.toggleTheme}
+              >
+                {darkModeEnabled ? <LightModeIcon /> : <DarkModeIcon />}
+              </IconButton>
+            </Tooltip>
+          </Box>
         ) : null}
 
         <Box
@@ -242,6 +283,23 @@ export function TopBar(props: TopBarProps) {
                 </IconButton>
               </Tooltip>
             ) : null}
+            {!props.session?.loggedIn ? (
+              <Tooltip title="Login">
+                <IconButton
+                  color="inherit"
+                  aria-label="Login"
+                  onClick={(e) => navigate?.(e, "/login")}
+                >
+                  <LoginIcon />
+                </IconButton>
+              </Tooltip>
+            ) : (
+              <Tooltip title="Logout">
+                <IconButton color="inherit" aria-label="Logout" onClick={onLogout}>
+                  <LogoutIcon />
+                </IconButton>
+              </Tooltip>
+            )}
 
             <Box sx={{ ml: 0.75, display: "inline-flex", alignItems: "center", gap: 0.75 }}>
               <Typography
@@ -365,6 +423,23 @@ export function TopBar(props: TopBarProps) {
               </IconButton>
             </Tooltip>
           ) : null}
+          {!props.session?.loggedIn ? (
+            <Tooltip title="Login">
+              <IconButton
+                color="inherit"
+                aria-label="Login"
+                onClick={(e) => navigate?.(e, "/login")}
+              >
+                <LoginIcon />
+              </IconButton>
+            </Tooltip>
+          ) : (
+            <Tooltip title="Logout">
+              <IconButton color="inherit" aria-label="Logout" onClick={onLogout}>
+                <LogoutIcon />
+              </IconButton>
+            </Tooltip>
+          )}
           <Tooltip title={"Wechseln zu " + (us ? "Deutsch" : "US")}>
             <IconButton
               color="inherit"

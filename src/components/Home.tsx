@@ -2,7 +2,6 @@ import React from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
-import Link from "@mui/material/Link";
 import Layout from "./Layout";
 import { lastEdited } from "../graphql/queriesTyped";
 import QueryResult from "./generic/QueryResult";
@@ -13,6 +12,9 @@ import SortContainer from "./SortContainer";
 import LoadingDots from "./generic/LoadingDots";
 import { getListingDirection, getListingOrder, parseListingFilter } from "../util/listingQuery";
 import { HomeListingPlaceholder } from "./placeholders/HomeListingPlaceholder";
+
+const HOME_SEO_SUMMARY =
+  "Shortbox listet alle deutschen Marvel Veröffentlichungen detailliert auf und ordnet diese den entsprechenden US Geschichten zu.";
 
 interface HomeProps {
   registerLoadingComponent?: (component: string) => void;
@@ -74,58 +76,23 @@ class Home extends React.Component<HomeProps> {
                       <Typography color="text.secondary">
                         Das deutsche Archiv für Marvel Comics
                       </Typography>
+                      <Typography
+                        component="p"
+                        sx={{
+                          position: "absolute",
+                          width: 1,
+                          height: 1,
+                          p: 0,
+                          m: -1,
+                          overflow: "hidden",
+                          clip: "rect(0 0 0 0)",
+                          whiteSpace: "nowrap",
+                          border: 0,
+                        }}
+                      >
+                        {HOME_SEO_SUMMARY}
+                      </Typography>
                     </Box>
-
-                    <Stack spacing={1.5}>
-                      <Typography color="text.secondary">
-                        Shortbox listet alle deutschen Marvel Veröffentlichungen detailliert auf und
-                        ordnet diese den entsprechenden US Geschichten zu.
-                      </Typography>
-
-                      <Typography color="text.secondary">
-                        Angefangen über Geschichten der bekanntesten Superhelden Spider-Man,
-                        Deadpool, den X-Men oder den Avengers oder unbekannteren Helden wie Moon
-                        Knight und den New Mutants, über Comics zum Marvel Cinematic Universe mit
-                        Captain America, Captain Marvel und Iron Man bis hin zu Western-Comics,
-                        Horror-Comics und Kinder-Comics wie den Glücksbärchis oder der Police
-                        Acadamy findet ihr hier alle Veröffentlichungen in offiziellen Ausgaben,
-                        Raubkopien oder Fan-Comics.
-                      </Typography>
-
-                      <Typography color="text.secondary">
-                        Inspiriert durch{" "}
-                        <Link
-                          href="https://www.maxithecat.de/UHBMCC/INDEX.HTM"
-                          rel="noopener noreferrer nofollow"
-                          target="_blank"
-                        >
-                          maxithecat&apos;s UHBMCC
-                        </Link>{" "}
-                        wurde Shortbox 2018 ins Leben gerufen und ist ein vollständig privates
-                        Projekt für Marvel-Fans von Marvel-Fans.
-                      </Typography>
-
-                      <Typography color="text.secondary">
-                        Die gelisteten Informationen unterliegen der{" "}
-                        <Link
-                          href="https://creativecommons.org/licenses/by/3.0/de/"
-                          rel="noopener noreferrer nofollow"
-                          target="_blank"
-                        >
-                          Creative Commons License 3.0
-                        </Link>
-                        . Ausgenommen sind die vom{" "}
-                        <Link
-                          href="https://www.comicguide.de/index.php"
-                          rel="noopener noreferrer nofollow"
-                          target="_blank"
-                        >
-                          ComicGuide
-                        </Link>{" "}
-                        bereitgestellten Cover. Diese dürfen ohne Genehmigung weiter verbreitet
-                        werden.
-                      </Typography>
-                    </Stack>
 
                     <SortContainer {...this.props} />
 

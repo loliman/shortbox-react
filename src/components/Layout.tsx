@@ -97,10 +97,7 @@ function Layout(props: Readonly<LayoutProps>) {
             >
               <FooterLinks
                 isPhonePortrait={props.isPhonePortrait}
-                loggedIn={session?.loggedIn}
                 navigate={props.navigate}
-                enqueueSnackbar={props.enqueueSnackbar}
-                handleLogout={props.handleLogout}
               />
             </Box>
           </Card>
