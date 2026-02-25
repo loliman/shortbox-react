@@ -18,6 +18,7 @@ interface ContainsItemProps {
 }
 
 export function ContainsItem(props: Readonly<ContainsItemProps>) {
+  const isHighlighted = expanded(props.item, props.query);
   let borderRadius: string;
   if (props.idx === 0) {
     if (props.isLast) {
@@ -38,9 +39,16 @@ export function ContainsItem(props: Readonly<ContainsItemProps>) {
         width: "auto",
         maxWidth: "100%",
         border: "1px solid",
-        borderColor: "divider",
+        borderColor: (theme) =>
+          isHighlighted ? theme.palette.primary.main : theme.palette.divider,
         backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#161b22" : "#ffffff"),
         overflow: "hidden",
+        boxShadow: (theme) =>
+          isHighlighted
+            ? theme.palette.mode === "dark"
+              ? "0 0 0 1px rgba(144, 202, 249, 0.65)"
+              : "0 0 0 1px rgba(25, 118, 210, 0.45)"
+            : "none",
         "&:before": { display: "none" },
         "& .MuiAccordionSummary-root": {
           backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#161b22" : "#ffffff"),
@@ -49,7 +57,6 @@ export function ContainsItem(props: Readonly<ContainsItemProps>) {
           backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#161b22" : "#ffffff"),
         },
       }}
-      defaultExpanded={expanded(props.item, props.query)}
     >
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}

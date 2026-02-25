@@ -276,7 +276,7 @@ function IssueDetails(props: IssueDetailsProps) {
         />
 
         <CardContent sx={{ pt: 1 }}>
-          <Box sx={{ pb: hasVariantBox ? 5 : 0 }}>
+          <Box sx={{ pb: 5 }}>
             <IssueVariants
               us={us}
               issue={issueForVariants as unknown as VariantIssue}
@@ -709,13 +709,13 @@ function coverGalleryArrowSx(side: "left" | "right") {
 function buildCoverGalleryIssues(issue: Issue): PreviewIssue[] {
   const variants = (issue.variants || []).filter(Boolean) as Issue[];
   const candidates = variants.length > 0 ? variants : [issue];
-  const seenCoverUrls = new Set<string>();
+  const seenIssueKeys = new Set<string>();
   const gallery: PreviewIssue[] = [];
 
   for (const candidate of candidates) {
-    const normalizedCoverUrl = normalizeCoverUrl(candidate);
-    if (seenCoverUrls.has(normalizedCoverUrl)) continue;
-    seenCoverUrls.add(normalizedCoverUrl);
+    const dedupeKey = [String(candidate.format || ""), String(candidate.variant || "")].join("|");
+    if (seenIssueKeys.has(dedupeKey)) continue;
+    seenIssueKeys.add(dedupeKey);
 
     gallery.push({
       ...(issue as unknown as PreviewIssue),
@@ -725,11 +725,6 @@ function buildCoverGalleryIssues(issue: Issue): PreviewIssue[] {
   }
 
   return gallery.length > 0 ? gallery : [issue as unknown as PreviewIssue];
-}
-
-function normalizeCoverUrl(issueLike?: { cover?: { url?: string | null } | null } | null): string {
-  const direct = issueLike?.cover?.url?.trim();
-  return direct && direct !== "" ? direct : "/nocover.png";
 }
 
 function toIssueWithMockVariants(issue: Issue): Issue {

@@ -7,6 +7,7 @@ import React from "react";
 import { alpha, styled } from "@mui/material/styles";
 import type { HierarchyLevelType } from "../../util/hierarchy";
 import { withContext } from "../generic";
+import { handleInAppLinkClick, shouldHandleClientSideNavigation } from "../generic/linkUtils";
 import IconButton from "@mui/material/IconButton";
 import ButtonBase from "@mui/material/ButtonBase";
 import SearchBar from "./SearchBar";
@@ -157,10 +158,15 @@ export function TopBar(props: TopBarProps) {
           )}
 
           <ButtonBase
+            component="a"
+            href={us ? "/us" : "/de"}
             aria-label="Zur Startseite"
             onClick={(e) => {
-              props.resetNavigationState?.();
-              navigate?.(e, us ? "/us" : "/de");
+              if (!navigate) return;
+              if (shouldHandleClientSideNavigation(e)) {
+                props.resetNavigationState?.();
+              }
+              handleInAppLinkClick(e, us ? "/us" : "/de", navigate);
             }}
             sx={{
               display: "inline-flex",

@@ -29,6 +29,7 @@ interface CoverLike {
 
 export type PreviewIssue = {
   id?: string | number | null;
+  comicguideid?: string | number | null;
   number?: string | null;
   title?: string | null;
   verified?: boolean | null;
@@ -74,10 +75,11 @@ export function getIssueVariantLabel(issue: PreviewIssue): string {
 
 export function getIssuePreviewCover(
   issue: PreviewIssue,
-  _us: boolean
+  us: boolean
 ): { coverUrl: string; blurCover: boolean } {
   const directCover = issue.cover?.url?.trim();
-  if (directCover) return { coverUrl: directCover, blurCover: false };
+  const hasComicGuide = Boolean(issue.comicguideid);
+  if (directCover && (us || hasComicGuide)) return { coverUrl: directCover, blurCover: false };
 
   return { coverUrl: "", blurCover: false };
 }

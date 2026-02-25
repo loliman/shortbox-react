@@ -120,4 +120,12 @@ describe("expanded helper", () => {
 
     expect(expanded(baseStoryItem, { filter: JSON.stringify(filter) })).toBe(false);
   });
+
+  it("expands when individual filter type is provided as an array", () => {
+    const filter = {
+      individuals: [{ name: "Peter Parker", type: ["WRITER", "PENCILER"] }],
+    };
+
+    expect(expanded(baseStoryItem, { filter: JSON.stringify(filter) })).toBe(true);
+  });
 });

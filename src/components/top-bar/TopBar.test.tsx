@@ -40,7 +40,7 @@ describe("TopBar", () => {
       />
     );
 
-    await user.click(screen.getByRole("button", { name: "Zur Startseite" }));
+    await user.click(screen.getByRole("link", { name: "Zur Startseite" }));
 
     expect(resetNavigationState).toHaveBeenCalledTimes(1);
     expect(navigate).toHaveBeenCalledTimes(1);
@@ -85,7 +85,7 @@ describe("TopBar", () => {
       />
     );
 
-    expect(screen.getByRole("button", { name: "Zur Startseite" })).toBeTruthy();
+    expect(screen.getByRole("link", { name: "Zur Startseite" })).toBeTruthy();
   });
 
   it("calls drawer toggle and keeps searchbar centered container mounted", async () => {

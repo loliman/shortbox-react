@@ -4,6 +4,7 @@ import Box from "@mui/material/Box";
 import ButtonBase from "@mui/material/ButtonBase";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import { getIssueUrl } from "../../../../util/issuePresentation";
+import { handleInAppLinkClick } from "../../../generic/linkUtils";
 import type { VariantIssue } from "./types";
 
 type NavigateFn = (event: unknown, url: string, query?: Record<string, unknown>) => void;
@@ -33,6 +34,7 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
     " (" +
     (props.variant.variant ? props.variant.variant + " Variant" : "Reguläre Ausgabe") +
     ")";
+  const issueUrl = getIssueUrl(props.variant, props.us);
 
   React.useEffect(() => {
     setDisplayUrl(coverUrl);
@@ -78,7 +80,9 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
       ) : null}
 
       <ButtonBase
-        onClick={(e) => props.navigate?.(e, getIssueUrl(props.variant, props.us))}
+        component="a"
+        href={issueUrl}
+        onClick={(e) => handleInAppLinkClick(e, issueUrl, props.navigate)}
         aria-label={`Zu ${variantLabel}`}
         sx={{ width: "100%", height: "100%", display: "block", textAlign: "left" }}
       >

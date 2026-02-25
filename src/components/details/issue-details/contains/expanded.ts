@@ -17,7 +17,7 @@ type IssueLike = {
   arcs?: Array<{ title?: string | null }> | null;
 };
 
-type PersonLike = { name?: string; type?: string };
+type PersonLike = { name?: string; type?: string | string[] };
 type AppearanceLike = { name?: string };
 
 export type ItemLike = {
@@ -207,9 +207,35 @@ function toArray<T>(value: T[] | null | undefined): T[] {
 }
 
 function hasMatchingIndividual(selected: PersonLike[], available: PersonLike[]): boolean {
-  return selected.some((individual) =>
-    available.some((candidate) => {
-      return individual?.name === candidate?.name && individual?.type === candidate?.type;
-    })
-  );
+  return selected.some((individual) => {
+    const selectedName = normalizeText(individual?.name);
+    if (!selectedName) return false;
+    const selectedTypes = normalizeTypes(individual?.type);
+
+    return available.some((candidate) => {
+      if (normalizeText(candidate?.name) !== selectedName) return false;
+
+      const candidateTypes = normalizeTypes(candidate?.type);
+      if (selectedTypes.size === 0 || candidateTypes.size === 0) return true;
+
+      for (const type of selectedTypes) {
+        if (candidateTypes.has(type)) return true;
+      }
+      return false;
+    });
+  });
+}
+
+function normalizeText(value: unknown): string {
+  return String(value || "")
+    .trim()
+    .toLowerCase();
+}
+
+function normalizeTypes(value: unknown): Set<string> {
+  if (Array.isArray(value)) {
+    return new Set(value.map((entry) => normalizeText(entry)).filter((entry) => entry.length > 0));
+  }
+  const single = normalizeText(value);
+  return single ? new Set([single]) : new Set();
 }

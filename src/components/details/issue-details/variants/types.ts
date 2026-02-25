@@ -1,4 +1,5 @@
 export type VariantIssue = {
+  comicguideid?: string | number | null;
   format?: string | null;
   variant?: string | null;
   collected?: boolean | null;

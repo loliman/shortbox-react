@@ -8,6 +8,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { getVariantKey } from "../utils/issueDetailsUtils";
 import { IssueVariantTile } from "./IssueVariantTile";
+import { useResolvedImageUrl } from "../../../generic/useResolvedImageUrl";
 import type { VariantIssue } from "./types";
 
 type NavigateFn = (event: unknown, url: string, query?: Record<string, unknown>) => void;
@@ -22,21 +23,24 @@ type IssueVariantsProps = {
   navigate?: NavigateFn;
 };
 
+const NO_COVER_URL = `${import.meta.env.BASE_URL}nocover.png`;
+
 export function IssueVariants(props: Readonly<IssueVariantsProps>) {
   const variants = (props.issue.variants || []).filter((variant): variant is VariantIssue =>
     Boolean(variant)
   );
-  if (variants.length <= 1) return null;
   const activeKey = getIssueKey({
     format: props.activeFormat ?? props.issue.format,
     variant: props.activeVariant ?? props.issue.variant,
   });
   const activeVariant = variants.find((variant) => getIssueKey(variant) === activeKey) || variants[0];
-  const activeCoverUrl = getVariantCoverUrl(activeVariant);
+  const candidateActiveCoverUrl = getVariantCoverUrl(activeVariant, Boolean(props.us));
+  const activeCoverUrl = useResolvedImageUrl(candidateActiveCoverUrl, NO_COVER_URL);
 
   return (
     <Accordion
       disableGutters
+      disabled={variants.length === 1}
       elevation={1}
       defaultExpanded={false}
       slotProps={{
@@ -44,11 +48,11 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
           collapsedSize: "0px",
         },
       }}
-      sx={{
+      sx={(theme) => ({
         position: "relative",
-        backgroundColor: (theme) =>
+        backgroundColor:
           theme.palette.mode === "dark" ? "rgba(9,11,15,0.6)" : "rgba(255,255,255,0.52)",
-        border: (theme) => `1px solid ${theme.palette.divider}`,
+        border: `1px solid ${theme.palette.divider}`,
         borderRadius: 1.5,
         overflow: "hidden",
         "&::after": activeCoverUrl
@@ -56,21 +60,24 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
               content: '""',
               position: "absolute",
               inset: 0,
-              backgroundImage: `url("${activeCoverUrl}")`,
+              backgroundImage:
+                (theme.palette.mode === "dark"
+                  ? `linear-gradient(to right, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.58) 40%, rgba(0, 0, 0, 0.08) 100%), `
+                  : `linear-gradient(to right, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.62) 40%, rgba(255, 255, 255, 0) 100%), `) +
+                `url("${activeCoverUrl}")`,
               backgroundSize: "cover",
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
-              filter: "grayscale(0.55)",
-              opacity: 0.1,
+              opacity: 0.7,
               transform: "scale(1.03)",
               zIndex: 0,
             }
           : undefined,
         "&::before": { display: "none" },
-      }}
+      })}
     >
       <AccordionSummary
-        expandIcon={<ExpandMoreIcon sx={{ fontSize: 24 }} />}
+        expandIcon={variants.length === 1 ? null : <ExpandMoreIcon sx={{ fontSize: 24 }} />}
         aria-label="Varianten anzeigen"
         sx={{
           position: "relative",
@@ -87,7 +94,7 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
         }}
       >
         <Typography component="p" variant="body2" sx={{ fontWeight: 700 }}>
-          Erhältlich in {variants.length} Varianten
+            {variants.length === 1 ? "" : "Erhältlich in " + variants.length + " Varianten"}
         </Typography>
       </AccordionSummary>
 
@@ -176,7 +183,9 @@ function getIssueKey(issue: VariantIssue): string {
   return [String(issue.format || "").trim(), String(issue.variant || "").trim()].join("|");
 }
 
-function getVariantCoverUrl(variant?: VariantIssue | null): string {
+function getVariantCoverUrl(variant: VariantIssue | null | undefined, us: boolean): string {
   const direct = variant?.cover?.url?.trim();
-  return direct && direct !== "" ? direct : "";
+  const hasComicGuide = Boolean(variant?.comicguideid);
+  if (direct && direct !== "" && (us || hasComicGuide)) return direct;
+  return NO_COVER_URL;
 }
