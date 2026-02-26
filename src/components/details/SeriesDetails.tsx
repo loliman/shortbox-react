@@ -33,6 +33,10 @@ interface SeriesDetailsProps {
   query?: Record<string, unknown> | null;
   session?: unknown;
   appIsLoading?: boolean;
+  compactLayout?: boolean;
+  isPhone?: boolean;
+  isTablet?: boolean;
+  isTabletLandscape?: boolean;
   registerLoadingComponent?: (component: string) => void;
   unregisterLoadingComponent?: (component: string) => void;
   [key: string]: unknown;
@@ -43,6 +47,9 @@ function SeriesDetails(props: Readonly<SeriesDetailsProps>) {
   const registerLoadingComponent = props.registerLoadingComponent || (() => {});
   const unregisterLoadingComponent = props.unregisterLoadingComponent || (() => {});
   const pageProps = props as Record<string, unknown>;
+  const compactLayout =
+    props.compactLayout ??
+    Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
   const { markDetailsLoaded, markHistoryLoaded } = useDualLoadingRegistration({
     registerLoadingComponent,
     unregisterLoadingComponent,
@@ -135,7 +142,7 @@ function SeriesDetails(props: Readonly<SeriesDetailsProps>) {
                   subheader={details.startyear + " - " + endYearLabel}
                   action={
                     <Stack direction="row" spacing={1} alignItems="center">
-                      <SortContainer {...pageProps} />
+                      {!compactLayout ? <SortContainer {...pageProps} /> : null}
                       <EditButton item={details} />
                     </Stack>
                   }
@@ -149,7 +156,7 @@ function SeriesDetails(props: Readonly<SeriesDetailsProps>) {
                     issues={issues}
                     loadingMore={Boolean(hasMore && fetching)}
                     previewProps={pageProps}
-                    showSort={false}
+                    showSort={compactLayout}
                   />
                 </CardContent>
               </React.Fragment>

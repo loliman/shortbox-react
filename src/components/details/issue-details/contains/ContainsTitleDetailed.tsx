@@ -75,6 +75,7 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
   const item = props.item;
   const issue = resolveIssueForDetails(item);
   const issueSelection = issue ? toIssueSelection(issue) : null;
+  const storyExpandNumber = String(item.parent?.number ?? item.number ?? "").trim();
 
   const smallChip =
     Boolean(props.isPhone) || (Boolean(props.isTablet) && Boolean(props.drawerOpen));
@@ -220,7 +221,10 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
               component="span"
               onClick={(e) => {
                 e.stopPropagation();
-                props.navigate?.(e, generateUrl(issueSelection, !props.us), { filter: null });
+                props.navigate?.(e, generateUrl(issueSelection, !props.us), {
+                  filter: null,
+                  expand: storyExpandNumber || undefined,
+                });
               }}
               aria-label="Details"
             >

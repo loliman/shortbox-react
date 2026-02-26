@@ -22,6 +22,10 @@ interface HomeProps {
   query?: { filter?: string; order?: string; direction?: string } | null;
   us?: boolean;
   appIsLoading?: boolean;
+  compactLayout?: boolean;
+  isPhone?: boolean;
+  isTablet?: boolean;
+  isTabletLandscape?: boolean;
   [key: string]: unknown;
 }
 
@@ -45,6 +49,9 @@ class Home extends React.Component<HomeProps> {
 
   render() {
     const filter = parseListingFilter(this.props.query, Boolean(this.props.us));
+    const compactLayout =
+      this.props.compactLayout ??
+      Boolean(this.props.isPhone || (this.props.isTablet && !this.props.isTabletLandscape));
 
     return (
       <PaginatedQuery
@@ -87,9 +94,11 @@ class Home extends React.Component<HomeProps> {
                             Das deutsche Archiv für Marvel Comics
                           </Typography>
                         </Box>
-                        <Box sx={{ display: "flex", justifyContent: "flex-end", flexGrow: 1 }}>
-                          <SortContainer {...this.props} />
-                        </Box>
+                        {!compactLayout ? (
+                          <Box sx={{ display: "flex", justifyContent: "flex-end", flexGrow: 1 }}>
+                            <SortContainer {...this.props} />
+                          </Box>
+                        ) : null}
                       </Box>
                       <Typography
                         component="p"
@@ -108,6 +117,8 @@ class Home extends React.Component<HomeProps> {
                         {HOME_SEO_SUMMARY}
                       </Typography>
                     </Box>
+
+                    {compactLayout ? <SortContainer {...this.props} /> : null}
 
                     <Stack spacing={1.5}>
                       {data.lastEdited

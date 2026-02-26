@@ -55,6 +55,7 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
         border: `1px solid ${theme.palette.divider}`,
         borderRadius: 1.5,
         overflow: "hidden",
+        boxShadow: theme.shadows[2],
         "&::after": activeCoverUrl
           ? {
               content: '""',

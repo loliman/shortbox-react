@@ -53,7 +53,13 @@ function Layout(props: Readonly<LayoutProps>) {
   }, [props.handleScroll]);
 
   return (
-    <Box sx={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
+    <Box
+      sx={{
+        minHeight: "100dvh",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <TopBar />
 
       <Box component="main" sx={{ display: "flex", flexGrow: 1, minHeight: 0 }}>
@@ -76,8 +82,35 @@ function Layout(props: Readonly<LayoutProps>) {
           }}
           onScroll={(e) => (props.handleScroll ? props.handleScroll(e) : false)}
         >
-          <Card sx={{ width: "100%", display: "flex", flexDirection: "column", minWidth: 0 }}>
-            <Box sx={{ flexGrow: 1, p: { xs: 0, sm: 2 }, minHeight: 0 }}>{children}</Box>
+          <Card
+            sx={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              minWidth: 0,
+              overflow: "hidden",
+            }}
+          >
+            <Box sx={{ flexGrow: 1, p: { xs: 0, sm: 2 }, minHeight: 0, position: "relative" }}>
+              <Box
+                aria-hidden
+                sx={{
+                  position: "absolute",
+                  right: 0,
+                  bottom: 0,
+                  width: "100%",
+                  height: "45%",
+                  backgroundImage: "url('/background.png')",
+                  backgroundPosition: "right bottom",
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "auto 100%",
+                  opacity: 0.04,
+                  pointerEvents: "none",
+                  zIndex: 0,
+                }}
+              />
+              <Box sx={{ position: "relative", zIndex: 1 }}>{children}</Box>
+            </Box>
 
             <Box
               sx={{
