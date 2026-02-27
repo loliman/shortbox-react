@@ -383,6 +383,26 @@ function AdminTasksPage(props: Readonly<AdminTasksProps>) {
                       <Box sx={{ width: 8 }} />
 
                     <Tooltip
+                      title={runningTaskKey === runningDryKey ? "Dry-Run läuft" : "Dry-Run starten"}
+                    >
+                      <span>
+                        <Button
+                          size="small"
+                          aria-label="Dry-Run starten"
+                          color="primary"
+                          disabled={Boolean(runningTaskKey)}
+                          sx={{ minWidth: 0, width: 32, height: 32, p: 0 }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            runSelectedTask(taskKey, true);
+                          }}
+                        >
+                          <ScienceOutlinedIcon fontSize="small" />
+                        </Button>
+                      </span>
+                    </Tooltip>
+
+                    <Tooltip
                       title={runningTaskKey === runningRealKey ? "Run läuft" : "Live-Run starten"}
                     >
                       <span>
