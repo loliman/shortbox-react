@@ -177,7 +177,10 @@ export default function TopBarFilterMenu(props: Readonly<TopBarFilterMenuProps>)
   );
 }
 
-function buildFilterTooltipTitle(isFilterActive: boolean, rawFilter?: string | null): React.ReactNode {
+function buildFilterTooltipTitle(
+  isFilterActive: boolean,
+  rawFilter?: string | null
+): React.ReactNode {
   if (!isFilterActive) return "Filtern";
   if (!rawFilter) return "Filter aktiv";
 
@@ -232,7 +235,11 @@ function buildFilterTooltipTitle(isFilterActive: boolean, rawFilter?: string | n
         Filter aktiv
       </Typography>
       {visibleEntries.map((entry, idx) => (
-        <Typography key={`${idx}|${entry}`} variant="caption" sx={{ display: "block", lineHeight: 1.35 }}>
+        <Typography
+          key={`${idx}|${entry}`}
+          variant="caption"
+          sx={{ display: "block", lineHeight: 1.35 }}
+        >
           - {entry}
         </Typography>
       ))}

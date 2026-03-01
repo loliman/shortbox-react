@@ -128,10 +128,7 @@ function Layout(props: Readonly<LayoutProps>) {
                 justifyContent: { xs: "center", sm: "flex-end" },
               }}
             >
-              <FooterLinks
-                isPhonePortrait={props.isPhonePortrait}
-                navigate={props.navigate}
-              />
+              <FooterLinks isPhonePortrait={props.isPhonePortrait} navigate={props.navigate} />
             </Box>
           </Card>
         </Box>

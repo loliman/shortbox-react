@@ -33,7 +33,8 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
     format: props.activeFormat ?? props.issue.format,
     variant: props.activeVariant ?? props.issue.variant,
   });
-  const activeVariant = variants.find((variant) => getIssueKey(variant) === activeKey) || variants[0];
+  const activeVariant =
+    variants.find((variant) => getIssueKey(variant) === activeKey) || variants[0];
   const candidateActiveCoverUrl = getVariantCoverUrl(activeVariant, Boolean(props.us));
   const activeCoverUrl = useResolvedImageUrl(candidateActiveCoverUrl, NO_COVER_URL);
 
@@ -95,7 +96,7 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
         }}
       >
         <Typography component="p" variant="body2" sx={{ fontWeight: 700 }}>
-            {variants.length === 1 ? "" : "Erhältlich in " + variants.length + " Varianten"}
+          {variants.length === 1 ? "" : "Erhältlich in " + variants.length + " Varianten"}
         </Typography>
       </AccordionSummary>
 
