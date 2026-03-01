@@ -220,7 +220,9 @@ export function TopBar(props: TopBarProps) {
 
         {compactLayout ? (
           <Box sx={{ display: "inline-flex", alignItems: "center", gap: 0.25 }}>
-            <Tooltip title={darkModeEnabled ? "Zu hellem Modus wechseln" : "Zu dunklem Modus wechseln"}>
+            <Tooltip
+              title={darkModeEnabled ? "Zu hellem Modus wechseln" : "Zu dunklem Modus wechseln"}
+            >
               <IconButton
                 color="inherit"
                 aria-label={darkModeEnabled ? "Hellmodus aktivieren" : "Darkmode aktivieren"}
@@ -319,7 +321,9 @@ export function TopBar(props: TopBarProps) {
                 />
               </Tooltip>
             </Box>
-            <Tooltip title={darkModeEnabled ? "Zu hellem Modus wechseln" : "Zu dunklem Modus wechseln"}>
+            <Tooltip
+              title={darkModeEnabled ? "Zu hellem Modus wechseln" : "Zu dunklem Modus wechseln"}
+            >
               <IconButton
                 color="inherit"
                 aria-label={darkModeEnabled ? "Hellmodus aktivieren" : "Darkmode aktivieren"}
@@ -398,10 +402,18 @@ export function TopBar(props: TopBarProps) {
             boxShadow: "0 -6px 18px rgba(0,0,0,0.12)",
           }}
         >
-          <IconButton color="inherit" aria-label="Navigation umschalten" onClick={() => toggleDrawer?.()}>
+          <IconButton
+            color="inherit"
+            aria-label="Navigation umschalten"
+            onClick={() => toggleDrawer?.()}
+          >
             <HamburgerIcon open={Boolean(drawerOpen)} />
           </IconButton>
-          <IconButton color="inherit" aria-label="Suche öffnen" onClick={() => setMobileSearchOpen(true)}>
+          <IconButton
+            color="inherit"
+            aria-label="Suche öffnen"
+            onClick={() => setMobileSearchOpen(true)}
+          >
             <SearchIcon />
           </IconButton>
           <TopBarFilterMenu
