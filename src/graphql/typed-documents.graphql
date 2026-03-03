@@ -70,6 +70,7 @@ query Issues(
       node {
         title
         number
+        legacy_number
         comicguideid
         collected
         cover {
@@ -212,6 +213,7 @@ query LastEdited($filter: Filter, $first: Int, $after: String, $order: String, $
     edges {
       node {
         number
+        legacy_number
         format
         variant
         verified
@@ -312,6 +314,7 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
     title
     isbn
     number
+    legacy_number
     format
     limitation
     pages
@@ -351,6 +354,7 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
             url
           }
           number
+          legacy_number
           series {
             title
             volume
@@ -378,6 +382,7 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
               url
             }
             number
+            legacy_number
             series {
               title
               volume
@@ -399,6 +404,7 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
             url
           }
           number
+          legacy_number
           title
           series {
             title
@@ -431,6 +437,7 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
             url
           }
           number
+          legacy_number
           series {
             title
             volume
@@ -451,6 +458,7 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
         number
         issue {
           number
+          legacy_number
           cover {
             url
           }
@@ -495,6 +503,7 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
     inheritsStories
     storyOwner {
       number
+      legacy_number
       format
       variant
       series {
@@ -514,7 +523,11 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
       format
       variant
       number
+      legacy_number
       comicguideid
+      stories {
+        number
+      }
       series {
         title
         volume

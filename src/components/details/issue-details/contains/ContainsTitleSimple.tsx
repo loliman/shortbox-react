@@ -2,10 +2,20 @@ import React from "react";
 import Typography from "@mui/material/Typography";
 import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
-import { generateItemTitle } from "../../../../util/issues";
+import { generateLabel } from "../../../../util/hierarchy";
+import { IssueReferenceInline } from "../../../generic/IssueNumberInline";
 
 type ContainsTitleSimpleItem = {
   addinfo?: string | null;
+  number?: string | number | null;
+  legacy_number?: string | null;
+  series?: {
+    title?: string;
+    volume?: number;
+    startyear?: number;
+    publisher?: { name?: string };
+  } | null;
+  title?: string | null;
   onlyoneprint?: boolean;
   onlytb?: boolean;
   parent?: unknown;
@@ -32,6 +42,8 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
     Boolean(props.isPhone) || (Boolean(props.isTablet) && Boolean(props.drawerOpen));
   const children = Array.isArray(item.children) ? item.children : [];
   const reprints = Array.isArray(item.reprints) ? item.reprints : [];
+  const hasIssueReference = Boolean(item.series);
+  const titleSuffix = item.title ? (hasIssueReference ? " - " + item.title : item.title) : "";
 
   return (
     <Box
@@ -45,7 +57,14 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
     >
       <Box sx={{ minWidth: 0 }}>
         <Typography sx={{ fontWeight: 600 }}>
-          {generateItemTitle(item, Boolean(props.us))}
+          {hasIssueReference ? (
+            <IssueReferenceInline
+              seriesLabel={item.series ? generateLabel({ series: item.series } as any) : undefined}
+              number={item.number}
+              legacy_number={item.legacy_number}
+            />
+          ) : null}
+          {titleSuffix ? <Box component="span" sx={{ fontWeight: hasIssueReference ? 400 : 600 }}>{titleSuffix}</Box> : null}
         </Typography>
         <Typography variant="body2" color="text.secondary">
           {item.addinfo ? item.addinfo : null}

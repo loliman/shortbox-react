@@ -96,8 +96,8 @@ function Layout(props: Readonly<LayoutProps>) {
                 aria-hidden
                 sx={{
                   position: "absolute",
-                  right: 0,
-                  bottom: 0,
+                  right: { xs: -12, sm: -16 },
+                  bottom: { xs: -12, sm: -16 },
                   width: "min(100%, 70vw)",
                   height: "45%",
                   backgroundImage: "url('/background.png')",

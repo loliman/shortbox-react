@@ -31,6 +31,7 @@ export type PreviewIssue = {
   id?: string | number | null;
   comicguideid?: string | number | null;
   number?: string | null;
+  legacy_number?: string | null;
   title?: string | null;
   verified?: boolean | null;
   stories?: Array<StoryLike | null> | null;

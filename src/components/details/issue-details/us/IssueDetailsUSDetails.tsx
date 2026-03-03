@@ -5,6 +5,7 @@ import { DetailsRow, toChipList, toShortboxDate } from "../../IssueDetails";
 interface IssueDetailsUSDetailsProps {
   issue?: {
     releasedate?: string;
+    legacy_number?: string | null;
     cover?: {
       individuals?: Array<{ type?: string } & Record<string, unknown>>;
     } | null;

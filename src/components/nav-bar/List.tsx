@@ -38,6 +38,7 @@ import {
 import { parseFilter } from "./listUtils";
 import { getSeriesLabel } from "../../util/issuePresentation";
 import CoverTooltip from "./CoverTooltip";
+import { IssueReferenceInline } from "../generic/IssueNumberInline";
 
 const LIST_PAGE_SIZE = 250;
 
@@ -610,6 +611,7 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
                       number: issueNumber,
                       title: issueNode.title,
                       format: issueNode.format,
+                      legacy_number: (issueNode as { legacy_number?: string | null }).legacy_number,
                       variant: getIssueNodeVariant(issueNode),
                       series: issueSeries,
                     },
@@ -633,7 +635,11 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
                             fontWeight: selected ? 700 : 400,
                           }}
                         >
-                          {createIssueLabel(issueNode, us)}
+                          <IssueReferenceInline
+                            seriesLabel={createIssueSeriesLabel(issueNode, us)}
+                            number={issueNode.number}
+                            legacy_number={(issueNode as { legacy_number?: string | null }).legacy_number}
+                          />
                         </Typography>
                         {hasVariants ? (
                           <Typography
@@ -805,15 +811,13 @@ function createSeriesLabel(seriesNode: SeriesNode): string {
   return getSeriesLabel(seriesNode, { fallbackYear: "?" });
 }
 
-function createIssueLabel(issueNode: IssueNode, us: boolean): string {
-  const number = issueNode.number || "";
+function createIssueSeriesLabel(issueNode: IssueNode, us: boolean): string {
   const seriesTitle = issueNode.series?.title || "";
   const variant = getIssueNodeVariant(issueNode);
   const variantLabel = variant ? ` [${variant}]` : "";
-  if (us) return `#${number} ${seriesTitle}`;
-  if (issueNode.title && issueNode.title !== "")
-    return `#${number} ${issueNode.title}${variantLabel}`;
-  return `#${number} ${seriesTitle}${variantLabel}`;
+  if (us) return seriesTitle;
+  if (issueNode.title && issueNode.title !== "") return `${issueNode.title}${variantLabel}`;
+  return `${seriesTitle}${variantLabel}`;
 }
 
 function getSelectedPublisherName(selected: SelectedRoot): string {

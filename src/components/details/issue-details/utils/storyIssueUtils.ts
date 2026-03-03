@@ -1,5 +1,6 @@
 export type StoryIssue = {
   number?: string | number;
+  legacy_number?: string | null;
   title?: string | null;
   collected?: boolean;
   series?: {

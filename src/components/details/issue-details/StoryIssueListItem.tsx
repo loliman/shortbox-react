@@ -7,7 +7,8 @@ import Box from "@mui/material/Box";
 import SearchIcon from "@mui/icons-material/Search";
 import CoverTooltip from "../../nav-bar/CoverTooltip";
 import type { StoryIssue } from "./utils/storyIssueUtils";
-import { getIssueLabel, getIssueUrl } from "../../../util/issuePresentation";
+import { getIssueLabel, getIssueUrl, getSeriesLabel } from "../../../util/issuePresentation";
+import { IssueReferenceInline } from "../../generic/IssueNumberInline";
 
 type NavigateFn = (event: unknown, url: string, query?: Record<string, unknown>) => void;
 
@@ -34,7 +35,6 @@ type StoryIssueListItemProps = {
 };
 
 export function StoryIssueListItem(props: Readonly<StoryIssueListItemProps>) {
-  const issueTitle = getIssueLabel(props.issue) + (props.titleSuffix || "");
   const publisherTitle = props.issue?.series?.publisher?.name || "";
   const routeUs = Boolean(props.routeUs);
   const coverUs = props.coverUs === undefined ? routeUs : props.coverUs;
@@ -65,7 +65,12 @@ export function StoryIssueListItem(props: Readonly<StoryIssueListItemProps>) {
                 textOverflow: "ellipsis",
               }}
             >
-              {issueTitle}
+              <IssueReferenceInline
+                seriesLabel={getSeriesLabel(props.issue.series)}
+                number={props.issue.number}
+                legacy_number={props.issue.legacy_number}
+              />
+              {props.titleSuffix ? <Box component="span">{props.titleSuffix}</Box> : null}
             </Typography>
 
             {props.parentLink ? (

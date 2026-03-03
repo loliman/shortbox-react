@@ -170,12 +170,15 @@ export function generateLabel(item?: SelectedRoot | null): string {
     const volume = item.issue.series.volume;
     const hasVolume = volume !== undefined && volume !== null;
 
+    const legacyNumber = safeValue((item.issue as Issue).legacy_number).trim();
+
     return (
       title +
       (item.issue.series.publisher && hasVolume ? " (Vol. " + romanize(volume) + ")" : "") +
       (year || "") +
       " #" +
-      safeValue(item.issue.number)
+      safeValue(item.issue.number) +
+      (legacyNumber ? " LGY #" + legacyNumber : "")
     );
   }
 

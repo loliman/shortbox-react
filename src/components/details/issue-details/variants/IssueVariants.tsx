@@ -15,7 +15,6 @@ type NavigateFn = (event: unknown, url: string, query?: Record<string, unknown>)
 
 type IssueVariantsProps = {
   issue: VariantIssue;
-  storyOwnerKey?: string;
   activeFormat?: string;
   activeVariant?: string;
   us?: boolean;
@@ -132,7 +131,7 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
           >
             {variants.map((variant, idx) => {
               const selected = getIssueKey(variant) === activeKey;
-              const storyOwner = getIssueKey(variant) === (props.storyOwnerKey || "");
+              const hasStories = ((variant.stories || []).filter(Boolean).length || 0) > 0;
 
               return (
                 <Box
@@ -165,7 +164,7 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
                             : "middle"
                     }
                     selected={selected}
-                    storyOwner={storyOwner}
+                    hasStories={hasStories}
                     session={props.session}
                     navigate={props.navigate}
                     us={Boolean(props.us)}

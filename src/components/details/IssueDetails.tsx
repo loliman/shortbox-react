@@ -21,6 +21,7 @@ import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import TitleLine from "../generic/TitleLine";
+import { IssueReferenceInline } from "../generic/IssueNumberInline";
 import type { Issue, SelectedRoot } from "../../types/domain";
 import { sanitizeHtml } from "../../util/sanitizeHtml";
 import { StoryArcChips } from "./issue-details/StoryArcChips";
@@ -171,17 +172,6 @@ function IssueDetails(props: IssueDetailsProps) {
     requestedIssueIdentityKey === loadedIssueIdentityKey &&
     requestedVariantKey !== loadedVariantKey &&
     !isIssueMissing;
-  const storyOwnerVariantKey = React.useMemo(() => {
-    if (!issueForVariants) return "";
-    const storyOwner = (issueForVariants as { storyOwner?: unknown }).storyOwner;
-    if (storyOwner)
-      return getIssueVariantKey(storyOwner as { format?: string | null; variant?: string | null });
-    const inheritsStories = Boolean(
-      (issueForVariants as { inheritsStories?: unknown }).inheritsStories
-    );
-    if (inheritsStories) return "";
-    return getIssueVariantKey(issueForVariants as unknown as any);
-  }, [issueForVariants]);
   const coverGalleryIssues = React.useMemo(
     () => (issueForVariants ? buildCoverGalleryIssues(issueForVariants) : []),
     [issueForVariants]
@@ -246,7 +236,13 @@ function IssueDetails(props: IssueDetailsProps) {
         <CardHeader
           title={
             <TitleLine
-              title={generateLabel(loadedIssue)}
+              title={
+                <IssueReferenceInline
+                  seriesLabel={generateLabel({ series: loadedIssue.series } as any)}
+                  number={loadedIssue.number}
+                  legacy_number={loadedIssue.legacy_number}
+                />
+              }
               id={loadedIssue.id ?? undefined}
               session={props.session}
             />
@@ -280,7 +276,6 @@ function IssueDetails(props: IssueDetailsProps) {
             <IssueVariants
               us={us}
               issue={issueForVariants as unknown as VariantIssue}
-              storyOwnerKey={storyOwnerVariantKey}
               activeFormat={selected.issue?.format ?? undefined}
               activeVariant={selected.issue?.variant ?? undefined}
               session={props.session}
@@ -380,8 +375,8 @@ function IssueDetails(props: IssueDetailsProps) {
                       issues={coverGalleryIssues}
                       activeFormat={selected.issue?.format ?? undefined}
                       activeVariant={selected.issue?.variant ?? undefined}
-                      storyOwnerKey={storyOwnerVariantKey}
                       navigate={props.navigate}
+                      session={props.session}
                     />
                   </Box>
                   {!us && issueForVariants.comicguideid ? (
@@ -401,9 +396,11 @@ function IssueDetails(props: IssueDetailsProps) {
                         rel="noopener noreferrer nofollow"
                         target="_blank"
                       >
-                        {generateLabel(issueForVariants.series as any) +
-                          " #" +
-                          issueForVariants.number}
+                        <IssueReferenceInline
+                          seriesLabel={generateLabel({ series: issueForVariants.series } as any)}
+                          number={issueForVariants.number}
+                          legacy_number={issueForVariants.legacy_number}
+                        />
                       </a>
                       &nbsp;wird bereitgestellt vom&nbsp;
                       <a
@@ -433,9 +430,11 @@ function IssueDetails(props: IssueDetailsProps) {
                         rel="noopener noreferrer nofollow"
                         target="_blank"
                       >
-                        {generateLabel(issueForVariants.series as any) +
-                          " #" +
-                          issueForVariants.number}
+                        <IssueReferenceInline
+                          seriesLabel={generateLabel({ series: issueForVariants.series } as any)}
+                          number={issueForVariants.number}
+                          legacy_number={issueForVariants.legacy_number}
+                        />
                       </a>
                       &nbsp;werden bezogen aus der&nbsp;
                       <a
@@ -508,7 +507,7 @@ function IssueDetails(props: IssueDetailsProps) {
                           issues={coverGalleryIssues}
                           activeFormat={selected.issue?.format ?? undefined}
                           activeVariant={selected.issue?.variant ?? undefined}
-                          storyOwnerKey={storyOwnerVariantKey}
+                          session={props.session}
                           navigate={props.navigate}
                         />
                       </Box>
@@ -536,7 +535,11 @@ function IssueDetails(props: IssueDetailsProps) {
                   rel="noopener noreferrer nofollow"
                   target="_blank"
                 >
-                  {generateLabel(issueForVariants.series as any) + " #" + issueForVariants.number}
+                  <IssueReferenceInline
+                    seriesLabel={generateLabel({ series: issueForVariants.series } as any)}
+                    number={issueForVariants.number}
+                    legacy_number={issueForVariants.legacy_number}
+                  />
                 </a>
                 &nbsp;wird bereitgestellt vom&nbsp;
                 <a
@@ -566,7 +569,11 @@ function IssueDetails(props: IssueDetailsProps) {
                   rel="noopener noreferrer nofollow"
                   target="_blank"
                 >
-                  {generateLabel(issueForVariants.series as any) + " #" + issueForVariants.number}
+                  <IssueReferenceInline
+                    seriesLabel={generateLabel({ series: issueForVariants.series } as any)}
+                    number={issueForVariants.number}
+                    legacy_number={issueForVariants.legacy_number}
+                  />
                 </a>
                 &nbsp;werden bezogen aus der&nbsp;
                 <a
@@ -609,8 +616,8 @@ function IssueCoverGallery(props: {
   issues: PreviewIssue[];
   activeFormat?: string;
   activeVariant?: string;
-  storyOwnerKey?: string;
   navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
+  session: unknown
 }) {
   const maxIndex = Math.max(0, props.issues.length - 1);
   const activeIssueKey = getIssueVariantKey({
@@ -622,7 +629,7 @@ function IssueCoverGallery(props: {
     return idx >= 0 ? idx : 0;
   }, [activeIssueKey, props.issues]);
   const activeIssue = props.issues[activeIndex] || props.issues[0];
-  const isStoryOwner = getIssueVariantKey(activeIssue) === (props.storyOwnerKey || "");
+  const hasStories = Boolean(props.session) && ((activeIssue?.stories || []).filter(Boolean).length || 0) > 0;
 
   if (!activeIssue) return null;
 
@@ -630,7 +637,7 @@ function IssueCoverGallery(props: {
     <Box sx={{ position: "relative", width: "100%" }}>
       <IssueCover us={props.us} issue={activeIssue} />
 
-      {isStoryOwner ? (
+      {hasStories ? (
         <Box
           sx={{
             position: "absolute",
@@ -644,8 +651,8 @@ function IssueCoverGallery(props: {
             pointerEvents: "none",
             textShadow: "0 1px 2px rgba(0,0,0,0.7)",
           }}
-          title="Story-Quelle"
-          aria-label="Story-Quelle"
+          title="Eigene Stories"
+          aria-label="Eigene Stories"
         >
           <BookmarkBorderIcon sx={{ fontSize: 24 }} />
         </Box>

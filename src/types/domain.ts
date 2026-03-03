@@ -64,6 +64,7 @@ export interface Series {
 export interface Issue {
   id?: string | number | null;
   number: string;
+  legacy_number?: string | null;
   title?: string | null;
   format?: string | null;
   variant?: string | null;

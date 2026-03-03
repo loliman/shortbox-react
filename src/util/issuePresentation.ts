@@ -13,6 +13,7 @@ type SeriesLike = {
 
 type IssueLike = {
   number?: string | number | null;
+  legacy_number?: string | null;
   format?: string | null;
   variant?: string | null;
   series?: SeriesLike | null;
@@ -40,9 +41,15 @@ export function getIssueLabel(issue?: IssueLike | null): string {
 
   const seriesLabel = getSeriesLabel(issue.series);
   const number = issue.number !== undefined && issue.number !== null ? String(issue.number) : "";
+  const legacyLabel = getLegacyNumberLabel(issue);
 
-  if (!seriesLabel) return number ? `#${number}` : "";
-  return number ? `${seriesLabel} #${number}` : seriesLabel;
+  if (!seriesLabel) return number ? `#${number}${legacyLabel ? ` ${legacyLabel}` : ""}` : legacyLabel;
+  return number ? `${seriesLabel} #${number}${legacyLabel ? ` ${legacyLabel}` : ""}` : seriesLabel;
+}
+
+export function getLegacyNumberLabel(issue?: Pick<IssueLike, "legacy_number"> | null): string {
+  const legacy = String(issue?.legacy_number || "").trim();
+  return legacy ? `LGY #${legacy}` : "";
 }
 
 export function getIssueUrl(issue: IssueLike | undefined, us: boolean): string {

@@ -2,7 +2,7 @@ import React from "react";
 import Box from "@mui/material/Box";
 
 interface TitleLineProps {
-  title: string;
+  title: React.ReactNode;
   session?: unknown;
   id?: string | number;
 }

@@ -9,7 +9,8 @@ import Stack from "@mui/material/Stack";
 import { withContext } from "../generic";
 import { handleInAppLinkClick } from "../generic/linkUtils";
 import { useResolvedImageUrl } from "../generic/useResolvedImageUrl";
-import { getIssueLabel, getIssueUrl } from "../../util/issuePresentation";
+import { getIssueLabel, getIssueUrl, getSeriesLabel } from "../../util/issuePresentation";
+import { IssueReferenceInline } from "../generic/IssueNumberInline";
 import {
   getIssuePreviewCover,
   getIssueVariantLabel,
@@ -57,7 +58,13 @@ function IssuePreviewSmall(props: Readonly<IssuePreviewSmallProps>) {
       >
         <CardContent>
           <Stack spacing={1.5}>
-            <Typography variant="subtitle1">{issueLabel}</Typography>
+            <Typography variant="subtitle1">
+              <IssueReferenceInline
+                seriesLabel={getSeriesLabel(props.issue.series)}
+                number={props.issue.number}
+                legacy_number={props.issue.legacy_number}
+              />
+            </Typography>
 
             {props.issue.title ? (
               <Typography variant="body2" color="text.secondary">

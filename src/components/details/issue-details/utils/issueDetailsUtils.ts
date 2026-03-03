@@ -51,10 +51,39 @@ export function getVariantKey(
 }
 
 export function compareIssueNumbers(issueNumber: string, filterNumber: string): number {
-  const issueNumeric = Number(issueNumber);
-  const filterNumeric = Number(filterNumber);
+  const parseSortableIssueNumber = (value: string): number | null => {
+    const trimmed = String(value).trim();
+    const unicodeFractionMatch = trimmed.match(/^(-?\d+)?\s*([¼½¾])$/);
+    if (unicodeFractionMatch) {
+      const whole = Number(unicodeFractionMatch[1] || 0);
+      const fractionValues: Record<string, number> = {
+        "¼": 0.25,
+        "½": 0.5,
+        "¾": 0.75,
+      };
+      const fraction = fractionValues[unicodeFractionMatch[2]];
+      if (Number.isFinite(whole) && fraction != null) return whole + fraction;
+    }
 
-  if (Number.isFinite(issueNumeric) && Number.isFinite(filterNumeric)) {
+    const fractionMatch = trimmed.match(/^(-?\d+)\s*\/\s*(\d+)$/);
+    if (fractionMatch) {
+      const numerator = Number(fractionMatch[1]);
+      const denominator = Number(fractionMatch[2]);
+      if (Number.isFinite(numerator) && Number.isFinite(denominator) && denominator !== 0) {
+        return numerator / denominator;
+      }
+      return null;
+    }
+
+    if (!/^-?\d+(?:[.,]\d+)?$/.test(trimmed)) return null;
+    const parsed = Number(trimmed.replace(",", "."));
+    return Number.isFinite(parsed) ? parsed : null;
+  };
+
+  const issueNumeric = parseSortableIssueNumber(issueNumber);
+  const filterNumeric = parseSortableIssueNumber(filterNumber);
+
+  if (issueNumeric != null && filterNumeric != null) {
     return issueNumeric - filterNumeric;
   }
 

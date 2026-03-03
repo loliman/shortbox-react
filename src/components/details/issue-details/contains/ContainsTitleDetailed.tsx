@@ -6,16 +6,19 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 import CoverTooltip from "../../../nav-bar/CoverTooltip";
-import { generateItemTitle } from "../../../../util/issues";
 import { generateLabel, generateUrl } from "../../../../util/hierarchy";
+import { romanize } from "../../../../util/util";
 import type { SelectedRoot } from "../../../../types/domain";
+import { IssueReferenceInline } from "../../../generic/IssueNumberInline";
 
 type NavigateFn = (event: unknown, url: string, query?: Record<string, unknown>) => void;
 
 type ContainsIssueLike = {
   number?: string | number;
+  legacy_number?: string | null;
   format?: string | null;
   variant?: string | null;
+  stories?: Array<unknown> | null;
   series?: {
     title?: string;
     volume?: number;
@@ -76,16 +79,20 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
   const issue = resolveIssueForDetails(item);
   const issueSelection = issue ? toIssueSelection(issue) : null;
   const storyExpandNumber = String(item.parent?.number ?? item.number ?? "").trim();
+  const storyNumberBadge = getStoryNumberBadge(item);
 
   const smallChip =
     Boolean(props.isPhone) || (Boolean(props.isTablet) && Boolean(props.drawerOpen));
   const exclusive = Boolean(item.exclusive && !props.us);
   const variant = !props.us && issue?.variant ? " " + issue.variant : "";
-  const parentTitle = !item.title && item.parent?.title ? item.parent.title : undefined;
+  const itemTitle = normalizeDisplayStoryTitle(item.title);
+  const parentTitle = !itemTitle && item.parent?.title ? normalizeDisplayStoryTitle(item.parent.title) : undefined;
   const addinfoText = buildAddinfoText(item);
   const reprintSelection = item.parent?.reprintOf?.issue
     ? toIssueSelection(item.parent.reprintOf.issue)
     : null;
+  const hasIssueReference = Boolean(issue?.series);
+  const titleSuffix = itemTitle ? (hasIssueReference ? " - " + itemTitle : itemTitle) : "";
 
   return (
     <Box
@@ -100,7 +107,23 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
       <Box sx={{ minWidth: 0 }}>
         <Box>
           <Typography sx={{ fontWeight: 600 }}>
-            {generateItemTitle(item.issue ? item.issue : item, Boolean(props.us))}
+            <IssueReferenceInline
+              seriesLabel={
+                hasIssueReference ? generateLabel({ series: issue?.series as any } as any) : undefined
+              }
+              number={hasIssueReference ? issue?.number : undefined}
+              legacy_number={issue?.legacy_number}
+            />
+            {storyNumberBadge ? (
+              <Box component="span" sx={{ color: "text.primary", fontWeight: "inherit" }}>
+                {storyNumberBadge}
+              </Box>
+            ) : null}
+            {titleSuffix ? (
+              <Box component="span" sx={{ fontWeight: hasIssueReference ? 400 : 600 }}>
+                {titleSuffix}
+              </Box>
+            ) : null}
           </Typography>
           {parentTitle ? (
             <Typography variant="body2" color="text.secondary">
@@ -257,6 +280,7 @@ function resolveIssueForDetails(item: ContainsItemLike): ContainsIssueLike | und
     return {
       ...baseIssue,
       number: baseIssue.issue.number,
+      legacy_number: (baseIssue.issue as { legacy_number?: string | null }).legacy_number,
       series: baseIssue.issue.series,
     };
   }
@@ -265,4 +289,17 @@ function resolveIssueForDetails(item: ContainsItemLike): ContainsIssueLike | und
 
 function toIssueSelection(issue: ContainsIssueLike): SelectedRoot {
   return { issue: issue as SelectedRoot["issue"] };
+}
+
+function normalizeDisplayStoryTitle(value: string | null | undefined): string {
+  const normalized = String(value || "").trim();
+  return normalized === "Untitled" ? "" : normalized;
+}
+
+function getStoryNumberBadge(item: ContainsItemLike): string {
+  const storyNumber = Number(item.parent?.number);
+  const storyCount = Array.isArray(item.parent?.issue?.stories) ? item.parent.issue.stories.length : 0;
+
+  if (!Number.isFinite(storyNumber) || storyNumber <= 0 || storyCount <= 1) return "";
+  return ` [${romanize(storyNumber)}]`;
 }

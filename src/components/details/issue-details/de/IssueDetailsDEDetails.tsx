@@ -6,6 +6,7 @@ interface IssueDetailsDEDetailsProps {
   issue?: {
     format?: string;
     limitation?: string | number;
+    legacy_number?: string | null;
     pages?: number;
     releasedate?: string;
     price?: number | string;

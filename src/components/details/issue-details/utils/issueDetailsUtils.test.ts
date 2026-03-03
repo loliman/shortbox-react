@@ -68,6 +68,9 @@ describe("issueDetailsUtils", () => {
 
   it("compares issue numbers numerically and naturally", () => {
     expect(compareIssueNumbers("10", "2")).toBe(8);
+    expect(compareIssueNumbers("-1", "1")).toBeLessThan(0);
+    expect(compareIssueNumbers("1/2", "1")).toBeLessThan(0);
+    expect(compareIssueNumbers("½", "1")).toBeLessThan(0);
     expect(compareIssueNumbers("1A", "1B")).toBeLessThan(0);
   });
 });

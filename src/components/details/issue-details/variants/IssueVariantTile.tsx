@@ -14,7 +14,7 @@ type IssueVariantTileProps = {
   variant: VariantIssue;
   us: boolean;
   selected?: boolean;
-  storyOwner?: boolean;
+  hasStories?: boolean;
   edge?: "single" | "start" | "middle" | "end";
   session?: unknown;
   navigate?: NavigateFn;
@@ -28,7 +28,7 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
   const selected =
     props.selected ??
     (props.issue.format === props.variant.format && props.issue.variant === props.variant.variant);
-  const mainIssue = Boolean(props.session) && Boolean(props.storyOwner);
+  const showBookmark = Boolean(props.session) && Boolean(props.hasStories);
   const variantLabel =
     (props.variant.format || "") +
     " (" +
@@ -59,7 +59,7 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
         boxShadow: selected ? "inset 0 0 0 2px rgba(255,255,255,0.92)" : 1,
       }}
     >
-      {mainIssue ? (
+      {showBookmark ? (
         <Box
           sx={{
             position: "absolute",
@@ -72,8 +72,8 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
             justifyContent: "center",
             pointerEvents: "none",
           }}
-          title="Story-Quelle"
-          aria-label="Story-Quelle"
+          title="Eigene Stories"
+          aria-label="Eigene Stories"
         >
           <BookmarkBorderIcon sx={{ fontSize: 22 }} />
         </Box>
