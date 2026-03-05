@@ -19,6 +19,9 @@ export function DetailsTable(props: Readonly<DetailsTableProps>) {
             px: 1.5,
             py: 0.9,
           },
+          "& .MuiTableBody-root .MuiTableRow-root:last-child .MuiTableCell-root": {
+            borderBottom: 0,
+          },
         }}
       >
         <TableBody>

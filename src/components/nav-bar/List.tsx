@@ -31,6 +31,7 @@ import { NoEntries, TypeListEntryPlaceholder } from "./ListPlaceholders";
 import type { HierarchyLevelType } from "../../util/hierarchy";
 import type { Issue, SelectedRoot, Series } from "../../types/domain";
 import {
+  COMPACT_BOTTOM_BAR_CLEARANCE,
   drawerHeaderAdjustedHeight,
   drawerHeaderTopOffset,
   getNavDrawerWidth,
@@ -290,7 +291,14 @@ function List(props: Readonly<ListProps>) {
   );
 
   const drawerContent = (
-    <MuiList ref={listRef} sx={{ width: "100%", p: 0 }}>
+    <MuiList
+      ref={listRef}
+      sx={{
+        width: "100%",
+        p: 0,
+        pb: temporaryDrawer ? COMPACT_BOTTOM_BAR_CLEARANCE : 0,
+      }}
+    >
       {content}
     </MuiList>
   );

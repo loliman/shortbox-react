@@ -23,6 +23,10 @@ interface SearchBarProps {
   us?: boolean;
   navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
   autoFocus?: boolean;
+  compactLayout?: boolean;
+  isPhone?: boolean;
+  isTablet?: boolean;
+  isTabletLandscape?: boolean;
   onFocus?: (
     event: React.FocusEvent<HTMLElement> | React.MouseEvent<HTMLElement> | null,
     focus: boolean
@@ -36,6 +40,9 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
   const [hintDotCount, setHintDotCount] = useState(0);
   const queryPattern = debouncedPattern;
   const us = Boolean(props.us);
+  const compactLayout =
+    props.compactLayout ??
+    Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
 
   useEffect(() => {
     const handle = window.setTimeout(() => {
@@ -96,11 +103,7 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
   };
 
   return (
-    <Box
-      sx={{
-        width: "100%",
-      }}
-    >
+    <Box sx={{ width: "100%" }}>
       <Backdrop
         open={focused}
         onClick={(e) => closeSearch(e as unknown as React.MouseEvent<HTMLElement>)}
@@ -122,10 +125,13 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
               position: "fixed !important",
               top: { xs: "86px !important", sm: "94px !important" },
               left: "50% !important",
+              right: "auto !important",
               transform: "translateX(-50%) !important",
-              width: "min(96vw, 770px) !important",
-              maxWidth: "96vw !important",
-              minWidth: "min(96vw, 770px) !important",
+              width: compactLayout
+                ? "95vw !important"
+                : "min(96vw, 770px) !important",
+              maxWidth: compactLayout ? "95vw !important" : "96vw !important",
+              minWidth: compactLayout ? "95vw !important" : "min(96vw, 770px) !important",
               zIndex: (theme) => theme.zIndex.appBar + 3,
             },
           },
@@ -268,7 +274,7 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
           width: "100%",
           position: "relative",
           zIndex: (theme) => theme.zIndex.appBar + 2,
-          transform: focused ? "scale(1.1)" : "scale(1)",
+          transform: focused ? (compactLayout ? "scale(1)" : "scale(1.1)") : "scale(1)",
           transformOrigin: "center",
           transition: "transform 220ms ease",
           "& .MuiOutlinedInput-root": {

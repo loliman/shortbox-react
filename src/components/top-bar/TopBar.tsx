@@ -340,34 +340,54 @@ export function TopBar(props: TopBarProps) {
             right: 0,
             top: 0,
             zIndex: (theme) => theme.zIndex.drawer + 3,
-            px: 1,
+            px: 0,
             py: 0.75,
             bgcolor: (theme) =>
               theme.palette.mode === "dark" ? "#0f172a" : theme.palette.primary.main,
             borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
           }}
         >
-          <Box sx={{ mx: "auto", width: "min(87vw, 700px)" }}>
-            <SearchBar
-              us={us}
-              navigate={navigate}
-              autoFocus={true}
-              onFocus={(
-                _event: React.FocusEvent<HTMLElement> | React.MouseEvent<HTMLElement> | null,
-                focus: boolean
-              ) => {
-                if (!focus) setMobileSearchOpen(false);
-              }}
-            />
+          <Box sx={{ width: "95vw", mx: "auto", position: "relative" }}>
+            <Box sx={{ minWidth: 0, pr: 7.5 }}>
+              <SearchBar
+                us={us}
+                navigate={navigate}
+                autoFocus={true}
+                onFocus={(
+                  _event: React.FocusEvent<HTMLElement> | React.MouseEvent<HTMLElement> | null,
+                  focus: boolean
+                ) => {
+                  if (!focus) setMobileSearchOpen(false);
+                }}
+              />
+            </Box>
             <IconButton
+              size="small"
               color="inherit"
               aria-label="Suche schließen"
               onClick={() => setMobileSearchOpen(false)}
               sx={{
                 position: "absolute",
-                right: 6,
+                right: 4,
                 top: "50%",
                 transform: "translateY(-50%)",
+                zIndex: (theme) => theme.zIndex.appBar + 4,
+                p: 0.75,
+                bgcolor: (theme) =>
+                  theme.palette.mode === "dark"
+                    ? alpha(theme.palette.common.white, 0.08)
+                    : alpha(theme.palette.common.black, 0.12),
+                border: "1px solid",
+                borderColor: (theme) =>
+                  theme.palette.mode === "dark"
+                    ? alpha(theme.palette.common.white, 0.14)
+                    : alpha(theme.palette.common.black, 0.12),
+                "&:hover": {
+                  bgcolor: (theme) =>
+                    theme.palette.mode === "dark"
+                      ? alpha(theme.palette.common.white, 0.14)
+                      : alpha(theme.palette.common.black, 0.18),
+                },
               }}
             >
               <CloseIcon />

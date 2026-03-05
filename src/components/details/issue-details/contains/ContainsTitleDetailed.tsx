@@ -67,8 +67,10 @@ type ContainsTitleDetailedProps = {
   simple?: boolean;
   isCover?: boolean;
   session?: unknown;
+  compactLayout?: boolean;
   isPhone?: boolean;
   isTablet?: boolean;
+  isTabletLandscape?: boolean;
   drawerOpen?: boolean;
   isPhonePortrait?: boolean;
   navigate?: NavigateFn;
@@ -81,35 +83,73 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
   const storyExpandNumber = String(item.parent?.number ?? item.number ?? "").trim();
   const storyNumberBadge = getStoryNumberBadge(item);
 
-  const smallChip =
-    Boolean(props.isPhone) || (Boolean(props.isTablet) && Boolean(props.drawerOpen));
+  const stackActions =
+    props.compactLayout ??
+    Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
   const exclusive = Boolean(item.exclusive && !props.us);
   const variant = !props.us && issue?.variant ? " " + issue.variant : "";
   const itemTitle = normalizeDisplayStoryTitle(item.title);
-  const parentTitle = !itemTitle && item.parent?.title ? normalizeDisplayStoryTitle(item.parent.title) : undefined;
+  const parentTitle =
+    !itemTitle && item.parent?.title ? normalizeDisplayStoryTitle(item.parent.title) : undefined;
   const addinfoText = buildAddinfoText(item);
   const reprintSelection = item.parent?.reprintOf?.issue
     ? toIssueSelection(item.parent.reprintOf.issue)
     : null;
   const hasIssueReference = Boolean(issue?.series);
   const titleSuffix = itemTitle ? (hasIssueReference ? " - " + itemTitle : itemTitle) : "";
+  const actionChips = buildDetailedActionChips({
+    item,
+    isCover: props.isCover,
+    exclusive,
+    hasSession: Boolean(props.session),
+  });
+  const detailButton =
+    !exclusive && issue && issueSelection ? (
+      <CoverTooltip issue={issue} us={props.us}>
+        <IconButton
+          component="span"
+          onClick={(e) => {
+            e.stopPropagation();
+            props.navigate?.(e, generateUrl(issueSelection, !props.us), {
+              filter: null,
+              expand: storyExpandNumber || undefined,
+            });
+          }}
+          aria-label="Details"
+        >
+          <SearchIcon fontSize="small" />
+        </IconButton>
+      </CoverTooltip>
+    ) : null;
 
   return (
     <Box
-      sx={{
-        width: "100%",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "flex-start",
-        gap: 1,
-      }}
+      sx={
+        stackActions
+          ? {
+              width: "100%",
+              display: "grid",
+              gridTemplateColumns: "minmax(0, 1fr) auto",
+              alignItems: "start",
+              columnGap: 1,
+            }
+          : {
+              width: "100%",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+              gap: 1,
+            }
+      }
     >
       <Box sx={{ minWidth: 0 }}>
         <Box>
           <Typography sx={{ fontWeight: 600 }}>
             <IssueReferenceInline
               seriesLabel={
-                hasIssueReference ? generateLabel({ series: issue?.series as any } as any) : undefined
+                hasIssueReference
+                  ? generateLabel({ series: issue?.series as any } as any)
+                  : undefined
               }
               number={hasIssueReference ? issue?.number : undefined}
               legacy_number={issue?.legacy_number}
@@ -177,85 +217,40 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
         <Typography variant="body2" color="text.secondary">
           {addinfoText !== "" ? addinfoText : null}
         </Typography>
-      </Box>
 
-      <Box
-        sx={{
-          ml: "auto",
-          alignSelf: "center",
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 0.75,
-          justifyContent: "flex-end",
-          alignItems: "center",
-        }}
-      >
-        {!props.isCover && item.url && item.number === 0 ? (
-          !smallChip ? (
-            <Chip label="Cover" color="default" />
-          ) : (
-            <Chip label="C" color="default" />
-          )
-        ) : null}
-
-        {!props.isCover && item.onlyapp && item.parent ? (
-          !smallChip ? (
-            <Chip label="Einzige Veröffentlichung" color="secondary" />
-          ) : (
-            <Chip label="1x" color="secondary" />
-          )
-        ) : null}
-
-        {!props.isCover && !item.onlyapp && item.firstapp && item.parent ? (
-          <Chip label={!smallChip ? "Erstveröffentlichung" : "1."} color="primary" />
-        ) : null}
-
-        {!props.isCover && item.otheronlytb && item.parent ? (
-          <Chip
-            variant="outlined"
-            label={!smallChip ? "Sonst nur in Taschenbuch" : "TB"}
-            color="default"
-          />
-        ) : null}
-
-        {exclusive ? (
-          !smallChip ? (
-            <Chip label="Exklusiv" color="secondary" />
-          ) : (
-            <Chip label="Exkl." color="secondary" />
-          )
-        ) : null}
-
-        {item.parent?.collectedmultipletimes && props.session ? (
-          !smallChip ? (
-            <Chip color="success" label="Mehrfach gesammelt" />
-          ) : (
-            <Chip color="success" label="Mehrfach" />
-          )
-        ) : null}
-
-        {!item.parent?.collectedmultipletimes && item.parent?.collected && props.session ? (
-          <Chip color="success" label="Gesammelt" />
-        ) : null}
-
-        {!exclusive && issue && issueSelection ? (
-          <CoverTooltip issue={issue} us={props.us}>
-            <IconButton
-              component="span"
-              onClick={(e) => {
-                e.stopPropagation();
-                props.navigate?.(e, generateUrl(issueSelection, !props.us), {
-                  filter: null,
-                  expand: storyExpandNumber || undefined,
-                });
-              }}
-              aria-label="Details"
-            >
-              <SearchIcon fontSize="small" />
-            </IconButton>
-          </CoverTooltip>
+        {stackActions && actionChips.length > 0 ? (
+          <Box
+            sx={{
+              mt: 1,
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 0.75,
+              alignItems: "center",
+            }}
+          >
+            {actionChips}
+          </Box>
         ) : null}
       </Box>
+
+      {stackActions ? (
+        <Box sx={{ justifySelf: "end", alignSelf: "center" }}>{detailButton}</Box>
+      ) : (
+        <Box
+          sx={{
+            ml: "auto",
+            alignSelf: "center",
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 0.75,
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        >
+          {actionChips}
+          {detailButton}
+        </Box>
+      )}
     </Box>
   );
 }
@@ -291,6 +286,52 @@ function toIssueSelection(issue: ContainsIssueLike): SelectedRoot {
   return { issue: issue as SelectedRoot["issue"] };
 }
 
+function buildDetailedActionChips({
+  item,
+  isCover,
+  exclusive,
+  hasSession,
+}: {
+  item: ContainsItemLike;
+  isCover?: boolean;
+  exclusive: boolean;
+  hasSession: boolean;
+}): React.ReactElement[] {
+  const chips: React.ReactElement[] = [];
+
+  if (!isCover && item.url && item.number === 0) {
+    chips.push(<Chip key="cover" label="Cover" color="default" />);
+  }
+
+  if (!isCover && item.onlyapp && item.parent) {
+    chips.push(<Chip key="onlyapp" label="Einzige Veröffentlichung" color="secondary" />);
+  }
+
+  if (!isCover && !item.onlyapp && item.firstapp && item.parent) {
+    chips.push(<Chip key="firstapp" label="Erstveröffentlichung" color="primary" />);
+  }
+
+  if (!isCover && item.otheronlytb && item.parent) {
+    chips.push(
+      <Chip key="otheronlytb" variant="outlined" label="Sonst nur in Taschenbuch" color="default" />
+    );
+  }
+
+  if (exclusive) {
+    chips.push(<Chip key="exclusive" label="Exklusiv" color="secondary" />);
+  }
+
+  if (item.parent?.collectedmultipletimes && hasSession) {
+    chips.push(<Chip key="collectedmultiple" color="success" label="Mehrfach gesammelt" />);
+  }
+
+  if (!item.parent?.collectedmultipletimes && item.parent?.collected && hasSession) {
+    chips.push(<Chip key="collected" color="success" label="Gesammelt" />);
+  }
+
+  return chips;
+}
+
 function normalizeDisplayStoryTitle(value: string | null | undefined): string {
   const normalized = String(value || "").trim();
   return normalized === "Untitled" ? "" : normalized;
@@ -298,7 +339,9 @@ function normalizeDisplayStoryTitle(value: string | null | undefined): string {
 
 function getStoryNumberBadge(item: ContainsItemLike): string {
   const storyNumber = Number(item.parent?.number);
-  const storyCount = Array.isArray(item.parent?.issue?.stories) ? item.parent.issue.stories.length : 0;
+  const storyCount = Array.isArray(item.parent?.issue?.stories)
+    ? item.parent.issue.stories.length
+    : 0;
 
   if (!Number.isFinite(storyNumber) || storyNumber <= 0 || storyCount <= 1) return "";
   return ` [${romanize(storyNumber)}]`;

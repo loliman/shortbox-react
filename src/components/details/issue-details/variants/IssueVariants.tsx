@@ -34,7 +34,10 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
   });
   const activeVariant = variants.find((variant) => getIssueKey(variant) === activeKey) || variants[0];
   const candidateActiveCoverUrl = getVariantCoverUrl(activeVariant, Boolean(props.us));
-  const activeCoverUrl = useResolvedImageUrl(candidateActiveCoverUrl, NO_COVER_URL);
+  const { resolvedUrl: activeCoverUrl, isLoading: isActiveCoverLoading } = useResolvedImageUrl(
+    candidateActiveCoverUrl,
+    NO_COVER_URL
+  );
 
   return (
     <Accordion
@@ -55,8 +58,25 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
         borderRadius: 1.5,
         overflow: "hidden",
         boxShadow: theme.shadows[2],
-        "&::after": activeCoverUrl
+        "&::after": isActiveCoverLoading
           ? {
+              content: '""',
+              position: "absolute",
+              inset: 0,
+              backgroundImage:
+                theme.palette.mode === "dark"
+                  ? "linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), linear-gradient(110deg, rgba(255, 255, 255, 0.04) 25%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.04) 75%)"
+                  : "linear-gradient(rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.35)), linear-gradient(110deg, rgba(0, 0, 0, 0.04) 25%, rgba(0, 0, 0, 0.14) 50%, rgba(0, 0, 0, 0.04) 75%)",
+              backgroundSize: "100% 100%, 220% 100%",
+              backgroundPosition: "0 0, 200% 0",
+              backgroundRepeat: "no-repeat, no-repeat",
+              opacity: 0.7,
+              transform: "scale(1.03)",
+              zIndex: 0,
+              animation: "variantCoverShimmer 1.4s ease-in-out infinite",
+            }
+          : activeCoverUrl
+            ? {
               content: '""',
               position: "absolute",
               inset: 0,
@@ -72,7 +92,11 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
               transform: "scale(1.03)",
               zIndex: 0,
             }
-          : undefined,
+            : undefined,
+        "@keyframes variantCoverShimmer": {
+          "0%": { backgroundPosition: "0 0, 220% 0" },
+          "100%": { backgroundPosition: "0 0, -20% 0" },
+        },
         "&::before": { display: "none" },
       })}
     >

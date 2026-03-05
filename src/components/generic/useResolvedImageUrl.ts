@@ -1,22 +1,38 @@
 import React from "react";
 
-export function useResolvedImageUrl(candidateUrl: string, fallbackUrl: string): string {
-  const [resolvedUrl, setResolvedUrl] = React.useState(fallbackUrl);
+type ResolvedImageState = {
+  resolvedUrl: string;
+  isLoading: boolean;
+};
+
+export function useResolvedImageUrl(
+  candidateUrl: string,
+  fallbackUrl: string
+): ResolvedImageState {
+  const [state, setState] = React.useState<ResolvedImageState>(() => {
+    const nextCandidate = candidateUrl || fallbackUrl;
+    if (!nextCandidate || nextCandidate === fallbackUrl) {
+      return { resolvedUrl: fallbackUrl, isLoading: false };
+    }
+    return { resolvedUrl: "", isLoading: true };
+  });
 
   React.useEffect(() => {
     const nextCandidate = candidateUrl || fallbackUrl;
     if (nextCandidate === fallbackUrl) {
-      setResolvedUrl(fallbackUrl);
+      setState({ resolvedUrl: fallbackUrl, isLoading: false });
       return;
     }
+
+    setState({ resolvedUrl: "", isLoading: true });
 
     let isCancelled = false;
     const img = new Image();
     img.onload = () => {
-      if (!isCancelled) setResolvedUrl(nextCandidate);
+      if (!isCancelled) setState({ resolvedUrl: nextCandidate, isLoading: false });
     };
     img.onerror = () => {
-      if (!isCancelled) setResolvedUrl(fallbackUrl);
+      if (!isCancelled) setState({ resolvedUrl: fallbackUrl, isLoading: false });
     };
     img.src = nextCandidate;
 
@@ -25,5 +41,5 @@ export function useResolvedImageUrl(candidateUrl: string, fallbackUrl: string): 
     };
   }, [candidateUrl, fallbackUrl]);
 
-  return resolvedUrl;
+  return state;
 }

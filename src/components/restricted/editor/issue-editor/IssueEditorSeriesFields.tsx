@@ -1,5 +1,6 @@
 import React from "react";
 import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 import { FastField } from "formik";
 import { TextField } from "../../../generic/FormikTextField";
 import AutocompleteBase from "../../../generic/AutocompleteBase";
@@ -29,6 +30,7 @@ interface SeriesOption {
 }
 
 const MIN_QUERY_LENGTH = 2;
+const TITLE_HINT = "Hinweis: Titel wird vererbt. Für Variants leer lassen.";
 
 function IssueEditorSeriesFields({
   values,
@@ -93,6 +95,12 @@ function IssueEditorSeriesFields({
     <Grid container spacing={2}>
       <Grid size={{ xs: 12, md: 8 }}>
         <FastField name="title" label="Titel" component={TextField} fullWidth />
+      </Grid>
+
+      <Grid size={12}>
+        <Typography variant="body2" color="text.secondary">
+          {TITLE_HINT}
+        </Typography>
       </Grid>
 
       <Grid size={{ xs: 12, md: 8 }}>

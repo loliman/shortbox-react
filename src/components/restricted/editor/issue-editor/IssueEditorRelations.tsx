@@ -1,5 +1,6 @@
 import React from "react";
 import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 import { Stories } from "../IssueEditorSections";
 import type { IssueEditorFormValues } from "./types";
 
@@ -9,9 +10,15 @@ interface IssueEditorRelationsProps {
   setFieldValue: (field: string, value: unknown, shouldValidate?: boolean) => void;
 }
 
+const STORIES_HINT = "Hinweis: Geschichten werden vererbt. Für Variants leer lassen.";
+
 function IssueEditorRelations({ values, isDesktop, setFieldValue }: IssueEditorRelationsProps) {
   return (
     <Stack spacing={2}>
+      <Typography variant="body2" color="text.secondary">
+        {STORIES_HINT}
+      </Typography>
+
       <Stories
         setFieldValue={setFieldValue}
         items={values.stories}

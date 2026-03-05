@@ -6,7 +6,7 @@ import { withContext } from "./generic";
 import AddFab from "./fab/AddFab";
 import Box from "@mui/material/Box";
 import FooterLinks from "./footer/FooterLinks";
-import { getNavDrawerWidth } from "./layoutMetrics";
+import { COMPACT_BOTTOM_BAR_CLEARANCE, getNavDrawerWidth } from "./layoutMetrics";
 
 interface SessionData {
   loggedIn: boolean;
@@ -72,7 +72,7 @@ function Layout(props: Readonly<LayoutProps>) {
             minWidth: 0,
             px: { xs: 0, sm: 2 },
             pt: { xs: 0, sm: 2 },
-            pb: temporaryDrawer ? "calc(64px + env(safe-area-inset-bottom))" : 2,
+            pb: temporaryDrawer ? COMPACT_BOTTOM_BAR_CLEARANCE : 2,
             ml: contentOffset,
             transition: (theme) =>
               theme.transitions.create("margin-left", {

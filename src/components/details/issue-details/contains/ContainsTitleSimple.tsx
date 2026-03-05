@@ -30,30 +30,47 @@ type ContainsTitleSimpleProps = {
   item: ContainsTitleSimpleItem;
   us?: boolean;
   simple?: boolean;
+  compactLayout?: boolean;
   isPhone?: boolean;
   isTablet?: boolean;
+  isTabletLandscape?: boolean;
   drawerOpen?: boolean;
   session?: unknown;
 };
 
 export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
   const item = props.item;
-  const smallChip =
-    Boolean(props.isPhone) || (Boolean(props.isTablet) && Boolean(props.drawerOpen));
+  const stackActions =
+    props.compactLayout ??
+    Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
   const children = Array.isArray(item.children) ? item.children : [];
   const reprints = Array.isArray(item.reprints) ? item.reprints : [];
   const hasIssueReference = Boolean(item.series);
   const titleSuffix = item.title ? (hasIssueReference ? " - " + item.title : item.title) : "";
+  const actionChips = buildSimpleActionChips({
+    item,
+    childrenCount: children.length,
+    reprintsCount: reprints.length,
+    us: Boolean(props.us),
+    hasSession: Boolean(props.session),
+  });
 
   return (
     <Box
-      sx={{
-        width: "100%",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "flex-start",
-        gap: 1,
-      }}
+      sx={
+        stackActions
+          ? {
+              width: "100%",
+              display: "block",
+            }
+          : {
+              width: "100%",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+              gap: 1,
+            }
+      }
     >
       <Box sx={{ minWidth: 0 }}>
         <Typography sx={{ fontWeight: 600 }}>
@@ -64,76 +81,96 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
               legacy_number={item.legacy_number}
             />
           ) : null}
-          {titleSuffix ? <Box component="span" sx={{ fontWeight: hasIssueReference ? 400 : 600 }}>{titleSuffix}</Box> : null}
+          {titleSuffix ? (
+            <Box component="span" sx={{ fontWeight: hasIssueReference ? 400 : 600 }}>
+              {titleSuffix}
+            </Box>
+          ) : null}
         </Typography>
         <Typography variant="body2" color="text.secondary">
           {item.addinfo ? item.addinfo : null}
         </Typography>
-      </Box>
 
-      <Box
-        sx={{
-          ml: "auto",
-          alignSelf: "center",
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 0.75,
-          justifyContent: "flex-end",
-          alignItems: "center",
-        }}
-      >
-        {item.onlyoneprint && !item.parent ? (
-          !smallChip ? (
-            <Chip label="Nur einfach auf deutsch veröffentlicht" color="secondary" />
-          ) : (
-            <Chip label="1x" color="secondary" />
-          )
-        ) : null}
-
-        {item.onlytb && !item.parent ? (
-          <Chip label={!smallChip ? "Nur in Taschenbuch" : "TB"} color="primary" />
-        ) : null}
-
-        {props.us && children.length === 0 ? (
-          !smallChip ? (
-            <Chip label="Nicht auf deutsch erschienen" color="default" />
-          ) : (
-            <Chip label="n/a" color="default" />
-          )
-        ) : null}
-
-        {item.reprintOf ? (
-          !smallChip ? (
-            <Chip label="Nachdruck" color="default" />
-          ) : (
-            <Chip label="ND" color="default" />
-          )
-        ) : null}
-
-        {reprints.length > 0 ? (
-          !smallChip ? (
-            <Chip label="Nachgedruckt" color="default" />
-          ) : (
-            <Chip label="ND" color="default" />
-          )
-        ) : null}
-
-        {item.collectedmultipletimes && props.session ? (
-          !smallChip ? (
-            <Chip color="success" label="Mehrfach auf deutsch gesammelt" />
-          ) : (
-            <Chip color="success" label="Mehrfach" />
-          )
-        ) : null}
-
-        {!item.collectedmultipletimes && item.collected && props.session ? (
-          !smallChip ? (
-            <Chip color="success" label="Auf deutsch gesammelt" />
-          ) : (
-            <Chip color="success" label="Gesammelt" />
-          )
+        {stackActions && actionChips.length > 0 ? (
+          <Box
+            sx={{
+              mt: 1,
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 0.75,
+              alignItems: "center",
+            }}
+          >
+            {actionChips}
+          </Box>
         ) : null}
       </Box>
+
+      {!stackActions ? (
+        <Box
+          sx={{
+            ml: "auto",
+            alignSelf: "center",
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 0.75,
+            justifyContent: "flex-end",
+            alignItems: "center",
+          }}
+        >
+          {actionChips}
+        </Box>
+      ) : null}
     </Box>
   );
+}
+
+function buildSimpleActionChips({
+  item,
+  childrenCount,
+  reprintsCount,
+  us,
+  hasSession,
+}: {
+  item: ContainsTitleSimpleItem;
+  childrenCount: number;
+  reprintsCount: number;
+  us: boolean;
+  hasSession: boolean;
+}): React.ReactElement[] {
+  const chips: React.ReactElement[] = [];
+
+  if (item.onlyoneprint && !item.parent) {
+    chips.push(
+      <Chip key="onlyoneprint" label="Nur einfach auf deutsch veröffentlicht" color="secondary" />
+    );
+  }
+
+  if (item.onlytb && !item.parent) {
+    chips.push(<Chip key="onlytb" label="Nur in Taschenbuch" color="primary" />);
+  }
+
+  if (us && childrenCount === 0) {
+    chips.push(<Chip key="notpublished" label="Nicht auf deutsch erschienen" color="default" />);
+  }
+
+  if (item.reprintOf) {
+    chips.push(<Chip key="reprintof" label="Nachdruck" color="default" />);
+  }
+
+  if (reprintsCount > 0) {
+    chips.push(<Chip key="reprints" label="Nachgedruckt" color="default" />);
+  }
+
+  if (item.collectedmultipletimes && hasSession) {
+    chips.push(
+      <Chip key="collectedmultiple" color="success" label="Mehrfach auf deutsch gesammelt" />
+    );
+  }
+
+  if (!item.collectedmultipletimes && item.collected && hasSession) {
+    chips.push(<Chip key="collected" color="success" label="Auf deutsch gesammelt" />);
+  }
+
+  return chips;
 }
