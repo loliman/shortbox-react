@@ -46,6 +46,43 @@ function splitMultiValueString(value: string): string[] {
     .filter((entry) => entry.length > 0);
 }
 
+function normalizeText(value: unknown): string {
+  return String(value || "")
+    .trim()
+    .toLowerCase();
+}
+
+function normalizeGenreFilters(rawGenres: unknown): FieldItem[] {
+  const uniqueGenres = new Map<string, FieldItem>();
+
+  const addGenre = (value: unknown) => {
+    const name = String(value || "").trim();
+    if (!name) return;
+
+    const key = normalizeText(name);
+    if (!uniqueGenres.has(key)) uniqueGenres.set(key, { name });
+  };
+
+  if (Array.isArray(rawGenres)) {
+    rawGenres.forEach((entry) => {
+      if (typeof entry === "string") {
+        addGenre(entry);
+        return;
+      }
+      if (!entry || typeof entry !== "object" || Array.isArray(entry)) return;
+      addGenre((entry as { name?: unknown }).name);
+    });
+    return [...uniqueGenres.values()];
+  }
+
+  if (typeof rawGenres === "string") {
+    splitMultiValueString(rawGenres).forEach((entry) => addGenre(entry));
+    return [...uniqueGenres.values()];
+  }
+
+  return [];
+}
+
 function normalizeArcFilters(rawArcs: unknown): FilterValues["arcs"] {
   if (Array.isArray(rawArcs)) {
     return rawArcs
@@ -90,6 +127,25 @@ function normalizeAppearanceFilters(rawAppearances: unknown): FilterValues["appe
   return [];
 }
 
+function normalizeRealityFilters(rawRealities: unknown): FilterValues["realities"] {
+  if (Array.isArray(rawRealities)) {
+    return rawRealities
+      .map((entry) => {
+        if (!entry || typeof entry !== "object" || Array.isArray(entry)) return null;
+        const name = String((entry as { name?: unknown }).name || "").trim();
+        if (!name) return null;
+        return { name };
+      })
+      .filter((entry): entry is { name: string } => Boolean(entry));
+  }
+
+  if (typeof rawRealities === "string") {
+    return splitMultiValueString(rawRealities).map((name) => ({ name }));
+  }
+
+  return [];
+}
+
 export function createDefaultFilterValues(): FilterValues {
   return {
     formats: [],
@@ -99,6 +155,7 @@ export function createDefaultFilterValues(): FilterValues {
     releasedateExact: "",
     publishers: [],
     series: [],
+    genres: [],
     numberFrom: "",
     numberTo: "",
     numberExact: "",
@@ -106,6 +163,7 @@ export function createDefaultFilterValues(): FilterValues {
     arcs: [],
     individuals: [],
     appearances: [],
+    realities: [],
     firstPrint: false,
     notFirstPrint: false,
     onlyPrint: false,
@@ -268,10 +326,12 @@ export function parseFilterValues(queryFilter?: string): FilterValues {
       ...normalizedReleasedateInputs,
       publishers: Array.isArray(parsed.publishers) ? parsed.publishers : defaults.publishers,
       series: normalizeSeries(parsed.series),
+      genres: normalizeGenreFilters(parsed.genres),
       ...normalizedNumberInputs,
       individuals: Array.isArray(parsed.individuals) ? parsed.individuals : defaults.individuals,
       arcs: normalizeArcFilters(parsed.arcs),
       appearances: normalizeAppearanceFilters(parsed.appearances),
+      realities: normalizeRealityFilters(parsed.realities),
       withVariants: Boolean(parsed.withVariants),
       firstPrint,
       notFirstPrint,

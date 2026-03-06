@@ -109,6 +109,7 @@ function IssueEditorSeriesFields({
           value={publisherValue}
           inputValue={publisherPattern}
           label="Verlag"
+          placeholder="Verlag suchen..."
           loading={publisherQuery.loading}
           freeSolo
           noOptionsText={publisherNoOptionsText}
@@ -147,6 +148,7 @@ function IssueEditorSeriesFields({
           value={seriesValue}
           inputValue={seriesPattern}
           label="Serie"
+          placeholder="Serie suchen..."
           loading={seriesQuery.loading}
           freeSolo
           noOptionsText={seriesNoOptionsText}

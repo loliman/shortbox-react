@@ -5,6 +5,7 @@ export type FilterDateOption = { date: string; compare: string };
 export type FilterNumberOption = { number: string; compare: string; variant: string };
 export type FilterArcOption = { title: string; type?: string };
 export type FilterAppearanceOption = { name: string; type?: string };
+export type FilterRealityOption = { name: string };
 
 export interface FilterValues {
   formats: FilterFormatOption[];
@@ -14,6 +15,7 @@ export interface FilterValues {
   releasedateExact: string;
   publishers: FieldItem[];
   series: FieldItem[];
+  genres: FieldItem[];
   numberFrom: string;
   numberTo: string;
   numberExact: string;
@@ -21,6 +23,7 @@ export interface FilterValues {
   arcs: FilterArcOption[];
   individuals: FieldItem[];
   appearances: FilterAppearanceOption[];
+  realities: FilterRealityOption[];
   firstPrint: boolean;
   notFirstPrint: boolean;
   onlyPrint: boolean;
@@ -50,10 +53,12 @@ export interface FilterSubmitValues {
   releasedates?: FilterDateOption[];
   publishers?: FieldItem[];
   series?: FieldItem[];
+  genres?: string[];
   numbers?: FilterNumberOption[];
   arcs?: FilterArcOption[];
   individuals?: FieldItem[];
   appearances?: FilterAppearanceOption[];
+  realities?: FilterRealityOption[];
   firstPrint?: boolean;
   notFirstPrint?: boolean;
   onlyPrint?: boolean;

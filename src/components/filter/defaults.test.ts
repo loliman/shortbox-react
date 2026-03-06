@@ -12,8 +12,10 @@ describe("filter defaults", () => {
     expect(defaults.numberTo).toBe("");
     expect(defaults.numberExact).toBe("");
     expect(defaults.numberVariant).toBe("");
+    expect(defaults.genres).toEqual([]);
     expect(defaults.arcs).toEqual([]);
     expect(defaults.appearances).toEqual([]);
+    expect(defaults.realities).toEqual([]);
     expect(defaults.withVariants).toBe(false);
     expect(defaults.onlyNotCollectedNoOwnedVariants).toBe(false);
   });
@@ -28,6 +30,7 @@ describe("filter defaults", () => {
         ],
         publishers: [{ name: "Marvel" }],
         series: [{ title: "Spider-Man" }, null, 42],
+        genres: ["Sci-Fi", { name: "Fantasy" }, "sci-fi", ""],
         numbers: [
           { compare: ">=", number: "10" },
           { compare: "<=", number: "25", variant: "A" },
@@ -35,6 +38,7 @@ describe("filter defaults", () => {
         individuals: [{ name: "Peter" }],
         arcs: "Civil War || Secret Invasion",
         appearances: "Venom || Symbiote",
+        realities: "Earth-616 || Earth-1610",
         withVariants: 1,
         firstPrint: true,
       })
@@ -43,6 +47,7 @@ describe("filter defaults", () => {
     expect(parsed.formats).toEqual([{ name: "Heft" }, { name: "Taschenbuch" }]);
     expect(parsed.series).toEqual([{ title: "Spider-Man", __typename: "Series" }]);
     expect(parsed.publishers).toEqual([{ name: "Marvel" }]);
+    expect(parsed.genres).toEqual([{ name: "Sci-Fi" }, { name: "Fantasy" }]);
     expect(parsed.releasedateFrom).toBe("2020-01-01");
     expect(parsed.releasedateTo).toBe("2022-12-31");
     expect(parsed.numberFrom).toBe("10");
@@ -50,6 +55,7 @@ describe("filter defaults", () => {
     expect(parsed.numberVariant).toBe("A");
     expect(parsed.arcs).toEqual([{ title: "Civil War" }, { title: "Secret Invasion" }]);
     expect(parsed.appearances).toEqual([{ name: "Venom" }, { name: "Symbiote" }]);
+    expect(parsed.realities).toEqual([{ name: "Earth-616" }, { name: "Earth-1610" }]);
     expect(parsed.withVariants).toBe(true);
     expect(parsed.firstPrint).toBe(true);
   });

@@ -50,6 +50,7 @@ export const SeriesSchema = Yup.object().shape({
     .min(0, "Das Jahr muss mindestens 0 sein")
     .max(2999, "Dsa Jahr darf nicht größer als 2999 sein")
     .integer("Bitte geben Sie eine Zahl ein"),
+  genre: Yup.string().max(255, "Maximal 255 Zeichen"),
   addinfo: Yup.string().max(2500, "Maximal 2500 Zeichen"),
 });
 

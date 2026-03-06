@@ -18,6 +18,7 @@ export interface Filter {
   numbers?: Array<NumberFilter | null>;
   releasedates?: Array<DateFilter | null>;
   formats?: Array<string | null>;
+  genres?: Array<string | null>;
   arcs?: Array<{ title?: string | null } | null>;
   appearances?: Array<{ name?: string | null } | null>;
   noComicguideId?: boolean;

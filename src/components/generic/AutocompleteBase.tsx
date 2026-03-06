@@ -124,7 +124,7 @@ function AutocompleteBase({
           variant={variant}
           sx={mergedTextFieldSx}
           label={label}
-          placeholder={placeholder ? placeholder.trim() : "Bitte wählen..."}
+          placeholder={placeholder ? placeholder.trim() : "Suchen..."}
           inputProps={{
             ...params.inputProps,
             "aria-label": inputAriaLabel,

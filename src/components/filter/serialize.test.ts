@@ -10,6 +10,7 @@ function createBaseValues(): FilterValues {
     releasedateExact: "",
     publishers: [],
     series: [],
+    genres: [],
     numberFrom: "",
     numberTo: "",
     numberExact: "",
@@ -17,6 +18,7 @@ function createBaseValues(): FilterValues {
     arcs: [],
     individuals: [],
     appearances: [],
+    realities: [],
     firstPrint: false,
     notFirstPrint: false,
     onlyPrint: false,
@@ -63,12 +65,14 @@ describe("serializeFilterValues", () => {
         publisher: { __typename: "Publisher", id: 3, name: "Marvel", us: true },
       },
     ];
+    values.genres = [{ name: "Sci-Fi" }, { name: "Fantasy" }, { name: "sci-fi" }];
     values.numberFrom = "10";
     values.arcs = [{ title: "Maximum Carnage" }, { title: "Civil War" }];
     values.individuals = [
       { __typename: "Individual", name: "Peter Parker", type: ["WRITER"], role: ["Writer"] },
     ];
     values.appearances = [{ name: "Spider-Man" }, { name: "Venom" }];
+    values.realities = [{ name: "Earth-616" }, { name: "Earth-1610" }];
     values.firstPrint = true;
     values.onlyPrint = true;
     values.otherOnlyTb = true;
@@ -80,9 +84,11 @@ describe("serializeFilterValues", () => {
       formats: ["HC"],
       withVariants: true,
       releasedates: [{ compare: ">=", date: "2020-01-01" }],
+      genres: ["Sci-Fi", "Fantasy"],
       numbers: [{ compare: ">=", number: "10", variant: "" }],
       arcs: [{ title: "Maximum Carnage" }, { title: "Civil War" }],
       appearances: [{ name: "Spider-Man" }, { name: "Venom" }],
+      realities: [{ name: "Earth-616" }, { name: "Earth-1610" }],
       firstPrint: true,
       onlyPrint: true,
       otherOnlyTb: true,

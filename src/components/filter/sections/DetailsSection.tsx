@@ -12,11 +12,12 @@ import { TextField } from "../../generic/FormikTextField";
 import FilterSwitch from "../FilterSwitch";
 import { FORMAT_OPTIONS } from "../constants";
 import { FilterValues } from "../types";
-import { publishers, series } from "../../../graphql/queriesTyped";
+import { genres as genresQuery, publishers, series } from "../../../graphql/queriesTyped";
 import type { FieldItem } from "../../../util/filterFieldHelpers";
 import { getSeriesLabel } from "../../../util/issuePresentation";
 
 const MIN_QUERY_LENGTH = 2;
+const GENRE_MIN_QUERY_LENGTH = 0;
 
 interface DetailsSectionProps {
   values: FilterValues;
@@ -36,6 +37,7 @@ function DetailsSection({
   const [activeDatePreset, setActiveDatePreset] = React.useState("");
   const [publisherInput, setPublisherInput] = React.useState("");
   const [seriesInput, setSeriesInput] = React.useState("");
+  const [genreInput, setGenreInput] = React.useState("");
 
   const switchGridSx = {
     display: "grid",
@@ -62,6 +64,24 @@ function DetailsSection({
     debounceMs: 250,
   });
 
+  const genreQuery = useAutocompleteQuery<string>({
+    query: genresQuery,
+    variables: { pattern: genreInput },
+    searchText: genreInput,
+    minQueryLength: GENRE_MIN_QUERY_LENGTH,
+    debounceMs: 250,
+  });
+
+  const selectedGenres = React.useMemo(() => sanitizeGenreList(values.genres), [values.genres]);
+  const genreOptions = React.useMemo(
+    () =>
+      sanitizeGenreList([
+        ...selectedGenres,
+        ...genreQuery.options.map((entry) => ({ name: String(entry || "") })),
+      ]),
+    [genreQuery.options, selectedGenres]
+  );
+
   React.useEffect(() => {
     if (values.releasedateExact || (!values.releasedateFrom && !values.releasedateTo)) {
       setActiveDatePreset("");
@@ -76,6 +96,7 @@ function DetailsSection({
         options={FORMAT_OPTIONS}
         value={values.formats}
         label="Format"
+        placeholder="Format auswählen"
         multiple
         getOptionLabel={(option) => String((option as { name?: unknown })?.name || "")}
         isOptionEqualToValue={(option, value) =>
@@ -201,6 +222,7 @@ function DetailsSection({
         inputValue={publisherInput}
         multiple
         label="Verlag"
+        placeholder="Verlag suchen..."
         loading={publisherQuery.loading}
         noOptionsText={
           publisherQuery.isBelowMinLength
@@ -230,6 +252,7 @@ function DetailsSection({
         inputValue={seriesInput}
         multiple
         label="Serie"
+        placeholder="Serie suchen..."
         loading={seriesQuery.loading}
         noOptionsText={
           seriesQuery.isBelowMinLength
@@ -252,6 +275,37 @@ function DetailsSection({
         onChange={(_, nextValue) => {
           setFieldValue("series", sanitizeTitleList(asOptionArray(nextValue)));
           setSeriesInput("");
+        }}
+      />
+
+      <AutocompleteBase
+        options={genreOptions}
+        value={selectedGenres}
+        inputValue={genreInput}
+        label="Genre"
+        placeholder="Genre wählen oder eingeben..."
+        multiple
+        freeSolo
+        loading={genreQuery.loading}
+        noOptionsText={
+          genreQuery.isBelowMinLength
+            ? `Mindestens ${MIN_QUERY_LENGTH} Zeichen eingeben`
+            : genreQuery.error
+              ? "Fehler!"
+              : "Keine Ergebnisse gefunden"
+        }
+        onListboxScroll={genreQuery.onListboxScroll}
+        getOptionLabel={(option) => getGenreName(option)}
+        isOptionEqualToValue={(option, value) =>
+          normalizeText(getGenreName(option)) === normalizeText(getGenreName(value))
+        }
+        onInputChange={(_, nextInput, reason) => {
+          if (reason !== "input" && reason !== "clear" && reason !== "reset") return;
+          setGenreInput(nextInput);
+        }}
+        onChange={(_, nextValue) => {
+          setFieldValue("genres", sanitizeGenreList(asGenreOptionArray(nextValue)));
+          setGenreInput("");
         }}
       />
 
@@ -373,6 +427,20 @@ function asOptionArray(value: unknown): FieldItem[] {
   );
 }
 
+function asGenreOptionArray(value: unknown): Array<string | FieldItem> {
+  if (!Array.isArray(value)) {
+    if (typeof value === "string") return [value];
+    if (value && typeof value === "object" && !Array.isArray(value)) return [value as FieldItem];
+    return [];
+  }
+
+  return value.filter(
+    (entry): entry is string | FieldItem =>
+      typeof entry === "string" ||
+      (Boolean(entry) && typeof entry === "object" && !Array.isArray(entry))
+  );
+}
+
 function asFormatArray(value: unknown) {
   if (!Array.isArray(value)) return [];
   return value
@@ -396,6 +464,28 @@ function sanitizeTitleList(values: FieldItem[]) {
       normalizeText(entry.title).length > 0 &&
       Number.isFinite(Number(entry.volume))
   );
+}
+
+function sanitizeGenreList(values: Array<string | FieldItem>) {
+  const unique = new Map<string, { name: string }>();
+
+  values.forEach((entry) => {
+    const name = getGenreName(entry).trim();
+    if (!name) return;
+
+    const key = normalizeText(name);
+    if (!unique.has(key)) unique.set(key, { name });
+  });
+
+  return [...unique.values()];
+}
+
+function getGenreName(entry: unknown) {
+  if (typeof entry === "string") return entry;
+  if (entry && typeof entry === "object" && !Array.isArray(entry)) {
+    return String((entry as { name?: unknown }).name || "");
+  }
+  return "";
 }
 
 function normalizeText(value: unknown) {

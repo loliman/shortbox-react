@@ -92,6 +92,10 @@ function SeriesDetails(props: Readonly<SeriesDetailsProps>) {
     detailsData?.seriesDetails ?? (loading ? previousDetailsData?.seriesDetails : null);
   const endYearLabel =
     details && (details.active || details.endyear === 0) ? "heute" : details?.endyear;
+  const genreLabel = details?.genre?.trim();
+  const subheaderLabel = details
+    ? `${details.startyear}-${endYearLabel}${genreLabel ? ` | ${genreLabel}` : ""}`
+    : undefined;
 
   React.useEffect(() => {
     if (details || detailsError) {
@@ -139,7 +143,7 @@ function SeriesDetails(props: Readonly<SeriesDetailsProps>) {
                       session={props.session}
                     />
                   }
-                  subheader={details.startyear + " - " + endYearLabel}
+                  subheader={subheaderLabel}
                   action={
                     <Stack direction="row" spacing={1} alignItems="center">
                       {!compactLayout ? <SortContainer {...pageProps} /> : null}

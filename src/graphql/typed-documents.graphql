@@ -113,12 +113,30 @@ query Individuals($pattern: String, $first: Int, $after: String) {
   }
 }
 
+query Genres($pattern: String, $first: Int, $after: String) {
+  genres(pattern: $pattern, first: $first, after: $after)
+}
+
 query Apps($pattern: String, $type: String, $first: Int, $after: String) {
   apps(pattern: $pattern, type: $type, first: $first, after: $after) {
     edges {
       node {
         name
         type
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+query Realities($pattern: String, $first: Int, $after: String) {
+  realities(pattern: $pattern, first: $first, after: $after) {
+    edges {
+      node {
+        name
       }
     }
     pageInfo {
@@ -298,6 +316,7 @@ query Seriesd($series: SeriesInput!) {
     volume
     startyear
     endyear
+    genre
     issueCount
     active
     addinfo

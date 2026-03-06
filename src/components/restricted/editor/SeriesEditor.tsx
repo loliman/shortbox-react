@@ -6,7 +6,7 @@ import React from "react";
 import { generateLabel, generateUrl } from "../../../util/hierarchy";
 import Button from "@mui/material/Button";
 import withContext from "../../generic/withContext";
-import { publishers, series, seriesd } from "../../../graphql/queriesTyped";
+import { genres, publishers, series, seriesd } from "../../../graphql/queriesTyped";
 import { decapitalize, stripItem, wrapItem } from "../../../util/util";
 import AutocompleteBase from "../../generic/AutocompleteBase";
 import { useAutocompleteQuery } from "../../generic/useAutocompleteQuery";
@@ -32,6 +32,7 @@ const editorTextAreaSx = { width: "100%", maxWidth: { xs: "100%", md: 640 } } as
 
 interface SeriesFormValues {
   title: string;
+  genre: string;
   publisher: {
     name: string;
     us: boolean;
@@ -65,18 +66,17 @@ type SeriesMutationResult = {
 };
 
 function createInitialSeriesValues(defaultValues?: SeriesFormValues): SeriesFormValues {
-  if (defaultValues) return defaultValues;
-
   return {
-    title: "",
+    title: String(defaultValues?.title || ""),
+    genre: String(defaultValues?.genre || ""),
     publisher: {
-      name: "",
-      us: false,
+      name: String(defaultValues?.publisher?.name || ""),
+      us: Boolean(defaultValues?.publisher?.us),
     },
-    volume: 1,
-    startyear: 1900,
-    endyear: 1900,
-    addinfo: "",
+    volume: Number(defaultValues?.volume ?? 1),
+    startyear: Number(defaultValues?.startyear ?? 1900),
+    endyear: Number(defaultValues?.endyear ?? 1900),
+    addinfo: String(defaultValues?.addinfo || ""),
   };
 }
 
@@ -253,6 +253,12 @@ function SeriesEditor(props: Readonly<SeriesEditorProps>) {
                       component={TextField}
                       sx={editorFieldSx}
                     />
+
+                    <SeriesGenreAutocomplete
+                      genre={values.genre}
+                      setFieldValue={setFieldValue}
+                      textFieldSx={editorFieldSx}
+                    />
                   </Stack>
                 </Paper>
 
@@ -330,6 +336,16 @@ interface SeriesPublisherAutocompleteProps {
   textFieldSx?: SxProps<Theme>;
 }
 
+interface SeriesGenreOption {
+  name: string;
+}
+
+interface SeriesGenreAutocompleteProps {
+  genre: string;
+  setFieldValue: (field: string, value: unknown, shouldValidate?: boolean) => void;
+  textFieldSx?: SxProps<Theme>;
+}
+
 function SeriesPublisherAutocomplete({
   publisherName,
   publisherUs,
@@ -357,6 +373,7 @@ function SeriesPublisherAutocomplete({
       value={currentValue}
       inputValue={publisherName}
       label="Verlag"
+      placeholder="Verlag suchen..."
       freeSolo
       textFieldSx={textFieldSx}
       loading={query.loading}
@@ -392,6 +409,106 @@ function SeriesPublisherAutocomplete({
   );
 }
 
+function SeriesGenreAutocomplete({
+  genre,
+  setFieldValue,
+  textFieldSx,
+}: Readonly<SeriesGenreAutocompleteProps>) {
+  const [pattern, setPattern] = React.useState("");
+  const selectedGenreNames = React.useMemo(() => parseGenreString(genre), [genre]);
+
+  const query = useAutocompleteQuery<string>({
+    query: genres,
+    variables: {
+      pattern,
+    },
+    searchText: pattern,
+    minQueryLength: 0,
+    debounceMs: 250,
+  });
+
+  const genreOptions = React.useMemo(
+    () =>
+      normalizeGenreNames([
+        ...selectedGenreNames,
+        ...query.options.map((entry) => String(entry || "")),
+      ])
+        .map((name) => ({ name })),
+    [query.options, selectedGenreNames]
+  );
+
+  return (
+    <AutocompleteBase
+      options={genreOptions}
+      value={selectedGenreNames.map((name) => ({ name }))}
+      inputValue={pattern}
+      label="Genre"
+      placeholder="Genre wählen oder eingeben..."
+      multiple
+      freeSolo
+      textFieldSx={textFieldSx}
+      loading={query.loading}
+      noOptionsText={
+        query.isBelowMinLength
+          ? `Mindestens ${MIN_QUERY_LENGTH} Zeichen eingeben`
+          : query.error
+            ? "Fehler!"
+            : "Keine Ergebnisse gefunden"
+      }
+      onListboxScroll={query.onListboxScroll}
+      getOptionLabel={(option) => getGenreOptionName(option)}
+      isOptionEqualToValue={(option, value) =>
+        normalizeText(option.name) === normalizeText(getGenreOptionName(value))
+      }
+      onInputChange={(_, inputValue, reason) => {
+        if (reason !== "input" && reason !== "clear") return;
+        setPattern(inputValue);
+      }}
+      onChange={(_, value) => {
+        setFieldValue("genre", serializeGenres(toGenreNameList(value)));
+        setPattern("");
+      }}
+    />
+  );
+}
+
+function getGenreOptionName(option: unknown): string {
+  if (typeof option === "string") return option;
+  if (option && typeof option === "object" && !Array.isArray(option)) {
+    return String((option as { name?: unknown }).name || "");
+  }
+  return "";
+}
+
+function normalizeGenreNames(values: string[]): string[] {
+  const unique = new Map<string, string>();
+
+  values.forEach((value) => {
+    const name = String(value || "").trim();
+    if (!name) return;
+
+    const key = normalizeText(name);
+    if (!unique.has(key)) unique.set(key, name);
+  });
+
+  return [...unique.values()];
+}
+
+function parseGenreString(value: string): string[] {
+  return normalizeGenreNames(String(value || "").split(","));
+}
+
+function toGenreNameList(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return normalizeGenreNames(value.map((entry) => getGenreOptionName(entry)));
+  }
+  return normalizeGenreNames([getGenreOptionName(value)]);
+}
+
+function serializeGenres(values: string[]): string {
+  return normalizeGenreNames(values).join(", ");
+}
+
 function isOptionLike(value: unknown): value is FieldItem {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
@@ -408,9 +525,11 @@ function normalizeSeriesPayload(values: SeriesFormValues) {
   const stripped = stripItem(values) as SeriesFormValues & Record<string, unknown>;
   const publisherName = String(values.publisher?.name || "").trim();
   const publisherUs = Boolean(values.publisher?.us);
+  const genre = serializeGenres(parseGenreString(values.genre));
 
   return {
     ...stripped,
+    genre,
     publisher: {
       name: publisherName,
       us: publisherUs,

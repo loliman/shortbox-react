@@ -62,6 +62,7 @@ function TypedRoleAutocomplete({
       value={visibleValues}
       inputValue={pattern}
       label={label}
+      placeholder={`${label} suchen...`}
       multiple
       freeSolo
       loading={queryResult.loading}

@@ -54,6 +54,7 @@ vi.mock("./Editor", () => ({
 }));
 
 vi.mock("../../../graphql/queriesTyped", () => ({
+  genres: { kind: "genres" },
   publishers: { kind: "publishers" },
   series: { kind: "series" },
   seriesd: { kind: "seriesd" },
@@ -79,6 +80,7 @@ describe("SeriesEditor", () => {
 
     const defaultValues = {
       title: "Spider-Man",
+      genre: "Superhero",
       publisher: { name: "Marvel", us: false },
       volume: 1,
       startyear: 1963,
@@ -128,6 +130,7 @@ describe("SeriesEditor", () => {
 
     const defaultValues = {
       title: "Spider-Man",
+      genre: "Superhero",
       publisher: { name: "Marvel", us: false },
       volume: 1,
       startyear: 1963,
@@ -180,6 +183,7 @@ describe("SeriesEditor", () => {
 
     const defaultValues = {
       title: "Spider-Man",
+      genre: "Superhero",
       publisher: { name: "Marvel", us: false },
       volume: 1,
       startyear: 1963,
@@ -214,6 +218,50 @@ describe("SeriesEditor", () => {
           publisher: { name: "Panini - Marvel UK", us: false },
         },
         old: defaultValues,
+      },
+    });
+  });
+
+  it("normalizes comma separated genre string on submit", async () => {
+    const enqueueSnackbar = vi.fn();
+    const navigate = vi.fn();
+
+    const defaultValues = {
+      title: "Spider-Man",
+      genre: " Superhero , Noir ",
+      publisher: { name: "Marvel", us: false },
+      volume: 1,
+      startyear: 1963,
+      endyear: 1998,
+      addinfo: "",
+    };
+
+    render(
+      <SeriesEditor
+        edit={true}
+        defaultValues={defaultValues}
+        mutation={{ definitions: [{ name: { value: "EditSeries" } }] } as any}
+        navigate={navigate}
+        enqueueSnackbar={enqueueSnackbar}
+      />
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Speichern" }));
+
+    await waitFor(() => {
+      expect(mocks.runMutationMock).toHaveBeenCalledTimes(1);
+    });
+
+    expect(mocks.runMutationMock).toHaveBeenCalledWith({
+      variables: {
+        item: {
+          ...defaultValues,
+          genre: "Superhero, Noir",
+        },
+        old: {
+          ...defaultValues,
+          genre: "Superhero, Noir",
+        },
       },
     });
   });

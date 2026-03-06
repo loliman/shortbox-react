@@ -5,6 +5,7 @@ import {
   AdminTasksDocument,
   ArcsDocument,
   ExportDocument,
+  GenresDocument,
   IssueDocument,
   IndividualsDocument,
   IssuesDocument,
@@ -12,6 +13,7 @@ import {
   MeDocument,
   NodesDocument,
   PublisherDocument,
+  RealitiesDocument,
   PublishersDocument,
   SeriesDocument,
   SeriesdDocument,
@@ -23,7 +25,9 @@ const publishers = PublishersDocument;
 const series = SeriesDocument;
 const issues = IssuesDocument;
 const individuals = IndividualsDocument;
+const genres = GenresDocument;
 const apps = AppsDocument;
+const realities = RealitiesDocument;
 const arcs = ArcsDocument;
 const me = MeDocument;
 const adminTasks = AdminTasksDocument;
@@ -45,11 +49,13 @@ function getListQuery(level: string) {
 
 export {
   apps,
+  realities,
   arcs,
   exportQuery,
   getListQuery,
   issue,
   individuals,
+  genres,
   issues,
   lastEdited,
   adminTasks,

@@ -147,7 +147,6 @@ export function TopBar(props: TopBarProps) {
   const isFilter = props.query?.filter;
   const darkModeEnabled = props.themeMode === "dark";
   const localeSwitchAriaLabel = us ? "Zu Deutsch wechseln" : "Zu US wechseln";
-  const localeSwitchLabel = us ? "US" : "DE";
 
   const onLogout = () => {
     if (isMockMode) {
@@ -460,20 +459,21 @@ export function TopBar(props: TopBarProps) {
               </IconButton>
             </Tooltip>
           )}
-          <Tooltip title={"Wechseln zu " + (us ? "Deutsch" : "US")}>
-            <IconButton
-              color="inherit"
-              aria-label={localeSwitchAriaLabel}
-              onClick={() => {
-                props.resetNavigationState?.();
-                navigate?.(null, us ? "/de" : "/us", { filter: null });
-              }}
-            >
-              <Typography sx={{ fontSize: "0.82rem", fontWeight: 700, letterSpacing: 0.2 }}>
-                {localeSwitchLabel}
-              </Typography>
-            </IconButton>
-          </Tooltip>
+          <Box sx={{ ml: 0.25, display: "inline-flex", alignItems: "center", gap: 0.35 }}>
+            <Typography sx={{ fontSize: "0.74rem", fontWeight: 700, opacity: us ? 0.7 : 1 }}>DE</Typography>
+            <Tooltip title={"Wechseln zu " + (us ? "Deutsch" : "US")}>
+              <Android12Switch
+                checked={us}
+                color="primary"
+                inputProps={{ "aria-label": localeSwitchAriaLabel }}
+                onChange={() => {
+                  props.resetNavigationState?.();
+                  navigate?.(null, us ? "/de" : "/us", { filter: null });
+                }}
+              />
+            </Tooltip>
+            <Typography sx={{ fontSize: "0.74rem", fontWeight: 700, opacity: us ? 1 : 0.7 }}>US</Typography>
+          </Box>
         </Box>
       ) : null}
     </AppBar>

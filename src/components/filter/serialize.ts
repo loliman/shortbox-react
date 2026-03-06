@@ -29,6 +29,20 @@ function splitExactNumbers(value: string): string[] {
     .filter((entry, index, arr) => entry.length > 0 && arr.indexOf(entry) === index);
 }
 
+function normalizeUniqueNames(values: Array<{ name?: unknown }>): string[] {
+  const unique = new Map<string, string>();
+
+  values.forEach((entry) => {
+    const name = String(entry.name || "").trim();
+    if (!name) return;
+
+    const key = name.toLowerCase();
+    if (!unique.has(key)) unique.set(key, name);
+  });
+
+  return [...unique.values()];
+}
+
 export function serializeFilterValues(
   values: FilterValues,
   us: boolean
@@ -77,6 +91,11 @@ export function serializeFilterValues(
       .filter((entry): entry is Record<string, unknown> => Boolean(entry));
   }
 
+  if (values.genres.length > 0) {
+    const genres = normalizeUniqueNames(values.genres);
+    if (genres.length > 0) payload.genres = genres;
+  }
+
   const numbers = [];
   const numberVariant = "";
   const numberExact = splitExactNumbers(values.numberExact);
@@ -108,6 +127,12 @@ export function serializeFilterValues(
 
   if (values.appearances.length > 0) {
     payload.appearances = values.appearances.map((entry) => ({
+      name: String(entry.name || "").trim(),
+    }));
+  }
+
+  if (values.realities.length > 0) {
+    payload.realities = values.realities.map((entry) => ({
       name: String(entry.name || "").trim(),
     }));
   }

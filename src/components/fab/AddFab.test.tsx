@@ -35,6 +35,18 @@ function walkElements(node: unknown, visitor: (element: any) => void) {
   });
 }
 
+function getSpeedDialBottomSx(instance: any): string {
+  const tree = instance.render();
+  let bottomSx: string | undefined;
+  walkElements(tree, (element) => {
+    if (element.props?.ariaLabel === "Erstellen" && element.props?.sx?.bottom) {
+      bottomSx = element.props.sx.bottom;
+    }
+  });
+  if (!bottomSx) throw new Error("SpeedDial not found");
+  return bottomSx;
+}
+
 describe("AddFab", () => {
   it("renders nothing without a session", () => {
     const instance = new (AddFab as any)({ session: null });
@@ -109,5 +121,24 @@ describe("AddFab", () => {
     expect(typeof variantAction).toBe("function");
     variantAction?.({ button: 0 });
     expect(navigate).toHaveBeenCalledWith({ button: 0 }, "/copy/issue/selected-path");
+  });
+
+  it("computes mobile bottom offset based on bottom action bar visibility", () => {
+    const instance = new (AddFab as any)({
+      session: { loggedIn: true },
+    });
+
+    expect(getSpeedDialBottomSx(instance)).toBe("calc(16px + 88px + env(safe-area-inset-bottom))");
+
+    instance.setState = (updater: any) => {
+      const next = typeof updater === "function" ? updater(instance.state) : updater;
+      instance.state = { ...instance.state, ...next };
+    };
+
+    instance.setState({ mobileBottomBarHeight: 88 });
+    expect(getSpeedDialBottomSx(instance)).toBe("calc(16px + 112px)");
+
+    instance.setState({ mobileBottomBarHeight: 0 });
+    expect(getSpeedDialBottomSx(instance)).toBe("calc(16px + env(safe-area-inset-bottom))");
   });
 });

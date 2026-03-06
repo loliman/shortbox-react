@@ -56,6 +56,7 @@ function StoryFieldsNonExclusive(props: StoryFieldsNonExclusiveProps) {
           value={currentSeriesValue}
           inputValue={seriesPattern}
           label="Serie"
+          placeholder="US-Serie suchen..."
           freeSolo
           loading={seriesQuery.loading}
           noOptionsText={

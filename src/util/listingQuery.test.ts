@@ -26,6 +26,7 @@ describe("listingQuery util", () => {
       formats: ["HC"],
       arcs: [],
       appearances: [],
+      realities: [],
       us: true,
     });
   });

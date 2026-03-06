@@ -31,6 +31,11 @@ function normalizeLegacyFilter(payload: Record<string, unknown>): Record<string,
     normalized.appearances = appearanceNames.map((name) => ({ name }));
   }
 
+  if (!Array.isArray(normalized.realities)) {
+    const realityNames = splitMultiFilterString(normalized.realities);
+    normalized.realities = realityNames.map((name) => ({ name }));
+  }
+
   if (normalized.noComicguideId === undefined && normalized.noCover !== undefined) {
     normalized.noComicguideId = Boolean(normalized.noCover);
   }

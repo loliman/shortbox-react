@@ -43,6 +43,7 @@ function ContentSection({ values, isDesktop: _isDesktop, setFieldValue }: Conten
         value={values.arcs}
         inputValue={arcInput}
         label="Teil von (Event, Story Arc, Story Line)"
+        placeholder="Event oder Arc suchen..."
         multiple
         loading={arcQuery.loading}
         textFieldSx={{ width: "100%" }}
@@ -74,6 +75,7 @@ function ContentSection({ values, isDesktop: _isDesktop, setFieldValue }: Conten
         value={values.appearances}
         inputValue={appearanceInput}
         label="Auftritte (Personen, Gegenstände, Orte, ...)"
+        placeholder="Auftritt suchen..."
         multiple
         loading={appearanceQuery.loading}
         textFieldSx={{ width: "100%" }}

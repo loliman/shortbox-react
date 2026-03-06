@@ -85,6 +85,7 @@ function ContributorAutocomplete({
       value={selectedValues}
       inputValue={inputValue}
       label={label}
+      placeholder={`${label} suchen...`}
       multiple
       loading={query.loading}
       noOptionsText={

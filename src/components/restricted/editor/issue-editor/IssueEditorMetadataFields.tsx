@@ -224,6 +224,7 @@ function TypedMetadataAutocomplete({
       value={selectedValues}
       inputValue={pattern}
       label={label}
+      placeholder={`${label} suchen...`}
       multiple
       freeSolo
       loading={queryResult.loading}

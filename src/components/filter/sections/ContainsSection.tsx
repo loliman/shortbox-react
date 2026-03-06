@@ -8,10 +8,11 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import AutocompleteBase from "../../generic/AutocompleteBase";
 import { useAutocompleteQuery } from "../../generic/useAutocompleteQuery";
 import { FilterValues } from "../types";
-import { apps, arcs } from "../../../graphql/queriesTyped";
+import { apps, arcs, realities } from "../../../graphql/queriesTyped";
 import type { FieldItem } from "../../../util/filterFieldHelpers";
 
 const MIN_QUERY_LENGTH = 2;
+const REALITY_MIN_QUERY_LENGTH = 0;
 
 interface ContainsSectionProps {
   values: FilterValues;
@@ -34,6 +35,7 @@ function ContainsSection({
 
   const [arcInput, setArcInput] = React.useState("");
   const [appearanceInput, setAppearanceInput] = React.useState("");
+  const [realityInput, setRealityInput] = React.useState("");
 
   const arcQuery = useAutocompleteQuery<{ title?: string; type?: string }>({
     query: arcs,
@@ -48,6 +50,14 @@ function ContainsSection({
     variables: { pattern: appearanceInput },
     searchText: appearanceInput,
     minQueryLength: MIN_QUERY_LENGTH,
+    debounceMs: 250,
+  });
+
+  const realityQuery = useAutocompleteQuery<{ name?: string }>({
+    query: realities,
+    variables: { pattern: realityInput },
+    searchText: realityInput,
+    minQueryLength: REALITY_MIN_QUERY_LENGTH,
     debounceMs: 250,
   });
 
@@ -173,6 +183,7 @@ function ContainsSection({
         value={values.arcs}
         inputValue={arcInput}
         label="Teil von (Event, Story Arc, Story Line)"
+        placeholder="Event oder Arc suchen..."
         multiple
         loading={arcQuery.loading}
         textFieldSx={{ width: "100%" }}
@@ -206,6 +217,7 @@ function ContainsSection({
         value={values.appearances}
         inputValue={appearanceInput}
         label="Auftritte (Personen, Gegenstände, Orte, ...)"
+        placeholder="Auftritt suchen..."
         multiple
         loading={appearanceQuery.loading}
         textFieldSx={{ width: "100%" }}
@@ -231,6 +243,38 @@ function ContainsSection({
         onChange={(_, nextValue) => {
           setFieldValue("appearances", sanitizeAppearanceList(asOptionArray(nextValue)));
           setAppearanceInput("");
+        }}
+      />
+
+      <AutocompleteBase
+        options={realityQuery.options}
+        value={values.realities}
+        inputValue={realityInput}
+        label="Realität"
+        placeholder="Earth-..."
+        multiple
+        loading={realityQuery.loading}
+        textFieldSx={{ width: "100%" }}
+        noOptionsText={
+          realityQuery.isBelowMinLength
+            ? `Mindestens ${MIN_QUERY_LENGTH} Zeichen eingeben`
+            : realityQuery.error
+              ? "Fehler!"
+              : "Keine Ergebnisse gefunden"
+        }
+        onListboxScroll={realityQuery.onListboxScroll}
+        getOptionLabel={(option) => String((option as { name?: unknown })?.name || "").trim()}
+        isOptionEqualToValue={(option, value) =>
+          normalizeText((option as { name?: unknown }).name) ===
+          normalizeText((value as { name?: unknown })?.name)
+        }
+        onInputChange={(_, nextInput, reason) => {
+          if (reason !== "input" && reason !== "clear" && reason !== "reset") return;
+          setRealityInput(nextInput);
+        }}
+        onChange={(_, nextValue) => {
+          setFieldValue("realities", sanitizeRealityList(asOptionArray(nextValue)));
+          setRealityInput("");
         }}
       />
     </Stack>
@@ -265,6 +309,16 @@ function sanitizeAppearanceList(values: FieldItem[]) {
       return type ? { name, type } : { name };
     })
     .filter((entry): entry is { name: string; type?: string } => Boolean(entry));
+}
+
+function sanitizeRealityList(values: FieldItem[]) {
+  return values
+    .map((entry) => {
+      const name = String(entry.name || "").trim();
+      if (!name) return null;
+      return { name };
+    })
+    .filter((entry): entry is { name: string } => Boolean(entry));
 }
 
 function normalizeText(value: unknown) {
