@@ -32,7 +32,8 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
     format: props.activeFormat ?? props.issue.format,
     variant: props.activeVariant ?? props.issue.variant,
   });
-  const activeVariant = variants.find((variant) => getIssueKey(variant) === activeKey) || variants[0];
+  const activeVariant =
+    variants.find((variant) => getIssueKey(variant) === activeKey) || variants[0];
   const candidateActiveCoverUrl = getVariantCoverUrl(activeVariant, Boolean(props.us));
   const { resolvedUrl: activeCoverUrl, isLoading: isActiveCoverLoading } = useResolvedImageUrl(
     candidateActiveCoverUrl,
@@ -77,21 +78,21 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
             }
           : activeCoverUrl
             ? {
-              content: '""',
-              position: "absolute",
-              inset: 0,
-              backgroundImage:
-                (theme.palette.mode === "dark"
-                  ? `linear-gradient(to right, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.58) 40%, rgba(0, 0, 0, 0.08) 100%), `
-                  : `linear-gradient(to right, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.62) 40%, rgba(255, 255, 255, 0) 100%), `) +
-                `url("${activeCoverUrl}")`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-              opacity: 0.7,
-              transform: "scale(1.03)",
-              zIndex: 0,
-            }
+                content: '""',
+                position: "absolute",
+                inset: 0,
+                backgroundImage:
+                  (theme.palette.mode === "dark"
+                    ? `linear-gradient(to right, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.58) 40%, rgba(0, 0, 0, 0.08) 100%), `
+                    : `linear-gradient(to right, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.62) 40%, rgba(255, 255, 255, 0) 100%), `) +
+                  `url("${activeCoverUrl}")`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+                opacity: 0.7,
+                transform: "scale(1.03)",
+                zIndex: 0,
+              }
             : undefined,
         "@keyframes variantCoverShimmer": {
           "0%": { backgroundPosition: "0 0, 220% 0" },
@@ -118,7 +119,7 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
         }}
       >
         <Typography component="p" variant="body2" sx={{ fontWeight: 700 }}>
-            {variants.length === 1 ? "" : "Erhältlich in " + variants.length + " Varianten"}
+          {variants.length === 1 ? "" : "Erhältlich in " + variants.length + " Varianten"}
         </Typography>
       </AccordionSummary>
 

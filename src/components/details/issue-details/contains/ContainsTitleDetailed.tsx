@@ -84,8 +84,7 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
   const storyNumberBadge = getStoryNumberBadge(item);
 
   const stackActions =
-    props.compactLayout ??
-    Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
+    props.compactLayout ?? Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
   const exclusive = Boolean(item.exclusive && !props.us);
   const variant = !props.us && issue?.variant ? " " + issue.variant : "";
   const itemTitle = normalizeDisplayStoryTitle(item.title);

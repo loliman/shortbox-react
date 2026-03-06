@@ -570,12 +570,7 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
     return () => {
       observer.disconnect();
     };
-  }, [
-    issueNodes,
-    selectedIssueNumber,
-    props.suppressAutoScrollRef,
-    scrollSelectedIssueIntoView,
-  ]);
+  }, [issueNodes, selectedIssueNumber, props.suppressAutoScrollRef, scrollSelectedIssueIntoView]);
 
   if (issuesLoading && issueNodes.length === 0) return <NestedLoadingRow depth={2} />;
   if (issuesError) return <NestedErrorRow depth={2} />;
@@ -646,7 +641,9 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
                           <IssueReferenceInline
                             seriesLabel={createIssueSeriesLabel(issueNode, us)}
                             number={issueNode.number}
-                            legacy_number={(issueNode as { legacy_number?: string | null }).legacy_number}
+                            legacy_number={
+                              (issueNode as { legacy_number?: string | null }).legacy_number
+                            }
                           />
                         </Typography>
                         {hasVariants ? (
