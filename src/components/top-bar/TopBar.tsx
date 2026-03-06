@@ -219,7 +219,9 @@ export function TopBar(props: TopBarProps) {
 
         {compactLayout ? (
           <Box sx={{ display: "inline-flex", alignItems: "center", gap: 0.25 }}>
-            <Tooltip title={darkModeEnabled ? "Zu hellem Modus wechseln" : "Zu dunklem Modus wechseln"}>
+            <Tooltip
+              title={darkModeEnabled ? "Zu hellem Modus wechseln" : "Zu dunklem Modus wechseln"}
+            >
               <IconButton
                 color="inherit"
                 aria-label={darkModeEnabled ? "Hellmodus aktivieren" : "Darkmode aktivieren"}
@@ -318,7 +320,9 @@ export function TopBar(props: TopBarProps) {
                 />
               </Tooltip>
             </Box>
-            <Tooltip title={darkModeEnabled ? "Zu hellem Modus wechseln" : "Zu dunklem Modus wechseln"}>
+            <Tooltip
+              title={darkModeEnabled ? "Zu hellem Modus wechseln" : "Zu dunklem Modus wechseln"}
+            >
               <IconButton
                 color="inherit"
                 aria-label={darkModeEnabled ? "Hellmodus aktivieren" : "Darkmode aktivieren"}
@@ -417,10 +421,18 @@ export function TopBar(props: TopBarProps) {
             boxShadow: "0 -6px 18px rgba(0,0,0,0.12)",
           }}
         >
-          <IconButton color="inherit" aria-label="Navigation umschalten" onClick={() => toggleDrawer?.()}>
+          <IconButton
+            color="inherit"
+            aria-label="Navigation umschalten"
+            onClick={() => toggleDrawer?.()}
+          >
             <HamburgerIcon open={Boolean(drawerOpen)} />
           </IconButton>
-          <IconButton color="inherit" aria-label="Suche öffnen" onClick={() => setMobileSearchOpen(true)}>
+          <IconButton
+            color="inherit"
+            aria-label="Suche öffnen"
+            onClick={() => setMobileSearchOpen(true)}
+          >
             <SearchIcon />
           </IconButton>
           <TopBarFilterMenu
@@ -460,7 +472,9 @@ export function TopBar(props: TopBarProps) {
             </Tooltip>
           )}
           <Box sx={{ ml: 0.25, display: "inline-flex", alignItems: "center", gap: 0.35 }}>
-            <Typography sx={{ fontSize: "0.74rem", fontWeight: 700, opacity: us ? 0.7 : 1 }}>DE</Typography>
+            <Typography sx={{ fontSize: "0.74rem", fontWeight: 700, opacity: us ? 0.7 : 1 }}>
+              DE
+            </Typography>
             <Tooltip title={"Wechseln zu " + (us ? "Deutsch" : "US")}>
               <Android12Switch
                 checked={us}
@@ -472,7 +486,9 @@ export function TopBar(props: TopBarProps) {
                 }}
               />
             </Tooltip>
-            <Typography sx={{ fontSize: "0.74rem", fontWeight: 700, opacity: us ? 1 : 0.7 }}>US</Typography>
+            <Typography sx={{ fontSize: "0.74rem", fontWeight: 700, opacity: us ? 1 : 0.7 }}>
+              US
+            </Typography>
           </Box>
         </Box>
       ) : null}

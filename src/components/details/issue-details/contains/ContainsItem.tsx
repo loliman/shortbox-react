@@ -45,15 +45,14 @@ export function ContainsItem(props: Readonly<ContainsItemProps>) {
               ? "rgba(198, 204, 214, 0.52)"
               : "rgba(124, 130, 139, 0.36)"
             : theme.palette.divider,
-        background:
-          (theme) =>
-            isHighlighted
-              ? theme.palette.mode === "dark"
-                ? "linear-gradient(90deg, rgba(188, 196, 210, 0.16) 0%, rgba(22,27,34,1) 36%)"
-                : "linear-gradient(90deg, rgba(185, 191, 201, 0.15) 0%, rgba(255,255,255,1) 36%)"
-              : theme.palette.mode === "dark"
-                ? "#161b22"
-                : "#ffffff",
+        background: (theme) =>
+          isHighlighted
+            ? theme.palette.mode === "dark"
+              ? "linear-gradient(90deg, rgba(188, 196, 210, 0.16) 0%, rgba(22,27,34,1) 36%)"
+              : "linear-gradient(90deg, rgba(185, 191, 201, 0.15) 0%, rgba(255,255,255,1) 36%)"
+            : theme.palette.mode === "dark"
+              ? "#161b22"
+              : "#ffffff",
         overflow: "hidden",
         boxShadow: (theme) =>
           isHighlighted
@@ -73,7 +72,9 @@ export function ContainsItem(props: Readonly<ContainsItemProps>) {
               bottom: 0,
               width: 4,
               backgroundColor: (theme) =>
-                theme.palette.mode === "dark" ? "rgba(202, 208, 217, 0.95)" : "rgba(138, 144, 154, 0.9)",
+                theme.palette.mode === "dark"
+                  ? "rgba(202, 208, 217, 0.95)"
+                  : "rgba(138, 144, 154, 0.9)",
               zIndex: 2,
             }
           : undefined,
