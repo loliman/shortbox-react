@@ -65,11 +65,18 @@ class Home extends React.Component<HomeProps> {
       this.props.compactLayout ??
       Boolean(this.props.isPhone || (this.props.isTablet && !this.props.isTabletLandscape));
     const listingView = getListingView(this.props.query);
+    const galleryGridColumns = compactLayout
+      ? "repeat(1, minmax(0, 1fr))"
+      : {
+          xs: "repeat(1, minmax(0, 1fr))",
+          sm: "repeat(2, minmax(0, 1fr))",
+          md: "repeat(3, minmax(0, 1fr))",
+          lg: "repeat(4, minmax(0, 1fr))",
+          xl: "repeat(5, minmax(0, 1fr))",
+        };
     const galleryGridSx = {
       ...GALLERY_GRID_SX,
-      gridTemplateColumns: compactLayout
-        ? "repeat(1, minmax(0, 1fr))"
-        : "repeat(auto-fit, minmax(min(360px, 100%), 1fr))",
+      gridTemplateColumns: galleryGridColumns,
     } as const;
 
     return (
@@ -91,7 +98,12 @@ class Home extends React.Component<HomeProps> {
                 <QueryResult
                   error={error}
                   loading={networkStatus === 2}
-                  placeholder={<HomeListingPlaceholder />}
+                  placeholder={
+                    <HomeListingPlaceholder
+                      query={this.props.query}
+                      compactLayout={compactLayout}
+                    />
+                  }
                   placeholderCount={1}
                 />
               ) : (

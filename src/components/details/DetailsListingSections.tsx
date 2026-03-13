@@ -37,11 +37,18 @@ export function IssueHistoryList(props: Readonly<IssueHistoryListProps>) {
   const showSort = props.showSort ?? true;
   const compactLayout = Boolean(props.compactLayout);
   const listingView = getListingView(props.query as ListingQuery);
+  const galleryGridColumns = compactLayout
+    ? "repeat(1, minmax(0, 1fr))"
+    : {
+        xs: "repeat(1, minmax(0, 1fr))",
+        sm: "repeat(2, minmax(0, 1fr))",
+        md: "repeat(3, minmax(0, 1fr))",
+        lg: "repeat(4, minmax(0, 1fr))",
+        xl: "repeat(5, minmax(0, 1fr))",
+      };
   const galleryGridSx = {
     ...GALLERY_GRID_SX,
-    gridTemplateColumns: compactLayout
-      ? "repeat(1, minmax(0, 1fr))"
-      : "repeat(auto-fit, minmax(min(360px, 100%), 1fr))",
+    gridTemplateColumns: galleryGridColumns,
   } as const;
 
   return (
@@ -90,11 +97,18 @@ export function IssueHistoryPlaceholder(
 ) {
   const compactLayout = Boolean(props.compactLayout);
   const listingView = getListingView(props.query as ListingQuery);
+  const galleryGridColumns = compactLayout
+    ? "repeat(1, minmax(0, 1fr))"
+    : {
+        xs: "repeat(1, minmax(0, 1fr))",
+        sm: "repeat(2, minmax(0, 1fr))",
+        md: "repeat(3, minmax(0, 1fr))",
+        lg: "repeat(4, minmax(0, 1fr))",
+        xl: "repeat(5, minmax(0, 1fr))",
+      };
   const galleryGridSx = {
     ...GALLERY_GRID_SX,
-    gridTemplateColumns: compactLayout
-      ? "repeat(1, minmax(0, 1fr))"
-      : "repeat(auto-fit, minmax(min(360px, 100%), 1fr))",
+    gridTemplateColumns: galleryGridColumns,
   } as const;
 
   return (
@@ -102,14 +116,24 @@ export function IssueHistoryPlaceholder(
       <CardHeader title={<Skeleton variant="text" width={120} height={30} />} />
       {listingView === "gallery" ? (
         <Box sx={galleryGridSx}>
-          <IssuePreviewPlaceholderSmall idx={0} />
-          <IssuePreviewPlaceholderSmall idx={1} />
-          <IssuePreviewPlaceholderSmall idx={2} />
-          <IssuePreviewPlaceholderSmall idx={3} />
-          <IssuePreviewPlaceholderSmall idx={4} />
+            <IssuePreviewPlaceholderSmall idx={0} />
+            <IssuePreviewPlaceholderSmall idx={1} />
+            <IssuePreviewPlaceholderSmall idx={2} />
+            <IssuePreviewPlaceholderSmall idx={3} />
+            <IssuePreviewPlaceholderSmall idx={4} />
+            <IssuePreviewPlaceholderSmall idx={5} />
+            <IssuePreviewPlaceholderSmall idx={6} />
+            <IssuePreviewPlaceholderSmall idx={7} />
+            <IssuePreviewPlaceholderSmall idx={8} />
+            <IssuePreviewPlaceholderSmall idx={9} />
         </Box>
       ) : (
         <Stack spacing={1}>
+          <IssuePreviewPlaceholder />
+          <IssuePreviewPlaceholder />
+          <IssuePreviewPlaceholder />
+          <IssuePreviewPlaceholder />
+          <IssuePreviewPlaceholder />
           <IssuePreviewPlaceholder />
           <IssuePreviewPlaceholder />
           <IssuePreviewPlaceholder />
