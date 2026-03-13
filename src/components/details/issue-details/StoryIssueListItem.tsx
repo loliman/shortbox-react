@@ -121,14 +121,14 @@ export function StoryIssueListItem(props: Readonly<StoryIssueListItemProps>) {
             ) : null}
           </Box>
 
-          <Typography variant="body2" color="text.secondary">
-            {props.subtitle || null}
-          </Typography>
+          {props.subtitle || publisherTitle ? (
+            <Typography variant="body2" color="text.secondary">
+              {props.subtitle || null}
+              {props.subtitle && publisherTitle ? " · " : null}
+              {publisherTitle || null}
+            </Typography>
+          ) : null}
         </Box>
-
-        <Typography variant="body2" color="text.secondary">
-          {publisherTitle}
-        </Typography>
       </Box>
 
       <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, flexShrink: 0 }}>
