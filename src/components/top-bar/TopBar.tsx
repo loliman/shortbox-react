@@ -300,11 +300,40 @@ export function TopBar(props: TopBarProps) {
               </Tooltip>
             )}
 
-            <Box sx={{ ml: 0.75, display: "inline-flex", alignItems: "center", gap: 0.75 }}>
+            <Box
+              sx={{
+                ml: 0.75,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 0.75,
+                px: 1,
+                py: 0.5,
+                borderRadius: 999,
+                border: "1px solid",
+                borderColor: (theme) =>
+                  us
+                    ? theme.palette.mode === "dark"
+                      ? "rgba(96, 165, 250, 0.6)"
+                      : "rgba(59, 130, 246, 0.28)"
+                    : theme.palette.divider,
+                backgroundColor: (theme) =>
+                  us
+                    ? theme.palette.mode === "dark"
+                      ? "rgba(30, 64, 175, 0.25)"
+                      : "rgba(191, 219, 254, 0.2)"
+                    : theme.palette.mode === "dark"
+                      ? "rgba(255,255,255,0.04)"
+                      : "rgba(0,0,0,0.02)",
+              }}
+            >
               <Typography
-                sx={{ fontSize: "0.82rem", fontWeight: 600, letterSpacing: 0.2, opacity: 0.95 }}
+                sx={{
+                  fontSize: "0.74rem",
+                  fontWeight: us ? 500 : 700,
+                  opacity: us ? 0.65 : 1,
+                }}
               >
-                US
+                DE
               </Typography>
               <Tooltip title={"Wechseln zu " + (us ? "Deutsch" : "US")}>
                 <Android12Switch
@@ -317,6 +346,15 @@ export function TopBar(props: TopBarProps) {
                   }}
                 />
               </Tooltip>
+              <Typography
+                sx={{
+                  fontSize: "0.74rem",
+                  fontWeight: us ? 700 : 500,
+                  opacity: us ? 1 : 0.65,
+                }}
+              >
+                US
+              </Typography>
             </Box>
             <Tooltip title={darkModeEnabled ? "Zu hellem Modus wechseln" : "Zu dunklem Modus wechseln"}>
               <IconButton
