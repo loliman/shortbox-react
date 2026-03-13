@@ -46,7 +46,12 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
   const children = Array.isArray(item.children) ? item.children : [];
   const reprints = Array.isArray(item.reprints) ? item.reprints : [];
   const hasIssueReference = Boolean(item.series);
-  const titleSuffix = item.title ? (hasIssueReference ? " - " + item.title : item.title) : "";
+  const storyTitle = String(item.title || "").trim();
+  const publicationFallback = buildPublicationFallback({
+    childrenCount: children.length,
+    us: Boolean(props.us),
+  });
+  const subtitleText = props.us ? publicationFallback : item.addinfo || "";
   const actionChips = buildSimpleActionChips({
     item,
     childrenCount: children.length,
@@ -76,27 +81,36 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
         <Box sx={{ display: "grid", rowGap: 0.5 }}>
           <Typography
             variant="overline"
-            color="text.secondary"
-            sx={{ letterSpacing: "0.16em" }}
+            sx={{
+              fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+              fontWeight: 400,
+              fontSize: "0.75rem",
+              lineHeight: 2.66,
+              textTransform: "uppercase",
+              color: "#4b5565",
+            }}
           >
-            Story
+            {storyTitle !== "" ? storyTitle : "Story"}
           </Typography>
           <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-          {hasIssueReference ? (
-            <IssueReferenceInline
-              seriesLabel={item.series ? generateLabel({ series: item.series } as any) : undefined}
-              number={item.number}
-              legacy_number={item.legacy_number}
-            />
-          ) : null}
-          {titleSuffix ? (
-            <Box component="span" sx={{ fontWeight: hasIssueReference ? 400 : 700 }}>
-              {titleSuffix}
-            </Box>
-          ) : null}
+            {hasIssueReference ? (
+              <IssueReferenceInline
+                seriesLabel={item.series ? generateLabel({ series: item.series } as any) : undefined}
+                number={item.number}
+                legacy_number={item.legacy_number}
+              />
+            ) : null}
           </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {item.addinfo ? item.addinfo : null}
+          <Typography
+            sx={{
+              fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+              fontSize: "1rem",
+              lineHeight: 1.75,
+              fontWeight: 700,
+              color: "text.secondary",
+            }}
+          >
+            {subtitleText || null}
           </Typography>
         </Box>
 
@@ -134,6 +148,27 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
   );
 }
 
+function buildPublicationFallback({
+  childrenCount,
+  us,
+}: {
+  childrenCount: number;
+  us: boolean;
+}): string {
+  if (!us) return "Story";
+  if (childrenCount <= 0) return "Nicht auf deutsch erschienen";
+
+  const word = toGermanOccurrenceWord(childrenCount);
+  return `${word} auf deutsch erschienen`;
+}
+
+function toGermanOccurrenceWord(count: number): string {
+  if (count <= 1) return "Einfach";
+  if (count === 2) return "Zweifach";
+  if (count === 3) return "Dreifach";
+  return `${count}fach`;
+}
+
 function buildSimpleActionChips({
   item,
   childrenCount,
@@ -148,12 +183,6 @@ function buildSimpleActionChips({
   hasSession: boolean;
 }): React.ReactElement[] {
   const chips: React.ReactElement[] = [];
-
-  if (item.onlyoneprint && !item.parent) {
-    chips.push(
-      <Chip key="onlyoneprint" label="Nur einfach auf deutsch veröffentlicht" color="secondary" />
-    );
-  }
 
   if (item.onlytb && !item.parent) {
     chips.push(<Chip key="onlytb" label="Nur in Taschenbuch" color="primary" />);
