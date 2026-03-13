@@ -356,6 +356,9 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
           <Box
             sx={{
               mt: 1,
+              pt: 0.75,
+              borderTop: "1px solid",
+              borderColor: "divider",
               display: "flex",
               flexWrap: "wrap",
               gap: 0.6,
@@ -374,6 +377,9 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
           sx={{
             ml: "auto",
             alignSelf: "center",
+            pt: 0.75,
+            borderTop: "1px solid",
+            borderColor: "divider",
             display: "flex",
             flexWrap: "wrap",
             gap: 0.6,

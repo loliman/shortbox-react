@@ -123,6 +123,9 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
           <Box
             sx={{
               mt: 1,
+              pt: 0.75,
+              borderTop: "1px solid",
+              borderColor: "divider",
               display: "flex",
               flexWrap: "wrap",
               gap: 0.6,
@@ -139,6 +142,9 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
           sx={{
             ml: "auto",
             alignSelf: "center",
+            pt: 0.75,
+            borderTop: "1px solid",
+            borderColor: "divider",
             display: "flex",
             flexWrap: "wrap",
             gap: 0.6,
