@@ -241,7 +241,7 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
       }
     >
       <Box sx={{ minWidth: 0 }}>
-        <Box sx={{ display: "grid", rowGap: 0.35 }}>
+        <Box sx={{ display: "grid", rowGap: 0.25 }}>
           <Box sx={{ display: "flex", alignItems: "baseline", gap: 1, flexWrap: "wrap" }}>
             <Typography
               variant="overline"

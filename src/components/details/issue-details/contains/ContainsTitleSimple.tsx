@@ -78,7 +78,7 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
       }
     >
       <Box sx={{ minWidth: 0 }}>
-        <Box sx={{ display: "grid", rowGap: 0.35 }}>
+        <Box sx={{ display: "grid", rowGap: 0.25 }}>
           <Typography
             variant="overline"
             color="text.secondary"
