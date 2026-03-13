@@ -4,6 +4,7 @@ import Typography from "@mui/material/Typography";
 import Link from "@mui/material/Link";
 import IconButton from "@mui/material/IconButton";
 import Box from "@mui/material/Box";
+import Chip from "@mui/material/Chip";
 import SearchIcon from "@mui/icons-material/Search";
 import CoverTooltip from "../../nav-bar/CoverTooltip";
 import type { StoryIssue } from "./utils/storyIssueUtils";
@@ -132,13 +133,10 @@ export function StoryIssueListItem(props: Readonly<StoryIssueListItemProps>) {
 
       <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, flexShrink: 0 }}>
         {props.showCollected && props.issue.collected && props.session ? (
-          <Box
-            component="img"
-            src="/collected_badge.png"
-            sx={{ height: 25, width: "auto" }}
-            alt="gesammelt"
-          />
+          <Chip size="small" label="Gesammelt" color="success" />
         ) : null}
+
+        {props.issue.verified ? <Chip size="small" label="Verifiziert" color="info" /> : null}
 
         <CoverTooltip issue={props.issue} us={coverUs} number={props.number}>
           <IconButton

@@ -49,7 +49,6 @@ function IssuePreviewSmall(props: Readonly<IssuePreviewSmallProps>) {
         backgroundColor:
           theme.palette.mode === "dark" ? "rgba(16, 16, 16, 0.96)" : "background.paper",
         overflow: "hidden",
-        minHeight: 640,
       })}
     >
       <CardActionArea
@@ -101,8 +100,8 @@ function IssuePreviewSmall(props: Readonly<IssuePreviewSmallProps>) {
 
           <Box
             sx={(theme) => ({
-              flex: 1,
-              minHeight: 460,
+              aspectRatio: "1 / 1.5",
+              width: "100%",
               backgroundColor:
                 theme.palette.mode === "dark" ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0.04)",
               backgroundImage: isCoverLoading
@@ -211,7 +210,6 @@ export function IssuePreviewPlaceholderSmall(props: { idx?: number; isLast?: boo
   return (
     <Card
       sx={(theme) => ({
-        minHeight: 640,
         overflow: "hidden",
         backgroundColor:
           theme.palette.mode === "dark" ? "rgba(16, 16, 16, 0.96)" : "background.paper",
@@ -222,7 +220,9 @@ export function IssuePreviewPlaceholderSmall(props: { idx?: number; isLast?: boo
           <Skeleton variant="text" width={width} height={30} />
           <Skeleton variant="text" width="42%" />
         </Box>
-        <Skeleton variant="rectangular" sx={{ flex: 1, minHeight: 460 }} />
+        <Box sx={{ position: "relative", width: "100%", paddingTop: "150%" }}>
+          <Skeleton variant="rectangular" sx={{ position: "absolute", inset: 0 }} />
+        </Box>
         <Box sx={{ display: "flex", gap: 1, minHeight: 56, alignItems: "center", px: 1.5, py: 1.25 }}>
           <Skeleton variant="rounded" width={96} height={24} />
           <Skeleton variant="rounded" width={104} height={24} />

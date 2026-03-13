@@ -38,6 +38,7 @@ export function ContainsItem(props: Readonly<ContainsItemProps>) {
         borderRadius,
         width: "auto",
         maxWidth: "100%",
+        mb: props.isLast ? 0 : 1,
         border: "1px solid",
         borderColor: (theme) =>
           isHighlighted
@@ -88,6 +89,7 @@ export function ContainsItem(props: Readonly<ContainsItemProps>) {
       <AccordionSummary
         expandIcon={<ExpandMoreIcon />}
         sx={{
+          py: 1.25,
           "& .MuiAccordionSummary-content": {
             width: "100%",
           },

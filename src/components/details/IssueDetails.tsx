@@ -671,8 +671,10 @@ function IssueCoverGallery(props: {
   if (!activeIssue) return null;
 
   return (
-    <Box sx={{ position: "relative", width: "100%" }}>
-      <IssueCover us={props.us} issue={activeIssue} />
+    <Box sx={{ position: "relative", width: "100%", paddingTop: "150%" }}>
+      <Box sx={{ position: "absolute", inset: 0 }}>
+        <IssueCover us={props.us} issue={activeIssue} />
+      </Box>
 
       {props.issues.length > 1 ? (
         <React.Fragment>

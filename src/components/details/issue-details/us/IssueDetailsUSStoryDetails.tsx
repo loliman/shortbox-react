@@ -84,7 +84,7 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
           <Box
             sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.5 }}
           >
-            <Typography variant="h6">enthalten in</Typography>
+            <Typography variant="h6">Enthalten in</Typography>
             <IconButton
               size="small"
               aria-label={containsExpanded ? "Enthalten in einklappen" : "Enthalten in ausklappen"}

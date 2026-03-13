@@ -73,7 +73,15 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
       }
     >
       <Box sx={{ minWidth: 0 }}>
-        <Typography sx={{ fontWeight: 600 }}>
+        <Box sx={{ display: "grid", rowGap: 0.5 }}>
+          <Typography
+            variant="overline"
+            color="text.secondary"
+            sx={{ letterSpacing: "0.16em" }}
+          >
+            Story
+          </Typography>
+          <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
           {hasIssueReference ? (
             <IssueReferenceInline
               seriesLabel={item.series ? generateLabel({ series: item.series } as any) : undefined}
@@ -82,14 +90,15 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
             />
           ) : null}
           {titleSuffix ? (
-            <Box component="span" sx={{ fontWeight: hasIssueReference ? 400 : 600 }}>
+            <Box component="span" sx={{ fontWeight: hasIssueReference ? 400 : 700 }}>
               {titleSuffix}
             </Box>
           ) : null}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {item.addinfo ? item.addinfo : null}
-        </Typography>
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            {item.addinfo ? item.addinfo : null}
+          </Typography>
+        </Box>
 
         {stackActions && actionChips.length > 0 ? (
           <Box

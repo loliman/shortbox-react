@@ -177,6 +177,9 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
   const issueSelection = issue ? toIssueSelection(issue) : null;
   const storyExpandNumber = String(item.parent?.number ?? item.number ?? "").trim();
   const storyNumberBadge = getStoryNumberBadge(item);
+  const storyNumberLabel = storyNumberBadge
+    ? storyNumberBadge.replace("[", "").replace("]", "").trim()
+    : "";
 
   const stackActions =
     props.compactLayout ??
@@ -191,7 +194,7 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
     ? toIssueSelection(item.parent.reprintOf.issue)
     : null;
   const hasIssueReference = Boolean(issue?.series);
-  const titleSuffix = itemTitle ? (hasIssueReference ? " - " + itemTitle : itemTitle) : "";
+  const titleText = itemTitle || "";
   const actionChips = buildDetailedActionChips({
     item,
     isCover: props.isCover,
@@ -238,8 +241,24 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
       }
     >
       <Box sx={{ minWidth: 0 }}>
-        <Box>
-          <Typography sx={{ fontWeight: 600 }}>
+        <Box sx={{ display: "grid", rowGap: 0.5 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
+            <Typography
+              variant="overline"
+              color="text.secondary"
+              sx={{ letterSpacing: "0.16em" }}
+            >
+              Story
+            </Typography>
+            {storyNumberLabel ? (
+              <Chip
+                size="small"
+                label={`Story ${storyNumberLabel}`}
+                sx={{ fontWeight: 600, height: 20 }}
+              />
+            ) : null}
+          </Box>
+          <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
             <IssueReferenceInline
               seriesLabel={
                 hasIssueReference
@@ -254,9 +273,15 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
                 {storyNumberBadge}
               </Box>
             ) : null}
-            {titleSuffix ? (
-              <Box component="span" sx={{ fontWeight: hasIssueReference ? 400 : 600 }}>
-                {titleSuffix}
+            {titleText ? (
+              <Box
+                component="span"
+                sx={{
+                  display: "block",
+                  fontWeight: hasIssueReference ? 400 : 700,
+                }}
+              >
+                {titleText}
               </Box>
             ) : null}
           </Typography>
@@ -273,40 +298,51 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
         </Box>
 
         {item.parent?.reprintOf?.issue ? (
-          <CoverTooltip
-            issue={item.parent.reprintOf.issue}
-            us={props.us}
-            number={item.parent.reprintOf.number}
+          <Box
+            sx={{
+              mt: 1,
+              p: 1.25,
+              borderRadius: 1.5,
+              border: "1px solid",
+              borderColor: "divider",
+              backgroundColor: (theme) =>
+                theme.palette.mode === "dark" ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.03)",
+            }}
           >
-            <Link
-              component="button"
-              type="button"
-              variant="body2"
-              underline="hover"
-              color="text.secondary"
-              sx={{
-                p: 0,
-                textAlign: "left",
-                lineHeight: 1.43,
-              }}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (!reprintSelection) return;
-                props.navigate?.(e, generateUrl(reprintSelection, true), {
-                  expand: item.parent?.reprintOf?.number,
-                  filter: null,
-                });
-              }}
+            <Typography variant="caption" color="text.secondary" sx={{ letterSpacing: "0.08em" }}>
+              US-Original
+            </Typography>
+            <CoverTooltip
+              issue={item.parent.reprintOf.issue}
+              us={props.us}
+              number={item.parent.reprintOf.number}
             >
-              Original erschienen als{" "}
-              <Box
-                component="span"
-                sx={{ textDecoration: "underline", textUnderlineOffset: "2px", color: "inherit" }}
+              <Link
+                component="button"
+                type="button"
+                variant="body2"
+                underline="hover"
+                color="text.primary"
+                sx={{
+                  mt: 0.25,
+                  p: 0,
+                  textAlign: "left",
+                  lineHeight: 1.43,
+                  fontWeight: 600,
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (!reprintSelection) return;
+                  props.navigate?.(e, generateUrl(reprintSelection, true), {
+                    expand: item.parent?.reprintOf?.number,
+                    filter: null,
+                  });
+                }}
               >
                 {reprintSelection ? generateLabel(reprintSelection) : ""}
-              </Box>
-            </Link>
-          </CoverTooltip>
+              </Link>
+            </CoverTooltip>
+          </Box>
         ) : null}
 
         <Typography variant="body2" color="text.secondary">

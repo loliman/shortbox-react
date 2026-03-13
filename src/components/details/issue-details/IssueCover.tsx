@@ -28,9 +28,8 @@ export function IssueCover(props: Readonly<IssueCoverProps>) {
         onClick={() => setIsOpen(true)}
         aria-label={`${issueLabel} Cover vergrößern`}
         sx={{
-          width: { xs: "100%", md: "clamp(320px, 36vw, 480px)" },
-          maxWidth: "100%",
-          aspectRatio: "2 / 3",
+          width: "100%",
+          height: "100%",
           borderRadius: (theme) => `${Number(theme.shape.borderRadius) || 12}px`,
           overflow: "hidden",
           bgcolor: (theme) => (theme.palette.mode === "dark" ? "#000000" : theme.palette.grey[300]),

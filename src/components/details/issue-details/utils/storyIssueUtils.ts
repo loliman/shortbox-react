@@ -3,6 +3,7 @@ export type StoryIssue = {
   legacy_number?: string | null;
   title?: string | null;
   collected?: boolean;
+  verified?: boolean;
   series?: {
     title?: string;
     volume?: number;
