@@ -111,6 +111,8 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
               lineHeight: 1.75,
               fontWeight: 700,
               color: "text.secondary",
+              letterSpacing: "0.01em",
+              opacity: 0.9,
             }}
           >
             {subtitleText || null}

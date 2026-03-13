@@ -338,17 +338,19 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
           </Box>
         ) : null}
 
-        <Typography
-          sx={{
-            fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
-            fontSize: "1rem",
-            lineHeight: 1.75,
-            fontWeight: 700,
-            color: "text.secondary",
-          }}
-        >
-          {addinfoText !== "" ? addinfoText : null}
-        </Typography>
+          <Typography
+            sx={{
+              fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+              fontSize: "1rem",
+              lineHeight: 1.75,
+              fontWeight: 700,
+              color: "text.secondary",
+              letterSpacing: "0.01em",
+              opacity: 0.9,
+            }}
+          >
+            {addinfoText !== "" ? addinfoText : null}
+          </Typography>
 
         {stackActions && actionChips.length > 0 ? (
           <Box
