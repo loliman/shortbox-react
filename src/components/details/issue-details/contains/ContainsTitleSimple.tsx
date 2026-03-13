@@ -41,8 +41,7 @@ type ContainsTitleSimpleProps = {
 export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
   const item = props.item;
   const stackActions =
-    props.compactLayout ??
-    Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
+    props.compactLayout ?? Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
   const children = Array.isArray(item.children) ? item.children : [];
   const reprints = Array.isArray(item.reprints) ? item.reprints : [];
   const hasIssueReference = Boolean(item.series);

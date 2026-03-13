@@ -19,7 +19,12 @@ const GALLERY_GRID_SX = {
 } as const;
 
 type QueryState =
-  | { filter?: string | null; order?: string | null; direction?: string | null; view?: string | null }
+  | {
+      filter?: string | null;
+      order?: string | null;
+      direction?: string | null;
+      view?: string | null;
+    }
   | null
   | undefined;
 
@@ -78,11 +83,7 @@ export function IssueHistoryList(props: Readonly<IssueHistoryListProps>) {
         ) : (
           <Stack spacing={1}>
             {issues.map((issue, idx) => (
-              <IssuePreview
-                {...props.previewProps}
-                key={buildIssueKey(issue, idx)}
-                issue={issue}
-              />
+              <IssuePreview {...props.previewProps} key={buildIssueKey(issue, idx)} issue={issue} />
             ))}
           </Stack>
         )}
@@ -116,16 +117,16 @@ export function IssueHistoryPlaceholder(
       <CardHeader title={<Skeleton variant="text" width={120} height={30} />} />
       {listingView === "gallery" ? (
         <Box sx={galleryGridSx}>
-            <IssuePreviewPlaceholderSmall idx={0} />
-            <IssuePreviewPlaceholderSmall idx={1} />
-            <IssuePreviewPlaceholderSmall idx={2} />
-            <IssuePreviewPlaceholderSmall idx={3} />
-            <IssuePreviewPlaceholderSmall idx={4} />
-            <IssuePreviewPlaceholderSmall idx={5} />
-            <IssuePreviewPlaceholderSmall idx={6} />
-            <IssuePreviewPlaceholderSmall idx={7} />
-            <IssuePreviewPlaceholderSmall idx={8} />
-            <IssuePreviewPlaceholderSmall idx={9} />
+          <IssuePreviewPlaceholderSmall idx={0} />
+          <IssuePreviewPlaceholderSmall idx={1} />
+          <IssuePreviewPlaceholderSmall idx={2} />
+          <IssuePreviewPlaceholderSmall idx={3} />
+          <IssuePreviewPlaceholderSmall idx={4} />
+          <IssuePreviewPlaceholderSmall idx={5} />
+          <IssuePreviewPlaceholderSmall idx={6} />
+          <IssuePreviewPlaceholderSmall idx={7} />
+          <IssuePreviewPlaceholderSmall idx={8} />
+          <IssuePreviewPlaceholderSmall idx={9} />
         </Box>
       ) : (
         <Stack spacing={1}>

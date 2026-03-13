@@ -5,10 +5,7 @@ type ResolvedImageState = {
   isLoading: boolean;
 };
 
-export function useResolvedImageUrl(
-  candidateUrl: string,
-  fallbackUrl: string
-): ResolvedImageState {
+export function useResolvedImageUrl(candidateUrl: string, fallbackUrl: string): ResolvedImageState {
   const [state, setState] = React.useState<ResolvedImageState>(() => {
     const nextCandidate = candidateUrl || fallbackUrl;
     if (!nextCandidate || nextCandidate === fallbackUrl) {

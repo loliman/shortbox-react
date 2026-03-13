@@ -49,15 +49,16 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
     <Card
       sx={(theme) => ({
         backgroundColor: "background.paper",
-        backgroundImage:
-          isCoverLoading
-            ? theme.palette.mode === "dark"
-              ? "linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), linear-gradient(110deg, rgba(255, 255, 255, 0.04) 25%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.04) 75%)"
-              : "linear-gradient(rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.35)), linear-gradient(110deg, rgba(0, 0, 0, 0.04) 25%, rgba(0, 0, 0, 0.14) 50%, rgba(0, 0, 0, 0.04) 75%)"
-            : theme.palette.mode === "dark"
-              ? `linear-gradient(rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.28)), linear-gradient(to right, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.58) 40%, rgba(0, 0, 0, 0.08) 100%), url(${effectiveCoverUrl})`
-              : `linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3)), linear-gradient(to right, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.62) 40%, rgba(255, 255, 255, 0) 100%), url(${effectiveCoverUrl})`,
-        backgroundRepeat: isCoverLoading ? "no-repeat, no-repeat" : "no-repeat, no-repeat, no-repeat",
+        backgroundImage: isCoverLoading
+          ? theme.palette.mode === "dark"
+            ? "linear-gradient(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.35)), linear-gradient(110deg, rgba(255, 255, 255, 0.04) 25%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.04) 75%)"
+            : "linear-gradient(rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.35)), linear-gradient(110deg, rgba(0, 0, 0, 0.04) 25%, rgba(0, 0, 0, 0.14) 50%, rgba(0, 0, 0, 0.04) 75%)"
+          : theme.palette.mode === "dark"
+            ? `linear-gradient(rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.28)), linear-gradient(to right, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.58) 40%, rgba(0, 0, 0, 0.08) 100%), url(${effectiveCoverUrl})`
+            : `linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3)), linear-gradient(to right, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.62) 40%, rgba(255, 255, 255, 0) 100%), url(${effectiveCoverUrl})`,
+        backgroundRepeat: isCoverLoading
+          ? "no-repeat, no-repeat"
+          : "no-repeat, no-repeat, no-repeat",
         backgroundPosition: isCoverLoading ? "0 0, 200% 0" : "0 0, 0 0, 100% 50%",
         backgroundSize: isCoverLoading ? "100% 100%, 220% 100%" : "100% 100%, 100% 100%, cover",
         animation: isCoverLoading ? "coverShimmer 1.4s ease-in-out infinite" : undefined,
@@ -97,9 +98,7 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
             </Box>
 
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75 }}>
-              {props.issue.verified ? (
-                <Chip size="small" label="Verifiziert" color="info" />
-              ) : null}
+              {props.issue.verified ? <Chip size="small" label="Verifiziert" color="info" /> : null}
               {flags.collected ? <Chip size="small" label="Gesammelt" color="success" /> : null}
               {flags.collectedMultipleTimes ? (
                 <Chip size="small" label="Mehrfach gesammelt" color="success" variant="outlined" />

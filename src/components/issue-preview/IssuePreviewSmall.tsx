@@ -67,7 +67,9 @@ function IssuePreviewSmall(props: Readonly<IssuePreviewSmallProps>) {
               minWidth: 0,
               overflow: "hidden",
               backgroundColor:
-                theme.palette.mode === "dark" ? "rgba(24, 24, 24, 0.84)" : "rgba(228, 228, 228, 0.58)",
+                theme.palette.mode === "dark"
+                  ? "rgba(24, 24, 24, 0.84)"
+                  : "rgba(228, 228, 228, 0.58)",
             })}
           >
             <Stack spacing={1} sx={{ minWidth: 0 }}>
@@ -133,24 +135,16 @@ function IssuePreviewSmall(props: Readonly<IssuePreviewSmallProps>) {
               py: 1.25,
               overflow: "hidden",
               backgroundColor:
-                theme.palette.mode === "dark" ? "rgba(24, 24, 24, 0.84)" : "rgba(228, 228, 228, 0.58)",
+                theme.palette.mode === "dark"
+                  ? "rgba(24, 24, 24, 0.84)"
+                  : "rgba(228, 228, 228, 0.58)",
             })}
           >
             {props.issue.verified ? (
-              <Chip
-                size="small"
-                label="Verifiziert"
-                color="info"
-                sx={SINGLE_LINE_CHIP_SX}
-              />
+              <Chip size="small" label="Verifiziert" color="info" sx={SINGLE_LINE_CHIP_SX} />
             ) : null}
             {flags.collected ? (
-              <Chip
-                size="small"
-                label="Gesammelt"
-                color="success"
-                sx={SINGLE_LINE_CHIP_SX}
-              />
+              <Chip size="small" label="Gesammelt" color="success" sx={SINGLE_LINE_CHIP_SX} />
             ) : null}
             {flags.collectedMultipleTimes ? (
               <Chip
@@ -223,7 +217,9 @@ export function IssuePreviewPlaceholderSmall(props: { idx?: number; isLast?: boo
           <Skeleton variant="text" width="42%" />
         </Box>
         <Skeleton variant="rectangular" sx={{ flex: 1, minHeight: 460 }} />
-        <Box sx={{ display: "flex", gap: 1, minHeight: 56, alignItems: "center", px: 1.5, py: 1.25 }}>
+        <Box
+          sx={{ display: "flex", gap: 1, minHeight: 56, alignItems: "center", px: 1.5, py: 1.25 }}
+        >
           <Skeleton variant="rounded" width={96} height={24} />
           <Skeleton variant="rounded" width={104} height={24} />
         </Box>

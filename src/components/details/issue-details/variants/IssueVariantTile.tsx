@@ -76,14 +76,15 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
             pointerEvents: "none",
           }}
         >
-          {showCollected ? (
-            <Chip size="small" label="Gesammelt" color="success" />
-          ) : null}
-          {showVerified ? (
-            <Chip size="small" label="Verifiziert" color="info" />
-          ) : null}
+          {showCollected ? <Chip size="small" label="Gesammelt" color="success" /> : null}
+          {showVerified ? <Chip size="small" label="Verifiziert" color="info" /> : null}
           {showBookmark ? (
-            <Box component="span" sx={statusChipSx} title="Eigene Stories" aria-label="Eigene Stories">
+            <Box
+              component="span"
+              sx={statusChipSx}
+              title="Eigene Stories"
+              aria-label="Eigene Stories"
+            >
               <BookmarkIcon
                 sx={(theme) => ({
                   ...outlinedStatusIconSx,
