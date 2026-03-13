@@ -67,7 +67,9 @@ class Home extends React.Component<HomeProps> {
     const listingView = getListingView(this.props.query);
     const galleryGridSx = {
       ...GALLERY_GRID_SX,
-      gridTemplateColumns: compactLayout ? "repeat(1, minmax(0, 1fr))" : "repeat(5, minmax(0, 1fr))",
+      gridTemplateColumns: compactLayout
+        ? "repeat(1, minmax(0, 1fr))"
+        : "repeat(auto-fit, minmax(min(360px, 100%), 1fr))",
     } as const;
 
     return (
