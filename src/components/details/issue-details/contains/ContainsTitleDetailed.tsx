@@ -176,10 +176,7 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
   const issue = resolveIssueForDetails(item);
   const issueSelection = issue ? toIssueSelection(issue) : null;
   const storyExpandNumber = String(item.parent?.number ?? item.number ?? "").trim();
-  const storyNumberBadge = getStoryNumberBadge(item);
-  const storyNumberLabel = storyNumberBadge
-    ? storyNumberBadge.replace("[", "").replace("]", "").trim()
-    : "";
+  const storyNumberLabel = "";
 
   const stackActions =
     props.compactLayout ??
@@ -189,6 +186,9 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
   const itemTitle = normalizeDisplayStoryTitle(item.title);
   const parentTitle =
     !itemTitle && item.parent?.title ? normalizeDisplayStoryTitle(item.parent.title) : undefined;
+  const storyTitle = itemTitle || parentTitle || "";
+  const storyTitleLabel = storyTitle !== "" ? storyTitle : "Story";
+  const showParentTitle = Boolean(parentTitle && itemTitle && parentTitle !== itemTitle);
   const addinfoText = buildAddinfoText(item);
   const reprintSelection = item.parent?.reprintOf?.issue
     ? toIssueSelection(item.parent.reprintOf.issue)
@@ -242,13 +242,13 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
     >
       <Box sx={{ minWidth: 0 }}>
         <Box sx={{ display: "grid", rowGap: 0.5 }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
+          <Box sx={{ display: "flex", alignItems: "baseline", gap: 1, flexWrap: "wrap" }}>
             <Typography
               variant="overline"
               color="text.secondary"
-              sx={{ letterSpacing: "0.16em" }}
+              sx={{ letterSpacing: "0.14em" }}
             >
-              Story
+              {storyTitleLabel}
             </Typography>
             {storyNumberLabel ? (
               <Chip
@@ -268,24 +268,8 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
               number={hasIssueReference ? issue?.number : undefined}
               legacy_number={issue?.legacy_number}
             />
-            {storyNumberBadge ? (
-              <Box component="span" sx={{ color: "text.primary", fontWeight: "inherit" }}>
-                {storyNumberBadge}
-              </Box>
-            ) : null}
-            {titleText ? (
-              <Box
-                component="span"
-                sx={{
-                  display: "block",
-                  fontWeight: hasIssueReference ? 400 : 700,
-                }}
-              >
-                {titleText}
-              </Box>
-            ) : null}
           </Typography>
-          {parentTitle ? (
+          {showParentTitle ? (
             <Typography variant="body2" color="text.secondary">
               {parentTitle}
             </Typography>
