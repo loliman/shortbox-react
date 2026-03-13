@@ -52,6 +52,10 @@ interface IssueDetailsProps {
   subheader?: boolean;
   details?: React.ReactElement;
   bottom?: React.ReactElement;
+  compactLayout?: boolean;
+  isPhone?: boolean;
+  isTablet?: boolean;
+  isTabletLandscape?: boolean;
   navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
   [key: string]: unknown;
 }
@@ -110,6 +114,8 @@ function IssueDetails(props: IssueDetailsProps) {
   const selected = props.selected || { us: Boolean(props.us) };
   const us = Boolean(props.us);
   const details = props.details || <React.Fragment />;
+  const compactLayout =
+    props.compactLayout ?? Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
   const [coverExpanded, setCoverExpanded] = React.useState(true);
   const issueVariables = React.useMemo(
     () =>
@@ -205,16 +211,78 @@ function IssueDetails(props: IssueDetailsProps) {
     );
   }
 
-  const hasVariantBox = (issueForVariants.variants || []).filter(Boolean).length > 1;
-
   const arcs = collectIssueArcs(issueForVariants, us);
   const today = getTodayLocalDate();
   const releaseDate = issueForVariants.releasedate ? new Date(issueForVariants.releasedate) : null;
-  const gridTemplateColumns = { xs: "1fr", md: "minmax(0, 1fr) auto" };
+  const coverColumnWidth = "clamp(320px, 36vw, 480px)";
+  const gridTemplateColumns = { xs: "1fr", md: `minmax(0, 1fr) ${coverColumnWidth}` };
   const coverWidth = {
     xs: "100%",
-    md: "clamp(320px, 36vw, 480px)",
+    md: coverColumnWidth,
   };
+  const coverAttribution = !us && issueForVariants.comicguideid ? (
+    <Typography
+      variant="caption"
+      color="text.secondary"
+      sx={{
+        opacity: 0.82,
+        textAlign: "left",
+      }}
+    >
+      Das Cover für&nbsp;
+      <a
+        href={generateComicGuideUrl(issueForVariants as any)}
+        rel="noopener noreferrer nofollow"
+        target="_blank"
+      >
+        <IssueReferenceInline
+          seriesLabel={generateLabel({ series: issueForVariants.series } as any)}
+          number={issueForVariants.number}
+          legacy_number={issueForVariants.legacy_number}
+        />
+      </a>
+      &nbsp;wird bereitgestellt vom&nbsp;
+      <a href="https://www.comicguide.de" rel="noopener noreferrer nofollow" target="_blank">
+        deutschen ComicGuide
+      </a>
+      &nbsp;und darf nicht ohne Genehmigung weiterverbreitet werden.
+    </Typography>
+  ) : us ? (
+    <Typography
+      variant="caption"
+      color="text.secondary"
+      sx={{
+        opacity: 0.82,
+        textAlign: "left",
+      }}
+    >
+      Informationen über&nbsp;
+      <a
+        href={generateMarvelDbUrl(issueForVariants as any)}
+        rel="noopener noreferrer nofollow"
+        target="_blank"
+      >
+        <IssueReferenceInline
+          seriesLabel={generateLabel({ series: issueForVariants.series } as any)}
+          number={issueForVariants.number}
+          legacy_number={issueForVariants.legacy_number}
+        />
+      </a>
+      &nbsp;werden bezogen aus der&nbsp;
+      <a href="https://marvel.fandom.com" rel="noopener noreferrer nofollow" target="_blank">
+        Marvel Database
+      </a>
+      &nbsp;und stehen unter der&nbsp;
+      <a
+        href="https://creativecommons.org/licenses/by/3.0/de/"
+        rel="noopener noreferrer nofollow"
+        target="_blank"
+      >
+        Creative Commons License 3.0
+      </a>
+      &nbsp;. Die Informationen wurden aufbereitet und unter Umständen ergänzt.&nbsp;
+    </Typography>
+  ) : null;
 
   return (
     <Layout>
@@ -268,315 +336,302 @@ function IssueDetails(props: IssueDetailsProps) {
 
           <Box>
             <Box
-            sx={{
-              display: "grid",
-              gridTemplateColumns,
-              gap: 2,
-              alignItems: "start",
-              width: "100%",
-            }}
-            >
-            <Box
               sx={{
-                minWidth: 0,
+                display: "grid",
+                gridTemplateColumns,
+                gap: 2,
+                alignItems: "start",
                 width: "100%",
-                display: "flex",
-                flexWrap: "wrap",
-                alignItems: "flex-start",
-                columnGap: 2,
-                rowGap: 1.5,
-                order: { xs: 2, md: 1 },
               }}
             >
-              <Box sx={{ minWidth: 0, flex: "1 1 300px", width: "100%" }}>
-                <DetailsTable
-                  issue={issueForVariants}
-                  details={details}
-                  navigate={props.navigate}
-                  us={us}
-                />
-              </Box>
-
-              {arcs.length > 0 ? (
-                <Box
-                  sx={{
-                    minWidth: 0,
-                    flex: "0 1 220px",
-                    alignSelf: { xs: "flex-start", md: "flex-end" },
-                  }}
-                >
-                  <Typography
-                    variant="subtitle2"
-                    sx={{ fontWeight: 500, mb: 0.75, whiteSpace: "nowrap" }}
-                  >
-                    Enthält Teile von
-                  </Typography>
-                  <StoryArcChips arcs={arcs} us={us} navigate={props.navigate} inline />
-                </Box>
-              ) : null}
-
-              {props.bottom ? (
-                <Box sx={{ minWidth: 0, width: "100%", mt: 0.5 }}>
-                  {React.cloneElement(props.bottom, {
-                    navigate: props.navigate,
-                    selected: issueForVariants,
-                    issue: issueForVariants,
-                    us: us,
-                  })}
-                </Box>
-              ) : null}
-            </Box>
-
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "flex-start",
-                justifyContent: { xs: "center", md: "flex-end" },
-                minWidth: 0,
-                justifySelf: { xs: "stretch", md: "end" },
-                gridColumn: { md: "2 / 3" },
-                gridRow: { md: "1" },
-                order: { xs: 1, md: 3 },
-              }}
-            >
-              <Box sx={{ display: { xs: "none", md: "block" } }}>
-                <Box
-                  sx={{
-                    width: coverWidth,
-                    maxWidth: "100%",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "flex-start",
-                    alignItems: "stretch",
-                  }}
-                >
-                  <Box
-                    sx={{ display: "flex", justifyContent: "flex-end", alignItems: "flex-start" }}
-                  >
-                    <IssueCoverGallery
-                      us={us}
-                      issues={coverGalleryIssues}
-                      activeFormat={selected.issue?.format ?? undefined}
-                      activeVariant={selected.issue?.variant ?? undefined}
-                      navigate={props.navigate}
-                      session={props.session}
-                    />
-                  </Box>
-                  {!us && issueForVariants.comicguideid ? (
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      sx={{
-                        mt: 1,
-                        opacity: 0.82,
-                        textAlign: "left",
-                        display: { xs: "none", md: "block" },
-                      }}
-                    >
-                      Das Cover für&nbsp;
-                      <a
-                        href={generateComicGuideUrl(issueForVariants as any)}
-                        rel="noopener noreferrer nofollow"
-                        target="_blank"
-                      >
-                        <IssueReferenceInline
-                          seriesLabel={generateLabel({ series: issueForVariants.series } as any)}
-                          number={issueForVariants.number}
-                          legacy_number={issueForVariants.legacy_number}
-                        />
-                      </a>
-                      &nbsp;wird bereitgestellt vom&nbsp;
-                      <a
-                        href="https://www.comicguide.de"
-                        rel="noopener noreferrer nofollow"
-                        target="_blank"
-                      >
-                        deutschen ComicGuide
-                      </a>
-                      &nbsp;und darf nicht ohne Genehmigung weiterverbreitet werden.
-                    </Typography>
-                  ) : null}
-                  {us ? (
-                    <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      sx={{
-                        mt: 1,
-                        opacity: 0.82,
-                        textAlign: "left",
-                        display: { xs: "none", md: "block" },
-                      }}
-                    >
-                      Informationen über&nbsp;
-                      <a
-                        href={generateMarvelDbUrl(issueForVariants as any)}
-                        rel="noopener noreferrer nofollow"
-                        target="_blank"
-                      >
-                        <IssueReferenceInline
-                          seriesLabel={generateLabel({ series: issueForVariants.series } as any)}
-                          number={issueForVariants.number}
-                          legacy_number={issueForVariants.legacy_number}
-                        />
-                      </a>
-                      &nbsp;werden bezogen aus der&nbsp;
-                      <a
-                        href="https://marvel.fandom.com"
-                        rel="noopener noreferrer nofollow"
-                        target="_blank"
-                      >
-                        Marvel Database
-                      </a>
-                      &nbsp;und stehen unter der&nbsp;
-                      <a
-                        href="https://creativecommons.org/licenses/by/3.0/de/"
-                        rel="noopener noreferrer nofollow"
-                        target="_blank"
-                      >
-                        Creative Commons License 3.0
-                      </a>
-                      &nbsp;. Die Informationen wurden aufbereitet und unter Umständen
-                      ergänzt.&nbsp;
-                    </Typography>
-                  ) : null}
-                </Box>
-              </Box>
-
-              <Box sx={{ display: { xs: "block", md: "none" }, width: "100%" }}>
-                <Box sx={{ width: coverWidth, maxWidth: "100%", mx: "auto", position: "relative" }}>
-                  <IconButton
-                    size="small"
-                    aria-label={coverExpanded ? "Cover einklappen" : "Cover ausklappen"}
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      setCoverExpanded((prev) => !prev);
-                    }}
-                    sx={{
-                      position: "absolute",
-                      top: 1,
-                      right: 2,
-                      zIndex: 2,
-                      color: "common.white",
-                      p: 0.25,
-                      "&:hover": { bgcolor: "transparent" },
-                      transform: coverExpanded ? "rotate(45deg)" : "rotate(0deg)",
-                      transition: "transform 180ms ease",
-                    }}
-                  >
-                    <AddIcon sx={{ fontSize: 20 }} />
-                  </IconButton>
-                  <Collapse
-                    in={coverExpanded}
-                    collapsedSize="25px"
-                    sx={{
-                      borderRadius: (theme) => `${Number(theme.shape.borderRadius) || 12}px`,
-                      overflow: "hidden",
-                    }}
-                  >
+              {compactLayout ? (
+                <Box sx={{ minWidth: 0, width: "100%", display: "flex", flexDirection: "column", gap: 2 }}>
+                  {arcs.length > 0 ? (
                     <Box
                       sx={{
-                        width: "100%",
+                        minWidth: 0,
                         display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "flex-start",
-                        alignItems: "stretch",
+                        alignItems: "center",
+                        gap: 1,
+                        flexWrap: "nowrap",
+                        overflow: "hidden",
                       }}
                     >
-                      <Box
-                        sx={{ display: "flex", justifyContent: "center", alignItems: "flex-start" }}
-                      >
-                        <IssueCoverGallery
-                          us={us}
-                          issues={coverGalleryIssues}
-                          activeFormat={selected.issue?.format ?? undefined}
-                          activeVariant={selected.issue?.variant ?? undefined}
-                          session={props.session}
-                          navigate={props.navigate}
-                        />
+                      <Box sx={{ minWidth: 0, overflow: "hidden" }}>
+                        <StoryArcChips arcs={arcs} us={us} navigate={props.navigate} inline />
                       </Box>
                     </Box>
-                  </Collapse>
-                </Box>
-              </Box>
-            </Box>
-            </Box>
+                  ) : null}
 
-            {!us && issueForVariants.comicguideid ? (
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{
-                  mt: 2,
-                  opacity: 0.82,
-                  textAlign: "left",
-                  display: { xs: "block", md: "none" },
-                }}
-              >
-                Das Cover für&nbsp;
-                <a
-                  href={generateComicGuideUrl(issueForVariants as any)}
-                  rel="noopener noreferrer nofollow"
-                  target="_blank"
-                >
-                  <IssueReferenceInline
-                    seriesLabel={generateLabel({ series: issueForVariants.series } as any)}
-                    number={issueForVariants.number}
-                    legacy_number={issueForVariants.legacy_number}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "flex-start",
+                      justifyContent: { xs: "center", md: "flex-end" },
+                      minWidth: 0,
+                      justifySelf: { xs: "stretch", md: "end" },
+                    }}
+                  >
+                    <Box sx={{ display: { xs: "none", md: "block" } }}>
+                      <Box
+                        sx={{
+                          width: coverWidth,
+                          maxWidth: "100%",
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "flex-start",
+                          alignItems: "stretch",
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            alignItems: "flex-start",
+                          }}
+                        >
+                          <IssueCoverGallery
+                            us={us}
+                            issues={coverGalleryIssues}
+                            activeFormat={selected.issue?.format ?? undefined}
+                            activeVariant={selected.issue?.variant ?? undefined}
+                            navigate={props.navigate}
+                            session={props.session}
+                          />
+                        </Box>
+                      </Box>
+                    </Box>
+
+                    <Box sx={{ display: { xs: "block", md: "none" }, width: "100%" }}>
+                      <Box sx={{ width: coverWidth, maxWidth: "100%", mx: "auto", position: "relative" }}>
+                        <IconButton
+                          size="small"
+                          aria-label={coverExpanded ? "Cover einklappen" : "Cover ausklappen"}
+                          onClick={(event) => {
+                            event.stopPropagation();
+                            setCoverExpanded((prev) => !prev);
+                          }}
+                          sx={{
+                            position: "absolute",
+                            top: 1,
+                            right: 2,
+                            zIndex: 2,
+                            color: "common.white",
+                            p: 0.25,
+                            "&:hover": { bgcolor: "transparent" },
+                            transform: coverExpanded ? "rotate(45deg)" : "rotate(0deg)",
+                            transition: "transform 180ms ease",
+                          }}
+                        >
+                          <AddIcon sx={{ fontSize: 20 }} />
+                        </IconButton>
+                        <Collapse
+                          in={coverExpanded}
+                          collapsedSize="25px"
+                          sx={{
+                            borderRadius: (theme) => `${Number(theme.shape.borderRadius) || 12}px`,
+                            overflow: "hidden",
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              width: "100%",
+                              display: "flex",
+                              flexDirection: "column",
+                              justifyContent: "flex-start",
+                              alignItems: "stretch",
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "flex-start",
+                              }}
+                            >
+                              <IssueCoverGallery
+                                us={us}
+                                issues={coverGalleryIssues}
+                                activeFormat={selected.issue?.format ?? undefined}
+                                activeVariant={selected.issue?.variant ?? undefined}
+                                session={props.session}
+                                navigate={props.navigate}
+                              />
+                            </Box>
+                          </Box>
+                        </Collapse>
+                      </Box>
+                    </Box>
+                  </Box>
+
+                  <DetailsTable
+                    issue={issueForVariants}
+                    details={details}
+                    navigate={props.navigate}
+                    us={us}
                   />
-                </a>
-                &nbsp;wird bereitgestellt vom&nbsp;
-                <a
-                  href="https://www.comicguide.de"
-                  rel="noopener noreferrer nofollow"
-                  target="_blank"
-                >
-                  deutschen ComicGuide
-                </a>
-                &nbsp;und darf nicht ohne Genehmigung weiterverbreitet werden.
-              </Typography>
-            ) : null}
-            {us ? (
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{
-                  mt: 2,
-                  opacity: 0.82,
-                  textAlign: "left",
-                  display: { xs: "block", md: "none" },
-                }}
-              >
-                Informationen über&nbsp;
-                <a
-                  href={generateMarvelDbUrl(issueForVariants as any)}
-                  rel="noopener noreferrer nofollow"
-                  target="_blank"
-                >
-                  <IssueReferenceInline
-                    seriesLabel={generateLabel({ series: issueForVariants.series } as any)}
-                    number={issueForVariants.number}
-                    legacy_number={issueForVariants.legacy_number}
-                  />
-                </a>
-                &nbsp;werden bezogen aus der&nbsp;
-                <a
-                  href="https://marvel.fandom.com"
-                  rel="noopener noreferrer nofollow"
-                  target="_blank"
-                >
-                  Marvel Database
-                </a>
-                &nbsp;und stehen unter der&nbsp;
-                <a
-                  href="https://creativecommons.org/licenses/by/3.0/de/"
-                  rel="noopener noreferrer nofollow"
-                  target="_blank"
-                >
-                  Creative Commons License 3.0
-                </a>
-                &nbsp;. Die Informationen wurden aufbereitet und unter Umständen ergänzt.&nbsp;
-              </Typography>
-            ) : null}
+
+                  {props.bottom ? (
+                    <Box sx={{ minWidth: 0, width: "100%", mt: 0 }}>
+                      {React.cloneElement(props.bottom, {
+                        navigate: props.navigate,
+                        selected: issueForVariants,
+                        issue: issueForVariants,
+                        us: us,
+                      })}
+                    </Box>
+                  ) : null}
+
+                  {coverAttribution ? <Box>{coverAttribution}</Box> : null}
+                </Box>
+              ) : (
+                <React.Fragment>
+                  <Box sx={{ minWidth: 0, width: "100%" }}>
+                    {props.bottom ? (
+                      <Box sx={{ minWidth: 0, width: "100%", mt: 0 }}>
+                        {React.cloneElement(props.bottom, {
+                          navigate: props.navigate,
+                          selected: issueForVariants,
+                          issue: issueForVariants,
+                          us: us,
+                        })}
+                      </Box>
+                    ) : null}
+                  </Box>
+
+                  <Box sx={{ minWidth: 0, width: "100%", display: "flex", flexDirection: "column", gap: 2 }}>
+                    {arcs.length > 0 ? (
+                      <Box
+                        sx={{
+                          minWidth: 0,
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 1,
+                          flexWrap: "nowrap",
+                          overflow: "hidden",
+                        }}
+                      >
+                        <Box sx={{ minWidth: 0, overflow: "hidden" }}>
+                          <StoryArcChips arcs={arcs} us={us} navigate={props.navigate} inline />
+                        </Box>
+                      </Box>
+                    ) : null}
+
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "flex-start",
+                        justifyContent: { xs: "center", md: "flex-end" },
+                        minWidth: 0,
+                        justifySelf: { xs: "stretch", md: "end" },
+                        gridColumn: { md: "2 / 3" },
+                        gridRow: { md: "1" },
+                      }}
+                    >
+                      <Box sx={{ display: { xs: "none", md: "block" } }}>
+                        <Box
+                          sx={{
+                            width: coverWidth,
+                            maxWidth: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "flex-start",
+                            alignItems: "stretch",
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              display: "flex",
+                              justifyContent: "flex-end",
+                              alignItems: "flex-start",
+                            }}
+                          >
+                            <IssueCoverGallery
+                              us={us}
+                              issues={coverGalleryIssues}
+                              activeFormat={selected.issue?.format ?? undefined}
+                              activeVariant={selected.issue?.variant ?? undefined}
+                              navigate={props.navigate}
+                              session={props.session}
+                            />
+                          </Box>
+                        </Box>
+                      </Box>
+
+                      <Box sx={{ display: { xs: "block", md: "none" }, width: "100%" }}>
+                        <Box sx={{ width: coverWidth, maxWidth: "100%", mx: "auto", position: "relative" }}>
+                          <IconButton
+                            size="small"
+                            aria-label={coverExpanded ? "Cover einklappen" : "Cover ausklappen"}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              setCoverExpanded((prev) => !prev);
+                            }}
+                            sx={{
+                              position: "absolute",
+                              top: 1,
+                              right: 2,
+                              zIndex: 2,
+                              color: "common.white",
+                              p: 0.25,
+                              "&:hover": { bgcolor: "transparent" },
+                              transform: coverExpanded ? "rotate(45deg)" : "rotate(0deg)",
+                              transition: "transform 180ms ease",
+                            }}
+                          >
+                            <AddIcon sx={{ fontSize: 20 }} />
+                          </IconButton>
+                          <Collapse
+                            in={coverExpanded}
+                            collapsedSize="25px"
+                            sx={{
+                              borderRadius: (theme) => `${Number(theme.shape.borderRadius) || 12}px`,
+                              overflow: "hidden",
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                width: "100%",
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "flex-start",
+                                alignItems: "stretch",
+                              }}
+                            >
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  alignItems: "flex-start",
+                                }}
+                              >
+                                <IssueCoverGallery
+                                  us={us}
+                                  issues={coverGalleryIssues}
+                                  activeFormat={selected.issue?.format ?? undefined}
+                                  activeVariant={selected.issue?.variant ?? undefined}
+                                  session={props.session}
+                                  navigate={props.navigate}
+                                />
+                              </Box>
+                            </Box>
+                          </Collapse>
+                        </Box>
+                      </Box>
+                    </Box>
+
+                    <DetailsTable
+                      issue={issueForVariants}
+                      details={details}
+                      navigate={props.navigate}
+                      us={us}
+                    />
+
+                    {coverAttribution ? <Box>{coverAttribution}</Box> : null}
+                  </Box>
+                </React.Fragment>
+              )}
+            </Box>
 
             {issueForVariants.addinfo && issueForVariants.addinfo !== "" ? (
               <Paper variant="outlined" sx={{ mt: 2, p: 2 }}>

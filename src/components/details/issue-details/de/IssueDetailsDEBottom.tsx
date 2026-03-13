@@ -21,7 +21,7 @@ export function IssueDetailsDEBottom(props: Readonly<IssueDetailsDEBottomProps>)
     : [];
 
   return (
-    <Box sx={{ mt: 3 }}>
+    <Box sx={{ mt: 0 }}>
       <Contains
         {...props}
         header=""

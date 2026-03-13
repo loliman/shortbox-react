@@ -21,7 +21,7 @@ export function IssueDetailsUSBottom(props: Readonly<IssueDetailsUSBottomProps>)
     : [];
 
   return (
-    <Box sx={{ mt: 3 }}>
+    <Box sx={{ mt: 0 }}>
       <Contains
         {...props}
         header=""
