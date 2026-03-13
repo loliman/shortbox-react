@@ -125,7 +125,7 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
               mt: 1,
               display: "flex",
               flexWrap: "wrap",
-              gap: 0.75,
+              gap: 0.6,
               alignItems: "center",
             }}
           >
@@ -141,7 +141,7 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
             alignSelf: "center",
             display: "flex",
             flexWrap: "wrap",
-            gap: 0.75,
+            gap: 0.6,
             justifyContent: "flex-end",
             alignItems: "center",
           }}

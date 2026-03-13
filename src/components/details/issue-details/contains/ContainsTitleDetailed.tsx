@@ -358,7 +358,7 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
               mt: 1,
               display: "flex",
               flexWrap: "wrap",
-              gap: 0.75,
+              gap: 0.6,
               alignItems: "center",
             }}
           >
@@ -376,7 +376,7 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
             alignSelf: "center",
             display: "flex",
             flexWrap: "wrap",
-            gap: 0.75,
+            gap: 0.6,
             justifyContent: "flex-end",
             alignItems: "center",
           }}
