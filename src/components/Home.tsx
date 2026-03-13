@@ -19,6 +19,7 @@ import {
   parseListingFilter,
 } from "../util/listingQuery";
 import { HomeListingPlaceholder } from "./placeholders/HomeListingPlaceholder";
+import FilterSummaryBar from "./filter/FilterSummaryBar";
 
 const HOME_SEO_SUMMARY =
   "Shortbox listet alle deutschen Marvel Veröffentlichungen detailliert auf und ordnet diese den entsprechenden US Geschichten zu.";
@@ -150,6 +151,16 @@ class Home extends React.Component<HomeProps> {
                     </Box>
 
                     {compactLayout ? <SortContainer {...this.props} /> : null}
+
+                    {this.props.query?.filter ? (
+                      <FilterSummaryBar
+                        query={this.props.query}
+                        us={this.props.us}
+                        selected={null}
+                        navigate={this.props.navigate as any}
+                        compactLayout={compactLayout}
+                      />
+                    ) : null}
 
                     <Box
                       key={listingView}

@@ -11,6 +11,7 @@ import SortContainer from "../SortContainer";
 import LoadingDots from "../generic/LoadingDots";
 import type { PreviewIssue } from "../issue-preview/utils/issuePreviewUtils";
 import { getListingView, type ListingQuery } from "../../util/listingQuery";
+import FilterSummaryBar from "../filter/FilterSummaryBar";
 
 const GALLERY_GRID_SX = {
   display: "grid",
@@ -37,6 +38,7 @@ export function IssueHistoryList(props: Readonly<IssueHistoryListProps>) {
   const showSort = props.showSort ?? true;
   const compactLayout = Boolean(props.compactLayout);
   const listingView = getListingView(props.query as ListingQuery);
+  const previewProps = (props.previewProps || {}) as Record<string, unknown>;
   const galleryGridColumns = compactLayout
     ? "repeat(1, minmax(0, 1fr))"
     : {
@@ -54,6 +56,17 @@ export function IssueHistoryList(props: Readonly<IssueHistoryListProps>) {
   return (
     <Box component="section">
       {showSort ? <SortContainer {...props.previewProps} /> : null}
+      {props.query?.filter ? (
+        <Box sx={{ mt: showSort ? 1.5 : 0 }}>
+          <FilterSummaryBar
+            query={props.query as ListingQuery}
+            us={previewProps.us as boolean | undefined}
+            selected={previewProps.selected as any}
+            navigate={previewProps.navigate as any}
+            compactLayout={compactLayout}
+          />
+        </Box>
+      ) : null}
       <Box
         key={listingView}
         sx={{
