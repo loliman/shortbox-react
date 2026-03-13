@@ -74,10 +74,10 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
         onClick={(e) => handleInAppLinkClick(e, url, props.navigate)}
         aria-label={`Zu ${getIssueLabel(props.issue)}`}
       >
-        <CardContent>
-          <Stack spacing={1.5}>
+        <CardContent sx={{ py: 2 }}>
+          <Stack spacing={1.25}>
             <Box>
-              <Typography variant="subtitle1">
+              <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
                 <IssueReferenceInline
                   seriesLabel={getSeriesLabel(props.issue.series)}
                   number={props.issue.number}
