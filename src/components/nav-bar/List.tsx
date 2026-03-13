@@ -37,9 +37,8 @@ import {
   getNavDrawerWidth,
 } from "../layoutMetrics";
 import { parseFilter } from "./listUtils";
-import { getSeriesLabel } from "../../util/issuePresentation";
+import { getLegacyNumberLabel, getSeriesLabel } from "../../util/issuePresentation";
 import CoverTooltip from "./CoverTooltip";
-import { IssueReferenceInline } from "../generic/IssueNumberInline";
 
 const LIST_PAGE_SIZE = 250;
 
@@ -643,11 +642,18 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
                             fontWeight: selected ? 700 : 400,
                           }}
                         >
-                          <IssueReferenceInline
-                            seriesLabel={createIssueSeriesLabel(issueNode, us)}
-                            number={issueNode.number}
-                            legacy_number={(issueNode as { legacy_number?: string | null }).legacy_number}
-                          />
+                          <Box
+                            component="span"
+                            sx={{
+                              display: "block",
+                              minWidth: 0,
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              whiteSpace: "nowrap",
+                            }}
+                          >
+                            {createSidebarIssueLabel(issueNode, us)}
+                          </Box>
                         </Typography>
                         {hasVariants ? (
                           <Typography
@@ -826,6 +832,14 @@ function createIssueSeriesLabel(issueNode: IssueNode, us: boolean): string {
   if (us) return seriesTitle;
   if (issueNode.title && issueNode.title !== "") return `${issueNode.title}${variantLabel}`;
   return `${seriesTitle}${variantLabel}`;
+}
+
+function createSidebarIssueLabel(issueNode: IssueNode, us: boolean): string {
+  const number = issueNode.number ? `#${issueNode.number}` : "";
+  const legacyLabel = getLegacyNumberLabel(issueNode);
+  const seriesLabel = createIssueSeriesLabel(issueNode, us);
+
+  return [number, legacyLabel, seriesLabel].filter(Boolean).join(" ");
 }
 
 function getSelectedPublisherName(selected: SelectedRoot): string {

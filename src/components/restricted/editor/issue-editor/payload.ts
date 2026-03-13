@@ -198,7 +198,8 @@ function normalizeStoryParent(value: unknown): Record<string, unknown> | undefin
 
 function normalizeStories(value: unknown): Array<Record<string, unknown>> {
   return asRecordArray(value).map((story) => {
-    const exclusive = Boolean(story.exclusive);
+    const parent = normalizeStoryParent(story.parent);
+    const exclusive = Boolean(story.exclusive) && !parent;
 
     const normalized: Record<string, unknown> = {
       title: String(story.title || ""),
@@ -210,8 +211,7 @@ function normalizeStories(value: unknown): Array<Record<string, unknown>> {
       appearances: normalizeAppearances(story.appearances),
     };
 
-    const parent = normalizeStoryParent(story.parent);
-    if (!exclusive && parent) normalized.parent = parent;
+    if (parent) normalized.parent = parent;
 
     return normalized;
   });

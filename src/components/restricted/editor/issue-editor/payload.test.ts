@@ -104,7 +104,7 @@ describe("buildIssueMutationVariables", () => {
     });
   });
 
-  it("drops DE-only fields for US issues but keeps relation payload", () => {
+  it("drops DE-only fields for US issues and preserves parent references", () => {
     const values = baseValues(true);
     (values.stories[0] as any).exclusive = true;
 
@@ -121,8 +121,37 @@ describe("buildIssueMutationVariables", () => {
     expect(item.individuals).toBeUndefined();
     expect(item.arcs).toBeUndefined();
     expect(item.stories).toHaveLength(1);
-    expect(item.stories[0].parent).toBeUndefined();
+    expect(item.stories[0].exclusive).toBe(false);
+    expect(item.stories[0].parent).toMatchObject({
+      issue: {
+        series: {
+          title: "Spider-Man",
+          volume: 1,
+          publisher: { name: "Marvel", us: false },
+        },
+      },
+    });
     expect(result.old).toBeUndefined();
+  });
+
+  it("keeps a parent reference even when the story is marked exclusive in the form state", () => {
+    const values = baseValues(false);
+    (values.stories[0] as any).exclusive = true;
+
+    const result = buildIssueMutationVariables(values, values, false);
+    const item = result.item as any;
+
+    expect(item.stories).toHaveLength(1);
+    expect(item.stories[0].exclusive).toBe(false);
+    expect(item.stories[0].parent).toMatchObject({
+      issue: {
+        series: {
+          title: "Spider-Man",
+          volume: 1,
+          publisher: { name: "Marvel", us: false },
+        },
+      },
+    });
   });
 
   it("sanitizes nested relation payload and keeps parent references", () => {

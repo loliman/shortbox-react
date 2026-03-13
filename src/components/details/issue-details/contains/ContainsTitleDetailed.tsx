@@ -38,6 +38,7 @@ type ContainsParentLike = {
   title?: string | null;
   collectedmultipletimes?: boolean;
   collected?: boolean;
+  children?: Array<{ part?: string | null; issue?: { releasedate?: string | null } | null } | null> | null;
   reprintOf?: { issue?: ContainsIssueLike; number?: string | number } | null;
   issue?: ContainsIssueLike;
   number?: string | number;
@@ -75,6 +76,100 @@ type ContainsTitleDetailedProps = {
   isPhonePortrait?: boolean;
   navigate?: NavigateFn;
 };
+
+const PART_PATTERN = /^(\d+)\s*\/\s*(\d+)$/;
+
+function parseStoryPart(value: string | null | undefined): { current: number; total: number } | null {
+  const match = String(value || "")
+    .trim()
+    .match(PART_PATTERN);
+  if (!match) return null;
+
+  const current = Number(match[1]);
+  const total = Number(match[2]);
+  if (!Number.isFinite(current) || !Number.isFinite(total) || current <= 0 || total <= 0) {
+    return null;
+  }
+
+  return { current, total };
+}
+
+function toReleaseTimestamp(value: string | null | undefined): number {
+  const parsed = Date.parse(String(value || "").trim());
+  return Number.isNaN(parsed) ? Number.POSITIVE_INFINITY : parsed;
+}
+
+function getEarliestFullPublicationTimestamp(
+  children: Array<{ part?: string | null; issue?: { releasedate?: string | null } | null } | null>
+): number {
+  const timestamps = children
+    .filter((child) => {
+      const parsed = parseStoryPart(child?.part);
+      return !parsed || parsed.total <= 1;
+    })
+    .map((child) => toReleaseTimestamp(child?.issue?.releasedate))
+    .filter((timestamp) => Number.isFinite(timestamp));
+
+  return timestamps.length > 0 ? Math.min(...timestamps) : Number.POSITIVE_INFINITY;
+}
+
+function getQualifyingMultipartTotals(
+  children: Array<{ part?: string | null; issue?: { releasedate?: string | null } | null } | null>
+): Set<number> {
+  const earliestFullPublicationTimestamp = getEarliestFullPublicationTimestamp(children);
+  if (!Number.isFinite(earliestFullPublicationTimestamp)) return new Set<number>();
+
+  const partsByTotal = new Map<number, Array<{ current: number; releasedateTs: number }>>();
+
+  children.forEach((child) => {
+    const parsed = parseStoryPart(child?.part);
+    if (!parsed || parsed.total <= 1) return;
+
+    const entries = partsByTotal.get(parsed.total) || [];
+    entries.push({
+      current: parsed.current,
+      releasedateTs: toReleaseTimestamp(child?.issue?.releasedate),
+    });
+    partsByTotal.set(parsed.total, entries);
+  });
+
+  const qualifyingTotals = new Set<number>();
+  for (const [total, entries] of partsByTotal.entries()) {
+    const parts = new Set(entries.map((entry) => entry.current));
+    let isComplete = true;
+    for (let current = 1; current <= total; current += 1) {
+      if (!parts.has(current)) {
+        isComplete = false;
+        break;
+      }
+    }
+    if (!isComplete) continue;
+
+    const completionTimestamp = Math.max(
+      ...entries.map((entry) => entry.releasedateTs).filter((value) => Number.isFinite(value))
+    );
+    if (completionTimestamp < earliestFullPublicationTimestamp) {
+      qualifyingTotals.add(total);
+    }
+  }
+
+  return qualifyingTotals;
+}
+
+function getFirstPublicationLabel(item: ContainsItemLike): string {
+  const siblingChildren = item.parent?.children || [];
+  return getQualifyingMultipartTotals(siblingChildren).size > 0
+    ? "Erste vollständige Veröffentlichung"
+    : "Erstveröffentlichung";
+}
+
+function shouldShowPartialPublicationLabel(item: ContainsItemLike): boolean {
+  const parsedPart = parseStoryPart(item.part);
+  if (!parsedPart || parsedPart.total <= 1) return false;
+
+  const siblingChildren = item.parent?.children || [];
+  return getQualifyingMultipartTotals(siblingChildren).has(parsedPart.total);
+}
 
 export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps>) {
   const item = props.item;
@@ -307,8 +402,10 @@ function buildDetailedActionChips({
     chips.push(<Chip key="onlyapp" label="Einzige Veröffentlichung" color="secondary" />);
   }
 
-  if (!isCover && !item.onlyapp && item.firstapp && item.parent) {
-    chips.push(<Chip key="firstapp" label="Erstveröffentlichung" color="primary" />);
+  if (!isCover && !item.onlyapp && item.parent && shouldShowPartialPublicationLabel(item)) {
+    chips.push(<Chip key="firstapp-partial" label="Erste teilweise Veröffentlichung" color="primary" />);
+  } else if (!isCover && !item.onlyapp && item.firstapp && item.parent) {
+    chips.push(<Chip key="firstapp" label={getFirstPublicationLabel(item)} color="primary" />);
   }
 
   if (!isCover && item.otheronlytb && item.parent) {

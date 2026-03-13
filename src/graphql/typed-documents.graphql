@@ -475,6 +475,12 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
       parent {
         title
         number
+        children {
+          part
+          issue {
+            releasedate
+          }
+        }
         issue {
           number
           legacy_number
