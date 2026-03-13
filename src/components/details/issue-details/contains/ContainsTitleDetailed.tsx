@@ -241,12 +241,12 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
       }
     >
       <Box sx={{ minWidth: 0 }}>
-        <Box sx={{ display: "grid", rowGap: 0.5 }}>
+        <Box sx={{ display: "grid", rowGap: 0.35 }}>
           <Box sx={{ display: "flex", alignItems: "baseline", gap: 1, flexWrap: "wrap" }}>
             <Typography
               variant="overline"
               color="text.secondary"
-              sx={{ letterSpacing: "0.14em" }}
+              sx={{ letterSpacing: "0.12em", lineHeight: 1.6, fontWeight: 600 }}
             >
               {storyTitleLabel}
             </Typography>
@@ -258,7 +258,16 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
               />
             ) : null}
           </Box>
-          <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+          <Typography
+            variant="subtitle1"
+            sx={{
+              fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+              fontSize: "1rem",
+              lineHeight: 1.75,
+              fontWeight: 700,
+              color: "#4b5565",
+            }}
+          >
             <IssueReferenceInline
               seriesLabel={
                 hasIssueReference
@@ -329,7 +338,15 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
           </Box>
         ) : null}
 
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          sx={{
+            fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+            fontSize: "1rem",
+            lineHeight: 1.75,
+            fontWeight: 700,
+            color: "text.secondary",
+          }}
+        >
           {addinfoText !== "" ? addinfoText : null}
         </Typography>
 
