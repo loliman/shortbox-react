@@ -20,7 +20,19 @@ export function StoryPeopleSection(props: Readonly<StoryPeopleSectionProps>) {
   return (
     <Box>
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.5 }}>
-        <Typography variant="h6">Mitwirkende</Typography>
+        <Typography
+          sx={{
+            fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+            fontSize: "0.78rem",
+            lineHeight: 1.5,
+            fontWeight: 600,
+            textTransform: "uppercase",
+            letterSpacing: "0.16em",
+            color: "text.secondary",
+          }}
+        >
+          Mitwirkende
+        </Typography>
         <IconButton
           size="small"
           aria-label={expanded ? "Mitwirkende einklappen" : "Mitwirkende ausklappen"}

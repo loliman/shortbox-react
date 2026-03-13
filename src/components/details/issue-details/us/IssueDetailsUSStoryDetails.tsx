@@ -80,11 +80,23 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
   return (
     <Box>
       {storyArcs.length > 0 ? (
-        <Box sx={{ mt: 3, pt: 2, borderTop: 1, borderColor: "divider" }}>
-          <Box
-            sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.5 }}
-          >
-            <Typography variant="h6">Enthalten in</Typography>
+          <Box sx={{ mt: 3, pt: 2, borderTop: 1, borderColor: "divider" }}>
+            <Box
+              sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.5 }}
+            >
+              <Typography
+                sx={{
+                  fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+                  fontSize: "0.78rem",
+                  lineHeight: 1.5,
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.16em",
+                  color: "text.secondary",
+                }}
+              >
+                Enthalten in
+              </Typography>
             <IconButton
               size="small"
               aria-label={containsExpanded ? "Enthalten in einklappen" : "Enthalten in ausklappen"}
@@ -108,7 +120,21 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
 
       {reprints.length === 0 ? null : (
         <Box sx={{ mt: 2 }}>
-          <Typography variant="h6">Nachgedruckt in</Typography>
+          <Typography
+            sx={{
+              fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+              fontSize: "0.78rem",
+              lineHeight: 1.5,
+              fontWeight: 600,
+              textTransform: "uppercase",
+              letterSpacing: "0.16em",
+              color: "text.secondary",
+              display: "block",
+              mb: 0.5,
+            }}
+          >
+            Nachgedruckt in
+          </Typography>
 
           <List sx={{ p: 0 }}>
             {reprints.map((child, idx) => {
@@ -134,7 +160,21 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
 
       {!reprintOf?.issue ? null : (
         <Box sx={{ mt: 2 }}>
-          <Typography variant="h6">Nachdruck von</Typography>
+          <Typography
+            sx={{
+              fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+              fontSize: "0.78rem",
+              lineHeight: 1.5,
+              fontWeight: 600,
+              textTransform: "uppercase",
+              letterSpacing: "0.16em",
+              color: "text.secondary",
+              display: "block",
+              mb: 0.5,
+            }}
+          >
+            Nachdruck von
+          </Typography>
 
           <List sx={{ p: 0 }}>
             <StoryIssueListItem
@@ -154,7 +194,19 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
           <Box
             sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.5 }}
           >
-            <Typography variant="h6">Erschienen in</Typography>
+            <Typography
+              sx={{
+                fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+                fontSize: "0.78rem",
+                lineHeight: 1.5,
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.16em",
+                color: "text.secondary",
+              }}
+            >
+              Erschienen in
+            </Typography>
             <IconButton
               size="small"
               aria-label={

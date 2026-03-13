@@ -21,7 +21,19 @@ export function StoryAppearanceSection(props: Readonly<StoryAppearanceSectionPro
   return (
     <Box sx={{ mt: 3, pt: 2, borderTop: 1, borderColor: "divider" }}>
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.5 }}>
-        <Typography variant="h6">Auftritte</Typography>
+        <Typography
+          sx={{
+            fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+            fontSize: "0.78rem",
+            lineHeight: 1.5,
+            fontWeight: 600,
+            textTransform: "uppercase",
+            letterSpacing: "0.16em",
+            color: "text.secondary",
+          }}
+        >
+          Auftritte
+        </Typography>
         <IconButton
           size="small"
           aria-label={expanded ? "Auftritte einklappen" : "Auftritte ausklappen"}

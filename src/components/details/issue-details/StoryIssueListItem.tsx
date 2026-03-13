@@ -59,11 +59,15 @@ export function StoryIssueListItem(props: Readonly<StoryIssueListItemProps>) {
             <Typography
               noWrap
               sx={{
-                fontWeight: 600,
+                fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+                fontWeight: 700,
+                fontSize: "0.98rem",
+                lineHeight: 1.6,
                 minWidth: 0,
                 flex: 1,
                 overflow: "hidden",
                 textOverflow: "ellipsis",
+                color: "#4b5565",
               }}
             >
               <IssueReferenceInline
@@ -122,7 +126,16 @@ export function StoryIssueListItem(props: Readonly<StoryIssueListItemProps>) {
           </Box>
 
           {props.subtitle || publisherTitle ? (
-            <Typography variant="body2" color="text.secondary">
+            <Typography
+              sx={{
+                fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+                fontSize: "0.92rem",
+                lineHeight: 1.5,
+                fontWeight: 500,
+                color: "text.secondary",
+                opacity: 0.9,
+              }}
+            >
               {props.subtitle || null}
               {props.subtitle && publisherTitle ? " · " : null}
               {publisherTitle || null}

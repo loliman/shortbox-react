@@ -222,6 +222,7 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
 
   return (
     <Box
+      data-testid="story-header"
       sx={
         stackActions
           ? {
@@ -241,12 +242,25 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
       }
     >
       <Box sx={{ minWidth: 0 }}>
-        <Box sx={{ display: "grid", rowGap: 0.25 }}>
+        <Box
+          sx={{
+            display: "grid",
+            rowGap: 0.3,
+          }}
+        >
           <Box sx={{ display: "flex", alignItems: "baseline", gap: 1, flexWrap: "wrap" }}>
             <Typography
               variant="overline"
-              color="text.secondary"
-              sx={{ letterSpacing: "0.12em", lineHeight: 1.6, fontWeight: 600 }}
+              sx={{
+                fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+                fontWeight: 500,
+                fontSize: "0.7rem",
+                lineHeight: 1.5,
+                textTransform: "uppercase",
+                letterSpacing: "0.16em",
+                color: "text.secondary",
+                opacity: 0.9,
+              }}
             >
               {storyTitleLabel}
             </Typography>
@@ -279,12 +293,30 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
             />
           </Typography>
           {showParentTitle ? (
-            <Typography variant="body2" color="text.secondary">
+            <Typography
+              sx={{
+                fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+                fontSize: "0.9rem",
+                lineHeight: 1.55,
+                fontWeight: 500,
+                color: "text.secondary",
+                opacity: 0.9,
+              }}
+            >
               {parentTitle}
             </Typography>
           ) : null}
           {variant ? (
-            <Typography variant="body2" color="text.secondary">
+            <Typography
+              sx={{
+                fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+                fontSize: "0.85rem",
+                lineHeight: 1.5,
+                fontWeight: 500,
+                color: "text.secondary",
+                opacity: 0.9,
+              }}
+            >
               {variant} Variant
             </Typography>
           ) : null}
@@ -338,19 +370,19 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
           </Box>
         ) : null}
 
-          <Typography
-            sx={{
-              fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
-              fontSize: "1rem",
-              lineHeight: 1.75,
-              fontWeight: 700,
-              color: "text.secondary",
-              letterSpacing: "0.01em",
-              opacity: 0.9,
-            }}
-          >
-            {addinfoText !== "" ? addinfoText : null}
-          </Typography>
+        <Typography
+          sx={{
+            fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+            fontSize: "1rem",
+            lineHeight: 1.75,
+            fontWeight: 700,
+            color: "text.secondary",
+            letterSpacing: "0.01em",
+            opacity: 0.9,
+          }}
+        >
+          {addinfoText !== "" ? addinfoText : null}
+        </Typography>
 
         {stackActions && actionChips.length > 0 ? (
           <Box

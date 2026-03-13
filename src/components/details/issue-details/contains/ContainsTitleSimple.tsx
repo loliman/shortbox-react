@@ -62,6 +62,7 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
 
   return (
     <Box
+      data-testid="story-header"
       sx={
         stackActions
           ? {
@@ -78,11 +79,19 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
       }
     >
       <Box sx={{ minWidth: 0 }}>
-        <Box sx={{ display: "grid", rowGap: 0.25 }}>
+        <Box sx={{ display: "grid", rowGap: 0.3 }}>
           <Typography
             variant="overline"
-            color="text.secondary"
-            sx={{ letterSpacing: "0.12em", lineHeight: 1.6, fontWeight: 600 }}
+            sx={{
+              fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+              fontWeight: 500,
+              fontSize: "0.7rem",
+              lineHeight: 1.5,
+              textTransform: "uppercase",
+              letterSpacing: "0.16em",
+              color: "text.secondary",
+              opacity: 0.9,
+            }}
           >
             {storyTitle !== "" ? storyTitle : "Story"}
           </Typography>
