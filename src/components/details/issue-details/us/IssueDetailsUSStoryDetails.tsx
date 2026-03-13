@@ -74,13 +74,25 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
   const reprints = Array.isArray(story?.reprints) ? story.reprints : [];
   const children = Array.isArray(currentItem.children) ? currentItem.children : [];
   const reprintOf = currentItem.reprintOf;
+  const hasGermanPublished = children.length > 0;
   const [containsExpanded, setContainsExpanded] = React.useState(true);
   const [germanPublishedExpanded, setGermanPublishedExpanded] = React.useState(true);
 
   return (
-    <Box>
-      {storyArcs.length > 0 ? (
-          <Box sx={{ mt: 3, pt: 2, borderTop: 1, borderColor: "divider" }}>
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateColumns: {
+          xs: "1fr",
+          md: hasGermanPublished ? "minmax(0, 1.05fr) minmax(0, 0.95fr)" : "1fr",
+        },
+        columnGap: 3,
+        rowGap: 3,
+      }}
+    >
+      <Box>
+        {storyArcs.length > 0 ? (
+          <Box sx={{ mt: 0, pt: 0 }}>
             <Box
               sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.5 }}
             >
@@ -97,103 +109,29 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
               >
                 Enthalten in
               </Typography>
-            <IconButton
-              size="small"
-              aria-label={containsExpanded ? "Enthalten in einklappen" : "Enthalten in ausklappen"}
-              onClick={() => setContainsExpanded((prev) => !prev)}
-              sx={{
-                ml: 1,
-                transform: containsExpanded ? "rotate(0deg)" : "rotate(-90deg)",
-                transition: "transform 180ms ease",
-              }}
-            >
-              <ExpandMoreIcon fontSize="small" />
-            </IconButton>
-          </Box>
-          <Collapse in={containsExpanded}>
-            <Box sx={{ mt: 1, minWidth: 0 }}>
-              <StoryArcChips arcs={storyArcs} us={us} navigate={props.navigate} inline />
+              <IconButton
+                size="small"
+                aria-label={containsExpanded ? "Enthalten in einklappen" : "Enthalten in ausklappen"}
+                onClick={() => setContainsExpanded((prev) => !prev)}
+                sx={{
+                  ml: 1,
+                  transform: containsExpanded ? "rotate(0deg)" : "rotate(-90deg)",
+                  transition: "transform 180ms ease",
+                }}
+              >
+                <ExpandMoreIcon fontSize="small" />
+              </IconButton>
             </Box>
-          </Collapse>
-        </Box>
-      ) : null}
+            <Collapse in={containsExpanded}>
+              <Box sx={{ mt: 1, minWidth: 0 }}>
+                <StoryArcChips arcs={storyArcs} us={us} navigate={props.navigate} inline />
+              </Box>
+            </Collapse>
+          </Box>
+        ) : null}
 
-      {reprints.length === 0 ? null : (
-        <Box sx={{ mt: 2 }}>
-          <Typography
-            sx={{
-              fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
-              fontSize: "0.78rem",
-              lineHeight: 1.5,
-              fontWeight: 600,
-              textTransform: "uppercase",
-              letterSpacing: "0.16em",
-              color: "text.secondary",
-              display: "block",
-              mb: 0.5,
-            }}
-          >
-            Nachgedruckt in
-          </Typography>
-
-          <List sx={{ p: 0 }}>
-            {reprints.map((child, idx) => {
-              if (!child.issue) return null;
-              const relation = toStoryIssueRelation(child);
-
-              return (
-                <StoryIssueListItem
-                  key={toIssueRowKey(relation, idx)}
-                  issue={child.issue}
-                  number={child.number}
-                  subtitle={child.addinfo ? child.addinfo : null}
-                  routeUs={true}
-                  coverUs={true}
-                  divider={reprints.length - 1 !== idx}
-                  navigate={props.navigate}
-                />
-              );
-            })}
-          </List>
-        </Box>
-      )}
-
-      {!reprintOf?.issue ? null : (
-        <Box sx={{ mt: 2 }}>
-          <Typography
-            sx={{
-              fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
-              fontSize: "0.78rem",
-              lineHeight: 1.5,
-              fontWeight: 600,
-              textTransform: "uppercase",
-              letterSpacing: "0.16em",
-              color: "text.secondary",
-              display: "block",
-              mb: 0.5,
-            }}
-          >
-            Nachdruck von
-          </Typography>
-
-          <List sx={{ p: 0 }}>
-            <StoryIssueListItem
-              issue={reprintOf.issue}
-              number={reprintOf.number}
-              subtitle={reprintOf.addinfo ? reprintOf.addinfo : null}
-              routeUs={true}
-              coverUs={true}
-              navigate={props.navigate}
-            />
-          </List>
-        </Box>
-      )}
-
-      {children.length === 0 ? null : (
-        <Box sx={{ mt: 3 }}>
-          <Box
-            sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.5 }}
-          >
+        {reprints.length === 0 ? null : (
+          <Box sx={{ mt: 2.5 }}>
             <Typography
               sx={{
                 fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
@@ -203,71 +141,152 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
                 textTransform: "uppercase",
                 letterSpacing: "0.16em",
                 color: "text.secondary",
+                display: "block",
+                mb: 0.5,
               }}
             >
-              Erschienen in
+              Nachgedruckt in
             </Typography>
-            <IconButton
-              size="small"
-              aria-label={
-                germanPublishedExpanded
-                  ? "Auf deutsch erschienen in einklappen"
-                  : "Auf deutsch erschienen in ausklappen"
-              }
-              onClick={() => setGermanPublishedExpanded((prev) => !prev)}
-              sx={{
-                ml: 1,
-                transform: germanPublishedExpanded ? "rotate(0deg)" : "rotate(-90deg)",
-                transition: "transform 180ms ease",
-              }}
-            >
-              <ExpandMoreIcon fontSize="small" />
-            </IconButton>
-          </Box>
 
-          <Collapse in={germanPublishedExpanded}>
             <List sx={{ p: 0 }}>
-              {children.map((child, idx) => {
+              {reprints.map((child, idx) => {
                 if (!child.issue) return null;
                 const relation = toStoryIssueRelation(child);
-                const addinfoText = toChildAddinfo(relation);
-                const parentLink =
-                  child.parent?.issue && !isSameIssue(child.parent.issue, props.issue)
-                    ? {
-                        issue: child.parent.issue,
-                        number: child.parent.number,
-                        prefix: "als",
-                        routeUs: true,
-                        coverUs: true,
-                      }
-                    : null;
 
                 return (
                   <StoryIssueListItem
                     key={toIssueRowKey(relation, idx)}
                     issue={child.issue}
                     number={child.number}
-                    subtitle={addinfoText !== "" ? addinfoText : null}
-                    titleSuffix={child.issue.title ? " - " + child.issue.title : ""}
-                    parentLink={parentLink}
-                    routeUs={false}
-                    coverUs={false}
-                    showCollected
-                    session={props.session}
-                    divider={children.length - 1 !== idx}
+                    subtitle={child.addinfo ? child.addinfo : null}
+                    routeUs={true}
+                    coverUs={true}
+                    divider={reprints.length - 1 !== idx}
                     navigate={props.navigate}
                   />
                 );
               })}
             </List>
-          </Collapse>
-        </Box>
-      )}
+          </Box>
+        )}
+
+        {!reprintOf?.issue ? null : (
+          <Box sx={{ mt: 2.5 }}>
+            <Typography
+              sx={{
+                fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+                fontSize: "0.78rem",
+                lineHeight: 1.5,
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.16em",
+                color: "text.secondary",
+                display: "block",
+                mb: 0.5,
+              }}
+            >
+              Nachdruck von
+            </Typography>
+
+            <List sx={{ p: 0 }}>
+              <StoryIssueListItem
+                issue={reprintOf.issue}
+                number={reprintOf.number}
+                subtitle={reprintOf.addinfo ? reprintOf.addinfo : null}
+                routeUs={true}
+                coverUs={true}
+                navigate={props.navigate}
+              />
+            </List>
+          </Box>
+        )}
+
+        {children.length === 0 ? null : (
+          <Box sx={{ mt: 2.5 }}>
+            <Box
+              sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.5 }}
+            >
+              <Typography
+                sx={{
+                  fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+                  fontSize: "0.78rem",
+                  lineHeight: 1.5,
+                  fontWeight: 600,
+                  textTransform: "uppercase",
+                  letterSpacing: "0.16em",
+                  color: "text.secondary",
+                }}
+              >
+                Erschienen in
+              </Typography>
+              <IconButton
+                size="small"
+                aria-label={
+                  germanPublishedExpanded
+                    ? "Auf deutsch erschienen in einklappen"
+                    : "Auf deutsch erschienen in ausklappen"
+                }
+                onClick={() => setGermanPublishedExpanded((prev) => !prev)}
+                sx={{
+                  ml: 1,
+                  transform: germanPublishedExpanded ? "rotate(0deg)" : "rotate(-90deg)",
+                  transition: "transform 180ms ease",
+                }}
+              >
+                <ExpandMoreIcon fontSize="small" />
+              </IconButton>
+            </Box>
+
+            <Collapse in={germanPublishedExpanded}>
+              <List sx={{ p: 0 }}>
+                {children.map((child, idx) => {
+                  if (!child.issue) return null;
+                  const relation = toStoryIssueRelation(child);
+                  const addinfoText = toChildAddinfo(relation);
+                  const parentLink =
+                    child.parent?.issue && !isSameIssue(child.parent.issue, props.issue)
+                      ? {
+                          issue: child.parent.issue,
+                          number: child.parent.number,
+                          prefix: "als",
+                          routeUs: true,
+                          coverUs: true,
+                        }
+                      : null;
+
+                  return (
+                    <StoryIssueListItem
+                      key={toIssueRowKey(relation, idx)}
+                      issue={child.issue}
+                      number={child.number}
+                      subtitle={addinfoText !== "" ? addinfoText : null}
+                      titleSuffix={child.issue.title ? " - " + child.issue.title : ""}
+                      parentLink={parentLink}
+                      routeUs={false}
+                      coverUs={false}
+                      showCollected
+                      session={props.session}
+                      divider={children.length - 1 !== idx}
+                      navigate={props.navigate}
+                    />
+                  );
+                })}
+              </List>
+            </Collapse>
+          </Box>
+        )}
+      </Box>
 
       <Box
-        sx={
-          children.length > 0 ? { mt: 3, pt: 2, borderTop: 1, borderColor: "divider" } : undefined
-        }
+        sx={(theme) => ({
+          border: "1px solid",
+          borderColor: "divider",
+          borderRadius: 2,
+          p: 2,
+          backgroundColor:
+            theme.palette.mode === "dark" ? "rgba(255,255,255,0.02)" : "rgba(0,0,0,0.02)",
+          gridColumn: { xs: "auto", md: hasGermanPublished ? "auto" : "1 / -1" },
+        })}
       >
         <StoryPeopleSection
           item={(currentItem as Record<string, unknown>) || {}}
@@ -276,13 +295,13 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
           includeTranslator
           translatorOptional
         />
-      </Box>
 
-      <StoryAppearanceSection
-        item={(currentItem as Record<string, unknown>) || {}}
-        us={us}
-        navigate={props.navigate}
-      />
+        <StoryAppearanceSection
+          item={(currentItem as Record<string, unknown>) || {}}
+          us={us}
+          navigate={props.navigate}
+        />
+      </Box>
     </Box>
   );
 }
