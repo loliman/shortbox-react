@@ -49,6 +49,9 @@ function IssuePreviewSmall(props: Readonly<IssuePreviewSmallProps>) {
         backgroundColor:
           theme.palette.mode === "dark" ? "rgba(16, 16, 16, 0.96)" : "background.paper",
         overflow: "hidden",
+        border: "1px solid",
+        borderColor:
+          theme.palette.mode === "dark" ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
       })}
     >
       <CardActionArea
@@ -100,6 +103,7 @@ function IssuePreviewSmall(props: Readonly<IssuePreviewSmallProps>) {
 
           <Box
             sx={(theme) => ({
+              position: "relative",
               aspectRatio: "1 / 1.5",
               width: "100%",
               backgroundColor:
@@ -117,6 +121,18 @@ function IssuePreviewSmall(props: Readonly<IssuePreviewSmallProps>) {
                 "0%": { backgroundPosition: "220% 0" },
                 "100%": { backgroundPosition: "-20% 0" },
               },
+              "&::after":
+                effectiveCoverUrl === NO_COVER_URL
+                  ? {
+                      content: '""',
+                      position: "absolute",
+                      inset: 0,
+                      background:
+                        theme.palette.mode === "dark"
+                          ? "linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0) 45%)"
+                          : "linear-gradient(135deg, rgba(0,0,0,0.06), rgba(0,0,0,0) 45%)",
+                    }
+                  : undefined,
             })}
           />
 
