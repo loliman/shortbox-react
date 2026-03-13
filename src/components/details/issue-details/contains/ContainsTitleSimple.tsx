@@ -81,14 +81,8 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
         <Box sx={{ display: "grid", rowGap: 0.5 }}>
           <Typography
             variant="overline"
-            sx={{
-              fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
-              fontWeight: 400,
-              fontSize: "0.75rem",
-              lineHeight: 2.66,
-              textTransform: "uppercase",
-              color: "#4b5565",
-            }}
+            color="text.secondary"
+            sx={{ letterSpacing: "0.14em" }}
           >
             {storyTitle !== "" ? storyTitle : "Story"}
           </Typography>
