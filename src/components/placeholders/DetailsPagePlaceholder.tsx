@@ -9,6 +9,7 @@ type QueryState = { filter?: string | null } | null | undefined;
 
 type DetailsPagePlaceholderProps = {
   query?: QueryState;
+  compactLayout?: boolean;
   titleWidth?: string | number;
   subheaderWidth?: string | number;
 };
@@ -26,7 +27,7 @@ export function DetailsPagePlaceholder(props: Readonly<DetailsPagePlaceholderPro
       />
 
       <CardContent sx={{ pt: 1 }}>
-        <IssueHistoryPlaceholder query={props.query} />
+        <IssueHistoryPlaceholder query={props.query} compactLayout={props.compactLayout} />
       </CardContent>
     </React.Fragment>
   );

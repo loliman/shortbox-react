@@ -127,6 +127,7 @@ function SeriesDetails(props: Readonly<SeriesDetailsProps>) {
                 placeholder={
                   <DetailsPagePlaceholder
                     query={props.query}
+                    compactLayout={compactLayout}
                     titleWidth="45%"
                     subheaderWidth="30%"
                   />
@@ -163,6 +164,7 @@ function SeriesDetails(props: Readonly<SeriesDetailsProps>) {
 
                   <IssueHistoryList
                     query={props.query}
+                    compactLayout={compactLayout}
                     issues={issues}
                     loadingMore={Boolean(hasMore && fetching)}
                     previewProps={pageProps}

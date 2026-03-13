@@ -107,6 +107,7 @@ function PublisherDetails(props: Readonly<PublisherDetailsProps>) {
                 placeholder={
                   <DetailsPagePlaceholder
                     query={props.query}
+                    compactLayout={compactLayout}
                     titleWidth="48%"
                     subheaderWidth="26%"
                   />
@@ -143,6 +144,7 @@ function PublisherDetails(props: Readonly<PublisherDetailsProps>) {
 
                   <IssueHistoryList
                     query={props.query}
+                    compactLayout={compactLayout}
                     issues={issues}
                     loadingMore={Boolean(hasMore && fetching)}
                     previewProps={pageProps}

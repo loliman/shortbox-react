@@ -10,11 +10,14 @@ import React from "react";
 import Box from "@mui/material/Box";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import ViewStreamIcon from "@mui/icons-material/ViewStream";
+import ViewModuleIcon from "@mui/icons-material/ViewModule";
 import type { SelectedRoot } from "../types/domain";
 import {
   buildSortNavigationQuery,
   getListingDirection,
   getListingOrder,
+  getListingView,
   type ListingQuery,
 } from "../util/listingQuery";
 
@@ -27,24 +30,44 @@ type SortContainerProps = {
   query?: ListingQuery;
   selected?: SelectedRoot;
   us?: boolean;
+  compactLayout?: boolean;
+  isPhone?: boolean;
+  isTablet?: boolean;
+  isTabletLandscape?: boolean;
   navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
 };
 
 function SortContainer(props: Readonly<SortContainerProps>) {
   const currentOrder = toValidSortOption(getListingOrder(props.query));
   const currentDirection = toDirection(getListingDirection(props.query));
+  const currentView = getListingView(props.query);
+  const compactLayout =
+    props.compactLayout ??
+    Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
 
   const target = props.selected || { us: Boolean(props.us) };
 
   return (
-    <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 1.5 }}>
-      <FormControl size="small" sx={{ minWidth: 240 }}>
-        <InputLabel id={SORT_LABEL_ID}>Sortieren nach</InputLabel>
+    <Box
+      sx={{
+        display: "grid",
+        gridTemplateColumns: compactLayout ? "1fr auto auto" : "minmax(220px, 1fr) auto auto",
+        alignItems: "center",
+        gap: 1,
+        width: compactLayout ? "100%" : "auto",
+      }}
+    >
+      <FormControl
+        size="small"
+        fullWidth={compactLayout}
+        sx={{ minWidth: compactLayout ? 0 : 200, width: compactLayout ? "100%" : 240 }}
+      >
+        <InputLabel id={SORT_LABEL_ID}>{compactLayout ? "Sortierung" : "Sortieren nach"}</InputLabel>
         <Select
           id={SORT_SELECT_ID}
           labelId={SORT_LABEL_ID}
           value={currentOrder}
-          label="Sortieren nach"
+          label={compactLayout ? "Sortierung" : "Sortieren nach"}
           onChange={(e) =>
             props.navigate?.(
               e,
@@ -85,6 +108,31 @@ function SortContainer(props: Readonly<SortContainerProps>) {
         </ToggleButton>
         <ToggleButton value="DESC" aria-label="Absteigend">
           <ArrowDownwardIcon fontSize="small" />
+        </ToggleButton>
+      </ToggleButtonGroup>
+
+      <ToggleButtonGroup
+        size="small"
+        color="primary"
+        exclusive
+        value={currentView}
+        aria-label="Darstellungsmodus"
+        onChange={(e, value: "strip" | "gallery" | null) => {
+          if (!value) return;
+          props.navigate?.(
+            e,
+            generateUrl(target, Boolean(props.us)),
+            buildSortNavigationQuery(props.query, {
+              view: value,
+            })
+          );
+        }}
+      >
+        <ToggleButton value="strip" aria-label="Streifenansicht">
+          <ViewStreamIcon fontSize="small" />
+        </ToggleButton>
+        <ToggleButton value="gallery" aria-label="Galerieansicht">
+          <ViewModuleIcon fontSize="small" />
         </ToggleButton>
       </ToggleButtonGroup>
     </Box>

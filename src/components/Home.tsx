@@ -7,19 +7,31 @@ import { lastEdited } from "../graphql/queriesTyped";
 import QueryResult from "./generic/QueryResult";
 import { withContext } from "./generic";
 import IssuePreview from "./issue-preview/IssuePreview";
+import IssuePreviewSmall from "./issue-preview/IssuePreviewSmall";
 import PaginatedQuery from "./generic/PaginatedQuery";
 import SortContainer from "./SortContainer";
 import LoadingDots from "./generic/LoadingDots";
-import { getListingDirection, getListingOrder, parseListingFilter } from "../util/listingQuery";
+import type { PreviewIssue } from "./issue-preview/utils/issuePreviewUtils";
+import {
+  getListingDirection,
+  getListingOrder,
+  getListingView,
+  parseListingFilter,
+} from "../util/listingQuery";
 import { HomeListingPlaceholder } from "./placeholders/HomeListingPlaceholder";
 
 const HOME_SEO_SUMMARY =
   "Shortbox listet alle deutschen Marvel Veröffentlichungen detailliert auf und ordnet diese den entsprechenden US Geschichten zu.";
+const GALLERY_GRID_SX = {
+  display: "grid",
+  columnGap: 3,
+  rowGap: 1.5,
+} as const;
 
 interface HomeProps {
   registerLoadingComponent?: (component: string) => void;
   unregisterLoadingComponent?: (component: string) => void;
-  query?: { filter?: string; order?: string; direction?: string } | null;
+  query?: { filter?: string; order?: string; direction?: string; view?: string } | null;
   us?: boolean;
   appIsLoading?: boolean;
   compactLayout?: boolean;
@@ -52,6 +64,11 @@ class Home extends React.Component<HomeProps> {
     const compactLayout =
       this.props.compactLayout ??
       Boolean(this.props.isPhone || (this.props.isTablet && !this.props.isTabletLandscape));
+    const listingView = getListingView(this.props.query);
+    const galleryGridSx = {
+      ...GALLERY_GRID_SX,
+      gridTemplateColumns: compactLayout ? "repeat(1, minmax(0, 1fr))" : "repeat(5, minmax(0, 1fr))",
+    } as const;
 
     return (
       <PaginatedQuery
@@ -120,19 +137,44 @@ class Home extends React.Component<HomeProps> {
 
                     {compactLayout ? <SortContainer {...this.props} /> : null}
 
-                    <Stack spacing={1.5}>
-                      {data.lastEdited
-                        ? data.lastEdited.map((i: Record<string, unknown>, idx: number) => (
-                            <IssuePreview
-                              {...this.props}
-                              key={buildIssueKey(i as any, idx)}
-                              issue={i as any}
-                            />
-                          ))
-                        : null}
+                    <Box
+                      key={listingView}
+                      sx={{
+                        animation: "listingViewSwap 220ms ease-in-out",
+                        "@keyframes listingViewSwap": {
+                          "0%": { opacity: 0, transform: "translateY(4px)" },
+                          "100%": { opacity: 1, transform: "translateY(0)" },
+                        },
+                      }}
+                    >
+                      {listingView === "gallery" ? (
+                        <Box sx={galleryGridSx}>
+                          {data.lastEdited
+                            ? data.lastEdited.map((i: Record<string, unknown>, idx: number) => (
+                                <IssuePreviewSmall
+                                  {...this.props}
+                                  key={buildIssueKey(i as PreviewIssue, idx)}
+                                  issue={i as PreviewIssue}
+                                />
+                              ))
+                            : null}
+                        </Box>
+                      ) : (
+                        <Stack spacing={1.5}>
+                          {data.lastEdited
+                            ? data.lastEdited.map((i: Record<string, unknown>, idx: number) => (
+                                <IssuePreview
+                                  {...this.props}
+                                  key={buildIssueKey(i as PreviewIssue, idx)}
+                                  issue={i as PreviewIssue}
+                                />
+                              ))
+                            : null}
+                        </Stack>
+                      )}
+                    </Box>
 
-                      {loading}
-                    </Stack>
+                    {loading}
                   </Stack>
                 </React.Fragment>
               )}
@@ -144,7 +186,10 @@ class Home extends React.Component<HomeProps> {
   }
 }
 
-function buildIssueKey(issue: { id?: string | number; number?: string }, idx: number) {
+function buildIssueKey(
+  issue: { id?: string | number | null; number?: string | number | null },
+  idx: number
+) {
   if (issue.id) return String(issue.id);
   if (issue.number) return "issue|" + issue.number + "|" + idx;
   return "issue|" + idx;

@@ -4,15 +4,29 @@ import CardHeader from "@mui/material/CardHeader";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
 import IssuePreview, { IssuePreviewPlaceholder } from "../issue-preview/IssuePreview";
+import IssuePreviewSmall, {
+  IssuePreviewPlaceholderSmall,
+} from "../issue-preview/IssuePreviewSmall";
 import SortContainer from "../SortContainer";
 import LoadingDots from "../generic/LoadingDots";
 import type { PreviewIssue } from "../issue-preview/utils/issuePreviewUtils";
+import { getListingView, type ListingQuery } from "../../util/listingQuery";
 
-type QueryState = { filter?: string | null } | null | undefined;
+const GALLERY_GRID_SX = {
+  display: "grid",
+  columnGap: 3,
+  rowGap: 1,
+} as const;
+
+type QueryState =
+  | { filter?: string | null; order?: string | null; direction?: string | null; view?: string | null }
+  | null
+  | undefined;
 
 type IssueHistoryListProps = {
   issues?: PreviewIssue[] | null;
   query?: QueryState;
+  compactLayout?: boolean;
   loadingMore?: boolean;
   previewProps?: Record<string, unknown>;
   showSort?: boolean;
@@ -21,35 +35,84 @@ type IssueHistoryListProps = {
 export function IssueHistoryList(props: Readonly<IssueHistoryListProps>) {
   const issues = props.issues || [];
   const showSort = props.showSort ?? true;
+  const compactLayout = Boolean(props.compactLayout);
+  const listingView = getListingView(props.query as ListingQuery);
+  const galleryGridSx = {
+    ...GALLERY_GRID_SX,
+    gridTemplateColumns: compactLayout ? "repeat(1, minmax(0, 1fr))" : "repeat(5, minmax(0, 1fr))",
+  } as const;
 
   return (
     <Box component="section">
       {showSort ? <SortContainer {...props.previewProps} /> : null}
-      <Stack spacing={1} sx={{ mt: 2 }}>
-        {issues.map((issue, idx) => (
-          <IssuePreview
-            {...props.previewProps}
-            key={buildIssueKey(issue, idx)}
-            issue={issue}
-          />
-        ))}
-      </Stack>
+      <Box
+        key={listingView}
+        sx={{
+          mt: 2,
+          animation: "listingViewSwap 220ms ease-in-out",
+          "@keyframes listingViewSwap": {
+            "0%": { opacity: 0, transform: "translateY(4px)" },
+            "100%": { opacity: 1, transform: "translateY(0)" },
+          },
+        }}
+      >
+        {listingView === "gallery" ? (
+          <Box sx={galleryGridSx}>
+            {issues.map((issue, idx) => (
+              <IssuePreviewSmall
+                {...props.previewProps}
+                key={buildIssueKey(issue, idx)}
+                issue={issue}
+              />
+            ))}
+          </Box>
+        ) : (
+          <Stack spacing={1}>
+            {issues.map((issue, idx) => (
+              <IssuePreview
+                {...props.previewProps}
+                key={buildIssueKey(issue, idx)}
+                issue={issue}
+              />
+            ))}
+          </Stack>
+        )}
+      </Box>
       {props.loadingMore ? <LoadingDots /> : null}
     </Box>
   );
 }
 
-export function IssueHistoryPlaceholder(_props: Readonly<{ query?: QueryState }>) {
+export function IssueHistoryPlaceholder(
+  props: Readonly<{ query?: QueryState; compactLayout?: boolean }>
+) {
+  const compactLayout = Boolean(props.compactLayout);
+  const listingView = getListingView(props.query as ListingQuery);
+  const galleryGridSx = {
+    ...GALLERY_GRID_SX,
+    gridTemplateColumns: compactLayout ? "repeat(1, minmax(0, 1fr))" : "repeat(5, minmax(0, 1fr))",
+  } as const;
+
   return (
     <Box component="section">
       <CardHeader title={<Skeleton variant="text" width={120} height={30} />} />
-      <Stack spacing={1}>
-        <IssuePreviewPlaceholder />
-        <IssuePreviewPlaceholder />
-        <IssuePreviewPlaceholder />
-        <IssuePreviewPlaceholder />
-        <IssuePreviewPlaceholder />
-      </Stack>
+      {listingView === "gallery" ? (
+        <Box sx={galleryGridSx}>
+          <IssuePreviewPlaceholderSmall idx={0} />
+          <IssuePreviewPlaceholderSmall idx={1} />
+          <IssuePreviewPlaceholderSmall idx={2} />
+          <IssuePreviewPlaceholderSmall idx={3} />
+          <IssuePreviewPlaceholderSmall idx={4} />
+        </Box>
+      ) : (
+        <Stack spacing={1}>
+          <IssuePreviewPlaceholder />
+          <IssuePreviewPlaceholder />
+          <IssuePreviewPlaceholder />
+          <IssuePreviewPlaceholder />
+          <IssuePreviewPlaceholder />
+        </Stack>
+      )}
     </Box>
   );
 }

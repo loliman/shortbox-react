@@ -3,6 +3,7 @@ export type ListingQuery =
       filter?: string | null;
       order?: string | null;
       direction?: string | null;
+      view?: string | null;
     }
   | null
   | undefined;
@@ -71,13 +72,18 @@ export function getListingDirection(query: ListingQuery): string {
   return query?.direction || DEFAULT_DIRECTION;
 }
 
+export function getListingView(query: ListingQuery): "strip" | "gallery" {
+  return query?.view === "gallery" ? "gallery" : "strip";
+}
+
 export function buildSortNavigationQuery(
   query: ListingQuery,
-  patch: Partial<{ order: string | null; direction: string | null }>
+  patch: Partial<{ order: string | null; direction: string | null; view: string | null }>
 ) {
   return {
     filter: query?.filter || null,
     order: patch.order !== undefined ? patch.order : getListingOrder(query),
     direction: patch.direction !== undefined ? patch.direction : getListingDirection(query),
+    view: patch.view !== undefined ? patch.view : getListingView(query),
   };
 }
