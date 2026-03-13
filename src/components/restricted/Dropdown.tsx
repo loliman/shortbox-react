@@ -4,12 +4,12 @@ import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { generateLabel, generateUrl, HierarchyLevel } from "../../util/hierarchy";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import EditNoteIcon from "@mui/icons-material/EditNote";
-import FactCheckOutlinedIcon from "@mui/icons-material/FactCheckOutlined";
-import GppMaybeOutlinedIcon from "@mui/icons-material/GppMaybeOutlined";
-import BookmarkAddOutlinedIcon from "@mui/icons-material/BookmarkAddOutlined";
-import BookmarkRemoveOutlinedIcon from "@mui/icons-material/BookmarkRemoveOutlined";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import VerifiedIcon from "@mui/icons-material/Verified";
+import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import BadgeOutlinedIcon from "@mui/icons-material/BadgeOutlined";
 import DeletionDialog from "./DeletionDialog";
 import { withContext } from "../generic";
@@ -118,8 +118,8 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
     const selectedItem = this.props.item ?? this.props.EditDropdown?.item;
     if (!selectedItem || !this.props.session) return null;
 
-    const isUsIssue =
-      this.props.level === HierarchyLevel.ISSUE && Boolean(selectedItem.series?.publisher?.us);
+    const itemUs = resolveItemUs(selectedItem, this.props.level, Boolean(this.props.us));
+    const isUsIssue = this.props.level === HierarchyLevel.ISSUE && itemUs;
     const canDelete =
       !isUsIssue ||
       (selectedItem.stories || []).every((story) => (story.children?.length || 0) === 0);
@@ -139,7 +139,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
             />
           ) : null}
 
-          {isIssueLevel ? (
+          {isIssueLevel && !isUsIssue ? (
             <CollectionActionButton
               item={selectedItem}
               collected={isCollected}
@@ -148,7 +148,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
             />
           ) : null}
 
-          {isIssueLevel ? (
+          {isIssueLevel && !isUsIssue ? (
             <VerifyActionButton
               item={selectedItem}
               verified={isVerified}
@@ -165,7 +165,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
                 onClick={() => this.handleDelete()}
                 sx={actionButtonSx}
               >
-                <DeleteOutlineIcon />
+                <DeleteIcon />
               </IconButton>
             </span>
           </Tooltip>
@@ -187,7 +187,7 @@ class Dropdown extends React.Component<DropdownProps, DropdownState> {
               }}
               sx={actionButtonSx}
             >
-              <EditNoteIcon />
+              <EditIcon />
             </IconButton>
           </Tooltip>
         </Box>
@@ -386,7 +386,7 @@ function VerifyActionButton(props: Readonly<ActionMenuItemProps>) {
         }}
         sx={actionButtonSx}
       >
-        {props.verified ? <GppMaybeOutlinedIcon /> : <FactCheckOutlinedIcon />}
+        {props.verified ? <VerifiedIcon /> : <VerifiedOutlinedIcon />}
       </IconButton>
     </Tooltip>
   );
@@ -429,7 +429,7 @@ function CollectionActionButton(props: Readonly<ActionMenuItemProps>) {
         }}
         sx={actionButtonSx}
       >
-        {props.collected ? <BookmarkRemoveOutlinedIcon /> : <BookmarkAddOutlinedIcon />}
+        {props.collected ? <CheckBoxIcon /> : <CheckBoxOutlineBlankIcon />}
       </IconButton>
     </Tooltip>
   );

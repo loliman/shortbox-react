@@ -3,9 +3,7 @@ import Box from "@mui/material/Box";
 import CardHeader from "@mui/material/CardHeader";
 import Skeleton from "@mui/material/Skeleton";
 import Stack from "@mui/material/Stack";
-import IssuePreviewSmall, {
-  IssuePreviewPlaceholderSmall,
-} from "../issue-preview/IssuePreviewSmall";
+import IssuePreview, { IssuePreviewPlaceholder } from "../issue-preview/IssuePreview";
 import SortContainer from "../SortContainer";
 import LoadingDots from "../generic/LoadingDots";
 import type { PreviewIssue } from "../issue-preview/utils/issuePreviewUtils";
@@ -29,10 +27,8 @@ export function IssueHistoryList(props: Readonly<IssueHistoryListProps>) {
       {showSort ? <SortContainer {...props.previewProps} /> : null}
       <Stack spacing={1} sx={{ mt: 2 }}>
         {issues.map((issue, idx) => (
-          <IssuePreviewSmall
+          <IssuePreview
             {...props.previewProps}
-            isLast={idx === issues.length - 1}
-            idx={idx}
             key={buildIssueKey(issue, idx)}
             issue={issue}
           />
@@ -48,11 +44,11 @@ export function IssueHistoryPlaceholder(_props: Readonly<{ query?: QueryState }>
     <Box component="section">
       <CardHeader title={<Skeleton variant="text" width={120} height={30} />} />
       <Stack spacing={1}>
-        <IssuePreviewPlaceholderSmall idx={0} />
-        <IssuePreviewPlaceholderSmall />
-        <IssuePreviewPlaceholderSmall />
-        <IssuePreviewPlaceholderSmall />
-        <IssuePreviewPlaceholderSmall isLast={true} />
+        <IssuePreviewPlaceholder />
+        <IssuePreviewPlaceholder />
+        <IssuePreviewPlaceholder />
+        <IssuePreviewPlaceholder />
+        <IssuePreviewPlaceholder />
       </Stack>
     </Box>
   );

@@ -19,7 +19,6 @@ import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 import TitleLine from "../generic/TitleLine";
 import { IssueReferenceInline } from "../generic/IssueNumberInline";
 import type { Issue, SelectedRoot } from "../../types/domain";
@@ -251,22 +250,6 @@ function IssueDetails(props: IssueDetailsProps) {
           action={
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <EditButton item={loadedIssue} />
-              {loadedIssue.collected && props.session ? (
-                <Box
-                  component="img"
-                  src="/collected_badge.png"
-                  alt="gesammelt"
-                  sx={{ height: 26, width: "auto", ml: 0.25 }}
-                />
-              ) : null}
-              {loadedIssue.verified ? (
-                <Box
-                  component="img"
-                  src="/verified_badge.png"
-                  alt="verifiziert"
-                  sx={{ height: 26, width: "auto", ml: 0.25 }}
-                />
-              ) : null}
             </Box>
           }
         />
@@ -629,34 +612,12 @@ function IssueCoverGallery(props: {
     return idx >= 0 ? idx : 0;
   }, [activeIssueKey, props.issues]);
   const activeIssue = props.issues[activeIndex] || props.issues[0];
-  const hasStories = Boolean(props.session) && ((activeIssue?.stories || []).filter(Boolean).length || 0) > 0;
 
   if (!activeIssue) return null;
 
   return (
     <Box sx={{ position: "relative", width: "100%" }}>
       <IssueCover us={props.us} issue={activeIssue} />
-
-      {hasStories ? (
-        <Box
-          sx={{
-            position: "absolute",
-            top: 8,
-            right: 8,
-            zIndex: 3,
-            color: "common.white",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            pointerEvents: "none",
-            textShadow: "0 1px 2px rgba(0,0,0,0.7)",
-          }}
-          title="Eigene Stories"
-          aria-label="Eigene Stories"
-        >
-          <BookmarkBorderIcon sx={{ fontSize: 24 }} />
-        </Box>
-      ) : null}
 
       {props.issues.length > 1 ? (
         <React.Fragment>

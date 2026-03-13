@@ -136,6 +136,12 @@ function SeriesDetails(props: Readonly<SeriesDetailsProps>) {
             ) : (
               <React.Fragment>
                 <CardHeader
+                  sx={{
+                    "& .MuiCardHeader-action": {
+                      m: 0,
+                      alignSelf: "center",
+                    },
+                  }}
                   title={
                     <TitleLine
                       title={generateLabel({ series: details as any, us })}

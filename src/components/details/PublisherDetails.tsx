@@ -116,6 +116,12 @@ function PublisherDetails(props: Readonly<PublisherDetailsProps>) {
             ) : (
               <React.Fragment>
                 <CardHeader
+                  sx={{
+                    "& .MuiCardHeader-action": {
+                      m: 0,
+                      alignSelf: "center",
+                    },
+                  }}
                   title={
                     <TitleLine
                       title={generateLabel({ publisher: details as any, us })}

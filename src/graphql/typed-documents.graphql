@@ -550,6 +550,8 @@ query Issue($issue: IssueInput!, $edit: Boolean) {
       number
       legacy_number
       comicguideid
+      verified
+      collected
       stories {
         number
       }
@@ -702,6 +704,8 @@ mutation CreateIssue($item: IssueInput!) {
       variant
       number
       comicguideid
+      verified
+      collected
       series {
         title
         volume
@@ -830,6 +834,8 @@ mutation EditIssue($old: IssueInput!, $item: IssueInput!) {
       variant
       number
       comicguideid
+      verified
+      collected
       series {
         title
         volume

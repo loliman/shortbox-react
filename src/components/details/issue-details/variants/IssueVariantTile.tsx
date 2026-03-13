@@ -1,8 +1,9 @@
 import React from "react";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
 import Box from "@mui/material/Box";
+import Chip from "@mui/material/Chip";
 import ButtonBase from "@mui/material/ButtonBase";
-import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
 import { getIssueUrl } from "../../../../util/issuePresentation";
 import { handleInAppLinkClick } from "../../../generic/linkUtils";
 import type { VariantIssue } from "./types";
@@ -29,6 +30,8 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
     props.selected ??
     (props.issue.format === props.variant.format && props.issue.variant === props.variant.variant);
   const showBookmark = Boolean(props.session) && Boolean(props.hasStories);
+  const showCollected = Boolean(props.session) && Boolean(props.variant.collected);
+  const showVerified = Boolean(props.variant.verified);
   const variantLabel =
     (props.variant.format || "") +
     " (" +
@@ -59,23 +62,37 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
         boxShadow: selected ? "inset 0 0 0 2px rgba(255,255,255,0.92)" : 1,
       }}
     >
-      {showBookmark ? (
+      {showCollected || showVerified || showBookmark ? (
         <Box
           sx={{
             position: "absolute",
             top: 6,
             right: 6,
             zIndex: 2,
-            color: "common.white",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "flex-end",
+            gap: 0.5,
             pointerEvents: "none",
           }}
-          title="Eigene Stories"
-          aria-label="Eigene Stories"
         >
-          <BookmarkBorderIcon sx={{ fontSize: 22 }} />
+          {showCollected ? (
+            <Chip size="small" label="Gesammelt" color="success" />
+          ) : null}
+          {showVerified ? (
+            <Chip size="small" label="Verifiziert" color="info" />
+          ) : null}
+          {showBookmark ? (
+            <Box component="span" sx={statusChipSx} title="Eigene Stories" aria-label="Eigene Stories">
+              <BookmarkIcon
+                sx={(theme) => ({
+                  ...outlinedStatusIconSx,
+                  fontSize: 18,
+                  color: theme.palette.mode === "dark" ? "common.white" : "text.primary",
+                })}
+              />
+            </Box>
+          ) : null}
         </Box>
       ) : null}
 
@@ -119,14 +136,6 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
               >
                 {variantLabel}
               </Box>
-              {props.variant.collected && props.session ? (
-                <Box
-                  component="img"
-                  src="/collected_badge.png"
-                  alt="gesammelt"
-                  sx={{ height: 20, width: "auto", flexShrink: 0 }}
-                />
-              ) : null}
             </Box>
           }
           sx={{
@@ -142,6 +151,28 @@ export function IssueVariantTile(props: Readonly<IssueVariantTileProps>) {
     </Box>
   );
 }
+
+const outlinedStatusIconSx = {
+  fontSize: 20,
+  "& path": {
+    stroke: "#000",
+    strokeWidth: 1.2,
+    paintOrder: "stroke fill",
+  },
+} as const;
+
+const statusChipSx = (theme: { palette: { mode: string } }) => ({
+  display: "inline-flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: 28,
+  height: 28,
+  borderRadius: "50%",
+  bgcolor: theme.palette.mode === "dark" ? "rgba(0,0,0,0.58)" : "rgba(255,255,255,0.84)",
+  border: `1px solid ${
+    theme.palette.mode === "dark" ? "rgba(255,255,255,0.28)" : "rgba(0,0,0,0.24)"
+  }`,
+});
 
 function getVariantCoverSource(
   variant: VariantIssue,

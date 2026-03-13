@@ -70,6 +70,18 @@ export default function FooterLinks(props: Readonly<FooterLinksProps>) {
         >
           Datenschutz
         </Button>
+        <Button
+          component="a"
+          size="small"
+          variant="text"
+          color="inherit"
+          sx={footerButtonSx}
+          href="https://github.com/loliman"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          GitHub
+        </Button>
       </Stack>
     </Box>
   );

@@ -19,7 +19,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import CloseIcon from "@mui/icons-material/Close";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import WatchLaterIcon from "@mui/icons-material/WatchLater";
 import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
 import type { AppThemeMode } from "../../app/theme";
@@ -278,7 +278,7 @@ export function TopBar(props: TopBarProps) {
                   aria-label="Adminpanel"
                   onClick={(e) => navigate?.(e, "/admin/tasks")}
                 >
-                  <AdminPanelSettingsIcon />
+                  <WatchLaterIcon />
                 </IconButton>
               </Tooltip>
             ) : null}
@@ -438,7 +438,7 @@ export function TopBar(props: TopBarProps) {
                 aria-label="Adminpanel"
                 onClick={(e) => navigate?.(e, "/admin/tasks")}
               >
-                <AdminPanelSettingsIcon />
+                <WatchLaterIcon />
               </IconButton>
             </Tooltip>
           ) : null}

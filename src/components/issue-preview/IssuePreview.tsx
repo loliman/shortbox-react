@@ -98,7 +98,7 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
 
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75 }}>
               {props.issue.verified ? (
-                <Chip size="small" label="Verifiziert" color="primary" />
+                <Chip size="small" label="Verifiziert" color="info" />
               ) : null}
               {flags.collected ? <Chip size="small" label="Gesammelt" color="success" /> : null}
               {flags.collectedMultipleTimes ? (

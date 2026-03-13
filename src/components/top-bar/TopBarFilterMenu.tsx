@@ -2,7 +2,8 @@ import React from "react";
 import { gql, useQuery } from "@apollo/client";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
-import TuneRoundedIcon from "@mui/icons-material/TuneRounded";
+import FilterAltIcon from "@mui/icons-material/FilterAlt";
+import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
 import Badge from "@mui/material/Badge";
 import Box from "@mui/material/Box";
 import Menu from "@mui/material/Menu";
@@ -108,7 +109,11 @@ export default function TopBarFilterMenu(props: Readonly<TopBarFilterMenuProps>)
                 }
               }}
             >
-              <TuneRoundedIcon />
+              {isFilterActive ? (
+                <FilterAltIcon sx={{ color: "common.white" }} />
+              ) : (
+                <FilterAltOutlinedIcon />
+              )}
             </IconButton>
           </Badge>
         </Box>
