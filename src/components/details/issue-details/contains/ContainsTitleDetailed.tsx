@@ -279,7 +279,9 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
               fontSize: "1rem",
               lineHeight: 1.75,
               fontWeight: 700,
-              color: "#4b5565",
+              color: "text.secondary",
+              letterSpacing: "0.01em",
+              opacity: 0.9,
             }}
           >
             <IssueReferenceInline
@@ -381,16 +383,13 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
             opacity: 0.9,
           }}
         >
-          {addinfoText !== "" ? addinfoText : null}
+          {addinfoText === "" ? null : addinfoText}
         </Typography>
 
         {stackActions && actionChips.length > 0 ? (
           <Box
             sx={{
               mt: 1,
-              pt: 0.75,
-              borderTop: "1px solid",
-              borderColor: "divider",
               display: "flex",
               flexWrap: "wrap",
               gap: 0.6,
@@ -409,9 +408,6 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
           sx={{
             ml: "auto",
             alignSelf: "center",
-            pt: 0.75,
-            borderTop: "1px solid",
-            borderColor: "divider",
             display: "flex",
             flexWrap: "wrap",
             gap: 0.6,

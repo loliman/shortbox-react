@@ -1,6 +1,7 @@
 import React from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { expanded } from "./expanded";
 import type { ItemLike, QueryParams } from "./expanded";
 
@@ -65,9 +66,24 @@ export function ContainsSimpleItem(props: Readonly<ContainsSimpleItemProps>) {
       }}
     >
       <AccordionSummary
+        expandIcon={<ExpandMoreIcon sx={{ visibility: "hidden" }} />}
         sx={{
+          py: 1.25,
+          minHeight: 0,
+          "&.Mui-expanded": {
+            minHeight: 0,
+          },
           "& .MuiAccordionSummary-content": {
             width: "100%",
+            margin: 0,
+            "&.Mui-expanded": {
+              margin: 0,
+            },
+          },
+          "& .MuiAccordionSummary-expandIconWrapper": {
+            margin: 0,
+            alignSelf: "center",
+            pointerEvents: "none",
           },
         }}
       >

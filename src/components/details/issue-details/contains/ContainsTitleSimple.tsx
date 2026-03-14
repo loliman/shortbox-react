@@ -93,7 +93,7 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
               opacity: 0.9,
             }}
           >
-            {storyTitle !== "" ? storyTitle : "Story"}
+            {storyTitle === "" ? "Story" : storyTitle}
           </Typography>
           <Typography
             variant="subtitle1"
@@ -102,7 +102,9 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
               fontSize: "1rem",
               lineHeight: 1.75,
               fontWeight: 700,
-              color: "#4b5565",
+              color: "text.secondary",
+              letterSpacing: "0.01em",
+              opacity: 0.9,
             }}
           >
             {hasIssueReference ? (
@@ -133,8 +135,6 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
             sx={{
               mt: 1,
               pt: 0.75,
-              borderTop: "1px solid",
-              borderColor: "divider",
               display: "flex",
               flexWrap: "wrap",
               gap: 0.6,
@@ -151,9 +151,6 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
           sx={{
             ml: "auto",
             alignSelf: "center",
-            pt: 0.75,
-            borderTop: "1px solid",
-            borderColor: "divider",
             display: "flex",
             flexWrap: "wrap",
             gap: 0.6,
@@ -183,10 +180,73 @@ function buildPublicationFallback({
 }
 
 function toGermanOccurrenceWord(count: number): string {
-  if (count <= 1) return "Einfach";
-  if (count === 2) return "Zweifach";
-  if (count === 3) return "Dreifach";
-  return `${count}fach`;
+  if (count <= 0) return "Nie";
+  if (count == 1) return "Einmal";
+
+  const word = toGermanNumberWord(count);
+  return capitalizeFirst(`${word}mal`);
+}
+
+function toGermanNumberWord(value: number): string {
+  const ones = [
+    "",
+    "eins",
+    "zwei",
+    "drei",
+    "vier",
+    "fünf",
+    "sechs",
+    "sieben",
+    "acht",
+    "neun",
+    "zehn",
+    "elf",
+    "zwölf",
+    "dreizehn",
+    "vierzehn",
+    "fünfzehn",
+    "sechzehn",
+    "siebzehn",
+    "achtzehn",
+    "neunzehn",
+  ] as const;
+  const tens = [
+    "",
+    "",
+    "zwanzig",
+    "dreißig",
+    "vierzig",
+    "fünfzig",
+    "sechzig",
+    "siebzig",
+    "achtzig",
+    "neunzig",
+  ] as const;
+
+  const normalized = Math.floor(Math.abs(value));
+  if (normalized < 20) return ones[normalized];
+  if (normalized < 100) {
+    const ten = Math.floor(normalized / 10);
+    const one = normalized % 10;
+    if (one === 0) return tens[ten];
+    const oneWord = one === 1 ? "ein" : ones[one];
+    return `${oneWord}und${tens[ten]}`;
+  }
+
+  if (normalized < 1000) {
+    const hundred = Math.floor(normalized / 100);
+    const rest = normalized % 100;
+    const hundredWord = hundred === 1 ? "einhundert" : `${ones[hundred]}hundert`;
+    if (rest === 0) return hundredWord;
+    return `${hundredWord}${toGermanNumberWord(rest)}`;
+  }
+
+  return String(normalized);
+}
+
+function capitalizeFirst(value: string): string {
+  if (!value) return value;
+  return value.charAt(0).toUpperCase() + value.slice(1);
 }
 
 function buildSimpleActionChips({

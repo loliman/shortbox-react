@@ -90,8 +90,20 @@ export function ContainsItem(props: Readonly<ContainsItemProps>) {
         expandIcon={<ExpandMoreIcon />}
         sx={{
           py: 1.25,
+          minHeight: 0,
+          "&.Mui-expanded": {
+            minHeight: 0,
+          },
           "& .MuiAccordionSummary-content": {
             width: "100%",
+            margin: 0,
+            "&.Mui-expanded": {
+              margin: 0,
+            },
+          },
+          "& .MuiAccordionSummary-expandIconWrapper": {
+            margin: 0,
+            alignSelf: "center",
           },
         }}
       >

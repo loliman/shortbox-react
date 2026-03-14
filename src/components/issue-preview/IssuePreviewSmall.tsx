@@ -122,9 +122,6 @@ function IssuePreviewSmall(props: Readonly<IssuePreviewSmallProps>) {
                 p: 1.25,
                 background:
                   "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(5,7,10,0.92) 100%)",
-                borderTop: "1px solid",
-                borderColor:
-                  theme.palette.mode === "dark" ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
               })}
             >
               <Stack spacing={0.4} sx={{ minWidth: 0 }}>
