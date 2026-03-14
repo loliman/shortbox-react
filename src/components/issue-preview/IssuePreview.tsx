@@ -44,11 +44,28 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
   const flags = getIssuePreviewFlags(props.issue, us, hasSession);
   const url = getIssueUrl(props.issue, us);
   const issueLabel = getIssueLabel(props.issue);
+  const accentKey = flags.collected
+    ? "success"
+    : props.issue.verified
+      ? "info"
+      : !us && flags.hasFirstApp
+        ? "secondary"
+        : "default";
 
   return (
     <Card
       sx={(theme) => ({
         backgroundColor: "background.paper",
+        borderLeft: "4px solid",
+        borderLeftColor:
+          accentKey === "success"
+            ? theme.palette.success.main
+            : accentKey === "info"
+              ? theme.palette.info.main
+              : accentKey === "secondary"
+                ? theme.palette.secondary.main
+                : theme.palette.divider,
+        boxShadow: theme.shadows[2],
         backgroundImage:
           isCoverLoading
             ? theme.palette.mode === "dark"
