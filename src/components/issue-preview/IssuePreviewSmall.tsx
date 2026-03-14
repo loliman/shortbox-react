@@ -52,6 +52,13 @@ function IssuePreviewSmall(props: Readonly<IssuePreviewSmallProps>) {
         border: "1px solid",
         borderColor:
           theme.palette.mode === "dark" ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
+        transition: "transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease",
+        "&:hover": {
+          transform: "translateY(-2px)",
+          boxShadow: theme.shadows[6],
+          borderColor:
+            theme.palette.mode === "dark" ? "rgba(255,255,255,0.18)" : "rgba(0,0,0,0.18)",
+        },
       })}
     >
       <CardActionArea
@@ -62,45 +69,6 @@ function IssuePreviewSmall(props: Readonly<IssuePreviewSmallProps>) {
         sx={{ height: "100%", display: "flex", alignItems: "stretch" }}
       >
         <CardContent sx={{ display: "flex", flexDirection: "column", flex: 1, p: 0, minWidth: 0 }}>
-          <Box
-            sx={(theme) => ({
-              px: 1.5,
-              py: 1.25,
-              minWidth: 0,
-              overflow: "hidden",
-              backgroundColor:
-                theme.palette.mode === "dark" ? "rgba(24, 24, 24, 0.84)" : "rgba(228, 228, 228, 0.58)",
-            })}
-          >
-            <Stack spacing={1} sx={{ minWidth: 0 }}>
-              <Typography
-                variant="subtitle1"
-                noWrap
-                sx={{
-                  fontSize: "clamp(0.72rem, 0.64rem + 0.35vw, 1rem)",
-                  display: "block",
-                  minWidth: 0,
-                  maxWidth: "100%",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                {issueLabel}
-              </Typography>
-
-              {variant ? (
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  noWrap
-                  sx={{ fontSize: "clamp(0.58rem, 0.54rem + 0.18vw, 0.75rem)" }}
-                >
-                  {variant}
-                </Typography>
-              ) : null}
-            </Stack>
-          </Box>
-
           <Box
             sx={(theme) => ({
               position: "relative",
@@ -134,7 +102,56 @@ function IssuePreviewSmall(props: Readonly<IssuePreviewSmallProps>) {
                     }
                   : undefined,
             })}
-          />
+          >
+            <Box
+              sx={(theme) => ({
+                position: "absolute",
+                left: 0,
+                right: 0,
+                bottom: 0,
+                p: 1.25,
+                background:
+                  "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(5,7,10,0.92) 100%)",
+                borderTop: "1px solid",
+                borderColor:
+                  theme.palette.mode === "dark" ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
+              })}
+            >
+              <Stack spacing={0.4} sx={{ minWidth: 0 }}>
+                <Typography
+                  variant="subtitle1"
+                  noWrap
+                  sx={(theme) => ({
+                    fontSize: "clamp(0.78rem, 0.7rem + 0.35vw, 1.05rem)",
+                    display: "block",
+                    minWidth: 0,
+                    maxWidth: "100%",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    fontWeight: 700,
+                    color: theme.palette.common.white,
+                    textShadow: "0 1px 2px rgba(0,0,0,0.7)",
+                  })}
+                >
+                  {issueLabel}
+                </Typography>
+
+                {variant ? (
+                  <Typography
+                    variant="caption"
+                    color="text.secondary"
+                    noWrap
+                    sx={(theme) => ({
+                      fontSize: "clamp(0.6rem, 0.56rem + 0.18vw, 0.78rem)",
+                      color: "rgba(255,255,255,0.78)",
+                    })}
+                  >
+                    {variant}
+                  </Typography>
+                ) : null}
+              </Stack>
+            </Box>
+          </Box>
 
           <Box
             sx={(theme) => ({
