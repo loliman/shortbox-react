@@ -6,7 +6,6 @@ import Typography from "@mui/material/Typography";
 import Skeleton from "@mui/material/Skeleton";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
-import Chip from "@mui/material/Chip";
 import { withContext } from "../generic";
 import { handleInAppLinkClick } from "../generic/linkUtils";
 import { useResolvedImageUrl } from "../generic/useResolvedImageUrl";
@@ -17,6 +16,7 @@ import {
   getIssueVariantLabel,
   type PreviewIssue,
 } from "./utils/issuePreviewUtils";
+import { IssuePreviewChips } from "./IssuePreviewChips";
 
 interface IssuePreviewSmallProps {
   issue: PreviewIssue;
@@ -151,67 +151,7 @@ function IssuePreviewSmall(props: Readonly<IssuePreviewSmallProps>) {
                 theme.palette.mode === "dark" ? "rgba(24, 24, 24, 0.84)" : "rgba(228, 228, 228, 0.58)",
             })}
           >
-            {props.issue.verified ? (
-              <Chip
-                size="small"
-                label="Verifiziert"
-                color="info"
-                sx={SINGLE_LINE_CHIP_SX}
-              />
-            ) : null}
-            {flags.collected ? (
-              <Chip
-                size="small"
-                label="Gesammelt"
-                color="success"
-                sx={SINGLE_LINE_CHIP_SX}
-              />
-            ) : null}
-            {flags.collectedMultipleTimes ? (
-              <Chip
-                size="small"
-                label="Mehrfach gesammelt"
-                color="success"
-                variant="outlined"
-                sx={SINGLE_LINE_CHIP_SX}
-              />
-            ) : null}
-            {!us && flags.hasOnlyApp ? (
-              <Chip
-                size="small"
-                label="Einzige Veröffentlichung"
-                color="secondary"
-                sx={SINGLE_LINE_CHIP_SX}
-              />
-            ) : null}
-            {!us && !flags.hasOnlyApp && flags.hasFirstApp ? (
-              <Chip
-                size="small"
-                label="Erstveröffentlichung"
-                color="secondary"
-                variant="outlined"
-                sx={SINGLE_LINE_CHIP_SX}
-              />
-            ) : null}
-            {!us && flags.hasExclusive ? (
-              <Chip
-                size="small"
-                label="Exklusiver Inhalt"
-                color="secondary"
-                sx={SINGLE_LINE_CHIP_SX}
-              />
-            ) : null}
-            {!us && flags.hasOtherOnlyTb ? (
-              <Chip
-                size="small"
-                label="Sonst nur in Taschenbuch"
-                variant="outlined"
-                sx={SINGLE_LINE_CHIP_SX}
-              />
-            ) : null}
-            {!us && flags.isPureReprintDe ? (
-              <Chip size="small" label="Nachdruck" variant="outlined" sx={SINGLE_LINE_CHIP_SX} />
-            ) : null}
+            <IssuePreviewChips issue={props.issue} flags={flags} us={us} chipSx={SINGLE_LINE_CHIP_SX} />
           </Box>
         </CardContent>
       </CardActionArea>

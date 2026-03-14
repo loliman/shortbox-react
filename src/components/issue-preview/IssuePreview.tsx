@@ -3,7 +3,6 @@ import Card from "@mui/material/Card";
 import CardActionArea from "@mui/material/CardActionArea";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import Chip from "@mui/material/Chip";
 import Skeleton from "@mui/material/Skeleton";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
@@ -18,6 +17,7 @@ import {
   getIssueVariantLabel,
   type PreviewIssue,
 } from "./utils/issuePreviewUtils";
+import { IssuePreviewChips } from "./IssuePreviewChips";
 
 interface IssuePreviewProps {
   issue: PreviewIssue;
@@ -97,33 +97,7 @@ function IssuePreview(props: Readonly<IssuePreviewProps>) {
             </Box>
 
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75 }}>
-              {props.issue.verified ? (
-                <Chip size="small" label="Verifiziert" color="info" />
-              ) : null}
-              {flags.collected ? <Chip size="small" label="Gesammelt" color="success" /> : null}
-              {flags.collectedMultipleTimes ? (
-                <Chip size="small" label="Mehrfach gesammelt" color="success" variant="outlined" />
-              ) : null}
-              {!us && flags.hasOnlyApp ? (
-                <Chip size="small" label="Einzige Veröffentlichung" color="secondary" />
-              ) : null}
-              {!us && !flags.hasOnlyApp && flags.hasFirstApp ? (
-                <Chip
-                  size="small"
-                  label="Erstveröffentlichung"
-                  color="secondary"
-                  variant="outlined"
-                />
-              ) : null}
-              {!us && flags.hasExclusive ? (
-                <Chip size="small" label="Exklusiver Inhalt" color="secondary" />
-              ) : null}
-              {!us && flags.hasOtherOnlyTb ? (
-                <Chip size="small" label="Sonst nur in Taschenbuch" variant="outlined" />
-              ) : null}
-              {!us && flags.isPureReprintDe ? (
-                <Chip size="small" label="Nachdruck" variant="outlined" />
-              ) : null}
+              <IssuePreviewChips issue={props.issue} flags={flags} us={us} />
             </Box>
           </Stack>
         </CardContent>
