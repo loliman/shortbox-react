@@ -9,7 +9,6 @@ import { withContext } from "./generic";
 import IssuePreview from "./issue-preview/IssuePreview";
 import IssuePreviewSmall from "./issue-preview/IssuePreviewSmall";
 import PaginatedQuery from "./generic/PaginatedQuery";
-import SortContainer from "./SortContainer";
 import LoadingDots from "./generic/LoadingDots";
 import type { PreviewIssue } from "./issue-preview/utils/issuePreviewUtils";
 import {
@@ -19,7 +18,7 @@ import {
   parseListingFilter,
 } from "../util/listingQuery";
 import { HomeListingPlaceholder } from "./placeholders/HomeListingPlaceholder";
-import FilterSummaryBar from "./filter/FilterSummaryBar";
+import ListingToolbar from "./listing/ListingToolbar";
 
 const HOME_SEO_SUMMARY =
   "Shortbox listet alle deutschen Marvel Veröffentlichungen detailliert auf und ordnet diese den entsprechenden US Geschichten zu.";
@@ -128,7 +127,12 @@ class Home extends React.Component<HomeProps> {
                         </Box>
                         {!compactLayout ? (
                           <Box sx={{ display: "flex", justifyContent: "flex-end", flexGrow: 1 }}>
-                            <SortContainer {...this.props} />
+                            <ListingToolbar
+                              query={this.props.query}
+                              previewProps={this.props as any}
+                              compactLayout={compactLayout}
+                              showSort
+                            />
                           </Box>
                         ) : null}
                       </Box>
@@ -150,15 +154,12 @@ class Home extends React.Component<HomeProps> {
                       </Typography>
                     </Box>
 
-                    {compactLayout ? <SortContainer {...this.props} /> : null}
-
-                    {this.props.query?.filter ? (
-                      <FilterSummaryBar
+                    {compactLayout ? (
+                      <ListingToolbar
                         query={this.props.query}
-                        us={this.props.us}
-                        selected={null}
-                        navigate={this.props.navigate as any}
+                        previewProps={this.props as any}
                         compactLayout={compactLayout}
+                        showSort
                       />
                     ) : null}
 
