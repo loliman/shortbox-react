@@ -101,6 +101,16 @@ function IssuePreviewSmall(props: Readonly<IssuePreviewSmallProps>) {
                           : "linear-gradient(135deg, rgba(0,0,0,0.06), rgba(0,0,0,0) 45%)",
                     }
                   : undefined,
+              "&::before": {
+                content: '""',
+                position: "absolute",
+                inset: 0,
+                background:
+                  "radial-gradient(circle at 12% 14%, rgba(255,255,255,0.18), rgba(255,255,255,0) 38%)",
+                mixBlendMode: theme.palette.mode === "dark" ? "screen" : "multiply",
+                opacity: 0.45,
+                pointerEvents: "none",
+              },
             })}
           >
             <Box
