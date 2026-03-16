@@ -193,21 +193,80 @@ export function IssuePreviewPlaceholderSmall(props: { idx?: number; isLast?: boo
         overflow: "hidden",
         backgroundColor:
           theme.palette.mode === "dark" ? "rgba(16, 16, 16, 0.96)" : "background.paper",
+        border: "1px solid",
+        borderColor:
+          theme.palette.mode === "dark" ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
       })}
     >
-      <CardContent sx={{ display: "flex", flexDirection: "column", height: "100%", p: 0 }}>
-        <Box sx={{ px: 1.5, py: 1.25 }}>
-          <Skeleton variant="text" width={width} height={30} />
-          <Skeleton variant="text" width="42%" />
-        </Box>
-        <Box sx={{ position: "relative", width: "100%", paddingTop: "150%" }}>
-          <Skeleton variant="rectangular" sx={{ position: "absolute", inset: 0 }} />
-        </Box>
-        <Box sx={{ display: "flex", gap: 1, minHeight: 56, alignItems: "center", px: 1.5, py: 1.25 }}>
-          <Skeleton variant="rounded" width={96} height={24} />
-          <Skeleton variant="rounded" width={104} height={24} />
-        </Box>
-      </CardContent>
+      <CardActionArea
+        component="div"
+        sx={{ height: "100%", display: "flex", alignItems: "stretch" }}
+      >
+        <CardContent sx={{ display: "flex", flexDirection: "column", flex: 1, minWidth: 0, p: 0 }}>
+          <Box
+            sx={(theme) => ({
+              position: "relative",
+              aspectRatio: "1 / 1.5",
+              width: "100%",
+              backgroundColor:
+                theme.palette.mode === "dark" ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0.04)",
+              backgroundImage:
+                theme.palette.mode === "dark"
+                  ? "linear-gradient(120deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))"
+                  : "linear-gradient(120deg, rgba(0,0,0,0.06), rgba(0,0,0,0.02))",
+            })}
+          >
+            <Box
+              sx={{
+                position: "absolute",
+                left: 0,
+                right: 0,
+                bottom: 0,
+                p: 1.25,
+                background:
+                  "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(5,7,10,0.92) 100%)",
+              }}
+            >
+              <Skeleton
+                variant="text"
+                width={width}
+                height={26}
+                sx={(theme) => ({
+                  bgcolor:
+                    theme.palette.mode === "dark" ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.18)",
+                })}
+              />
+              <Skeleton
+                variant="text"
+                width="42%"
+                height={18}
+                sx={(theme) => ({
+                  bgcolor:
+                    theme.palette.mode === "dark" ? "rgba(255,255,255,0.16)" : "rgba(0,0,0,0.14)",
+                })}
+              />
+            </Box>
+          </Box>
+          <Box
+            sx={(theme) => ({
+              display: "flex",
+              flexWrap: "nowrap",
+              gap: 0.75,
+              minHeight: 56,
+              alignItems: "center",
+              marginTop: "auto",
+              px: 1.5,
+              py: 1.25,
+              overflow: "hidden",
+              backgroundColor:
+                theme.palette.mode === "dark" ? "rgba(24, 24, 24, 0.84)" : "rgba(228, 228, 228, 0.58)",
+            })}
+          >
+            <Skeleton variant="rounded" width={96} height={24} />
+            <Skeleton variant="rounded" width={104} height={24} />
+          </Box>
+        </CardContent>
+      </CardActionArea>
     </Card>
   );
 }

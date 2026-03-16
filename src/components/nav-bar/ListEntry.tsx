@@ -57,6 +57,7 @@ export default function TypeListEntry(props: Readonly<TypeListEntryProps>) {
 
   const row = (
     <ListItemButton
+      className="row"
       divider
       onClick={(e) => {
         if (phonePortrait && supportsCoverPreview) {

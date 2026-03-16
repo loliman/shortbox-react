@@ -2,8 +2,85 @@ import { alpha, createTheme } from "@mui/material/styles";
 
 export type AppThemeMode = "light" | "dark";
 
-export const createAppTheme = (mode: AppThemeMode) =>
-  createTheme({
+export const createAppTheme = (mode: AppThemeMode) => {
+  const tokens =
+    mode === "dark"
+      ? {
+          bg: "#1e1e1e",
+          text: "#e6e6e6",
+          textSecondary: "#b3b3b3",
+          border: "#303030",
+          rowHover: "#2a2a2a",
+          link: "#6ea8ff",
+        }
+      : {
+          bg: "#ffffff",
+          text: "#111111",
+          textSecondary: "#555555",
+          border: "#e6e6e6",
+          rowHover: "#f5f7fa",
+          link: "#2f6feb",
+      };
+
+  const chipAccentStyles = (
+    themeMode: AppThemeMode,
+    color: string | undefined,
+    variant: string | undefined
+  ) => {
+    if (themeMode !== "dark" || variant === "outlined") return {};
+
+    const accents: Record<
+      string,
+      { bgTop: string; bgBottom: string; border: string; text: string }
+    > = {
+      primary: {
+        bgTop: "rgba(96, 165, 250, 0.25)",
+        bgBottom: "rgba(96, 165, 250, 0.15)",
+        border: "rgba(147, 197, 253, 0.35)",
+        text: "#bfe0ff",
+      },
+      secondary: {
+        bgTop: "rgba(255, 70, 100, 0.25)",
+        bgBottom: "rgba(255, 70, 100, 0.15)",
+        border: "rgba(255, 120, 140, 0.35)",
+        text: "#ff9fb1",
+      },
+      success: {
+        bgTop: "rgba(74, 222, 128, 0.22)",
+        bgBottom: "rgba(74, 222, 128, 0.14)",
+        border: "rgba(134, 239, 172, 0.35)",
+        text: "#b6f5c8",
+      },
+      info: {
+        bgTop: "rgba(56, 189, 248, 0.22)",
+        bgBottom: "rgba(56, 189, 248, 0.14)",
+        border: "rgba(125, 211, 252, 0.35)",
+        text: "#b7ebff",
+      },
+      warning: {
+        bgTop: "rgba(251, 191, 36, 0.22)",
+        bgBottom: "rgba(251, 191, 36, 0.14)",
+        border: "rgba(253, 224, 71, 0.35)",
+        text: "#ffe6a6",
+      },
+      default: {
+        bgTop: "rgba(148, 163, 184, 0.2)",
+        bgBottom: "rgba(148, 163, 184, 0.12)",
+        border: "rgba(203, 213, 225, 0.28)",
+        text: "#d5deea",
+      },
+    };
+
+    const accent = accents[color || "default"] || accents.default;
+    return {
+      background: `linear-gradient(180deg, ${accent.bgTop}, ${accent.bgBottom})`,
+      border: `1px solid ${accent.border}`,
+      boxShadow: "inset 0 1px 0 rgba(255,255,255,0.08)",
+      color: accent.text,
+    };
+  };
+
+  return createTheme({
     palette: {
       mode,
       primary: {
@@ -17,14 +94,14 @@ export const createAppTheme = (mode: AppThemeMode) =>
         dark: "#7b2035",
       },
       background: {
-        default: mode === "dark" ? "#0f1115" : "#f3f5f9",
-        paper: mode === "dark" ? "#161b22" : "#ffffff",
+        default: tokens.bg,
+        paper: tokens.bg,
       },
       text: {
-        primary: mode === "dark" ? "#e6edf7" : "#152238",
-        secondary: mode === "dark" ? "#a8b3c5" : "#4b5565",
+        primary: tokens.text,
+        secondary: tokens.textSecondary,
       },
-      divider: mode === "dark" ? alpha("#94a3b8", 0.28) : alpha("#152238", 0.12),
+      divider: tokens.border,
     },
     shape: {
       borderRadius: 12,
@@ -55,11 +132,7 @@ export const createAppTheme = (mode: AppThemeMode) =>
                 ? theme.palette.common.white
                 : theme.palette.getContrastText(theme.palette.primary.main),
             backgroundImage: "none",
-            borderBottom: `1px solid ${
-              theme.palette.mode === "dark"
-                ? alpha("#94a3b8", 0.28)
-                : alpha(theme.palette.common.white, 0.2)
-            }`,
+            borderBottom: `1px solid ${theme.palette.divider}`,
           }),
         },
       },
@@ -150,20 +223,23 @@ export const createAppTheme = (mode: AppThemeMode) =>
           size: "small",
         },
         styleOverrides: {
-          root: {
+          root: ({ ownerState }) => ({
             fontWeight: 600,
-          },
+            ...chipAccentStyles(mode, ownerState.color, ownerState.variant),
+          }),
         },
       },
       MuiLink: {
         defaultProps: {
-          underline: "hover",
+          underline: "always",
           color: "inherit",
         },
         styleOverrides: {
-          root: ({ theme }) => ({
-            color: theme.palette.text.secondary,
-          }),
+          root: {
+            color: "var(--link)",
+            textDecoration: "underline",
+            textUnderlineOffset: "2px",
+          },
         },
       },
       MuiSnackbarContent: {
@@ -203,5 +279,6 @@ export const createAppTheme = (mode: AppThemeMode) =>
       },
     },
   });
+};
 
 export const appTheme = createAppTheme("light");

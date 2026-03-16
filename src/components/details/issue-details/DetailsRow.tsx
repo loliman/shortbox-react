@@ -9,19 +9,19 @@ interface DetailsRowProps {
 
 export function DetailsRow(props: Readonly<DetailsRowProps>) {
   return (
-    <TableRow>
+    <TableRow className="row">
       <TableCell
+        className="label"
         align="left"
         sx={{
           width: "38%",
-          color: "text.secondary",
           fontWeight: 500,
           verticalAlign: "top",
         }}
       >
         {props.label}
       </TableCell>
-      <TableCell align="left" sx={{ width: "62%" }}>
+      <TableCell className="value" align="left" sx={{ width: "62%" }}>
         {props.value}
       </TableCell>
     </TableRow>

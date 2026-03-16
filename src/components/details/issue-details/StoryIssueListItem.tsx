@@ -42,8 +42,12 @@ export function StoryIssueListItem(props: Readonly<StoryIssueListItemProps>) {
 
   return (
     <ListItem
+      className="row"
       divider={props.divider}
       sx={{ px: 0, py: 1.25, alignItems: "flex-start", justifyContent: "space-between", gap: 1 }}
+      onClick={(e) =>
+        props.navigate?.(e, getIssueUrl(props.issue, routeUs), { expand: props.number, filter: null })
+      }
     >
       <Box sx={{ minWidth: 0 }}>
         <Box>
@@ -153,12 +157,13 @@ export function StoryIssueListItem(props: Readonly<StoryIssueListItemProps>) {
 
         <CoverTooltip issue={props.issue} us={coverUs} number={props.number}>
           <IconButton
-            onClick={(e) =>
+            onClick={(e) => {
+              e.stopPropagation();
               props.navigate?.(e, getIssueUrl(props.issue, routeUs), {
                 expand: props.number,
                 filter: null,
-              })
-            }
+              });
+            }}
             aria-label="Details"
           >
             <SearchIcon fontSize="small" />

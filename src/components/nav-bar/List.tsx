@@ -601,6 +601,7 @@ const IssuesBranch = React.memo(function IssuesBranch(props: Readonly<IssuesBran
             ].join("|")}
           >
             <ListItemButton
+              className="row"
               divider={false}
               selected={selected}
               data-nav-issue-number={issueNumber}
@@ -703,6 +704,7 @@ const NestedRow = React.memo(function NestedRow(props: Readonly<NestedRowProps>)
 
   return (
     <ListItemButton
+      className="row"
       divider={false}
       selected={props.selected ?? false}
       onClick={handleClick}

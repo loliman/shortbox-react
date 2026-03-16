@@ -180,11 +180,11 @@ function buildPublicationFallback({
 }
 
 function toGermanOccurrenceWord(count: number): string {
-  if (count <= 0) return "Nie";
+  if (count <= 0) return "Nicht";
   if (count == 1) return "Einmal";
 
   const word = toGermanNumberWord(count);
-  return capitalizeFirst(`${word}mal`);
+  return capitalizeFirst(`${word}fach`);
 }
 
 function toGermanNumberWord(value: number): string {

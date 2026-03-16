@@ -41,6 +41,11 @@ export default function App() {
   const theme = useMemo(() => createAppTheme(themeMode), [themeMode]);
 
   useEffect(() => {
+    if (typeof document === "undefined") return;
+    document.body.dataset.theme = themeMode;
+  }, [themeMode]);
+
+  useEffect(() => {
     if (isMockMode) {
       setSession({ loggedIn: true });
       setAuthReady(true);

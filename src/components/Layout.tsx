@@ -109,7 +109,9 @@ function Layout(props: Readonly<LayoutProps>) {
                   zIndex: 0,
                 }}
               />
-              <Box sx={{ position: "relative", zIndex: 1 }}>{children}</Box>
+              <Box className="main-content" sx={{ position: "relative", zIndex: 1 }}>
+                {children}
+              </Box>
             </Box>
 
             <Box
