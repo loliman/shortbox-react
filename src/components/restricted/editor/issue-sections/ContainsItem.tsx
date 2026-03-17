@@ -1,10 +1,10 @@
 import React from "react";
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
-import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import RemoveContainsButton from "./RemoveContainsButton";
@@ -53,13 +53,16 @@ class ContainsItem extends React.Component<ContainsItemProps> {
     const number = this.props.index + 1;
 
     return (
-      <Paper
-        variant="outlined"
+      <Accordion
+        disableGutters
+        expanded={isExpanded}
         data-story-card="true"
         data-story-index={this.props.index}
+        onChange={() => this.props.onStoryToggle?.(this.props.index)}
         sx={(theme) => ({
-          p: 2,
           borderRadius: "8px",
+          width: "auto",
+          maxWidth: "100%",
           border: "1px solid",
           borderColor: isDragOver
             ? `var(--accent, ${theme.palette.primary.main})`
@@ -70,6 +73,13 @@ class ContainsItem extends React.Component<ContainsItemProps> {
           opacity: isDragging ? 0.7 : 1,
           "&:hover": {
             borderColor: `var(--border-strong, ${theme.palette.divider})`,
+          },
+          "&:before": { display: "none" },
+          "& .MuiAccordionSummary-root": {
+            backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#161b22" : "#ffffff"),
+          },
+          "& .MuiAccordionDetails-root": {
+            backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#161b22" : "#ffffff"),
           },
         })}
         onDragOver={(event) => {
@@ -87,93 +97,90 @@ class ContainsItem extends React.Component<ContainsItemProps> {
           this.props.onStoryDragEnd?.();
         }}
       >
-        <Stack spacing={1.5}>
-          <Box
-            className="story-header"
-            sx={(theme) => ({
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              gap: 1,
-              position: "sticky",
-              top: 0,
-              zIndex: 1,
-              py: 0.25,
-              backgroundColor: theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
-            })}
-          >
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          sx={(theme) => ({
+            py: 1.25,
+            px: 2,
+            minHeight: 0,
+            position: "sticky",
+            top: 0,
+            zIndex: 1,
+            backgroundColor: theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
+            "&.Mui-expanded": {
+              minHeight: 0,
+            },
+            "& .MuiAccordionSummary-content": {
+              width: "100%",
+              margin: 0,
+              "&.Mui-expanded": {
+                margin: 0,
+              },
+            },
+            "& .MuiAccordionSummary-expandIconWrapper": {
+              margin: 0,
+              alignSelf: "center",
+            },
+          })}
+        >
+          <Box sx={{ width: "100%", pr: 0.5 }}>
             <Box
-              role="button"
-              tabIndex={0}
-              onClick={() => this.props.onStoryToggle?.(this.props.index)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                  event.preventDefault();
-                  this.props.onStoryToggle?.(this.props.index);
-                }
-              }}
-              sx={{ display: "flex", alignItems: "center", minWidth: 0, flexGrow: 1, cursor: "pointer" }}
+              sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1 }}
             >
-              <IconButton
-                size="small"
-                title="Reihenfolge ändern"
-                draggable
-                onClick={(event) => event.stopPropagation()}
-                onDragStart={(event) => {
-                  event.stopPropagation();
-                  event.dataTransfer.effectAllowed = "move";
-                  event.dataTransfer.setData("text/plain", String(this.props.index));
-                  this.props.onStoryDragStart?.(this.props.index);
-                }}
-                onDragEnd={() => {
-                  this.props.onStoryDragEnd?.();
-                }}
-                sx={{ mr: 0.25, cursor: "grab" }}
-              >
-                <DragIndicatorIcon fontSize="small" />
-              </IconButton>
-              <Typography variant="subtitle2" sx={{ fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                {`Story ${number}${primaryLabel ? ` — ${primaryLabel}` : ""}`}
-              </Typography>
-            </Box>
-            <Box onClick={(event) => event.stopPropagation()} sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-              <RemoveContainsButton {...this.props} disabled={isDisabled} />
-              <IconButton
-                size="small"
-                color="inherit"
-                sx={{ color: "text.secondary" }}
-                onClick={() => this.props.onStoryToggle?.(this.props.index)}
-              >
-                <ExpandMoreIcon
-                  sx={{
-                    transform: isExpanded ? "rotate(0deg)" : "rotate(-90deg)",
-                    transition: "transform 180ms ease",
+              <Box sx={{ display: "flex", alignItems: "center", minWidth: 0, flexGrow: 1 }}>
+                <IconButton
+                  size="small"
+                  title="Reihenfolge ändern"
+                  draggable
+                  onClick={(event) => event.stopPropagation()}
+                  onDragStart={(event) => {
+                    event.stopPropagation();
+                    event.dataTransfer.effectAllowed = "move";
+                    event.dataTransfer.setData("text/plain", String(this.props.index));
+                    this.props.onStoryDragStart?.(this.props.index);
                   }}
-                />
-              </IconButton>
+                  onDragEnd={() => {
+                    this.props.onStoryDragEnd?.();
+                  }}
+                  sx={{ mr: 0.25, cursor: "grab" }}
+                >
+                  <DragIndicatorIcon fontSize="small" />
+                </IconButton>
+                <Box sx={{ minWidth: 0 }}>
+                  <Typography
+                    variant="subtitle2"
+                    sx={{ fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+                  >
+                    {`Story ${number}${primaryLabel ? ` — ${primaryLabel}` : ""}`}
+                  </Typography>
+
+                  {!isExpanded && seriesIssueLabel ? (
+                    <Typography
+                      variant="caption"
+                      color="text.secondary"
+                      sx={{ display: "block", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+                    >
+                      {seriesIssueLabel}
+                    </Typography>
+                  ) : null}
+                </Box>
+              </Box>
+              <Box onClick={(event) => event.stopPropagation()}>
+                <RemoveContainsButton {...this.props} disabled={isDisabled} />
+              </Box>
             </Box>
           </Box>
+        </AccordionSummary>
 
-          {!isExpanded && seriesIssueLabel ? (
-            <Typography
-              variant="caption"
-              color="text.secondary"
-              sx={{ pl: 4.75, display: "block", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
-            >
-              {seriesIssueLabel}
-            </Typography>
-          ) : null}
-
-          <Collapse in={isExpanded} timeout={180} unmountOnExit>
-            <Box>
-              {React.cloneElement(this.props.fields, {
-                ...this.props,
-                disabled: isDisabled,
-              })}
-            </Box>
-          </Collapse>
-        </Stack>
-      </Paper>
+        <AccordionDetails sx={{ px: 2, pb: 2, pt: 0.5 }}>
+          <Box>
+            {React.cloneElement(this.props.fields, {
+              ...this.props,
+              disabled: isDisabled,
+            })}
+          </Box>
+        </AccordionDetails>
+      </Accordion>
     );
   }
 }
