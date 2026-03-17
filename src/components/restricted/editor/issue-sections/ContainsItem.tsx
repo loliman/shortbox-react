@@ -133,7 +133,18 @@ class ContainsItem extends React.Component<ContainsItemProps> {
               >
                 <DragIndicatorIcon fontSize="small" />
               </IconButton>
-              <IconButton size="small" sx={{ mr: 0.5 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                {`Story ${number}${primaryLabel ? ` — ${primaryLabel}` : ""}`}
+              </Typography>
+            </Box>
+            <Box onClick={(event) => event.stopPropagation()} sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+              <RemoveContainsButton {...this.props} disabled={isDisabled} />
+              <IconButton
+                size="small"
+                color="inherit"
+                sx={{ color: "text.secondary" }}
+                onClick={() => this.props.onStoryToggle?.(this.props.index)}
+              >
                 <ExpandMoreIcon
                   sx={{
                     transform: isExpanded ? "rotate(0deg)" : "rotate(-90deg)",
@@ -141,12 +152,6 @@ class ContainsItem extends React.Component<ContainsItemProps> {
                   }}
                 />
               </IconButton>
-              <Typography variant="subtitle2" sx={{ fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                {`Story ${number}${primaryLabel ? ` — ${primaryLabel}` : ""}`}
-              </Typography>
-            </Box>
-            <Box onClick={(event) => event.stopPropagation()}>
-              <RemoveContainsButton {...this.props} disabled={isDisabled} />
             </Box>
           </Box>
 
@@ -154,7 +159,7 @@ class ContainsItem extends React.Component<ContainsItemProps> {
             <Typography
               variant="caption"
               color="text.secondary"
-              sx={{ pl: 5.5, display: "block", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+              sx={{ pl: 4.75, display: "block", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
             >
               {seriesIssueLabel}
             </Typography>

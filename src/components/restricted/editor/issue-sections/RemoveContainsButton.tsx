@@ -16,8 +16,9 @@ function RemoveContainsButton(props: RemoveContainsButtonProps) {
         <IconButton
           disabled={props.disabled}
           aria-label="Entfernen"
-          color="error"
+          color="inherit"
           size="small"
+          sx={{ color: "text.secondary" }}
           onClick={() => {
             if (!props.setFieldValue || !props.items) return;
 
