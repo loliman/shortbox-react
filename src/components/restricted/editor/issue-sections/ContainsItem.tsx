@@ -51,6 +51,10 @@ class ContainsItem extends React.Component<ContainsItemProps> {
       ? `${title}${seriesTitle && seriesTitle !== title ? ` (${seriesTitle})` : ""}`
       : seriesTitle;
     const number = this.props.index + 1;
+    const itemCount = Array.isArray(this.props.items) ? this.props.items.length : 0;
+    const isFirst = this.props.index === 0;
+    const isLast = this.props.index === itemCount - 1;
+    const borderRadius = isFirst ? (isLast ? "8px" : "8px 8px 0 0") : isLast ? "0 0 8px 8px" : "0";
 
     return (
       <Accordion
@@ -60,9 +64,10 @@ class ContainsItem extends React.Component<ContainsItemProps> {
         data-story-index={this.props.index}
         onChange={() => this.props.onStoryToggle?.(this.props.index)}
         sx={(theme) => ({
-          borderRadius: "8px",
+          borderRadius,
           width: "auto",
           maxWidth: "100%",
+          mt: isFirst ? 0 : "-1px",
           border: "1px solid",
           borderColor: isDragOver
             ? `var(--accent, ${theme.palette.primary.main})`
