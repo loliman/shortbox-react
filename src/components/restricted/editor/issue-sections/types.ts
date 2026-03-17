@@ -25,6 +25,9 @@ export interface ContainsProps {
   items?: FieldItem[];
   values?: unknown;
   setFieldValue?: (field: string, value: unknown, shouldValidate?: boolean) => void;
+  expandedStoryIndex?: number | null;
+  onStoryToggle?: (index: number) => void;
+  onStoryAdded?: (index: number) => void;
   isDesktop?: boolean;
   us?: boolean;
   disabled?: boolean;

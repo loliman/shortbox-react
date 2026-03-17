@@ -59,6 +59,7 @@ function AddContainsButton(props: AddContainsButtonProps) {
         nextItem.number = newIndex + 1;
 
         props.setFieldValue(props.type, [...items, nextItem], true);
+        props.onStoryAdded?.(newIndex);
         focusAndScrollToStory(newIndex);
       }}
     >

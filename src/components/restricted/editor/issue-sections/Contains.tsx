@@ -22,6 +22,7 @@ function Contains(props: ContainsListProps) {
           {...props}
           item={item}
           index={index}
+          expanded={props.expandedStoryIndex === index}
         />
       ))}
     </Stack>
