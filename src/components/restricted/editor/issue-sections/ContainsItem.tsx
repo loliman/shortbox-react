@@ -35,9 +35,13 @@ class ContainsItem extends React.Component<ContainsItemProps> {
     const isExpanded = Boolean(this.props.expanded);
     const title = String(this.props.item.title || "").trim();
     const parent = (this.props.item.parent || {}) as {
-      issue?: { series?: { title?: string } };
+      issue?: { number?: string | number; series?: { title?: string } };
     };
     const seriesTitle = String(parent.issue?.series?.title || "").trim();
+    const issueNumber = String(parent.issue?.number || "").trim();
+    const seriesIssueLabel = [seriesTitle, issueNumber ? `#${issueNumber}` : ""]
+      .filter((entry) => entry.length > 0)
+      .join(" ");
     const primaryLabel = title
       ? `${title}${seriesTitle && seriesTitle !== title ? ` (${seriesTitle})` : ""}`
       : seriesTitle;
@@ -105,6 +109,16 @@ class ContainsItem extends React.Component<ContainsItemProps> {
               <RemoveContainsButton {...this.props} disabled={isDisabled} />
             </Box>
           </Box>
+
+          {!isExpanded && seriesIssueLabel ? (
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{ pl: 5.5, display: "block", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+            >
+              {seriesIssueLabel}
+            </Typography>
+          ) : null}
 
           <Collapse in={isExpanded} timeout={180} unmountOnExit>
             <Box>
