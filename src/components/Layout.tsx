@@ -139,7 +139,7 @@ function Layout(props: Readonly<LayoutProps>) {
           </Card>
         </Box>
 
-      {session ? <AddFab us={us} /> : <ErrorFab us={us} />}
+      {session ? <AddFab us={us} /> : us ? null : <ErrorFab us={us} />}
       </Box>
     </Box>
   );

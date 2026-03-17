@@ -1,7 +1,6 @@
 import React from "react";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
-import SpeedDial from "@mui/material/SpeedDial";
-import SpeedDialAction from "@mui/material/SpeedDialAction";
+import Box from "@mui/material/Box";
+import Fab from "@mui/material/Fab";
 import BugReportIcon from "@mui/icons-material/BugReport";
 import { withContext } from "../generic";
 import { generateUrl, HierarchyLevel } from "../../util/hierarchy";
@@ -15,7 +14,7 @@ interface ErrorFabProps {
 }
 
 interface ErrorFabState {
-  open: boolean;
+  isHovered: boolean;
   mobileBottomBarHeight: number | null;
 }
 
@@ -31,7 +30,7 @@ class ErrorFab extends React.Component<ErrorFabProps, ErrorFabState> {
     super(props);
 
     this.state = {
-      open: false,
+      isHovered: false,
       mobileBottomBarHeight: null,
     };
   }
@@ -63,7 +62,6 @@ class ErrorFab extends React.Component<ErrorFabProps, ErrorFabState> {
   }
 
   render() {
-    const { navigate } = this.props;
     const selected = this.props.selected || { us: Boolean(this.props.us) };
     const us = Boolean(this.props.us);
     const mobileBottomOffset = this.getMobileBottomOffsetExpression();
@@ -71,40 +69,104 @@ class ErrorFab extends React.Component<ErrorFabProps, ErrorFabState> {
     if (this.props.level !== HierarchyLevel.ISSUE || !selected.issue) return null;
 
     return (
-      <ClickAwayListener onClickAway={this.handleClose}>
-        <SpeedDial
-          ariaLabel="Fehler melden"
-          icon={<BugReportIcon />}
+      <Box
+        sx={{
+          position: "fixed",
+          bottom: `calc(16px + ${mobileBottomOffset})`,
+          right: { xs: 16, sm: 24 },
+          zIndex: (theme) => theme.zIndex.speedDial,
+        }}
+      >
+        {this.state.isHovered ? (
+          <Box
+            sx={{
+              position: "absolute",
+              right: { xs: -4, sm: 8 },
+              bottom: "calc(100% + 18px)",
+              maxWidth: 280,
+              minWidth: 220,
+              px: 2.25,
+              py: 1.75,
+              borderRadius: "28px",
+              backgroundColor: "#fff",
+              color: "#111",
+              border: "3px solid #111",
+              fontSize: 16,
+              fontWeight: 500,
+              lineHeight: 1.35,
+              textAlign: "center",
+              transformOrigin: "calc(100% - 34px) 100%",
+              animation: "errorFabBubbleEnter 180ms cubic-bezier(0.22, 1, 0.36, 1)",
+              "@keyframes errorFabBubbleEnter": {
+                "0%": {
+                  opacity: 0,
+                  transform: "translateY(10px) scale(0.92)",
+                },
+                "100%": {
+                  opacity: 1,
+                  transform: "translateY(0) scale(1)",
+                },
+              },
+              "&::after": {
+                content: '""',
+                position: "absolute",
+                right: 28,
+                top: "100%",
+                width: 0,
+                height: 0,
+                borderStyle: "solid",
+                borderWidth: "18px 14px 0 14px",
+                borderColor: "#111 transparent transparent transparent",
+              },
+              "&::before": {
+                content: '""',
+                position: "absolute",
+                right: 31,
+                top: "100%",
+                width: 0,
+                height: 0,
+                borderStyle: "solid",
+                borderWidth: "13px 11px 0 11px",
+                borderColor: "#fff transparent transparent transparent",
+                zIndex: 1,
+              },
+            }}
+          >
+            Mit mir kannst du Fehler melden!
+          </Box>
+        ) : null}
+
+        <Fab
+          aria-label="Fehler melden"
+          color="primary"
           onClick={this.handleClick}
-          open={this.state.open}
+          onMouseEnter={this.handleMouseEnter}
+          onMouseLeave={this.handleMouseLeave}
+          onFocus={this.handleMouseEnter}
+          onBlur={this.handleMouseLeave}
           sx={{
-            position: "fixed",
-            bottom: `calc(16px + ${mobileBottomOffset})`,
-            right: { xs: 16, sm: 24 },
+            position: "relative",
           }}
         >
-          <SpeedDialAction
-            key="report"
-            icon={<BugReportIcon />}
-            tooltipTitle="Fehler melden"
-            onClick={(e) => {
-              navigate?.(e, "/report" + generateUrl(selected, us));
-              this.handleClose();
-            }}
-          />
-        </SpeedDial>
-      </ClickAwayListener>
+          <BugReportIcon />
+        </Fab>
+      </Box>
     );
   }
 
-  handleClick = () => {
-    this.setState((state) => ({
-      open: !state.open,
-    }));
+  handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const { navigate } = this.props;
+    const selected = this.props.selected || { us: Boolean(this.props.us) };
+    const us = Boolean(this.props.us);
+    navigate?.(event, "/report" + generateUrl(selected, us));
   };
 
-  handleClose = () => {
-    this.setState({ open: false });
+  handleMouseEnter = () => {
+    this.setState({ isHovered: true });
+  };
+
+  handleMouseLeave = () => {
+    this.setState({ isHovered: false });
   };
 
   private getMobileBottomOffsetExpression(): string {

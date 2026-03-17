@@ -23,9 +23,14 @@ function Contact() {
 
           <Typography>
             Solltet ihr einen Fehler finden oder Vorschläge zur Verbesserung haben, meldet euch
-            bitte per Mail bei mir. Schreibt dazu bitte eine Mail mit dem Betreff <b>[Shortbox]</b>{" "}
+            bitte per Mail bei mir. Schreibt dazu bitte eine Mail mit dem Betreff <b>[ERROR]</b>{" "}
             und einer kurzen Beschreibung des Fehlers/des Vorschlags an{" "}
-            <Link href="mailto:christian.riese@gmail.com">christian.riese@gmail.com</Link>.
+            <Link href="mailto:christian.riese+shortbox@gmail.com">christian.riese+shortbox@gmail.com</Link>.
+          </Typography>
+
+          <Typography>
+            Inhaltliche Fehler könnt ihr bequem über das "Bug-Icon" (nur auf DE-Ausgaben Ebene sichtbar) unten rechts
+            melden. Diese schlagen dann automatisiert bei mir auf, ich prüfe diese und ändere sie dann entsprechend.
           </Typography>
 
           <Stack spacing={1}>
