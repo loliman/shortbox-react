@@ -63,7 +63,20 @@ class ContainsItem extends React.Component<ContainsItemProps> {
         })}
       >
         <Stack spacing={1.5}>
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1 }}>
+          <Box
+            className="story-header"
+            sx={(theme) => ({
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 1,
+              position: "sticky",
+              top: 0,
+              zIndex: 1,
+              py: 0.25,
+              backgroundColor: `var(--surface-1, ${theme.palette.background.default})`,
+            })}
+          >
             <Box
               role="button"
               tabIndex={0}
