@@ -26,8 +26,14 @@ export interface ContainsProps {
   values?: unknown;
   setFieldValue?: (field: string, value: unknown, shouldValidate?: boolean) => void;
   expandedStoryIndex?: number | null;
+  draggedStoryIndex?: number | null;
+  dragOverStoryIndex?: number | null;
   onStoryToggle?: (index: number) => void;
   onStoryAdded?: (index: number) => void;
+  onStoryDragStart?: (index: number) => void;
+  onStoryDragEnd?: () => void;
+  onStoryDragOver?: (index: number) => void;
+  onStoryReorder?: (fromIndex: number, toIndex: number) => void;
   isDesktop?: boolean;
   us?: boolean;
   disabled?: boolean;

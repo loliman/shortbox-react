@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import Collapse from "@mui/material/Collapse";
 import IconButton from "@mui/material/IconButton";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import RemoveContainsButton from "./RemoveContainsButton";
 import type { ContainsProps, FieldItem } from "./types";
 
@@ -23,7 +24,9 @@ class ContainsItem extends React.Component<ContainsItemProps> {
       this.props.item !== nextProps.item ||
       (this.props.items || []).length !== (nextProps.items || []).length ||
       this.props.index !== nextProps.index ||
-      this.props.expanded !== nextProps.expanded
+      this.props.expanded !== nextProps.expanded ||
+      this.props.dragOverStoryIndex !== nextProps.dragOverStoryIndex ||
+      this.props.draggedStoryIndex !== nextProps.draggedStoryIndex
     );
   }
 
@@ -33,6 +36,8 @@ class ContainsItem extends React.Component<ContainsItemProps> {
       : 0;
     const isDisabled = childCount > 0;
     const isExpanded = Boolean(this.props.expanded);
+    const isDragOver = this.props.dragOverStoryIndex === this.props.index;
+    const isDragging = this.props.draggedStoryIndex === this.props.index;
     const title = String(this.props.item.title || "").trim();
     const parent = (this.props.item.parent || {}) as {
       issue?: { number?: string | number; series?: { title?: string } };
@@ -56,15 +61,32 @@ class ContainsItem extends React.Component<ContainsItemProps> {
           p: 2,
           borderRadius: "10px",
           border: "1px solid",
-          borderColor: `var(--border-subtle, ${theme.palette.divider})`,
+          borderColor: isDragOver
+            ? `var(--accent, ${theme.palette.primary.main})`
+            : `var(--border-subtle, ${theme.palette.divider})`,
           backgroundColor: `var(--surface-2, ${theme.palette.background.paper})`,
           transition: theme.transitions.create("border-color", {
             duration: theme.transitions.duration.shorter,
           }),
+          opacity: isDragging ? 0.7 : 1,
           "&:hover": {
             borderColor: `var(--border-strong, ${theme.palette.text.disabled})`,
           },
         })}
+        onDragOver={(event) => {
+          event.preventDefault();
+          event.dataTransfer.dropEffect = "move";
+          this.props.onStoryDragOver?.(this.props.index);
+        }}
+        onDrop={(event) => {
+          event.preventDefault();
+          const raw = event.dataTransfer.getData("text/plain");
+          const fromIndex = Number(raw);
+          if (Number.isInteger(fromIndex)) {
+            this.props.onStoryReorder?.(fromIndex, this.props.index);
+          }
+          this.props.onStoryDragEnd?.();
+        }}
       >
         <Stack spacing={1.5}>
           <Box
@@ -93,6 +115,24 @@ class ContainsItem extends React.Component<ContainsItemProps> {
               }}
               sx={{ display: "flex", alignItems: "center", minWidth: 0, flexGrow: 1, cursor: "pointer" }}
             >
+              <IconButton
+                size="small"
+                title="Reihenfolge ändern"
+                draggable
+                onClick={(event) => event.stopPropagation()}
+                onDragStart={(event) => {
+                  event.stopPropagation();
+                  event.dataTransfer.effectAllowed = "move";
+                  event.dataTransfer.setData("text/plain", String(this.props.index));
+                  this.props.onStoryDragStart?.(this.props.index);
+                }}
+                onDragEnd={() => {
+                  this.props.onStoryDragEnd?.();
+                }}
+                sx={{ mr: 0.25, cursor: "grab" }}
+              >
+                <DragIndicatorIcon fontSize="small" />
+              </IconButton>
               <IconButton size="small" sx={{ mr: 0.5 }}>
                 <ExpandMoreIcon
                   sx={{
