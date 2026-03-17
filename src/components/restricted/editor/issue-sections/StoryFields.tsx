@@ -25,14 +25,6 @@ function StoryFields(props: StoryFieldsProps) {
 
   return (
     <Grid container spacing={2}>
-      {parentTitle ? (
-        <Grid size={12}>
-          <Typography variant="body2" color="text.secondary">
-            {parentTitle}
-          </Typography>
-        </Grid>
-      ) : null}
-
       <Grid size={{ xs: 6, sm: 3, md: 2 }}>
         <FastField
           name={`stories[${index}].number`}

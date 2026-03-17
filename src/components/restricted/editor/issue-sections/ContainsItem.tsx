@@ -40,10 +40,17 @@ class ContainsItem extends React.Component<ContainsItemProps> {
     const isExpanded = Boolean(this.props.expanded);
     const isDragOver = this.props.dragOverStoryIndex === this.props.index;
     const isDragging = this.props.draggedStoryIndex === this.props.index;
-    const title = String(this.props.item.title || "").trim();
-    const parent = (this.props.item.parent || {}) as {
-      issue?: { number?: string | number; legacy_number?: string ; series?: { title?: string } };
-    };
+
+      const parent = (this.props.item.parent || {}) as {
+          issue?: { number?: string | number; legacy_number?: string ; series?: { title?: string }; title? : string};
+      };
+
+    const itemTitle = normalizeDisplayStoryTitle(this.props.item.title);
+    const parentTitle =
+        !itemTitle && parent.title ? normalizeDisplayStoryTitle(parent.title) : undefined;
+    const storyTitle = itemTitle || parentTitle || "";
+    const storyTitleLabel = storyTitle !== "" ? storyTitle : "Story";
+
     const itemCount = Array.isArray(this.props.items) ? this.props.items.length : 0;
     const isFirst = this.props.index === 0;
     const isLast = this.props.index === itemCount - 1;
@@ -151,7 +158,7 @@ class ContainsItem extends React.Component<ContainsItemProps> {
                           opacity: 0.9,
                       }}
                   >
-                      {title}
+                      {storyTitleLabel}
                   </Typography>
 
                     <Typography
@@ -193,6 +200,11 @@ class ContainsItem extends React.Component<ContainsItemProps> {
       </Accordion>
     );
   }
+}
+
+function normalizeDisplayStoryTitle(value: string | null | undefined): string {
+    const normalized = String(value || "").trim();
+    return normalized === "Untitled" ? "" : normalized;
 }
 
 export default ContainsItem;
