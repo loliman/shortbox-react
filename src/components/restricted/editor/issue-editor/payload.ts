@@ -187,13 +187,11 @@ function normalizeIssueReference(value: unknown): Record<string, unknown> | unde
   const normalized: Record<string, unknown> = {};
   const series = normalizeSeriesInput(issue.series);
   const number = toOptionalString(issue.number);
-  const legacy_number = toOptionalString(issue.legacy_number);
   const format = toOptionalString(issue.format);
   const variant = toOptionalString(issue.variant);
 
   if (series) normalized.series = series;
   if (number) normalized.number = number;
-  if (legacy_number) normalized.legacy_number = legacy_number;
   if (format) normalized.format = format;
   if (variant) normalized.variant = variant;
   return Object.keys(normalized).length > 0 ? normalized : undefined;
