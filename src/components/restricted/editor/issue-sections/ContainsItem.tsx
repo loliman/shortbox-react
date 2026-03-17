@@ -41,8 +41,8 @@ class ContainsItem extends React.Component<ContainsItemProps> {
     const isDragOver = this.props.dragOverStoryIndex === this.props.index;
     const isDragging = this.props.draggedStoryIndex === this.props.index;
 
-      const parent = (this.props.item.parent || {}) as {
-          issue?: { number?: string | number; legacy_number?: string ; series?: { title?: string }; title? : string};
+      const parent = (this.props.item.parent || {}) as { title? : string;
+          issue?: { number?: string | number; legacy_number?: string ; series?: { title?: string }};
       };
 
     const itemTitle = normalizeDisplayStoryTitle(this.props.item.title);
@@ -50,6 +50,8 @@ class ContainsItem extends React.Component<ContainsItemProps> {
         !itemTitle && parent.title ? normalizeDisplayStoryTitle(parent.title) : undefined;
     const storyTitle = itemTitle || parentTitle || "";
     const storyTitleLabel = storyTitle !== "" ? storyTitle : "Story";
+
+    const addinfoText = buildAddinfoText(this.props.item);
 
     const itemCount = Array.isArray(this.props.items) ? this.props.items.length : 0;
     const isFirst = this.props.index === 0;
@@ -178,6 +180,20 @@ class ContainsItem extends React.Component<ContainsItemProps> {
                             number={ parent.issue?.number}
                             legacy_number={parent.issue?.legacy_number}
                         />
+
+                        <Typography
+                            sx={{
+                                fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+                                fontSize: "0.8rem",
+                                lineHeight: 1.75,
+                                fontWeight: 500,
+                                color: "text.secondary",
+                                letterSpacing: "0.01em",
+                                opacity: 0.9,
+                            }}
+                        >
+                            {addinfoText === "" ? null : addinfoText}
+                        </Typography>
                     </Typography>
                   
                 </Box>
@@ -205,6 +221,20 @@ class ContainsItem extends React.Component<ContainsItemProps> {
 function normalizeDisplayStoryTitle(value: string | null | undefined): string {
     const normalized = String(value || "").trim();
     return normalized === "Untitled" ? "" : normalized;
+}
+
+function buildAddinfoText(item: any): string {
+    let addinfoText = "";
+    if (item.part && item.part.indexOf("/x") === -1) {
+        addinfoText += "Teil " + item.part.replace("/", " von ");
+    }
+    if (addinfoText !== "" && item.addinfo) {
+        addinfoText += ", ";
+    }
+    if (item.addinfo) {
+        addinfoText += item.addinfo;
+    }
+    return addinfoText;
 }
 
 export default ContainsItem;
