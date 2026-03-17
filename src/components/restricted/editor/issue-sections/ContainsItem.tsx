@@ -9,6 +9,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import RemoveContainsButton from "./RemoveContainsButton";
 import type { ContainsProps, FieldItem } from "./types";
+import {generateLabel} from "../../../../util/hierarchy";
+import {IssueReferenceInline} from "../../../generic/IssueNumberInline";
 
 interface ContainsItemProps extends ContainsProps {
   item: FieldItem;
@@ -40,17 +42,8 @@ class ContainsItem extends React.Component<ContainsItemProps> {
     const isDragging = this.props.draggedStoryIndex === this.props.index;
     const title = String(this.props.item.title || "").trim();
     const parent = (this.props.item.parent || {}) as {
-      issue?: { number?: string | number; series?: { title?: string } };
+      issue?: { number?: string | number; legacy_number?: string ; series?: { title?: string } };
     };
-    const seriesTitle = String(parent.issue?.series?.title || "").trim();
-    const issueNumber = String(parent.issue?.number || "").trim();
-    const seriesIssueLabel = [seriesTitle, issueNumber ? `#${issueNumber}` : ""]
-      .filter((entry) => entry.length > 0)
-      .join(" ");
-    const primaryLabel = title
-      ? `${title}${seriesTitle && seriesTitle !== title ? ` (${seriesTitle})` : ""}`
-      : seriesTitle;
-    const number = this.props.index + 1;
     const itemCount = Array.isArray(this.props.items) ? this.props.items.length : 0;
     const isFirst = this.props.index === 0;
     const isLast = this.props.index === itemCount - 1;
@@ -63,30 +56,28 @@ class ContainsItem extends React.Component<ContainsItemProps> {
         data-story-card="true"
         data-story-index={this.props.index}
         onChange={() => this.props.onStoryToggle?.(this.props.index)}
-        sx={(theme) => ({
-          borderRadius,
-          width: "auto",
-          maxWidth: "100%",
-          mt: isFirst ? 0 : "-1px",
-          border: "1px solid",
-          borderColor: isDragOver
-            ? `var(--accent, ${theme.palette.primary.main})`
-            : theme.palette.divider,
-          backgroundColor: theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
-          boxShadow: theme.shadows[1],
-          transition: "box-shadow 180ms ease, border-color 180ms ease",
-          opacity: isDragging ? 0.7 : 1,
-          "&:hover": {
-            borderColor: `var(--border-strong, ${theme.palette.divider})`,
-          },
-          "&:before": { display: "none" },
-          "& .MuiAccordionSummary-root": {
-            backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#161b22" : "#ffffff"),
-          },
-          "& .MuiAccordionDetails-root": {
-            backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#161b22" : "#ffffff"),
-          },
-        })}
+        sx={{
+            borderRadius,
+            width: "auto",
+            maxWidth: "100%",
+            mb: isLast ? 0 : 1,
+            border: "1px solid",
+            borderColor: "divider",
+            backgroundColor: (theme) =>
+                theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
+            overflow: "hidden",
+            boxShadow: (theme) => theme.shadows[1],
+            transition: "box-shadow 180ms ease, transform 180ms ease, border-color 180ms ease",
+            "&:before": { display: "none" },
+            "& .MuiAccordionSummary-root": {
+                backgroundColor: (theme) =>
+                    theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
+            },
+            "& .MuiAccordionDetails-root": {
+                backgroundColor: (theme) =>
+                    theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
+            },
+        }}
         onDragOver={(event) => {
           event.preventDefault();
           event.dataTransfer.dropEffect = "move";
@@ -104,29 +95,24 @@ class ContainsItem extends React.Component<ContainsItemProps> {
       >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          sx={(theme) => ({
-            py: 1.25,
-            px: 2,
-            minHeight: 0,
-            position: "sticky",
-            top: 0,
-            zIndex: 1,
-            backgroundColor: theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
-            "&.Mui-expanded": {
+          sx={{
+              py: 1.25,
               minHeight: 0,
-            },
-            "& .MuiAccordionSummary-content": {
-              width: "100%",
-              margin: 0,
               "&.Mui-expanded": {
-                margin: 0,
+                  minHeight: 0,
               },
-            },
-            "& .MuiAccordionSummary-expandIconWrapper": {
-              margin: 0,
-              alignSelf: "center",
-            },
-          })}
+              "& .MuiAccordionSummary-content": {
+                  width: "100%",
+                  margin: 0,
+                  "&.Mui-expanded": {
+                      margin: 0,
+                  },
+              },
+              "& .MuiAccordionSummary-expandIconWrapper": {
+                  margin: 0,
+                  alignSelf: "center",
+              },
+          }}
         >
           <Box sx={{ width: "100%", pr: 0.5 }}>
             <Box
@@ -153,21 +139,40 @@ class ContainsItem extends React.Component<ContainsItemProps> {
                 </IconButton>
                 <Box sx={{ minWidth: 0 }}>
                   <Typography
-                    variant="subtitle2"
-                    sx={{ fontWeight: 600, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+                      variant="overline"
+                      sx={{
+                          fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+                          fontWeight: 500,
+                          fontSize: "0.7rem",
+                          lineHeight: 1.5,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.16em",
+                          color: "text.secondary",
+                          opacity: 0.9,
+                      }}
                   >
-                    {`Story ${number}${primaryLabel ? ` — ${primaryLabel}` : ""}`}
+                      {title}
                   </Typography>
 
-                  {!isExpanded && seriesIssueLabel ? (
                     <Typography
-                      variant="caption"
-                      color="text.secondary"
-                      sx={{ display: "block", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+                        variant="subtitle1"
+                        sx={{
+                            fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+                            fontSize: "1rem",
+                            lineHeight: 1.75,
+                            fontWeight: 700,
+                            color: "text.secondary",
+                            letterSpacing: "0.01em",
+                            opacity: 0.9,
+                        }}
                     >
-                      {seriesIssueLabel}
+                        <IssueReferenceInline
+                            seriesLabel={generateLabel({ series: parent.issue?.series as any } as any)}
+                            number={ parent.issue?.number}
+                            legacy_number={parent.issue?.legacy_number}
+                        />
                     </Typography>
-                  ) : null}
+                  
                 </Box>
               </Box>
               <Box onClick={(event) => event.stopPropagation()}>
@@ -177,7 +182,7 @@ class ContainsItem extends React.Component<ContainsItemProps> {
           </Box>
         </AccordionSummary>
 
-        <AccordionDetails sx={{ px: 2, pb: 2, pt: 0.5 }}>
+        <AccordionDetails sx={{ pr: 2, pb: 2, pt: 0.5, pl: 6 }}>
           <Box>
             {React.cloneElement(this.props.fields, {
               ...this.props,
