@@ -59,18 +59,17 @@ class ContainsItem extends React.Component<ContainsItemProps> {
         data-story-index={this.props.index}
         sx={(theme) => ({
           p: 2,
-          borderRadius: "10px",
+          borderRadius: "8px",
           border: "1px solid",
           borderColor: isDragOver
             ? `var(--accent, ${theme.palette.primary.main})`
-            : `var(--border-subtle, ${theme.palette.divider})`,
-          backgroundColor: `var(--surface-2, ${theme.palette.background.paper})`,
-          transition: theme.transitions.create("border-color", {
-            duration: theme.transitions.duration.shorter,
-          }),
+            : theme.palette.divider,
+          backgroundColor: theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
+          boxShadow: theme.shadows[1],
+          transition: "box-shadow 180ms ease, border-color 180ms ease",
           opacity: isDragging ? 0.7 : 1,
           "&:hover": {
-            borderColor: `var(--border-strong, ${theme.palette.text.disabled})`,
+            borderColor: `var(--border-strong, ${theme.palette.divider})`,
           },
         })}
         onDragOver={(event) => {
@@ -100,7 +99,7 @@ class ContainsItem extends React.Component<ContainsItemProps> {
               top: 0,
               zIndex: 1,
               py: 0.25,
-              backgroundColor: `var(--surface-1, ${theme.palette.background.default})`,
+              backgroundColor: theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
             })}
           >
             <Box
