@@ -182,7 +182,7 @@ class ContainsItem extends React.Component<ContainsItemProps> {
           </Box>
         </AccordionSummary>
 
-        <AccordionDetails sx={{ pr: 2, pb: 2, pt: 0.5, pl: 6 }}>
+        <AccordionDetails sx={{ pr: 2, pb: 2, pt: 1.25, pl: 6 }}>
           <Box>
             {React.cloneElement(this.props.fields, {
               ...this.props,
