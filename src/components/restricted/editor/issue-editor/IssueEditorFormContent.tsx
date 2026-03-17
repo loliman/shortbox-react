@@ -32,6 +32,10 @@ function IssueEditorFormContent(props: IssueEditorFormContentProps) {
     onToggleUs,
     onCancel,
     onSubmitMode,
+    notice,
+    actions,
+    showHints = true,
+    lockedFields,
   } = props;
 
   return (
@@ -59,13 +63,33 @@ function IssueEditorFormContent(props: IssueEditorFormContentProps) {
         }
       />
 
-      <CardContent sx={{ pt: 1 }}>
+      <CardContent
+        sx={(theme) => ({
+          pt: 1,
+          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: `var(--border-strong, ${theme.palette.text.secondary})`,
+          },
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: `var(--accent, ${theme.palette.primary.main})`,
+          },
+          "& .MuiOutlinedInput-root.Mui-focused": {
+            boxShadow: "0 0 0 2px rgba(80,120,255,0.25)",
+          },
+        })}
+      >
         <Stack spacing={2.25}>
+          {notice ? (
+            <Paper elevation={0} sx={editorSectionSx}>
+              {notice}
+            </Paper>
+          ) : null}
           <IssueEditorSection title="Basisdaten">
             <IssueEditorSeriesFields
               values={values}
               isDesktop={isDesktop}
               setFieldValue={setFieldValue}
+              showHints={showHints}
+              lockedFields={lockedFields}
             />
           </IssueEditorSection>
 
@@ -74,6 +98,7 @@ function IssueEditorFormContent(props: IssueEditorFormContentProps) {
               values={values}
               isDesktop={isDesktop}
               setFieldValue={setFieldValue}
+              lockedFields={lockedFields}
             />
           </IssueEditorSection>
 
@@ -86,18 +111,32 @@ function IssueEditorFormContent(props: IssueEditorFormContentProps) {
               values={values}
               isDesktop={isDesktop}
               setFieldValue={setFieldValue}
+              showHints={showHints}
             />
           </IssueEditorSection>
 
-          <Paper elevation={0} sx={editorSectionSx}>
-            <IssueEditorActions
-              isSubmitting={isSubmitting}
-              submitLabel={submitLabel}
-              submitAndCopyLabel={submitAndCopyLabel}
-              resetForm={resetForm}
-              onCancel={onCancel}
-              onSubmitMode={onSubmitMode}
-            />
+          <Paper
+            elevation={0}
+            sx={(theme) => ({
+              ...editorSectionSx(theme),
+              position: "sticky",
+              bottom: 0,
+              zIndex: theme.zIndex.appBar - 1,
+              p: "12px 16px",
+              backgroundColor: `var(--surface-1, ${theme.palette.background.default})`,
+              borderTop: `1px solid var(--border-subtle, ${theme.palette.divider})`,
+            })}
+          >
+            {actions || (
+              <IssueEditorActions
+                isSubmitting={isSubmitting}
+                submitLabel={submitLabel}
+                submitAndCopyLabel={submitAndCopyLabel}
+                resetForm={resetForm}
+                onCancel={onCancel}
+                onSubmitMode={onSubmitMode}
+              />
+            )}
           </Paper>
         </Stack>
       </CardContent>
@@ -112,9 +151,28 @@ interface IssueEditorSectionProps {
 
 function IssueEditorSection({ title, children }: Readonly<IssueEditorSectionProps>) {
   return (
-    <Paper elevation={0} sx={editorSectionSx}>
+    <Paper
+      elevation={0}
+      sx={(theme) => ({
+        ...editorSectionSx(theme),
+        mt: 3.5,
+        p: "20px",
+        borderRadius: "10px",
+        backgroundColor: `var(--surface-1, ${theme.palette.background.default})`,
+        boxShadow: "none",
+      })}
+    >
       <Stack spacing={2}>
-        <Typography variant="subtitle1">{title}</Typography>
+        <Typography
+          sx={{
+            fontSize: "14px",
+            fontWeight: 600,
+            letterSpacing: "0.02em",
+            mb: 1.5,
+          }}
+        >
+          {title}
+        </Typography>
         {children}
       </Stack>
     </Paper>

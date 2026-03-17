@@ -176,7 +176,7 @@ function buildPublicationFallback({
   if (childrenCount <= 0) return "Nicht auf deutsch erschienen";
 
   const word = toGermanOccurrenceWord(childrenCount);
-  return `${word} auf deutsch erschienen`;
+  return childrenCount > 0 ? `Mehrfach auf deutsch erschienen`: 'Nicht auf deutsch erschienen';
 }
 
 function toGermanOccurrenceWord(count: number): string {
@@ -268,9 +268,9 @@ function buildSimpleActionChips({
     chips.push(<Chip key="onlytb" label="Nur in Taschenbuch" color="primary" />);
   }
 
-  if (us && childrenCount === 0) {
+  /*if (us && childrenCount === 0) {
     chips.push(<Chip key="notpublished" label="Nicht auf deutsch erschienen" color="default" />);
-  }
+  }*/
 
   if (item.reprintOf) {
     chips.push(<Chip key="reprintof" label="Nachdruck" color="default" />);

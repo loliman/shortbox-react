@@ -12,10 +12,12 @@ const IssueDetailsUS = lazy(() => import("../components/details/IssueDetailsUS")
 const Filter = lazy(() => import("../components/filter/Filter"));
 const Login = lazy(() => import("../components/Login"));
 const AdminTasks = lazy(() => import("../components/admin/AdminTasks"));
+const ChangeRequests = lazy(() => import("../components/admin/ChangeRequests"));
 const About = lazy(() => import("../components/footer/About"));
 const Contact = lazy(() => import("../components/footer/Contact"));
 const Impress = lazy(() => import("../components/footer/Impress"));
 const Privacy = lazy(() => import("../components/footer/Privacy"));
+const IssueReport = lazy(() => import("../components/report/IssueReport"));
 const PublisherCreate = lazy(() => import("../components/restricted/create/PublisherCreate"));
 const SeriesCreate = lazy(() => import("../components/restricted/create/SeriesCreate"));
 const IssueCreate = lazy(() => import("../components/restricted/create/IssueCreate"));
@@ -59,11 +61,20 @@ export function AppRoutes({ session, authReady = false }: Readonly<AppRoutesProp
 
       <Route path="/login" element={<Login />} />
       <Route path="/admin/tasks" element={guard(session, authReady, <AdminTasks />)} />
+      <Route
+        path="/admin/change-requests"
+        element={guard(session, authReady, <ChangeRequests />)}
+      />
 
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/impress" element={<Impress />} />
       <Route path="/privacy" element={<Privacy />} />
+
+      <Route path="/report/de/:publisher/:series/:issue" element={<IssueReport />} />
+      <Route path="/report/de/:publisher/:series/:issue/:variant" element={<IssueReport />} />
+      <Route path="/report/us/:publisher/:series/:issue" element={<IssueReport />} />
+      <Route path="/report/us/:publisher/:series/:issue/:variant" element={<IssueReport />} />
 
       <Route path="/create/publisher" element={guard(session, authReady, <PublisherCreate />)} />
       <Route path="/create/series" element={guard(session, authReady, <SeriesCreate />)} />

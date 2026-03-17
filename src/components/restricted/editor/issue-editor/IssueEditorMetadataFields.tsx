@@ -33,6 +33,10 @@ interface IssueEditorMetadataFieldsProps {
   values: IssueEditorFormValues;
   isDesktop?: boolean;
   setFieldValue: (field: string, value: unknown, shouldValidate?: boolean) => void;
+  lockedFields?: {
+    format?: boolean;
+    variant?: boolean;
+  };
 }
 
 interface TypedMetadataAutocompleteProps {
@@ -50,14 +54,18 @@ function IssueEditorMetadataFields({
   values,
   isDesktop: _isDesktop,
   setFieldValue,
+  lockedFields,
 }: IssueEditorMetadataFieldsProps) {
   const us = values.series.publisher.us;
+  const formatLocked = Boolean(lockedFields?.format);
+  const variantLocked = Boolean(lockedFields?.variant);
 
   return (
     <Grid container spacing={2}>
       {!us ? (
         <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <FastField
+            disabled={formatLocked}
             type="text"
             name="format"
             label="Format"
@@ -76,7 +84,13 @@ function IssueEditorMetadataFields({
       ) : null}
 
       <Grid size={{ xs: 12, sm: 6, md: 4 }}>
-        <FastField name="variant" label="Variante" component={TextField} fullWidth />
+        <FastField
+          disabled={variantLocked}
+          name="variant"
+          label="Variante"
+          component={TextField}
+          fullWidth
+        />
       </Grid>
 
       {!us ? (

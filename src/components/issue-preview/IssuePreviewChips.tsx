@@ -36,7 +36,7 @@ export function IssuePreviewChips(props: Readonly<IssuePreviewChipsProps>) {
     );
   }
 
-  if (us && flags.notPublishedInDe) {
+  /*if (us && flags.notPublishedInDe) {
     chips.push(
       <Chip
         key="not-published"
@@ -46,7 +46,7 @@ export function IssuePreviewChips(props: Readonly<IssuePreviewChipsProps>) {
         sx={chipSx}
       />
     );
-  }
+  }*/
 
   if (!us && flags.hasOnlyApp) {
     chips.push(

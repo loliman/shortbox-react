@@ -167,6 +167,20 @@ query Me {
   }
 }
 
+query ChangeRequestCount {
+  changeRequestCount
+}
+
+query ChangeRequests($order: String, $direction: String) {
+  changeRequests(order: $order, direction: $direction) {
+    id
+    issueId
+    createdAt
+    type
+    changeRequest
+  }
+}
+
 query AdminTasks($limitRuns: Int) {
   adminTasks(limitRuns: $limitRuns) {
     id
@@ -857,6 +871,19 @@ mutation EditIssue($old: IssueInput!, $item: IssueInput!) {
     collected
     addinfo
   }
+}
+
+mutation ReportError($issue: IssueInput!, $item: IssueInput!) {
+  reportError(input: { issue: $issue, item: $item }) {
+    id
+    issueId
+    createdAt
+    type
+  }
+}
+
+mutation DiscardChangeRequest($id: ID!) {
+  discardChangeRequest(id: $id)
 }
 
 mutation EditSeries($old: SeriesInput!, $item: SeriesInput!) {

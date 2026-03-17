@@ -4,6 +4,7 @@ import TopBar from "./top-bar/TopBar";
 import List from "./nav-bar/List";
 import { withContext } from "./generic";
 import AddFab from "./fab/AddFab";
+import ErrorFab from "./fab/ErrorFab";
 import Box from "@mui/material/Box";
 import FooterLinks from "./footer/FooterLinks";
 import { COMPACT_BOTTOM_BAR_CLEARANCE, getNavDrawerWidth } from "./layoutMetrics";
@@ -88,7 +89,7 @@ function Layout(props: Readonly<LayoutProps>) {
               display: "flex",
               flexDirection: "column",
               minWidth: 0,
-              overflow: "hidden",
+              overflow: "visible",
             }}
           >
             <Box sx={{ flexGrow: 1, p: { xs: 0, sm: 2 }, minHeight: 0, position: "relative" }}>
@@ -109,7 +110,7 @@ function Layout(props: Readonly<LayoutProps>) {
                   zIndex: 0,
                 }}
               />
-              <Box className="main-content" sx={{ position: "relative", zIndex: 1 }}>
+              <Box className="main-content data-fade" sx={{ position: "relative", zIndex: 1 }}>
                 {children}
               </Box>
             </Box>
@@ -138,7 +139,7 @@ function Layout(props: Readonly<LayoutProps>) {
           </Card>
         </Box>
 
-        <AddFab us={us} />
+      {session ? <AddFab us={us} /> : <ErrorFab us={us} />}
       </Box>
     </Box>
   );

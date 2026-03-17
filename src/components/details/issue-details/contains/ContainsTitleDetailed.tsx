@@ -375,9 +375,9 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
         <Typography
           sx={{
             fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
-            fontSize: "1rem",
+            fontSize: "0.8rem",
             lineHeight: 1.75,
-            fontWeight: 700,
+            fontWeight: 500,
             color: "text.secondary",
             letterSpacing: "0.01em",
             opacity: 0.9,

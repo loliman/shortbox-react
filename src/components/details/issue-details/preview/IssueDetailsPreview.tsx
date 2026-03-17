@@ -23,6 +23,12 @@ export function IssueDetailsPreview() {
       />
 
       <CardContent>
+        <Box sx={{ pb: 1.5, display: "flex", flexWrap: "wrap", gap: 1 }}>
+          <Skeleton variant="rounded" width={140} height={28} />
+          <Skeleton variant="rounded" width={180} height={28} />
+          <Skeleton variant="rounded" width={120} height={28} />
+        </Box>
+
         <Box sx={{ pb: 5 }}>
           <Skeleton variant="rounded" width="100%" height={48} />
         </Box>

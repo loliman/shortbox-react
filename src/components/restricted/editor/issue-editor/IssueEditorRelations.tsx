@@ -8,16 +8,24 @@ interface IssueEditorRelationsProps {
   values: IssueEditorFormValues;
   isDesktop?: boolean;
   setFieldValue: (field: string, value: unknown, shouldValidate?: boolean) => void;
+  showHints?: boolean;
 }
 
 const STORIES_HINT = "Hinweis: Geschichten werden vererbt. Für Variants leer lassen.";
 
-function IssueEditorRelations({ values, isDesktop, setFieldValue }: IssueEditorRelationsProps) {
+function IssueEditorRelations({
+  values,
+  isDesktop,
+  setFieldValue,
+  showHints = true,
+}: IssueEditorRelationsProps) {
   return (
     <Stack spacing={2}>
-      <Typography variant="body2" color="text.secondary">
-        {STORIES_HINT}
-      </Typography>
+      {showHints ? (
+        <Typography variant="body2" color="text.secondary">
+          {STORIES_HINT}
+        </Typography>
+      ) : null}
 
       <Stories
         setFieldValue={setFieldValue}

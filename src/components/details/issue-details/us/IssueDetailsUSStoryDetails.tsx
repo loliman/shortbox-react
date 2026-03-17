@@ -217,7 +217,7 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
                   color: "text.secondary",
                 }}
               >
-                Erschienen in
+                Erschienen in ({children.length})
               </Typography>
               <IconButton
                 size="small"

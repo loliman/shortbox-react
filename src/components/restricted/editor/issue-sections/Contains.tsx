@@ -1,4 +1,5 @@
 import React from "react";
+import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import ContainsItem from "./ContainsItem";
 import { getContainsKey } from "./containsKey";
@@ -14,7 +15,7 @@ function Contains(props: ContainsListProps) {
     return <Typography color="text.secondary">Noch keine Geschichten hinterlegt.</Typography>;
 
   return (
-    <React.Fragment>
+    <Stack spacing={1.5}>
       {props.items.map((item, index) => (
         <ContainsItem
           key={getContainsKey(props.type, item, index)}
@@ -23,7 +24,7 @@ function Contains(props: ContainsListProps) {
           index={index}
         />
       ))}
-    </React.Fragment>
+    </Stack>
   );
 }
 

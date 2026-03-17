@@ -5,11 +5,12 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import React from "react";
 import { alpha, styled } from "@mui/material/styles";
-import { useApolloClient, useMutation } from "@apollo/client";
+import { useApolloClient, useMutation, useQuery } from "@apollo/client";
 import type { HierarchyLevelType } from "../../util/hierarchy";
 import { withContext } from "../generic";
 import { handleInAppLinkClick, shouldHandleClientSideNavigation } from "../generic/linkUtils";
 import IconButton from "@mui/material/IconButton";
+import Badge from "@mui/material/Badge";
 import ButtonBase from "@mui/material/ButtonBase";
 import SearchBar from "./SearchBar";
 import type { SelectedRoot } from "../../types/domain";
@@ -20,10 +21,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import WatchLaterIcon from "@mui/icons-material/WatchLater";
+import BugReportIcon from "@mui/icons-material/BugReport";
+import BugReportOutlinedIcon from "@mui/icons-material/BugReportOutlined";
 import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/Logout";
 import type { AppThemeMode } from "../../app/theme";
 import { logout } from "../../graphql/mutationsTyped";
+import { changeRequestCount } from "../../graphql/queriesTyped";
 import { isMockMode } from "../../app/mockMode";
 
 interface TopBarProps {
@@ -147,6 +151,16 @@ export function TopBar(props: TopBarProps) {
   const isFilter = props.query?.filter;
   const darkModeEnabled = props.themeMode === "dark";
   const localeSwitchAriaLabel = us ? "Zu Deutsch wechseln" : "Zu US wechseln";
+  const { data: changeRequestCountData } = useQuery(changeRequestCount, {
+    skip: !props.session?.loggedIn,
+    fetchPolicy: "cache-and-network",
+    nextFetchPolicy: "cache-first",
+  });
+  const changeRequestsCountRaw = changeRequestCountData?.changeRequestCount;
+  const changeRequestsCount = Number.isFinite(changeRequestsCountRaw)
+    ? Number(changeRequestsCountRaw)
+    : 0;
+  const hasChangeRequests = changeRequestsCount > 0;
 
   const onLogout = () => {
     if (isMockMode) {
@@ -271,6 +285,39 @@ export function TopBar(props: TopBarProps) {
               justifySelf: "end",
             }}
           >
+            {props.session?.loggedIn ? (
+              <Tooltip title="Change Requests">
+                <Badge
+                  color="secondary"
+                  overlap="circular"
+                  showZero={false}
+                  badgeContent={hasChangeRequests ? changeRequestsCount : undefined}
+                  invisible={!hasChangeRequests}
+                  slotProps={{
+                    badge: {
+                      sx: {
+                        fontSize: "0.62rem",
+                        minWidth: 17,
+                        height: 17,
+                        px: 0.45,
+                      },
+                    },
+                  }}
+                >
+                  <IconButton
+                    color={hasChangeRequests ? "secondary" : "inherit"}
+                    aria-label="Change Requests"
+                    onClick={(e) => navigate?.(e, "/admin/change-requests")}
+                  >
+                    {hasChangeRequests ? (
+                      <BugReportIcon sx={{ color: "common.white" }} />
+                    ) : (
+                      <BugReportOutlinedIcon />
+                    )}
+                  </IconButton>
+                </Badge>
+              </Tooltip>
+            ) : null}
             {props.session?.loggedIn ? (
               <Tooltip title="Adminpanel">
                 <IconButton
@@ -470,6 +517,39 @@ export function TopBar(props: TopBarProps) {
             navigate={navigate}
           />
           {props.session?.loggedIn ? (
+            <Tooltip title="Change Requests">
+              <Badge
+                color="secondary"
+                overlap="circular"
+                showZero={false}
+                badgeContent={hasChangeRequests ? changeRequestsCount : undefined}
+                invisible={!hasChangeRequests}
+                slotProps={{
+                  badge: {
+                    sx: {
+                      fontSize: "0.62rem",
+                      minWidth: 17,
+                      height: 17,
+                      px: 0.45,
+                    },
+                  },
+                }}
+              >
+                <IconButton
+                  color={hasChangeRequests ? "secondary" : "inherit"}
+                  aria-label="Change Requests"
+                  onClick={(e) => navigate?.(e, "/admin/change-requests")}
+                >
+                  {hasChangeRequests ? (
+                    <BugReportIcon sx={{ color: "common.white" }} />
+                  ) : (
+                    <BugReportOutlinedIcon />
+                  )}
+                </IconButton>
+              </Badge>
+            </Tooltip>
+          ) : null}
+          {props.session?.loggedIn ? (
             <Tooltip title="Adminpanel">
               <IconButton
                 color="inherit"
@@ -514,6 +594,7 @@ export function TopBar(props: TopBarProps) {
           </Box>
         </Box>
       ) : null}
+
     </AppBar>
   );
 }

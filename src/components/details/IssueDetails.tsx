@@ -185,13 +185,15 @@ function IssueDetails(props: IssueDetailsProps) {
   if (isIssueTransitioning && !error && !isVariantTransition) {
     return (
       <Layout>
-        <QueryResult
-          data={undefined}
-          loading={true}
-          selected={selected}
-          placeholder={<IssueDetailsPreview />}
-          placeholderCount={1}
-        />
+        <Box className="data-fade">
+          <QueryResult
+            data={undefined}
+            loading={true}
+            selected={selected}
+            placeholder={<IssueDetailsPreview />}
+            placeholderCount={1}
+          />
+        </Box>
       </Layout>
     );
   }
@@ -199,14 +201,16 @@ function IssueDetails(props: IssueDetailsProps) {
   if (error || isIssueMissing || !issueForVariants || !loadedIssue) {
     return (
       <Layout>
-        <QueryResult
-          error={error}
-          data={isIssueMissing ? null : resolvedIssue}
-          loading={loading || networkStatus < 7}
-          selected={selected}
-          placeholder={<IssueDetailsPreview />}
-          placeholderCount={1}
-        />
+        <Box className="data-fade">
+          <QueryResult
+            error={error}
+            data={isIssueMissing ? null : resolvedIssue}
+            loading={loading || networkStatus < 7}
+            selected={selected}
+            placeholder={<IssueDetailsPreview />}
+            placeholderCount={1}
+          />
+        </Box>
       </Layout>
     );
   }
@@ -215,10 +219,10 @@ function IssueDetails(props: IssueDetailsProps) {
   const today = getTodayLocalDate();
   const releaseDate = issueForVariants.releasedate ? new Date(issueForVariants.releasedate) : null;
   const coverColumnWidth = "clamp(320px, 36vw, 480px)";
-  const gridTemplateColumns = { xs: "1fr", md: `minmax(0, 1fr) ${coverColumnWidth}` };
+  const gridTemplateColumns = { xs: "1fr", lg: `minmax(0, 1fr) ${coverColumnWidth}` };
   const coverWidth = {
     xs: "100%",
-    md: coverColumnWidth,
+    lg: coverColumnWidth,
   };
   const coverAttribution = !us && issueForVariants.comicguideid ? (
     <Typography
@@ -286,7 +290,11 @@ function IssueDetails(props: IssueDetailsProps) {
 
   return (
     <Layout>
-      <React.Fragment>
+      <Box
+        className="data-fade"
+        key={loadedIssueIdentityKey || loadedIssue?.id || "issue-details"}
+        sx={{ width: "100%", display: "flex", flexDirection: "column" }}
+      >
         {!us && !loadedIssue.verified && releaseDate && today < releaseDate ? (
           <SnackbarContent
             id="notVerifiedWarning"
@@ -323,6 +331,24 @@ function IssueDetails(props: IssueDetailsProps) {
         />
 
         <CardContent sx={{ pt: 1 }}>
+          {arcs.length > 0 ? (
+            <Box
+              sx={{
+                pb: 1.5,
+                minWidth: 0,
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                flexWrap: "nowrap",
+                overflow: "hidden",
+              }}
+            >
+              <Box sx={{ minWidth: 0, overflow: "hidden" }}>
+                <StoryArcChips arcs={arcs} us={us} navigate={props.navigate} inline />
+              </Box>
+            </Box>
+          ) : null}
+
           <Box sx={{ pb: 5 }}>
             <IssueVariants
               us={us}
@@ -346,33 +372,16 @@ function IssueDetails(props: IssueDetailsProps) {
             >
               {compactLayout ? (
                 <Box sx={{ minWidth: 0, width: "100%", display: "flex", flexDirection: "column", gap: 2 }}>
-                  {arcs.length > 0 ? (
-                    <Box
-                      sx={{
-                        minWidth: 0,
-                        display: "flex",
-                        alignItems: "center",
-                        gap: 1,
-                        flexWrap: "nowrap",
-                        overflow: "hidden",
-                      }}
-                    >
-                      <Box sx={{ minWidth: 0, overflow: "hidden" }}>
-                        <StoryArcChips arcs={arcs} us={us} navigate={props.navigate} inline />
-                      </Box>
-                    </Box>
-                  ) : null}
-
                   <Box
                     sx={{
                       display: "flex",
                       alignItems: "flex-start",
-                      justifyContent: { xs: "center", md: "flex-end" },
+                      justifyContent: { xs: "center", lg: "flex-end" },
                       minWidth: 0,
-                      justifySelf: { xs: "stretch", md: "end" },
+                      justifySelf: { xs: "stretch", lg: "end" },
                     }}
                   >
-                    <Box sx={{ display: { xs: "none", md: "block" } }}>
+                    <Box sx={{ display: { xs: "none", lg: "block" } }}>
                       <Box
                         sx={{
                           width: coverWidth,
@@ -402,7 +411,7 @@ function IssueDetails(props: IssueDetailsProps) {
                       </Box>
                     </Box>
 
-                    <Box sx={{ display: { xs: "block", md: "none" }, width: "100%" }}>
+                    <Box sx={{ display: { xs: "block", lg: "none" }, width: "100%" }}>
                       <Box sx={{ width: coverWidth, maxWidth: "100%", mx: "auto", position: "relative" }}>
                         <IconButton
                           size="small"
@@ -500,35 +509,18 @@ function IssueDetails(props: IssueDetailsProps) {
                   </Box>
 
                   <Box sx={{ minWidth: 0, width: "100%", display: "flex", flexDirection: "column", gap: 2 }}>
-                    {arcs.length > 0 ? (
-                      <Box
-                        sx={{
-                          minWidth: 0,
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 1,
-                          flexWrap: "nowrap",
-                          overflow: "hidden",
-                        }}
-                      >
-                        <Box sx={{ minWidth: 0, overflow: "hidden" }}>
-                          <StoryArcChips arcs={arcs} us={us} navigate={props.navigate} inline />
-                        </Box>
-                      </Box>
-                    ) : null}
-
                     <Box
                       sx={{
                         display: "flex",
                         alignItems: "flex-start",
-                        justifyContent: { xs: "center", md: "flex-end" },
+                        justifyContent: { xs: "center", lg: "flex-end" },
                         minWidth: 0,
-                        justifySelf: { xs: "stretch", md: "end" },
-                        gridColumn: { md: "2 / 3" },
-                        gridRow: { md: "1" },
+                        justifySelf: { xs: "stretch", lg: "end" },
+                        gridColumn: { lg: "2 / 3" },
+                        gridRow: { lg: "1" },
                       }}
                     >
-                      <Box sx={{ display: { xs: "none", md: "block" } }}>
+                      <Box sx={{ display: { xs: "none", lg: "block" } }}>
                         <Box
                           sx={{
                             width: coverWidth,
@@ -558,7 +550,7 @@ function IssueDetails(props: IssueDetailsProps) {
                         </Box>
                       </Box>
 
-                      <Box sx={{ display: { xs: "block", md: "none" }, width: "100%" }}>
+                      <Box sx={{ display: { xs: "block", lg: "none" }, width: "100%" }}>
                         <Box sx={{ width: coverWidth, maxWidth: "100%", mx: "auto", position: "relative" }}>
                           <IconButton
                             size="small"
@@ -644,7 +636,7 @@ function IssueDetails(props: IssueDetailsProps) {
             ) : null}
           </Box>
         </CardContent>
-      </React.Fragment>
+      </Box>
     </Layout>
   );
 }

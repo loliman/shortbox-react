@@ -1,6 +1,6 @@
 import type { DocumentNode } from "graphql";
 import type { SelectedRoot } from "../../../../types/domain";
-import type { MouseEvent } from "react";
+import type { MouseEvent, ReactNode } from "react";
 
 export interface IssueEditorFormValues {
   title: string;
@@ -72,4 +72,14 @@ export interface IssueEditorFormContentProps {
   onToggleUs: () => void;
   onCancel: (event: MouseEvent<HTMLButtonElement>) => void;
   onSubmitMode: (copyMode: boolean) => void;
+  notice?: ReactNode;
+  actions?: ReactNode;
+  showHints?: boolean;
+  lockedFields?: {
+    publisher?: boolean;
+    series?: boolean;
+    number?: boolean;
+    format?: boolean;
+    variant?: boolean;
+  };
 }

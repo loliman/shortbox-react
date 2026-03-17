@@ -292,6 +292,7 @@ function List(props: Readonly<ListProps>) {
   const drawerContent = (
     <MuiList
       ref={listRef}
+      className="data-fade"
       sx={{
         width: "100%",
         p: 0,

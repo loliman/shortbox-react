@@ -112,7 +112,8 @@ function PaginatedQuery(props: Readonly<PaginatedQueryProps>) {
     if (!hasMore || loading || fetching || fetchMoreInFlightRef.current) return;
 
     const remaining = element.scrollHeight - element.scrollTop - element.clientHeight;
-    const isNearBottom = remaining <= 1;
+    const prefetchPx = Math.max(200, Math.floor(element.clientHeight * 0.5));
+    const isNearBottom = remaining <= prefetchPx;
     if (!isNearBottom) return;
 
     reload();

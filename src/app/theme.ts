@@ -123,6 +123,25 @@ export const createAppTheme = (mode: AppThemeMode) => {
       },
     },
     components: {
+      MuiCssBaseline: {
+        styleOverrides: {
+          ".data-fade": {
+            animation: "dataFadeIn 320ms cubic-bezier(0.22, 1, 0.36, 1)",
+            willChange: "opacity, transform",
+          },
+          "@keyframes dataFadeIn": {
+            "0%": { opacity: 0, transform: "translateY(6px)" },
+            "100%": { opacity: 1, transform: "translateY(0)" },
+          },
+          "@media (prefers-reduced-motion: reduce)": {
+            ".data-fade": {
+              animationDuration: "1ms",
+              animationTimingFunction: "linear",
+              transform: "none",
+            },
+          },
+        },
+      },
       MuiAppBar: {
         styleOverrides: {
           root: ({ theme }) => ({

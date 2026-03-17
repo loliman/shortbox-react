@@ -9,6 +9,40 @@ interface AddContainsButtonProps extends ContainsProps {
   defaultItem: FieldItem;
 }
 
+function focusAndScrollToStory(index: number) {
+  if (typeof document === "undefined") return;
+
+  const run = () => {
+    const card = document.querySelector<HTMLElement>(
+      `[data-story-card="true"][data-story-index="${index}"]`,
+    );
+    const firstInput = document.querySelector<HTMLInputElement>(`input[name="stories[${index}].number"]`);
+
+    if (card) {
+      card.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    if (firstInput) {
+      firstInput.focus();
+      firstInput.select?.();
+      return true;
+    }
+
+    return false;
+  };
+
+  let attempts = 0;
+  const maxAttempts = 8;
+
+  const tryFocus = () => {
+    attempts += 1;
+    if (run() || attempts >= maxAttempts) return;
+    window.setTimeout(tryFocus, 40);
+  };
+
+  requestAnimationFrame(tryFocus);
+}
+
 function AddContainsButton(props: AddContainsButtonProps) {
   return (
     <Button
@@ -20,10 +54,12 @@ function AddContainsButton(props: AddContainsButtonProps) {
         if (!props.setFieldValue) return;
 
         const items = Array.isArray(props.items) ? props.items : [];
+        const newIndex = items.length;
         const nextItem = cloneFieldItem(props.defaultItem);
-        nextItem.number = items.length + 1;
+        nextItem.number = newIndex + 1;
 
         props.setFieldValue(props.type, [...items, nextItem], true);
+        focusAndScrollToStory(newIndex);
       }}
     >
       Geschichte

@@ -52,7 +52,8 @@ function withContext<T extends object>(
     const us =
       location.pathname.indexOf("/us") === 0 ||
       location.pathname.indexOf("/edit/us") === 0 ||
-      location.pathname.indexOf("/filter/us") === 0;
+      location.pathname.indexOf("/filter/us") === 0 ||
+      location.pathname.indexOf("/report/us") === 0;
     const selected = getSelected(params, us);
     const currentQuery = location.search
       ? (queryString.parse(location.search) as UnknownRecord)

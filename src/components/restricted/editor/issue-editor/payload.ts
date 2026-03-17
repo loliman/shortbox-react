@@ -42,6 +42,22 @@ function toOptionalString(value: unknown): string | undefined {
   return normalized.length > 0 ? normalized : undefined;
 }
 
+function toOptionalDateString(value: unknown): string | undefined {
+  if (value === null || value === undefined || value === "") return undefined;
+  if (value instanceof Date) {
+    if (Number.isNaN(value.getTime())) return undefined;
+    return value.toISOString().slice(0, 10);
+  }
+
+  const normalized = String(value).trim();
+  if (normalized.length === 0) return undefined;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(normalized)) return normalized;
+
+  const parsed = new Date(normalized);
+  if (Number.isNaN(parsed.getTime())) return undefined;
+  return parsed.toISOString().slice(0, 10);
+}
+
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== "object" || Array.isArray(value)) return null;
   return value as Record<string, unknown>;
@@ -227,18 +243,18 @@ export function buildIssueMutationVariables(
   seriesPayload.volume = toOptionalInt(values.series.volume);
 
   const itemPayload = {
-    title: values.title,
-    number: values.number,
-    format: values.format,
-    variant: values.variant,
-    releasedate: values.releasedate,
+    title: toOptionalString(values.title),
+    number: toOptionalString(values.number),
+    format: toOptionalString(values.format),
+    variant: toOptionalString(values.variant),
+    releasedate: toOptionalDateString(values.releasedate),
     pages: toOptionalInt(values.pages),
     price: toOptionalFloat(values.price),
-    currency: values.currency,
-    isbn: values.isbn,
-    limitation: values.limitation,
+    currency: toOptionalString(values.currency),
+    isbn: toOptionalString(values.isbn),
+    limitation: toOptionalString(values.limitation),
     comicguideid: toOptionalInt(values.comicguideid),
-    addinfo: values.addinfo,
+    addinfo: toOptionalString(values.addinfo),
     stories: normalizeStories(values.stories),
     series: seriesPayload,
   } as Record<string, unknown>;

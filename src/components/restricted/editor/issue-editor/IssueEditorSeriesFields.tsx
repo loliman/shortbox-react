@@ -13,6 +13,12 @@ interface IssueEditorSeriesFieldsProps {
   values: IssueEditorFormValues;
   isDesktop?: boolean;
   setFieldValue: (field: string, value: unknown, shouldValidate?: boolean) => void;
+  showHints?: boolean;
+  lockedFields?: {
+    publisher?: boolean;
+    series?: boolean;
+    number?: boolean;
+  };
 }
 
 interface PublisherOption {
@@ -36,11 +42,16 @@ function IssueEditorSeriesFields({
   values,
   isDesktop: _isDesktop,
   setFieldValue,
+  showHints = true,
+  lockedFields,
 }: IssueEditorSeriesFieldsProps) {
   const publisherPattern = String(values.series.publisher.name || "");
   const seriesPattern = String(values.series.title || "");
   const publisherUs = Boolean(values.series.publisher.us);
   const isSeriesDisabled = publisherPattern.trim().length === 0;
+  const publisherLocked = Boolean(lockedFields?.publisher);
+  const seriesLocked = Boolean(lockedFields?.series);
+  const numberLocked = Boolean(lockedFields?.number);
 
   const publisherQuery = useAutocompleteQuery<PublisherOption>({
     query: publishers,
@@ -98,13 +109,16 @@ function IssueEditorSeriesFields({
       </Grid>
 
       <Grid size={12}>
-        <Typography variant="body2" color="text.secondary">
-          {TITLE_HINT}
-        </Typography>
+        {showHints ? (
+          <Typography variant="body2" color="text.secondary">
+            {TITLE_HINT}
+          </Typography>
+        ) : null}
       </Grid>
 
       <Grid size={{ xs: 12, md: 8 }}>
         <AutocompleteBase
+          disabled={publisherLocked}
           options={publisherQuery.options}
           value={publisherValue}
           inputValue={publisherPattern}
@@ -143,7 +157,7 @@ function IssueEditorSeriesFields({
 
       <Grid size={{ xs: 12, md: 8 }}>
         <AutocompleteBase
-          disabled={isSeriesDisabled}
+          disabled={publisherLocked || seriesLocked || isSeriesDisabled}
           options={seriesQuery.options}
           value={seriesValue}
           inputValue={seriesPattern}
@@ -193,7 +207,7 @@ function IssueEditorSeriesFields({
 
       <Grid size={{ xs: 6, sm: 4, md: 2 }}>
         <FastField
-          disabled={isSeriesDisabled}
+          disabled={publisherLocked || seriesLocked || isSeriesDisabled}
           name="series.volume"
           label="Volume"
           type="number"
@@ -203,7 +217,13 @@ function IssueEditorSeriesFields({
       </Grid>
 
       <Grid size={{ xs: 6, sm: 4, md: 2 }}>
-        <FastField name="number" label="Nummer" component={TextField} fullWidth />
+        <FastField
+          disabled={numberLocked}
+          name="number"
+          label="Nummer"
+          component={TextField}
+          fullWidth
+        />
       </Grid>
     </Grid>
   );

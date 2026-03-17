@@ -25,6 +25,7 @@ import { releaseAllAdminTaskLocks, runAdminTask } from "../../graphql/mutationsT
 import { withContext } from "../generic";
 import Layout from "../Layout";
 import { PlayArrowOutlined } from "@mui/icons-material";
+import {generateLabel} from "../../util/hierarchy";
 
 type SnackbarVariant = "success" | "error" | "warning" | "info";
 
@@ -322,11 +323,14 @@ function AdminTasksPage(props: Readonly<AdminTasksProps>) {
                   borderRadius,
                   width: "auto",
                   maxWidth: "100%",
+                  mb: isLast ? 0 : 1,
                   border: "1px solid",
                   borderColor: "divider",
                   backgroundColor: (theme) =>
                     theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
                   overflow: "hidden",
+                  boxShadow: (theme) => theme.shadows[1],
+                  transition: "box-shadow 180ms ease, transform 180ms ease, border-color 180ms ease",
                   "&:before": { display: "none" },
                   "& .MuiAccordionSummary-root": {
                     backgroundColor: (theme) =>
@@ -341,9 +345,21 @@ function AdminTasksPage(props: Readonly<AdminTasksProps>) {
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   sx={{
+                    py: 1.25,
+                    minHeight: 0,
+                    "&.Mui-expanded": {
+                      minHeight: 0,
+                    },
                     "& .MuiAccordionSummary-content": {
                       width: "100%",
-                      my: 0.5,
+                      margin: 0,
+                      "&.Mui-expanded": {
+                        margin: 0,
+                      },
+                    },
+                    "& .MuiAccordionSummary-expandIconWrapper": {
+                      margin: 0,
+                      alignSelf: "center",
                     },
                   }}
                 >
@@ -354,18 +370,49 @@ function AdminTasksPage(props: Readonly<AdminTasksProps>) {
                     sx={{ width: "100%", pr: 0.5 }}
                   >
                     <Box sx={{ minWidth: 0 }}>
-                      <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
-                        {task?.name}
+
+                      <Typography
+                          variant="overline"
+                          sx={{
+                            fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+                            fontWeight: 500,
+                            fontSize: "0.7rem",
+                            lineHeight: 1.5,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.16em",
+                            color: "text.secondary",
+                            opacity: 0.9,
+                          }}
+                      >
+                        {taskKey}
                       </Typography>
                       <Typography
-                        variant="caption"
-                        color="text.secondary"
-                        sx={{ display: "block" }}
+                          variant="subtitle1"
+                          sx={{
+                            fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+                            fontSize: "1rem",
+                            lineHeight: 1.75,
+                            fontWeight: 700,
+                            color: "text.secondary",
+                            letterSpacing: "0.01em",
+                            opacity: 0.9,
+                          }}
                       >
-                        Key: {taskKey}
+                        {task?.name}
                       </Typography>
                       {task?.description ? (
-                        <Typography variant="body2" color="text.secondary" sx={{ mb: 0.75 }}>
+                        <Typography
+                            variant="subtitle1"
+                            sx={{
+                              fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+                              fontSize: "0.8rem",
+                              lineHeight: 1.75,
+                              fontWeight: 500,
+                              color: "text.secondary",
+                              letterSpacing: "0.01em",
+                              opacity: 0.9,
+                            }}
+                        >
                           {task.description}
                         </Typography>
                       ) : null}

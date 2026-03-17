@@ -11,10 +11,6 @@ import type { ContainsProps } from "./types";
 function Stories(props: ContainsProps) {
   return (
     <Stack spacing={2}>
-      <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-        <AddContainsButton type="stories" defaultItem={storyDefault} {...props} />
-      </Box>
-
       <Contains {...props} type="stories" fields={<StoryFields />} />
 
       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>

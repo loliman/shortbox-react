@@ -29,7 +29,24 @@ class ContainsItem extends React.Component<ContainsItemProps> {
     const isDisabled = childCount > 0;
 
     return (
-      <Paper variant="outlined" sx={{ p: 2 }}>
+      <Paper
+        variant="outlined"
+        data-story-card="true"
+        data-story-index={this.props.index}
+        sx={(theme) => ({
+          p: 2,
+          borderRadius: "10px",
+          border: "1px solid",
+          borderColor: `var(--border-subtle, ${theme.palette.divider})`,
+          backgroundColor: `var(--surface-2, ${theme.palette.background.paper})`,
+          transition: theme.transitions.create("border-color", {
+            duration: theme.transitions.duration.shorter,
+          }),
+          "&:hover": {
+            borderColor: `var(--border-strong, ${theme.palette.text.disabled})`,
+          },
+        })}
+      >
         <Stack spacing={1.5}>
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>

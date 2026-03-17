@@ -134,7 +134,21 @@ export function mapIssueToEditorDefaultValues(
     ),
   };
 
-  if (!copyMode) return merged;
+  if (!copyMode) {
+    const normalized: IssueEditorFormValues = { ...merged };
+    if (values.releasedate == null) normalized.releasedate = "";
+    if (values.price == null) normalized.price = "";
+    if (values.currency == null) normalized.currency = "";
+    if (values.pages == null) normalized.pages = undefined;
+    if (values.comicguideid == null) normalized.comicguideid = undefined;
+    if (values.limitation == null) normalized.limitation = "";
+    if (values.isbn == null) normalized.isbn = "";
+    if (values.addinfo == null) normalized.addinfo = "";
+    if (values.title == null) normalized.title = "";
+    if (values.format == null) normalized.format = "";
+    if (values.variant == null) normalized.variant = "";
+    return normalized;
+  }
 
   return {
     ...merged,

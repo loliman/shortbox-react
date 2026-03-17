@@ -4,6 +4,8 @@ import {
   AppsDocument,
   AdminTasksDocument,
   ArcsDocument,
+  ChangeRequestsDocument,
+  ChangeRequestCountDocument,
   ExportDocument,
   GenresDocument,
   IssueDocument,
@@ -30,6 +32,8 @@ const apps = AppsDocument;
 const realities = RealitiesDocument;
 const arcs = ArcsDocument;
 const me = MeDocument;
+const changeRequestCount = ChangeRequestCountDocument;
+const changeRequests = ChangeRequestsDocument;
 const adminTasks = AdminTasksDocument;
 const lastEdited = LastEditedDocument;
 const publisher = PublisherDocument;
@@ -59,6 +63,8 @@ export {
   issues,
   lastEdited,
   adminTasks,
+  changeRequestCount,
+  changeRequests,
   me,
   publisher,
   publishers,
