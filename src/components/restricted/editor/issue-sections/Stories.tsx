@@ -54,7 +54,12 @@ function Stories(props: ContainsProps) {
           if (fromIndex === toIndex) return;
 
           const items = Array.isArray(props.items) ? [...props.items] : [];
-          if (fromIndex < 0 || toIndex < 0 || fromIndex >= items.length || toIndex >= items.length) {
+          if (
+            fromIndex < 0 ||
+            toIndex < 0 ||
+            fromIndex >= items.length ||
+            toIndex >= items.length
+          ) {
             return;
           }
 
