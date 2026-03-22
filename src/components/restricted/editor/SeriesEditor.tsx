@@ -432,8 +432,7 @@ function SeriesGenreAutocomplete({
       normalizeGenreNames([
         ...selectedGenreNames,
         ...query.options.map((entry) => String(entry || "")),
-      ])
-        .map((name) => ({ name })),
+      ]).map((name) => ({ name })),
     [query.options, selectedGenreNames]
   );
 
