@@ -43,7 +43,8 @@ export function getIssueLabel(issue?: IssueLike | null): string {
   const number = issue.number !== undefined && issue.number !== null ? String(issue.number) : "";
   const legacyLabel = getLegacyNumberLabel(issue);
 
-  if (!seriesLabel) return number ? `#${number}${legacyLabel ? ` ${legacyLabel}` : ""}` : legacyLabel;
+  if (!seriesLabel)
+    return number ? `#${number}${legacyLabel ? ` ${legacyLabel}` : ""}` : legacyLabel;
   return number ? `${seriesLabel} #${number}${legacyLabel ? ` ${legacyLabel}` : ""}` : seriesLabel;
 }
 
