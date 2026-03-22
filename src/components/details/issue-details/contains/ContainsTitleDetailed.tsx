@@ -38,7 +38,10 @@ type ContainsParentLike = {
   title?: string | null;
   collectedmultipletimes?: boolean;
   collected?: boolean;
-  children?: Array<{ part?: string | null; issue?: { releasedate?: string | null } | null } | null> | null;
+  children?: Array<{
+    part?: string | null;
+    issue?: { releasedate?: string | null } | null;
+  } | null> | null;
   reprintOf?: { issue?: ContainsIssueLike; number?: string | number } | null;
   issue?: ContainsIssueLike;
   number?: string | number;
@@ -79,7 +82,9 @@ type ContainsTitleDetailedProps = {
 
 const PART_PATTERN = /^(\d+)\s*\/\s*(\d+)$/;
 
-function parseStoryPart(value: string | null | undefined): { current: number; total: number } | null {
+function parseStoryPart(
+  value: string | null | undefined
+): { current: number; total: number } | null {
   const match = String(value || "")
     .trim()
     .match(PART_PATTERN);
@@ -179,8 +184,7 @@ export function ContainsTitleDetailed(props: Readonly<ContainsTitleDetailedProps
   const storyNumberLabel = "";
 
   const stackActions =
-    props.compactLayout ??
-    Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
+    props.compactLayout ?? Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
   const exclusive = Boolean(item.exclusive && !props.us);
   const variant = !props.us && issue?.variant ? " " + issue.variant : "";
   const itemTitle = normalizeDisplayStoryTitle(item.title);
@@ -476,7 +480,9 @@ function buildDetailedActionChips({
   }
 
   if (!isCover && !item.onlyapp && item.parent && shouldShowPartialPublicationLabel(item)) {
-    chips.push(<Chip key="firstapp-partial" label="Erste teilweise Veröffentlichung" color="primary" />);
+    chips.push(
+      <Chip key="firstapp-partial" label="Erste teilweise Veröffentlichung" color="primary" />
+    );
   } else if (!isCover && !item.onlyapp && item.firstapp && item.parent) {
     chips.push(<Chip key="firstapp" label={getFirstPublicationLabel(item)} color="primary" />);
   }
