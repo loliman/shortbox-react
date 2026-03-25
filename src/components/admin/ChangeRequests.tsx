@@ -20,7 +20,7 @@ import Layout from "../Layout";
 import { withContext } from "../generic";
 import { changeRequests } from "../../graphql/queriesTyped";
 import { discardChangeRequest, editIssue } from "../../graphql/mutationsTyped";
-import {generateLabel} from "../../util/hierarchy";
+import { generateLabel } from "../../util/hierarchy";
 
 type SnackbarVariant = "success" | "error" | "warning" | "info";
 
@@ -75,7 +75,9 @@ function ChangeRequestsPage(props: Readonly<ChangeRequestsProps>) {
     }
   };
 
-  const handleAccept = async (entry: { id?: string | number | null; changeRequest?: unknown } | null) => {
+  const handleAccept = async (
+    entry: { id?: string | number | null; changeRequest?: unknown } | null
+  ) => {
     const id = String(entry?.id || "");
     if (!id) return;
 
@@ -128,7 +130,9 @@ function ChangeRequestsPage(props: Readonly<ChangeRequestsProps>) {
       <CardHeader title="Change Requests" />
       <CardContent sx={{ pt: 1 }}>
         {loading ? <Typography>Lade Change Requests...</Typography> : null}
-        {error ? <Alert severity="error">Change Requests konnten nicht geladen werden.</Alert> : null}
+        {error ? (
+          <Alert severity="error">Change Requests konnten nicht geladen werden.</Alert>
+        ) : null}
 
         {!loading && !error && visibleChangeRequests.length === 0 ? (
           <Alert severity="success">Keine offenen Change Requests.</Alert>
@@ -137,7 +141,11 @@ function ChangeRequestsPage(props: Readonly<ChangeRequestsProps>) {
         <Box>
           {visibleChangeRequests.map(
             (
-              entry: { id?: string | number | null; createdAt?: string | null; changeRequest?: unknown },
+              entry: {
+                id?: string | number | null;
+                createdAt?: string | null;
+                changeRequest?: unknown;
+              },
               idx: number
             ) => {
               const id = String(entry.id || "");
@@ -148,12 +156,8 @@ function ChangeRequestsPage(props: Readonly<ChangeRequestsProps>) {
               const rawIssue = parsed.issue || {};
               const rawItem = parsed.item || {};
               const usContext = isUsIssueContext(rawIssue) || isUsIssueContext(rawItem);
-              const issue = toJsonValue(
-                sanitizeForDiffView(parseJsonish(rawIssue), usContext)
-              );
-              const item = toJsonValue(
-                sanitizeForDiffView(parseJsonish(rawItem), usContext)
-              );
+              const issue = toJsonValue(sanitizeForDiffView(parseJsonish(rawIssue), usContext));
+              const item = toJsonValue(sanitizeForDiffView(parseJsonish(rawItem), usContext));
 
               return (
                 <Accordion
@@ -170,7 +174,8 @@ function ChangeRequestsPage(props: Readonly<ChangeRequestsProps>) {
                       theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
                     overflow: "hidden",
                     boxShadow: (theme) => theme.shadows[1],
-                    transition: "box-shadow 180ms ease, transform 180ms ease, border-color 180ms ease",
+                    transition:
+                      "box-shadow 180ms ease, transform 180ms ease, border-color 180ms ease",
                     "&:before": { display: "none" },
                     "& .MuiAccordionSummary-root": {
                       backgroundColor: (theme) =>
@@ -205,45 +210,46 @@ function ChangeRequestsPage(props: Readonly<ChangeRequestsProps>) {
                   >
                     <Stack sx={{ width: "100%" }}>
                       <Typography
-                          variant="overline"
-                          sx={{
-                            fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
-                            fontWeight: 500,
-                            fontSize: "0.7rem",
-                            lineHeight: 1.5,
-                            textTransform: "uppercase",
-                            letterSpacing: "0.16em",
-                            color: "text.secondary",
-                            opacity: 0.9,
-                          }}
+                        variant="overline"
+                        sx={{
+                          fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+                          fontWeight: 500,
+                          fontSize: "0.7rem",
+                          lineHeight: 1.5,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.16em",
+                          color: "text.secondary",
+                          opacity: 0.9,
+                        }}
                       >
                         {formatDateTime(entry.createdAt)}
                       </Typography>
                       <Typography
-                          variant="subtitle1"
-                          sx={{
-                            fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
-                            fontSize: "1rem",
-                            lineHeight: 1.75,
-                            fontWeight: 700,
-                            color: "text.secondary",
-                            letterSpacing: "0.01em",
-                            opacity: 0.9,
-                          }}
+                        variant="subtitle1"
+                        sx={{
+                          fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+                          fontSize: "1rem",
+                          lineHeight: 1.75,
+                          fontWeight: 700,
+                          color: "text.secondary",
+                          letterSpacing: "0.01em",
+                          opacity: 0.9,
+                        }}
                       >
-                        {generateLabel({ series: rawIssue?.series as any } as any)} #{(rawIssue as any).number}
+                        {generateLabel({ series: rawIssue?.series as any } as any)} #
+                        {(rawIssue as any).number}
                       </Typography>
 
                       <Typography
-                          sx={{
-                            fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
-                            fontSize: "0.8rem",
-                            lineHeight: 1.75,
-                            fontWeight: 500,
-                            color: "text.secondary",
-                            letterSpacing: "0.01em",
-                            opacity: 0.9,
-                          }}
+                        sx={{
+                          fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+                          fontSize: "0.8rem",
+                          lineHeight: 1.75,
+                          fontWeight: 500,
+                          color: "text.secondary",
+                          letterSpacing: "0.01em",
+                          opacity: 0.9,
+                        }}
                       >
                         {buildAddInfo(rawIssue as any)}
                       </Typography>
@@ -339,7 +345,8 @@ function JsonDiffReactView(props: Readonly<{ before: JsonValue; after: JsonValue
         }}
         jsonDiffOptions={{
           maxElisions: 2,
-          renderElision: (n: any, max: any) => (n < max) ? [...Array(n)].map(() => '…') : `… (${n} Einträge)`
+          renderElision: (n: any, max: any) =>
+            n < max ? [...Array(n)].map(() => "…") : `… (${n} Einträge)`,
         }}
       />
     </Box>
@@ -375,7 +382,10 @@ function parseJsonRecord(value: unknown): Record<string, unknown> | null {
 
 function buildAddInfo(issue: Record<string, unknown>): string {
   const format = toDisplay(issue.format, "-");
-  const variant = (issue.variant && issue.variant != "") ? "(" + toDisplay(issue.variant, "") + "Variant)" : "(Reguläre Ausgabe)";
+  const variant =
+    issue.variant && issue.variant != ""
+      ? "(" + toDisplay(issue.variant, "") + "Variant)"
+      : "(Reguläre Ausgabe)";
   return `${format} ${variant}`;
 }
 
