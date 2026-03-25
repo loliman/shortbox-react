@@ -41,8 +41,7 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
   const queryPattern = debouncedPattern;
   const us = Boolean(props.us);
   const compactLayout =
-    props.compactLayout ??
-    Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
+    props.compactLayout ?? Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
 
   useEffect(() => {
     const handle = window.setTimeout(() => {
@@ -127,9 +126,7 @@ export function SearchBar(props: Readonly<SearchBarProps>) {
               left: "50% !important",
               right: "auto !important",
               transform: "translateX(-50%) !important",
-              width: compactLayout
-                ? "95vw !important"
-                : "min(96vw, 770px) !important",
+              width: compactLayout ? "95vw !important" : "min(96vw, 770px) !important",
               maxWidth: compactLayout ? "95vw !important" : "96vw !important",
               minWidth: compactLayout ? "95vw !important" : "min(96vw, 770px) !important",
               zIndex: (theme) => theme.zIndex.appBar + 3,
