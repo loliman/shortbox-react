@@ -14,9 +14,11 @@ function focusAndScrollToStory(index: number) {
 
   const run = () => {
     const card = document.querySelector<HTMLElement>(
-      `[data-story-card="true"][data-story-index="${index}"]`,
+      `[data-story-card="true"][data-story-index="${index}"]`
     );
-    const firstInput = document.querySelector<HTMLInputElement>(`input[name="stories[${index}].number"]`);
+    const firstInput = document.querySelector<HTMLInputElement>(
+      `input[name="stories[${index}].number"]`
+    );
 
     if (card) {
       card.scrollIntoView({ behavior: "smooth", block: "start" });

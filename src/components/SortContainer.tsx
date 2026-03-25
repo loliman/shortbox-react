@@ -42,8 +42,7 @@ function SortContainer(props: Readonly<SortContainerProps>) {
   const currentDirection = toDirection(getListingDirection(props.query));
   const currentView = getListingView(props.query);
   const compactLayout =
-    props.compactLayout ??
-    Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
+    props.compactLayout ?? Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
 
   const target = props.selected || { us: Boolean(props.us) };
 
@@ -62,7 +61,9 @@ function SortContainer(props: Readonly<SortContainerProps>) {
         fullWidth={compactLayout}
         sx={{ minWidth: compactLayout ? 0 : 200, width: compactLayout ? "100%" : 240 }}
       >
-        <InputLabel id={SORT_LABEL_ID}>{compactLayout ? "Sortierung" : "Sortieren nach"}</InputLabel>
+        <InputLabel id={SORT_LABEL_ID}>
+          {compactLayout ? "Sortierung" : "Sortieren nach"}
+        </InputLabel>
         <Select
           id={SORT_SELECT_ID}
           labelId={SORT_LABEL_ID}
