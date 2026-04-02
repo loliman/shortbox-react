@@ -50,8 +50,7 @@ function IssuePreviewSmall(props: Readonly<IssuePreviewSmallProps>) {
           theme.palette.mode === "dark" ? "rgba(16, 16, 16, 0.96)" : "background.paper",
         overflow: "hidden",
         border: "1px solid",
-        borderColor:
-          theme.palette.mode === "dark" ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
+        borderColor: theme.palette.mode === "dark" ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
         transition: "transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease",
         "&:hover": {
           transform: "translateY(-2px)",
@@ -120,8 +119,7 @@ function IssuePreviewSmall(props: Readonly<IssuePreviewSmallProps>) {
                 right: 0,
                 bottom: 0,
                 p: 1.25,
-                background:
-                  "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(5,7,10,0.92) 100%)",
+                background: "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(5,7,10,0.92) 100%)",
               })}
             >
               <Stack spacing={0.4} sx={{ minWidth: 0 }}>
@@ -172,10 +170,17 @@ function IssuePreviewSmall(props: Readonly<IssuePreviewSmallProps>) {
               py: 1.25,
               overflow: "hidden",
               backgroundColor:
-                theme.palette.mode === "dark" ? "rgba(24, 24, 24, 0.84)" : "rgba(228, 228, 228, 0.58)",
+                theme.palette.mode === "dark"
+                  ? "rgba(24, 24, 24, 0.84)"
+                  : "rgba(228, 228, 228, 0.58)",
             })}
           >
-            <IssuePreviewChips issue={props.issue} flags={flags} us={us} chipSx={SINGLE_LINE_CHIP_SX} />
+            <IssuePreviewChips
+              issue={props.issue}
+              flags={flags}
+              us={us}
+              chipSx={SINGLE_LINE_CHIP_SX}
+            />
           </Box>
         </CardContent>
       </CardActionArea>
@@ -194,8 +199,7 @@ export function IssuePreviewPlaceholderSmall(props: { idx?: number; isLast?: boo
         backgroundColor:
           theme.palette.mode === "dark" ? "rgba(16, 16, 16, 0.96)" : "background.paper",
         border: "1px solid",
-        borderColor:
-          theme.palette.mode === "dark" ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
+        borderColor: theme.palette.mode === "dark" ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.08)",
       })}
     >
       <CardActionArea
@@ -223,8 +227,7 @@ export function IssuePreviewPlaceholderSmall(props: { idx?: number; isLast?: boo
                 right: 0,
                 bottom: 0,
                 p: 1.25,
-                background:
-                  "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(5,7,10,0.92) 100%)",
+                background: "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(5,7,10,0.92) 100%)",
               }}
             >
               <Skeleton
@@ -259,7 +262,9 @@ export function IssuePreviewPlaceholderSmall(props: { idx?: number; isLast?: boo
               py: 1.25,
               overflow: "hidden",
               backgroundColor:
-                theme.palette.mode === "dark" ? "rgba(24, 24, 24, 0.84)" : "rgba(228, 228, 228, 0.58)",
+                theme.palette.mode === "dark"
+                  ? "rgba(24, 24, 24, 0.84)"
+                  : "rgba(228, 228, 228, 0.58)",
             })}
           >
             <Skeleton variant="rounded" width={96} height={24} />
