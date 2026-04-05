@@ -20,7 +20,7 @@ export const createAppTheme = (mode: AppThemeMode) => {
           border: "#e6e6e6",
           rowHover: "#f5f7fa",
           link: "#2f6feb",
-      };
+        };
 
   const chipAccentStyles = (
     themeMode: AppThemeMode,

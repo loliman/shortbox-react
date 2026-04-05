@@ -46,7 +46,10 @@ export function StoryIssueListItem(props: Readonly<StoryIssueListItemProps>) {
       divider={props.divider}
       sx={{ px: 0, py: 1.25, alignItems: "flex-start", justifyContent: "space-between", gap: 1 }}
       onClick={(e) =>
-        props.navigate?.(e, getIssueUrl(props.issue, routeUs), { expand: props.number, filter: null })
+        props.navigate?.(e, getIssueUrl(props.issue, routeUs), {
+          expand: props.number,
+          filter: null,
+        })
       }
     >
       <Box sx={{ minWidth: 0 }}>
