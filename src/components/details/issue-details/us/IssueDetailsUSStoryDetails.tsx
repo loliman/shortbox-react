@@ -94,7 +94,12 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
         {storyArcs.length > 0 ? (
           <Box sx={{ mt: 0, pt: 0 }}>
             <Box
-              sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.5 }}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                mb: 0.5,
+              }}
             >
               <Typography
                 sx={{
@@ -111,7 +116,9 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
               </Typography>
               <IconButton
                 size="small"
-                aria-label={containsExpanded ? "Enthalten in einklappen" : "Enthalten in ausklappen"}
+                aria-label={
+                  containsExpanded ? "Enthalten in einklappen" : "Enthalten in ausklappen"
+                }
                 onClick={() => setContainsExpanded((prev) => !prev)}
                 sx={{
                   ml: 1,
@@ -204,7 +211,12 @@ export function IssueDetailsUSStoryDetails(props: Readonly<IssueDetailsUSStoryDe
         {children.length === 0 ? null : (
           <Box sx={{ mt: 2.5 }}>
             <Box
-              sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 0.5 }}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                mb: 0.5,
+              }}
             >
               <Typography
                 sx={{
