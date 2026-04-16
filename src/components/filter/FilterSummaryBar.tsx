@@ -66,9 +66,7 @@ export default function FilterSummaryBar(props: Readonly<FilterSummaryBarProps>)
           {visible.map((label) => (
             <Chip key={label} size="small" label={label} />
           ))}
-          {hiddenCount > 0 ? (
-            <Chip size="small" label={`+${hiddenCount} weitere`} />
-          ) : null}
+          {hiddenCount > 0 ? <Chip size="small" label={`+${hiddenCount} weitere`} /> : null}
         </Stack>
 
         <Stack direction="row" spacing={1} alignItems="center">
@@ -104,7 +102,10 @@ function buildFilterLabels(rawFilter?: string | null): string[] {
   let parsed: Record<string, unknown> | null = null;
   try {
     const parsedValue = JSON.parse(rawFilter);
-    parsed = parsedValue && typeof parsedValue === "object" ? (parsedValue as Record<string, unknown>) : null;
+    parsed =
+      parsedValue && typeof parsedValue === "object"
+        ? (parsedValue as Record<string, unknown>)
+        : null;
   } catch {
     parsed = null;
   }
