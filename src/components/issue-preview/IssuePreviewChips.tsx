@@ -75,13 +75,7 @@ export function IssuePreviewChips(props: Readonly<IssuePreviewChipsProps>) {
 
   if (!us && flags.hasExclusive) {
     chips.push(
-      <Chip
-        key="exclusive"
-        size="small"
-        label="Exklusiver Inhalt"
-        color="secondary"
-        sx={chipSx}
-      />
+      <Chip key="exclusive" size="small" label="Exklusiver Inhalt" color="secondary" sx={chipSx} />
     );
   }
 
@@ -99,13 +93,7 @@ export function IssuePreviewChips(props: Readonly<IssuePreviewChipsProps>) {
 
   if (!us && flags.isPureReprintDe) {
     chips.push(
-      <Chip
-        key="reprint"
-        size="small"
-        label="Nachdruck"
-        variant="outlined"
-        sx={chipSx}
-      />
+      <Chip key="reprint" size="small" label="Nachdruck" variant="outlined" sx={chipSx} />
     );
   }
 

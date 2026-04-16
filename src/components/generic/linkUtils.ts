@@ -20,7 +20,12 @@ export function handleInAppLinkClick(
   query?: Record<string, unknown>
 ): void {
   if (!navigate) return;
-  if (!shouldHandleClientSideNavigation(event, event.currentTarget.getAttribute("target") || undefined))
+  if (
+    !shouldHandleClientSideNavigation(
+      event,
+      event.currentTarget.getAttribute("target") || undefined
+    )
+  )
     return;
   event.preventDefault();
   navigate(event, url, query);
