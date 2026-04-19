@@ -415,9 +415,12 @@ function CollectionActionButton(props: Readonly<ActionMenuItemProps>) {
               },
             });
 
-            props.enqueueSnackbar?.(`${generateLabel(props.item as never)} ${label.toLowerCase()}`, {
-              variant: "success",
-            });
+            props.enqueueSnackbar?.(
+              `${generateLabel(props.item as never)} ${label.toLowerCase()}`,
+              {
+                variant: "success",
+              }
+            );
           } catch (error) {
             props.enqueueSnackbar?.(
               `Ausgabe konnte nicht ${label.toLowerCase()} werden${formatGraphQLErrorMessage(error)}`,
