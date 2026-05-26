@@ -9,8 +9,8 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import DragIndicatorIcon from "@mui/icons-material/DragIndicator";
 import RemoveContainsButton from "./RemoveContainsButton";
 import type { ContainsProps, FieldItem } from "./types";
-import {generateLabel} from "../../../../util/hierarchy";
-import {IssueReferenceInline} from "../../../generic/IssueNumberInline";
+import { generateLabel } from "../../../../util/hierarchy";
+import { IssueReferenceInline } from "../../../generic/IssueNumberInline";
 
 interface ContainsItemProps extends ContainsProps {
   item: FieldItem;
@@ -41,13 +41,14 @@ class ContainsItem extends React.Component<ContainsItemProps> {
     const isDragOver = this.props.dragOverStoryIndex === this.props.index;
     const isDragging = this.props.draggedStoryIndex === this.props.index;
 
-      const parent = (this.props.item.parent || {}) as { title? : string;
-          issue?: { number?: string | number; legacy_number?: string ; series?: { title?: string }};
-      };
+    const parent = (this.props.item.parent || {}) as {
+      title?: string;
+      issue?: { number?: string | number; legacy_number?: string; series?: { title?: string } };
+    };
 
     const itemTitle = normalizeDisplayStoryTitle(this.props.item.title);
     const parentTitle =
-        !itemTitle && parent.title ? normalizeDisplayStoryTitle(parent.title) : undefined;
+      !itemTitle && parent.title ? normalizeDisplayStoryTitle(parent.title) : undefined;
     const storyTitle = itemTitle || parentTitle || "";
     const storyTitleLabel = storyTitle !== "" ? storyTitle : "Story";
 
@@ -66,26 +67,23 @@ class ContainsItem extends React.Component<ContainsItemProps> {
         data-story-index={this.props.index}
         onChange={() => this.props.onStoryToggle?.(this.props.index)}
         sx={{
-            borderRadius,
-            width: "auto",
-            maxWidth: "100%",
-            mb: isLast ? 0 : 1,
-            border: "1px solid",
-            borderColor: "divider",
-            backgroundColor: (theme) =>
-                theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
-            overflow: "hidden",
-            boxShadow: (theme) => theme.shadows[1],
-            transition: "box-shadow 180ms ease, transform 180ms ease, border-color 180ms ease",
-            "&:before": { display: "none" },
-            "& .MuiAccordionSummary-root": {
-                backgroundColor: (theme) =>
-                    theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
-            },
-            "& .MuiAccordionDetails-root": {
-                backgroundColor: (theme) =>
-                    theme.palette.mode === "dark" ? "#161b22" : "#ffffff",
-            },
+          borderRadius,
+          width: "auto",
+          maxWidth: "100%",
+          mb: isLast ? 0 : 1,
+          border: "1px solid",
+          borderColor: "divider",
+          backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#161b22" : "#ffffff"),
+          overflow: "hidden",
+          boxShadow: (theme) => theme.shadows[1],
+          transition: "box-shadow 180ms ease, transform 180ms ease, border-color 180ms ease",
+          "&:before": { display: "none" },
+          "& .MuiAccordionSummary-root": {
+            backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#161b22" : "#ffffff"),
+          },
+          "& .MuiAccordionDetails-root": {
+            backgroundColor: (theme) => (theme.palette.mode === "dark" ? "#161b22" : "#ffffff"),
+          },
         }}
         onDragOver={(event) => {
           event.preventDefault();
@@ -105,27 +103,32 @@ class ContainsItem extends React.Component<ContainsItemProps> {
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           sx={{
-              py: 1.25,
+            py: 1.25,
+            minHeight: 0,
+            "&.Mui-expanded": {
               minHeight: 0,
+            },
+            "& .MuiAccordionSummary-content": {
+              width: "100%",
+              margin: 0,
               "&.Mui-expanded": {
-                  minHeight: 0,
+                margin: 0,
               },
-              "& .MuiAccordionSummary-content": {
-                  width: "100%",
-                  margin: 0,
-                  "&.Mui-expanded": {
-                      margin: 0,
-                  },
-              },
-              "& .MuiAccordionSummary-expandIconWrapper": {
-                  margin: 0,
-                  alignSelf: "center",
-              },
+            },
+            "& .MuiAccordionSummary-expandIconWrapper": {
+              margin: 0,
+              alignSelf: "center",
+            },
           }}
         >
           <Box sx={{ width: "100%", pr: 0.5 }}>
             <Box
-              sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1 }}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 1,
+              }}
             >
               <Box sx={{ display: "flex", alignItems: "center", minWidth: 0, flexGrow: 1 }}>
                 <IconButton
@@ -148,54 +151,53 @@ class ContainsItem extends React.Component<ContainsItemProps> {
                 </IconButton>
                 <Box sx={{ minWidth: 0 }}>
                   <Typography
-                      variant="overline"
-                      sx={{
-                          fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
-                          fontWeight: 500,
-                          fontSize: "0.7rem",
-                          lineHeight: 1.5,
-                          textTransform: "uppercase",
-                          letterSpacing: "0.16em",
-                          color: "text.secondary",
-                          opacity: 0.9,
-                      }}
+                    variant="overline"
+                    sx={{
+                      fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+                      fontWeight: 500,
+                      fontSize: "0.7rem",
+                      lineHeight: 1.5,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.16em",
+                      color: "text.secondary",
+                      opacity: 0.9,
+                    }}
                   >
-                      {storyTitleLabel}
+                    {storyTitleLabel}
                   </Typography>
 
-                    <Typography
-                        variant="subtitle1"
-                        sx={{
-                            fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
-                            fontSize: "1rem",
-                            lineHeight: 1.75,
-                            fontWeight: 700,
-                            color: "text.secondary",
-                            letterSpacing: "0.01em",
-                            opacity: 0.9,
-                        }}
-                    >
-                        <IssueReferenceInline
-                            seriesLabel={generateLabel({ series: parent.issue?.series as any } as any)}
-                            number={ parent.issue?.number}
-                            legacy_number={parent.issue?.legacy_number}
-                        />
+                  <Typography
+                    variant="subtitle1"
+                    sx={{
+                      fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+                      fontSize: "1rem",
+                      lineHeight: 1.75,
+                      fontWeight: 700,
+                      color: "text.secondary",
+                      letterSpacing: "0.01em",
+                      opacity: 0.9,
+                    }}
+                  >
+                    <IssueReferenceInline
+                      seriesLabel={generateLabel({ series: parent.issue?.series as any } as any)}
+                      number={parent.issue?.number}
+                      legacy_number={parent.issue?.legacy_number}
+                    />
 
-                        <Typography
-                            sx={{
-                                fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
-                                fontSize: "0.8rem",
-                                lineHeight: 1.75,
-                                fontWeight: 500,
-                                color: "text.secondary",
-                                letterSpacing: "0.01em",
-                                opacity: 0.9,
-                            }}
-                        >
-                            {addinfoText === "" ? null : addinfoText}
-                        </Typography>
+                    <Typography
+                      sx={{
+                        fontFamily: 'Roboto, "Helvetica Neue", Arial, sans-serif',
+                        fontSize: "0.8rem",
+                        lineHeight: 1.75,
+                        fontWeight: 500,
+                        color: "text.secondary",
+                        letterSpacing: "0.01em",
+                        opacity: 0.9,
+                      }}
+                    >
+                      {addinfoText === "" ? null : addinfoText}
                     </Typography>
-                  
+                  </Typography>
                 </Box>
               </Box>
               <Box onClick={(event) => event.stopPropagation()}>
@@ -219,22 +221,22 @@ class ContainsItem extends React.Component<ContainsItemProps> {
 }
 
 function normalizeDisplayStoryTitle(value: string | null | undefined): string {
-    const normalized = String(value || "").trim();
-    return normalized === "Untitled" ? "" : normalized;
+  const normalized = String(value || "").trim();
+  return normalized === "Untitled" ? "" : normalized;
 }
 
 function buildAddinfoText(item: any): string {
-    let addinfoText = "";
-    if (item.part && item.part.indexOf("/x") === -1) {
-        addinfoText += "Teil " + item.part.replace("/", " von ");
-    }
-    if (addinfoText !== "" && item.addinfo) {
-        addinfoText += ", ";
-    }
-    if (item.addinfo) {
-        addinfoText += item.addinfo;
-    }
-    return addinfoText;
+  let addinfoText = "";
+  if (item.part && item.part.indexOf("/x") === -1) {
+    addinfoText += "Teil " + item.part.replace("/", " von ");
+  }
+  if (addinfoText !== "" && item.addinfo) {
+    addinfoText += ", ";
+  }
+  if (item.addinfo) {
+    addinfoText += item.addinfo;
+  }
+  return addinfoText;
 }
 
 export default ContainsItem;
