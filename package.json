@@ -40,14 +40,14 @@
     "@typescript-eslint/eslint-plugin": "^8.56.0",
     "@typescript-eslint/parser": "^8.56.1",
     "@vitejs/plugin-react": "^5.0.0",
-    "@vitest/coverage-v8": "^4.0.18",
+    "@vitest/coverage-v8": "^4.1.8",
     "eslint": "10.0.1",
     "globals": "^17.3.0",
     "jsdom": "^28.1.0",
     "prettier": "^3.6.2",
     "typescript": "^5.8.2",
     "vite": "^7.1.0",
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.8"
   },
   "scripts": {
     "check:artifacts": "sh -c \"if git ls-files | grep -E '(^|/)(dist|build|logs|listen)/|\\\\.log$|(^|/)\\\\.output\\\\.txt$|(^|/)output\\\\.txt$'; then echo 'Remove tracked build/runtime artifacts before commit.'; exit 1; fi\"",
