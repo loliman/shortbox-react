@@ -75,11 +75,7 @@ function IssueReport(props: Readonly<IssueReportProps>) {
               actions.setSubmitting(true);
               try {
                 const sanitizedValues = sanitizeReportValues(values, issueDetails);
-                const payload = buildIssueMutationVariables(
-                  sanitizedValues,
-                  defaultValues,
-                  true
-                );
+                const payload = buildIssueMutationVariables(sanitizedValues, defaultValues, true);
 
                 await runReportError({
                   variables: {
@@ -138,10 +134,7 @@ function IssueReport(props: Readonly<IssueReportProps>) {
                       isSubmitting={isSubmitting}
                       resetForm={resetForm}
                       onCancel={(event) => {
-                        navigate(
-                          event,
-                          lastLocation ? lastLocation.pathname : fallbackUrl
-                        );
+                        navigate(event, lastLocation ? lastLocation.pathname : fallbackUrl);
                       }}
                       onSubmit={() => submitForm()}
                     />
@@ -187,12 +180,7 @@ function IssueReportActions({
       </Box>
 
       <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", justifyContent: "flex-end" }}>
-        <Button
-          disabled={isSubmitting}
-          onClick={onSubmit}
-          variant="contained"
-          color="primary"
-        >
+        <Button disabled={isSubmitting} onClick={onSubmit} variant="contained" color="primary">
           Fehler melden
         </Button>
       </Box>
