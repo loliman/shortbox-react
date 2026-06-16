@@ -73,7 +73,8 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
     format: props.activeFormat ?? props.issue.format,
     variant: props.activeVariant ?? props.issue.variant,
   });
-  const activeVariant = variants.find((variant) => getIssueKey(variant) === activeKey) || variants[0];
+  const activeVariant =
+    variants.find((variant) => getIssueKey(variant) === activeKey) || variants[0];
   const activeVariantHasOwnStories =
     Boolean(props.session) && hasOwnStoriesForBadge(activeVariant, props.issue.storyOwner);
   const candidateActiveCoverUrl = getVariantCoverUrl(activeVariant, Boolean(props.us));
@@ -214,21 +215,21 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
             }
           : activeCoverUrl
             ? {
-              content: '""',
-              position: "absolute",
-              inset: 0,
-              backgroundImage:
-                (theme.palette.mode === "dark"
-                  ? `linear-gradient(to right, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.58) 40%, rgba(0, 0, 0, 0.08) 100%), `
-                  : `linear-gradient(to right, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.62) 40%, rgba(255, 255, 255, 0) 100%), `) +
-                `url("${activeCoverUrl}")`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-              opacity: 0.7,
-              transform: "scale(1.03)",
-              zIndex: 0,
-            }
+                content: '""',
+                position: "absolute",
+                inset: 0,
+                backgroundImage:
+                  (theme.palette.mode === "dark"
+                    ? `linear-gradient(to right, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.58) 40%, rgba(0, 0, 0, 0.08) 100%), `
+                    : `linear-gradient(to right, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.62) 40%, rgba(255, 255, 255, 0) 100%), `) +
+                  `url("${activeCoverUrl}")`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+                opacity: 0.7,
+                transform: "scale(1.03)",
+                zIndex: 0,
+              }
             : undefined,
         "@keyframes variantCoverShimmer": {
           "0%": { backgroundPosition: "0 0, 220% 0" },
@@ -259,13 +260,13 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
             {variants.length === 1 ? "" : "Erhältlich in " + variants.length + " Varianten"}
           </Typography>
 
-          <Box sx={{ ml: "auto", mr: 1.25, display: "inline-flex", alignItems: "center", gap: 0.5 }}>
+          <Box
+            sx={{ ml: "auto", mr: 1.25, display: "inline-flex", alignItems: "center", gap: 0.5 }}
+          >
             {props.issue.collected && props.session ? (
               <Chip size="small" label="Gesammelt" color="success" />
             ) : null}
-            {props.issue.verified ? (
-              <Chip size="small" label="Verifiziert" color="info" />
-            ) : null}
+            {props.issue.verified ? <Chip size="small" label="Verifiziert" color="info" /> : null}
             {activeVariantHasOwnStories ? (
               <Box component="span" sx={statusChipSx}>
                 <BookmarkIcon
@@ -356,63 +357,63 @@ export function IssueVariants(props: Readonly<IssueVariantsProps>) {
               "&::-webkit-scrollbar": { display: "none" },
             }}
           >
-          <Stack
-            component="ul"
-            direction="row"
-            spacing={0}
-            sx={{
-              alignItems: "center",
-              m: 0,
-              p: 0,
-              listStyle: "none",
-              width: "max-content",
-            }}
-          >
-            {variants.map((variant, idx) => {
-              const selected = getIssueKey(variant) === activeKey;
-              const hasStories = hasOwnStoriesForBadge(variant, props.issue.storyOwner);
+            <Stack
+              component="ul"
+              direction="row"
+              spacing={0}
+              sx={{
+                alignItems: "center",
+                m: 0,
+                p: 0,
+                listStyle: "none",
+                width: "max-content",
+              }}
+            >
+              {variants.map((variant, idx) => {
+                const selected = getIssueKey(variant) === activeKey;
+                const hasStories = hasOwnStoriesForBadge(variant, props.issue.storyOwner);
 
-              return (
-                <Box
-                  component="li"
-                  data-selected={selected ? "true" : "false"}
-                  key={getVariantKey(variant, idx)}
-                  sx={{
-                    p: 0,
-                    m: 0,
-                    width: selected
-                      ? { xs: "332px", sm: "378px", md: "432px" }
-                      : { xs: "302px", sm: "344px", md: "392px" },
-                    height: selected
-                      ? { xs: "132.8px", sm: "145.1px", md: "156.9px" }
-                      : { xs: "120.8px", sm: "132.1px", md: "142.2px" },
-                    flex: "0 0 auto",
-                    ml: idx === 0 ? 0 : "-1px",
-                    transition: "width 180ms ease, height 180ms ease",
-                  }}
-                >
-                  <IssueVariantTile
-                    issue={props.issue}
-                    variant={variant}
-                    edge={
-                      variants.length === 1
-                        ? "single"
-                        : idx === 0
-                          ? "start"
-                          : idx === variants.length - 1
-                            ? "end"
-                            : "middle"
-                    }
-                    selected={selected}
-                    hasStories={hasStories}
-                    session={props.session}
-                    navigate={props.navigate}
-                    us={Boolean(props.us)}
-                  />
-                </Box>
-              );
-            })}
-          </Stack>
+                return (
+                  <Box
+                    component="li"
+                    data-selected={selected ? "true" : "false"}
+                    key={getVariantKey(variant, idx)}
+                    sx={{
+                      p: 0,
+                      m: 0,
+                      width: selected
+                        ? { xs: "332px", sm: "378px", md: "432px" }
+                        : { xs: "302px", sm: "344px", md: "392px" },
+                      height: selected
+                        ? { xs: "132.8px", sm: "145.1px", md: "156.9px" }
+                        : { xs: "120.8px", sm: "132.1px", md: "142.2px" },
+                      flex: "0 0 auto",
+                      ml: idx === 0 ? 0 : "-1px",
+                      transition: "width 180ms ease, height 180ms ease",
+                    }}
+                  >
+                    <IssueVariantTile
+                      issue={props.issue}
+                      variant={variant}
+                      edge={
+                        variants.length === 1
+                          ? "single"
+                          : idx === 0
+                            ? "start"
+                            : idx === variants.length - 1
+                              ? "end"
+                              : "middle"
+                      }
+                      selected={selected}
+                      hasStories={hasStories}
+                      session={props.session}
+                      navigate={props.navigate}
+                      us={Boolean(props.us)}
+                    />
+                  </Box>
+                );
+              })}
+            </Stack>
           </Box>
         </Box>
       </AccordionDetails>
