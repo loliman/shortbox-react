@@ -83,7 +83,8 @@ export function IssueCover(props: Readonly<IssueCoverProps>) {
             width: "auto",
             height: "auto",
             objectFit: "contain",
-            bgcolor: (theme) => (theme.palette.mode === "dark" ? "#000000" : theme.palette.grey[200]),
+            bgcolor: (theme) =>
+              theme.palette.mode === "dark" ? "#000000" : theme.palette.grey[200],
           }}
         />
       </Dialog>
