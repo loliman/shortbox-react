@@ -52,9 +52,7 @@ describe("Issue editor hints", () => {
       </Formik>
     );
 
-    expect(
-      screen.getByText("Hinweis: Titel wird vererbt. Für Variants leer lassen.")
-    ).toBeTruthy();
+    expect(screen.getByText("Hinweis: Titel wird vererbt. Für Variants leer lassen.")).toBeTruthy();
   });
 
   it("renders the parent hint for stories", () => {

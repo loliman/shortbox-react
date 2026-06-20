@@ -131,15 +131,12 @@ function Layout(props: Readonly<LayoutProps>) {
                 justifyContent: { xs: "center", sm: "flex-end" },
               }}
             >
-              <FooterLinks
-                isPhonePortrait={props.isPhonePortrait}
-                navigate={props.navigate}
-              />
+              <FooterLinks isPhonePortrait={props.isPhonePortrait} navigate={props.navigate} />
             </Box>
           </Card>
         </Box>
 
-      {session ? <AddFab us={us} /> : us ? null : <ErrorFab us={us} />}
+        {session ? <AddFab us={us} /> : us ? null : <ErrorFab us={us} />}
       </Box>
     </Box>
   );

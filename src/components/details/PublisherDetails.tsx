@@ -45,8 +45,7 @@ function PublisherDetails(props: Readonly<PublisherDetailsProps>) {
   const unregisterLoadingComponent = props.unregisterLoadingComponent || (() => {});
   const pageProps = props as Record<string, unknown>;
   const compactLayout =
-    props.compactLayout ??
-    Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
+    props.compactLayout ?? Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
   const { markDetailsLoaded, markHistoryLoaded } = useDualLoadingRegistration({
     registerLoadingComponent,
     unregisterLoadingComponent,
