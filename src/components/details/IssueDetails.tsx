@@ -224,69 +224,70 @@ function IssueDetails(props: IssueDetailsProps) {
     xs: "100%",
     lg: coverColumnWidth,
   };
-  const coverAttribution = !us && issueForVariants.comicguideid ? (
-    <Typography
-      variant="caption"
-      color="text.secondary"
-      sx={{
-        opacity: 0.82,
-        textAlign: "left",
-      }}
-    >
-      Das Cover für&nbsp;
-      <a
-        href={generateComicGuideUrl(issueForVariants as any)}
-        rel="noopener noreferrer nofollow"
-        target="_blank"
+  const coverAttribution =
+    !us && issueForVariants.comicguideid ? (
+      <Typography
+        variant="caption"
+        color="text.secondary"
+        sx={{
+          opacity: 0.82,
+          textAlign: "left",
+        }}
       >
-        <IssueReferenceInline
-          seriesLabel={generateLabel({ series: issueForVariants.series } as any)}
-          number={issueForVariants.number}
-          legacy_number={issueForVariants.legacy_number}
-        />
-      </a>
-      &nbsp;wird bereitgestellt vom&nbsp;
-      <a href="https://www.comicguide.de" rel="noopener noreferrer nofollow" target="_blank">
-        deutschen ComicGuide
-      </a>
-      &nbsp;und darf nicht ohne Genehmigung weiterverbreitet werden.
-    </Typography>
-  ) : us ? (
-    <Typography
-      variant="caption"
-      color="text.secondary"
-      sx={{
-        opacity: 0.82,
-        textAlign: "left",
-      }}
-    >
-      Informationen über&nbsp;
-      <a
-        href={generateMarvelDbUrl(issueForVariants as any)}
-        rel="noopener noreferrer nofollow"
-        target="_blank"
+        Das Cover für&nbsp;
+        <a
+          href={generateComicGuideUrl(issueForVariants as any)}
+          rel="noopener noreferrer nofollow"
+          target="_blank"
+        >
+          <IssueReferenceInline
+            seriesLabel={generateLabel({ series: issueForVariants.series } as any)}
+            number={issueForVariants.number}
+            legacy_number={issueForVariants.legacy_number}
+          />
+        </a>
+        &nbsp;wird bereitgestellt vom&nbsp;
+        <a href="https://www.comicguide.de" rel="noopener noreferrer nofollow" target="_blank">
+          deutschen ComicGuide
+        </a>
+        &nbsp;und darf nicht ohne Genehmigung weiterverbreitet werden.
+      </Typography>
+    ) : us ? (
+      <Typography
+        variant="caption"
+        color="text.secondary"
+        sx={{
+          opacity: 0.82,
+          textAlign: "left",
+        }}
       >
-        <IssueReferenceInline
-          seriesLabel={generateLabel({ series: issueForVariants.series } as any)}
-          number={issueForVariants.number}
-          legacy_number={issueForVariants.legacy_number}
-        />
-      </a>
-      &nbsp;werden bezogen aus der&nbsp;
-      <a href="https://marvel.fandom.com" rel="noopener noreferrer nofollow" target="_blank">
-        Marvel Database
-      </a>
-      &nbsp;und stehen unter der&nbsp;
-      <a
-        href="https://creativecommons.org/licenses/by/3.0/de/"
-        rel="noopener noreferrer nofollow"
-        target="_blank"
-      >
-        Creative Commons License 3.0
-      </a>
-      &nbsp;. Die Informationen wurden aufbereitet und unter Umständen ergänzt.&nbsp;
-    </Typography>
-  ) : null;
+        Informationen über&nbsp;
+        <a
+          href={generateMarvelDbUrl(issueForVariants as any)}
+          rel="noopener noreferrer nofollow"
+          target="_blank"
+        >
+          <IssueReferenceInline
+            seriesLabel={generateLabel({ series: issueForVariants.series } as any)}
+            number={issueForVariants.number}
+            legacy_number={issueForVariants.legacy_number}
+          />
+        </a>
+        &nbsp;werden bezogen aus der&nbsp;
+        <a href="https://marvel.fandom.com" rel="noopener noreferrer nofollow" target="_blank">
+          Marvel Database
+        </a>
+        &nbsp;und stehen unter der&nbsp;
+        <a
+          href="https://creativecommons.org/licenses/by/3.0/de/"
+          rel="noopener noreferrer nofollow"
+          target="_blank"
+        >
+          Creative Commons License 3.0
+        </a>
+        &nbsp;. Die Informationen wurden aufbereitet und unter Umständen ergänzt.&nbsp;
+      </Typography>
+    ) : null;
 
   return (
     <Layout>
@@ -371,7 +372,15 @@ function IssueDetails(props: IssueDetailsProps) {
               }}
             >
               {compactLayout ? (
-                <Box sx={{ minWidth: 0, width: "100%", display: "flex", flexDirection: "column", gap: 2 }}>
+                <Box
+                  sx={{
+                    minWidth: 0,
+                    width: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 2,
+                  }}
+                >
                   <Box
                     sx={{
                       display: "flex",
@@ -412,7 +421,14 @@ function IssueDetails(props: IssueDetailsProps) {
                     </Box>
 
                     <Box sx={{ display: { xs: "block", lg: "none" }, width: "100%" }}>
-                      <Box sx={{ width: coverWidth, maxWidth: "100%", mx: "auto", position: "relative" }}>
+                      <Box
+                        sx={{
+                          width: coverWidth,
+                          maxWidth: "100%",
+                          mx: "auto",
+                          position: "relative",
+                        }}
+                      >
                         <IconButton
                           size="small"
                           aria-label={coverExpanded ? "Cover einklappen" : "Cover ausklappen"}
@@ -508,7 +524,15 @@ function IssueDetails(props: IssueDetailsProps) {
                     ) : null}
                   </Box>
 
-                  <Box sx={{ minWidth: 0, width: "100%", display: "flex", flexDirection: "column", gap: 2 }}>
+                  <Box
+                    sx={{
+                      minWidth: 0,
+                      width: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: 2,
+                    }}
+                  >
                     <Box
                       sx={{
                         display: "flex",
@@ -551,7 +575,14 @@ function IssueDetails(props: IssueDetailsProps) {
                       </Box>
 
                       <Box sx={{ display: { xs: "block", lg: "none" }, width: "100%" }}>
-                        <Box sx={{ width: coverWidth, maxWidth: "100%", mx: "auto", position: "relative" }}>
+                        <Box
+                          sx={{
+                            width: coverWidth,
+                            maxWidth: "100%",
+                            mx: "auto",
+                            position: "relative",
+                          }}
+                        >
                           <IconButton
                             size="small"
                             aria-label={coverExpanded ? "Cover einklappen" : "Cover ausklappen"}
@@ -577,7 +608,8 @@ function IssueDetails(props: IssueDetailsProps) {
                             in={coverExpanded}
                             collapsedSize="25px"
                             sx={{
-                              borderRadius: (theme) => `${Number(theme.shape.borderRadius) || 12}px`,
+                              borderRadius: (theme) =>
+                                `${Number(theme.shape.borderRadius) || 12}px`,
                               overflow: "hidden",
                             }}
                           >
@@ -647,7 +679,7 @@ function IssueCoverGallery(props: {
   activeFormat?: string;
   activeVariant?: string;
   navigate?: (event: unknown, url: string, query?: Record<string, unknown>) => void;
-  session: unknown
+  session: unknown;
 }) {
   const maxIndex = Math.max(0, props.issues.length - 1);
   const activeIssueKey = getIssueVariantKey({
