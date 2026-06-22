@@ -41,8 +41,7 @@ type ContainsTitleSimpleProps = {
 export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
   const item = props.item;
   const stackActions =
-    props.compactLayout ??
-    Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
+    props.compactLayout ?? Boolean(props.isPhone || (props.isTablet && !props.isTabletLandscape));
   const children = Array.isArray(item.children) ? item.children : [];
   const reprints = Array.isArray(item.reprints) ? item.reprints : [];
   const hasIssueReference = Boolean(item.series);
@@ -109,7 +108,9 @@ export function ContainsTitleSimple(props: Readonly<ContainsTitleSimpleProps>) {
           >
             {hasIssueReference ? (
               <IssueReferenceInline
-                seriesLabel={item.series ? generateLabel({ series: item.series } as any) : undefined}
+                seriesLabel={
+                  item.series ? generateLabel({ series: item.series } as any) : undefined
+                }
                 number={item.number}
                 legacy_number={item.legacy_number}
               />
@@ -176,7 +177,7 @@ function buildPublicationFallback({
   if (childrenCount <= 0) return "Nicht auf deutsch erschienen";
 
   const word = toGermanOccurrenceWord(childrenCount);
-  return childrenCount > 0 ? `Mehrfach auf deutsch erschienen`: 'Nicht auf deutsch erschienen';
+  return childrenCount > 0 ? `Mehrfach auf deutsch erschienen` : "Nicht auf deutsch erschienen";
 }
 
 function toGermanOccurrenceWord(count: number): string {
